@@ -117,7 +117,7 @@
         $phpConstants['DIRECTORY_SEPARATOR'] = '\'
 
         # Tokenize before parsing. Unknown characters produce an error, never disappear.
-        $pattern = '(?:\s+|//[^\r\n]*|\#[^\r\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|''(?:\\.|[^''\\])*''|\$\$[A-Za-z_][A-Za-z_0-9]*|\$[A-Za-z_][A-Za-z_0-9]*|\$(?=\{)|0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|(?:\d[\d_]*(?:\.[\d_]*)?|\.\d[\d_]*)(?:[eE][+-]?\d[\d_]*)?|[A-Za-z_][A-Za-z_0-9]*|<=>|::|\.\.\.|<<=|>>=|<<|>>|===|!==|==|!=|<=|>=|&&|\|\||=>|->|\*\*=|\*\*|\?\?=|\?\?|\?->|\+\+|--|\*=|/=|%=|&=|\|=|\^=|\+=|-=|\.=|[+\-*/%.=<>!?:;{},()\[\]&|^~@])'
+        $pattern = '(?:\s+|//[^\r\n]*|\#[^\r\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|''(?:\\.|[^''\\])*''|\$\$[A-Za-z_][A-Za-z_0-9]*|\$[A-Za-z_][A-Za-z_0-9]*|\$(?=\{)|0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|(?:\d[\d_]*(?:\.[\d_]*)?|\.\d[\d_]*)(?:[eE][+-]?\d[\d_]*)?|\\?[A-Za-z_][A-Za-z_0-9]*(?:\\[A-Za-z_][A-Za-z_0-9]*)*\\?|<=>|::|\.\.\.|<<=|>>=|<<|>>|===|!==|==|!=|<=|>=|&&|\|\||=>|->|\*\*=|\*\*|\?\?=|\?\?|\?->|\+\+|--|\*=|/=|%=|&=|\|=|\^=|\+=|-=|\.=|[+\-*/%.=<>!?:;{},()\[\]&|^~@])'
         $rx = [regex]::new($pattern)
         function ConvertTo-PhpTokens([string]$text, $tokens, $lines) {
             $line = 1
@@ -140,7 +140,254 @@
             [void]$tokens.Add('(EOF)')
             [void]$lines.Add($line)
         }
+        # ---- Namespaces -------------------------------------------------------------------------
+        # Names are resolved once, on the token stream, before parsing: "namespace" and "use"
+        # statements are consumed and every class, function and constant name is rewritten to its
+        # fully qualified form without a leading backslash (the form PHP itself reports).
+        $phpNameRx = [regex]::new('^\\?[A-Za-z_][A-Za-z_0-9]*(?:\\[A-Za-z_][A-Za-z_0-9]*)*\\?$')
+        $phpReservedNames = [System.Collections.Generic.HashSet[string]]::new(
+            [System.StringComparer]::OrdinalIgnoreCase)
+        foreach ($word in @('abstract','and','array','as','break','callable','case','catch','class','clone','const',
+            'continue','declare','default','do','echo','else','elseif','empty','enddeclare','endfor','endforeach',
+            'endif','endswitch','endwhile','enum','exit','die','extends','final','finally','fn','for','foreach',
+            'function','global','goto','if','implements','include','include_once','instanceof','insteadof',
+            'interface','isset','list','match','namespace','new','or','print','private','protected','public',
+            'readonly','require','require_once','return','static','switch','throw','trait','try','unset','use',
+            'var','while','xor','yield','from','true','false','null','self','parent','int','float','string',
+            'bool','iterable','object','mixed','void','never')) { [void]$phpReservedNames.Add($word) }
+        function Resolve-PhpNamespaceTokens($tokens, $lines) {
+            $total = $tokens.Count
+            $declFunctions = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+            $declConsts = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+            $outTokens = [System.Collections.Generic.List[string]]::new()
+            $outLines = [System.Collections.Generic.List[int]]::new()
+            foreach ($pass in 1, 2) {
+                $ns = ''
+                $depth = 0
+                $classStack = [System.Collections.Generic.Stack[int]]::new()
+                $nsStack = [System.Collections.Generic.Stack[int]]::new()
+                $pendingClass = $false
+                $classList = $false
+                $useClass = [System.Collections.Generic.Dictionary[string,string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+                $useFunc = [System.Collections.Generic.Dictionary[string,string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+                $useConst = [System.Collections.Generic.Dictionary[string,string]]::new([System.StringComparer]::Ordinal)
+                $prefix = { param($name) if ($ns.Length -gt 0) { return ($ns + '\' + $name) }; return $name }
+                $qualify = {
+                    param($name)   # shared rules for names that are not unqualified
+                    if ($name.StartsWith('\')) { return $name.Substring(1) }
+                    if ($name.StartsWith('namespace\', [System.StringComparison]::OrdinalIgnoreCase)) {
+                        return (& $prefix $name.Substring(10))
+                    }
+                    $cut = $name.IndexOf('\')
+                    if ($cut -gt 0) {
+                        $head = $name.Substring(0, $cut)
+                        if ($useClass.ContainsKey($head)) { return ($useClass[$head] + $name.Substring($cut)) }
+                        return (& $prefix $name)
+                    }
+                    return $null
+                }
+                $resolveClass = {
+                    param($name)
+                    $q = & $qualify $name
+                    if ($null -ne $q) { return $q }
+                    if ($phpReservedNames.Contains($name)) { return $name }
+                    if ($useClass.ContainsKey($name)) { return $useClass[$name] }
+                    return (& $prefix $name)
+                }
+                $resolveFunc = {
+                    param($name)
+                    $q = & $qualify $name
+                    if ($null -ne $q) { return $q }
+                    if ($useFunc.ContainsKey($name)) { return $useFunc[$name] }
+                    $local = & $prefix $name
+                    if ($declFunctions.Contains($local)) { return $local }
+                    return $name
+                }
+                $resolveConst = {
+                    param($name)
+                    $q = & $qualify $name
+                    if ($null -ne $q) { return $q }
+                    if ($useConst.ContainsKey($name)) { return $useConst[$name] }
+                    $local = & $prefix $name
+                    if ($declConsts.Contains($local)) { return $local }
+                    return $name
+                }
+                for ($i = 0; $i -lt $total; $i++) {
+                    $t = $tokens[$i]
+                    $prev = if ($i -gt 0) { $tokens[$i - 1] } else { '' }
+                    $next = if ($i + 1 -lt $total) { $tokens[$i + 1] } else { '' }
+                    $inClass = ($classStack.Count -gt 0)
+                    $atMember = ($inClass -and $depth -eq $classStack.Peek())
+                    $emit = $t
+                    if ($t -ceq '{') {
+                        $depth++
+                        if ($pendingClass) { $classStack.Push($depth); $pendingClass = $false }
+                        $classList = $false
+                    } elseif ($t -ceq '}') {
+                        if ($nsStack.Count -gt 0 -and $depth -eq $nsStack.Peek()) {
+                            [void]$nsStack.Pop()
+                            $ns = ''
+                            $useClass.Clear(); $useFunc.Clear(); $useConst.Clear()
+                            continue
+                        }
+                        if ($inClass -and $depth -eq $classStack.Peek()) { [void]$classStack.Pop() }
+                        $depth--
+                    } elseif ($t -ceq ';') {
+                        $classList = $false
+                    } elseif ($phpNameRx.IsMatch($t)) {
+                        $lower = $t.ToLowerInvariant()
+                        $isMember = ($prev -ceq '->' -or $prev -ceq '?->' -or $prev -ceq '::')
+                        if (-not $isMember -and $lower -ceq 'namespace') {
+                            # namespace A\B;   namespace A\B { ... }   namespace { ... }
+                            $j = $i + 1
+                            $name = ''
+                            if ($j -lt $total -and $tokens[$j] -cne '{' -and $tokens[$j] -cne ';') { $name = $tokens[$j]; $j++ }
+                            $ns = $name.TrimStart('\')
+                            $useClass.Clear(); $useFunc.Clear(); $useConst.Clear()
+                            if ($j -lt $total -and $tokens[$j] -ceq '{') { $nsStack.Push($depth) }
+                            $i = $j
+                            continue
+                        }
+                        if (-not $isMember -and $lower -ceq 'use' -and -not $inClass -and $next -cne '(') {
+                            # use A\B;  use A\B as C;  use function A\f;  use const A\C;  use A\{B, C as D};
+                            $kind = 'class'
+                            $j = $i + 1
+                            if ($tokens[$j] -ieq 'function') { $kind = 'function'; $j++ }
+                            elseif ($tokens[$j] -ieq 'const') { $kind = 'const'; $j++ }
+                            $group = ''
+                            while ($j -lt $total -and $tokens[$j] -cne ';') {
+                                $item = $tokens[$j]
+                                if ($item -ceq ',' ) { $j++; continue }
+                                if ($item -ceq '}') { $group = ''; $j++; continue }
+                                $itemKind = $kind
+                                if ($item -ieq 'function' -and $group.Length -gt 0) { $itemKind = 'function'; $j++; $item = $tokens[$j] }
+                                elseif ($item -ieq 'const' -and $group.Length -gt 0) { $itemKind = 'const'; $j++; $item = $tokens[$j] }
+                                if ($j + 1 -lt $total -and $tokens[$j + 1] -ceq '{') {
+                                    $group = $item.TrimStart('\')
+                                    if (-not $group.EndsWith('\')) { $group += '\' }
+                                    $j += 2
+                                    continue
+                                }
+                                $target = $group + $item.TrimStart('\')
+                                $alias = $target.Substring($target.LastIndexOf('\') + 1)
+                                $j++
+                                if ($j + 1 -lt $total -and $tokens[$j] -ieq 'as') { $alias = $tokens[$j + 1]; $j += 2 }
+                                if ($itemKind -eq 'function') { $useFunc[$alias] = $target }
+                                elseif ($itemKind -eq 'const') { $useConst[$alias] = $target }
+                                else { $useClass[$alias] = $target }
+                            }
+                            $i = $j
+                            continue
+                        }
+                        if ($isMember) {
+                            # member name: never resolved
+                        } elseif ($lower -ceq '__namespace__') {
+                            $emit = "'" + $ns.Replace('\', '\\') + "'"
+                        } elseif (-not $t.Contains('\') -and $phpReservedNames.Contains($t)) {
+                            if ($lower -in @('class','interface','trait','enum')) {
+                                if ($lower -ne 'enum' -or $phpNameRx.IsMatch($next)) { $pendingClass = $true }
+                            }
+                            if ($lower -in @('extends','implements')) { $classList = $true }
+                            if ($lower -ceq 'use' -and $atMember) { $classList = $true }
+                        } elseif ($next -ceq '::') {
+                            $resolved = & $resolveClass $t
+                            if ($i + 2 -lt $total -and $tokens[$i + 2] -ieq 'class' -and
+                                -not $phpReservedNames.Contains($t)) {
+                                $emit = "'" + $resolved.Replace('\', '\\') + "'"
+                                if ($pass -eq 2) { [void]$outTokens.Add($emit); [void]$outLines.Add($lines[$i]) }
+                                $i += 2
+                                continue
+                            }
+                            $emit = $resolved
+                        } elseif ($prev -ieq 'class' -or $prev -ieq 'interface' -or $prev -ieq 'trait' -or $prev -ieq 'enum') {
+                            $emit = & $prefix $t
+                        } elseif ($prev -ieq 'function' -or ($prev -ceq '&' -and $i -gt 1 -and $tokens[$i - 2] -ieq 'function')) {
+                            if (-not $inClass) {
+                                $emit = & $prefix $t
+                                if ($pass -eq 1) { [void]$declFunctions.Add($emit) }
+                            }
+                        } elseif ($prev -ieq 'const') {
+                            if (-not $inClass) {
+                                $emit = & $prefix $t
+                                if ($pass -eq 1) { [void]$declConsts.Add($emit) }
+                            }
+                        } elseif ($classList -or $prev -ieq 'new' -or $prev -ieq 'instanceof' -or
+                                  $prev -ieq 'extends' -or $prev -ieq 'implements' -or $prev -ieq 'insteadof') {
+                            $emit = & $resolveClass $t
+                        } elseif ($prev -ieq 'goto' -or ($next -ceq ':' -and ($prev -ceq '(' -or $prev -ceq ','))) {
+                            # label or named argument
+                        } elseif ($prev -ieq 'case' -and $atMember) {
+                            # enum case name
+                        } elseif ($inClass -and ($lower -ceq 'get' -or $lower -ceq 'set') -and
+                                  ($next -ceq '{' -or $next -ceq '=>' -or $next -ceq ';' -or $next -ceq '(')) {
+                            # property hook
+                        } else {
+                            # A type? Look right for "... $variable", look left for "): Type" or "catch (Type".
+                            $isType = $false
+                            $k = $i + 1
+                            while ($k + 1 -lt $total -and ($tokens[$k] -ceq '|' -or $tokens[$k] -ceq '&') -and
+                                   ($phpNameRx.IsMatch($tokens[$k + 1]) -or $tokens[$k + 1] -ceq '?')) { $k += 2 }
+                            if ($k -lt $total) {
+                                $after = $tokens[$k]
+                                if ($after.StartsWith('$')) { $isType = $true }
+                                elseif (($after -ceq '&' -or $after -ceq '...') -and $k + 1 -lt $total -and
+                                        $tokens[$k + 1].StartsWith('$')) { $isType = $true }
+                                elseif ($after -ceq '...' -and $k + 1 -lt $total -and $tokens[$k + 1].StartsWith('$')) { $isType = $true }
+                            }
+                            if (-not $isType) {
+                                $k = $i - 1
+                                while ($k -gt 1 -and ($tokens[$k] -ceq '|' -or $tokens[$k] -ceq '&') -and
+                                       $phpNameRx.IsMatch($tokens[$k - 1])) { $k -= 2 }
+                                if ($k -ge 1 -and $tokens[$k] -ceq '?') { $k-- }
+                                if ($k -ge 1 -and $tokens[$k] -ceq ':' -and $tokens[$k - 1] -ceq ')') {
+                                    # "): Type" is a return type only when the parentheses belong to a
+                                    # function signature (otherwise it is the else branch of a ternary).
+                                    $m = $k - 1
+                                    $nesting = 0
+                                    while ($m -ge 0) {
+                                        if ($tokens[$m] -ceq ')') { $nesting++ }
+                                        elseif ($tokens[$m] -ceq '(') { $nesting--; if ($nesting -eq 0) { break } }
+                                        $m--
+                                    }
+                                    if ($m -ge 1) {
+                                        $before = $tokens[$m - 1]
+                                        if ($before -ieq 'function' -or $before -ieq 'fn' -or $before -ieq 'use') { $isType = $true }
+                                        elseif ($m -ge 2 -and $tokens[$m - 2] -ieq 'function') { $isType = $true }
+                                        elseif ($m -ge 3 -and $tokens[$m - 2] -ceq '&' -and $tokens[$m - 3] -ieq 'function') { $isType = $true }
+                                        elseif ($before -ceq '&' -and $m -ge 2 -and ($tokens[$m - 2] -ieq 'function' -or $tokens[$m - 2] -ieq 'fn')) { $isType = $true }
+                                    }
+                                }
+                                elseif ($k -ge 1 -and $tokens[$k] -ceq '(' -and $tokens[$k - 1] -ieq 'catch') { $isType = $true }
+                            }
+                            if ($isType) { $emit = & $resolveClass $t }
+                            elseif ($next -ceq '(') { $emit = & $resolveFunc $t }
+                            else { $emit = & $resolveConst $t }
+                        }
+                    }
+                    if ($pass -eq 2) { [void]$outTokens.Add($emit); [void]$outLines.Add($lines[$i]) }
+                }
+            }
+            return [pscustomobject]@{ Tokens=$outTokens; Lines=$outLines }
+        }
         ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines
+        # Only programs that actually use namespaces, imports or qualified names take this pass.
+        $needsNameResolution = $false
+        for ($scan = 0; $scan -lt $state.Tokens.Count; $scan++) {
+            $candidate = $state.Tokens[$scan]
+            if ($candidate.Length -eq 0) { continue }
+            $firstChar = $candidate[0]
+            if ($firstChar -eq [char]'"' -or $firstChar -eq [char]"'" -or $firstChar -eq [char]'$') { continue }
+            if ($candidate.Contains('\') -or $candidate -ieq 'namespace' -or $candidate -ieq '__NAMESPACE__') {
+                $needsNameResolution = $true; break
+            }
+            if ($candidate -ieq 'use' -and $scan + 1 -lt $state.Tokens.Count -and
+                $state.Tokens[$scan + 1] -cne '(') { $needsNameResolution = $true; break }
+        }
+        if ($needsNameResolution) {
+            $resolvedNames = Resolve-PhpNamespaceTokens $state.Tokens $state.TokenLines
+            $state.Tokens = $resolvedNames.Tokens
+            $state.TokenLines = $resolvedNames.Lines
+        }
 
         function Peek-Token {
             return $state.Tokens[$state.Pos]
@@ -284,7 +531,7 @@
             if ((Peek-Token) -cne ')') {
                 while ($true) {
                     $first = Peek-Token
-                    if ($first -cmatch '^[A-Za-z_][A-Za-z_0-9]*$' -and
+                    if ($first -cmatch '^[A-Za-z_][A-Za-z_0-9\\]*$' -and
                         $state.Pos + 1 -lt $state.Tokens.Count -and
                         $state.Tokens[$state.Pos + 1] -ceq ':') {
                         [void](Next-Token)
@@ -530,7 +777,7 @@
             if ($token -eq 'new') {
                 [void](Next-Token)
                 $className = Next-Token
-                if ($className -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                if ($className -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                     throw "ALL PHP: Expected class name, got '$className'"
                 }
                 $callArgs = @()
@@ -547,7 +794,7 @@
                 'false' { [void](Next-Token); return [pscustomobject]@{ Kind='literal'; Value=$false } }
                 'null'  { [void](Next-Token); return [pscustomobject]@{ Kind='literal'; Value=$null } }
             }
-            if ($token -cmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+            if ($token -cmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                 [void](Next-Token)
                 if ($token -eq 'stdClass') {
                     return [pscustomobject]@{ Kind='class_name'; Name=$token }
@@ -600,7 +847,7 @@
                         $expr = [pscustomobject]@{
                             Kind='static_property'; Base=$expr; Name=$member.Substring(1)
                         }
-                    } elseif ($member -cmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                    } elseif ($member -cmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                         if ((Peek-Token) -ceq '(') {
                             if (Take-PhpFirstClassCallableArgs) {
                                 $expr=[pscustomobject]@{
@@ -624,7 +871,7 @@
                     [void](Next-Token)
                     $nullSafe = ($token -ceq '?->')
                     $member = Next-Token
-                    if ($member -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                    if ($member -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                         throw "ALL PHP: Expected member name, got '$member'"
                     }
                     if ((Peek-Token) -ceq '(') {
@@ -865,10 +1112,10 @@
             }
             if ($token -eq 'function' -and
                 $state.Pos + 1 -lt $state.Tokens.Count -and
-                ($state.Tokens[$state.Pos + 1] -cmatch '^[A-Za-z_][A-Za-z_0-9]*$' -or
+                ($state.Tokens[$state.Pos + 1] -cmatch '^[A-Za-z_][A-Za-z_0-9\\]*$' -or
                  ($state.Tokens[$state.Pos + 1] -ceq '&' -and
                   $state.Pos + 2 -lt $state.Tokens.Count -and
-                  $state.Tokens[$state.Pos + 2] -cmatch '^[A-Za-z_][A-Za-z_0-9]*$'))) {
+                  $state.Tokens[$state.Pos + 2] -cmatch '^[A-Za-z_][A-Za-z_0-9\\]*$'))) {
                 return (Read-Function)
             }
             if ($token -eq 'global') {
@@ -909,7 +1156,7 @@
             if ($token -eq 'interface') {
                 [void](Next-Token)
                 $name = Next-Token
-                if ($name -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                if ($name -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                     throw 'ALL PHP: Expected interface name'
                 }
                 $parents = [System.Collections.Generic.List[string]]::new()
@@ -917,7 +1164,7 @@
                     [void](Next-Token)
                     while ($true) {
                         $parentName = Next-Token
-                        if ($parentName -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                        if ($parentName -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                             throw 'ALL PHP: Expected parent interface name'
                         }
                         [void]$parents.Add($parentName)
@@ -951,7 +1198,7 @@
                         if ($methodStatic) { throw 'ALL PHP: Interface constants cannot be static' }
                         [void](Next-Token)
                         $constName=Next-Token
-                        if ($constName -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                        if ($constName -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                             throw 'ALL PHP: Expected interface constant name'
                         }
                         Expect-Token '='
@@ -973,7 +1220,7 @@
             if ($token -eq 'enum') {
                 [void](Next-Token)
                 $enumName=Next-Token
-                if ($enumName -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                if ($enumName -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                     throw 'ALL PHP: Expected enum name'
                 }
                 $backingType=$null
@@ -989,7 +1236,7 @@
                     [void](Next-Token)
                     while ($true) {
                         $iface=Next-Token
-                        if ($iface -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                        if ($iface -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                             throw 'ALL PHP: Expected enum interface'
                         }
                         [void]$enumInterfaces.Add($iface)
@@ -1005,7 +1252,7 @@
                     if ((Peek-Token) -ceq 'case') {
                         [void](Next-Token)
                         $caseName=Next-Token
-                        if ($caseName -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                        if ($caseName -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                             throw 'ALL PHP: Expected enum case name'
                         }
                         $caseExpr=$null
@@ -1054,14 +1301,14 @@
                 elseif ($token -eq 'final') { $isFinal=$true; [void](Next-Token); Expect-Token 'class' }
                 else { [void](Next-Token) }
                 $name = Next-Token
-                if ($name -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                if ($name -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                     throw 'ALL PHP: Expected class name'
                 }
                 $parent = $null
                 if ((Peek-Token) -eq 'extends') {
                     [void](Next-Token)
                     $parent = Next-Token
-                    if ($parent -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                    if ($parent -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                         throw 'ALL PHP: Expected parent class name'
                     }
                 }
@@ -1070,7 +1317,7 @@
                     [void](Next-Token)
                     while ($true) {
                         $iface = Next-Token
-                        if ($iface -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                        if ($iface -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                             throw 'ALL PHP: Expected implemented interface name'
                         }
                         [void]$interfaces.Add($iface)
@@ -1092,7 +1339,7 @@
                         $adaptations=[System.Collections.Generic.List[object]]::new()
                         while ($true) {
                             $traitName=Next-Token
-                            if ($traitName -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                            if ($traitName -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                                 throw 'ALL PHP: Expected trait name'
                             }
                             [void]$traits.Add($traitName)
@@ -1113,7 +1360,7 @@
                                     [void](Next-Token)
                                     $member=Next-Token
                                 }
-                                if ($member -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                                if ($member -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                                     throw 'ALL PHP: Expected trait method name'
                                 }
                                 $action=Next-Token
@@ -1124,7 +1371,7 @@
                                     $excluded=[System.Collections.Generic.List[string]]::new()
                                     while ($true) {
                                         $loser=Next-Token
-                                        if ($loser -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                                        if ($loser -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                                             throw 'ALL PHP: Expected excluded trait name'
                                         }
                                         [void]$excluded.Add($loser)
@@ -1144,7 +1391,7 @@
                                     }
                                     if ((Peek-Token) -cne ';') {
                                         $alias=Next-Token
-                                        if ($alias -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                                        if ($alias -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                                             throw 'ALL PHP: Invalid trait alias name'
                                         }
                                     }
@@ -1229,7 +1476,7 @@
                         }
                         [void](Next-Token)
                         $constName = Next-Token
-                        if ($constName -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                        if ($constName -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                             throw 'ALL PHP: Expected class constant name'
                         }
                         Expect-Token '='
@@ -1241,7 +1488,7 @@
                     } else {
                         $propertyType=''
                         if ((Peek-Token) -ceq '?' -or
-                            (Peek-Token) -cmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                            (Peek-Token) -cmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                             $propertyType=Read-PhpTypeAnnotation
                         }
                         if ((Peek-Token) -cnotmatch '^\$[A-Za-z_][A-Za-z_0-9]*$') {
@@ -1496,13 +1743,13 @@
                 }
             }
             if ($token -eq 'const' -and $state.Pos + 2 -lt $state.Tokens.Count -and
-                $state.Tokens[$state.Pos + 1] -cmatch '^[A-Za-z_][A-Za-z_0-9]*$' -and
+                $state.Tokens[$state.Pos + 1] -cmatch '^[A-Za-z_][A-Za-z_0-9\\]*$' -and
                 $state.Tokens[$state.Pos + 2] -ceq '=') {
                 [void](Next-Token)
                 $decls = [System.Collections.Generic.List[object]]::new()
                 while ($true) {
                     $constName = Next-Token
-                    if ($constName -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                    if ($constName -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                         throw "ALL PHP: Expected constant name, got '$constName'"
                     }
                     Expect-Token '='
@@ -1524,7 +1771,7 @@
                     $types = [System.Collections.Generic.List[string]]::new()
                     while ($true) {
                         $typeName = Next-Token
-                        if ($typeName -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                        if ($typeName -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                             throw "ALL PHP: Expected class name in catch, got '$typeName'"
                         }
                         [void]$types.Add($typeName)
@@ -1588,7 +1835,7 @@
                 $prefix = '?'
                 $first = Peek-Token
             }
-            if ($first -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+            if ($first -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                 throw 'ALL PHP: Expected type name'
             }
             $typeText = $prefix + (Next-Token)
@@ -1598,13 +1845,13 @@
                     # An ampersand before a variable is a by-reference parameter,
                     # not an intersection type separator.
                     if ($state.Pos + 1 -ge $state.Tokens.Count -or
-                        $state.Tokens[$state.Pos + 1] -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                        $state.Tokens[$state.Pos + 1] -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                         break
                     }
                 }
                 [void](Next-Token)
                 $part = Next-Token
-                if ($part -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                if ($part -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                     throw 'ALL PHP: Expected type name after union/intersection separator'
                 }
                 $typeText += $separator + $part
@@ -1643,7 +1890,7 @@
                     }
                     $typeName = ''
                     if ((Peek-Token) -ceq '?' -or
-                        (Peek-Token) -cmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                        (Peek-Token) -cmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                         $typeName=Read-PhpTypeAnnotation
                         if ($typeName -in @('void','never')) {
                             throw 'ALL PHP: void and never are return-only types'
@@ -1704,7 +1951,7 @@
                 $returnByRef=$true
             }
             $name = Next-Token
-            if ($name -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+            if ($name -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
                 throw 'ALL PHP: Expected function name'
             }
             $parameters = Read-Parameters $allowPromotion

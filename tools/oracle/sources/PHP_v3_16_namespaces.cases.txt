@@ -1,0 +1,138 @@
+### fully qualified builtin function and constant
+<?php echo \strlen("abc"), "|", \PHP_INT_SIZE, "|", \strtoupper("x"), "|", \count([1, 2]);
+### fully qualified builtin class
+<?php try { throw new \RuntimeException("boom"); } catch (\Exception $e) { echo get_class($e), ":", $e->getMessage(); } var_dump($e instanceof \Throwable);
+### namespaced class name
+<?php
+namespace App\Models;
+class User { public function name() { return "u"; } }
+$u = new User();
+echo get_class($u), "|", $u->name(), "|", User::class, "|", __NAMESPACE__;
+### class constant on namespaced class and static call
+<?php
+namespace Shop;
+class Cart { const MAX = 5; public static $count = 2; public static function size() { return self::MAX * 2; } }
+echo Cart::MAX, "|", Cart::size(), "|", Cart::$count, "|", \Shop\Cart::MAX, "|", namespace\Cart::size();
+### namespaced function and constant
+<?php
+namespace Lib;
+const LIMIT = 3;
+function twice($x) { return $x * 2; }
+echo twice(LIMIT), "|", \Lib\twice(1), "|", namespace\twice(2), "|", \Lib\LIMIT, "|", namespace\LIMIT;
+### global function and constant fallback inside namespace
+<?php
+namespace Deep\Inside;
+echo strlen("four"), "|", strtoupper("a"), "|", PHP_INT_SIZE, "|", count([1]), "|", E_ALL === \E_ALL ? "same" : "diff";
+var_dump(true, null, INF > 1);
+### namespaced function shadows global one
+<?php
+namespace Shadow;
+function strlen($s) { return "mine:" . \strlen($s); }
+echo strlen("abc"), "|", \strlen("abc");
+### namespaced constant shadows global lookup
+<?php
+namespace Cfg;
+const PHP_EOL = "<eol>";
+echo PHP_EOL, "|", \PHP_INT_SIZE;
+### braced namespaces and use class
+<?php
+namespace A\B { class Thing { const K = "k"; public static function make() { return new Thing(); } } }
+namespace Main { use A\B\Thing; echo get_class(Thing::make()), "|", Thing::K, "|", Thing::class; }
+### use with alias
+<?php
+namespace Vendor\Pkg { class LongName { public $v = 7; } }
+namespace App { use Vendor\Pkg\LongName as Short; $o = new Short(); echo get_class($o), "|", $o->v, "|", Short::class, "|", $o instanceof Short ? "y" : "n", "|", $o instanceof \Vendor\Pkg\LongName ? "y" : "n"; }
+### use namespace prefix
+<?php
+namespace Vendor\Pkg { class One {} class Two {} }
+namespace App { use Vendor\Pkg; use Vendor\Pkg as P; echo get_class(new Pkg\One()), "|", get_class(new P\Two()); }
+### use function and use const
+<?php
+namespace Util { function helper($x) { return "h" . $x; } const VERSION = "1.2"; }
+namespace App { use function Util\helper; use const Util\VERSION; use function Util\helper as h2; echo helper(1), "|", VERSION, "|", h2(2); }
+### group use
+<?php
+namespace Lib { class A {} class B {} function f() { return "f"; } const C = "c"; }
+namespace App { use Lib\{A, B as Bee, function f, const C}; echo get_class(new A()), "|", get_class(new Bee()), "|", f(), "|", C; }
+### global namespace block
+<?php
+namespace First { function who() { return __NAMESPACE__; } class K {} }
+namespace { function who() { return "global"; } echo who(), "|", First\who(), "|", \First\who(), "|", get_class(new First\K()), "|", (__NAMESPACE__ === "" ? "empty" : "set"); }
+### type declarations resolve in namespace
+<?php
+namespace Geo;
+interface Shape { public function area(): float; }
+class Sq implements Shape { public function __construct(private float $s) {} public function area(): float { return $this->s * $this->s; } }
+function show(Shape $s): string { return get_class($s) . ":" . $s->area(); }
+function pick(bool $b): ?Shape { return $b ? new Sq(2) : null; }
+echo show(new Sq(3)), "|"; var_dump(pick(false)); echo get_class(pick(true));
+### inheritance across namespaces
+<?php
+namespace Base { abstract class Animal { abstract public function sound(): string; public function speak() { return static::class . " says " . $this->sound(); } } }
+namespace Pets { use Base\Animal; class Dog extends Animal { public function sound(): string { return "woof"; } } class Puppy extends Dog {} echo (new Dog())->speak(), "|", (new Puppy())->speak(), "|"; var_dump(new Puppy() instanceof Animal, new Puppy() instanceof \Base\Animal); }
+### interfaces and traits in namespace
+<?php
+namespace Mix;
+interface Named { public function name(); }
+trait Greets { public function hi() { return "hi " . $this->name(); } }
+class P implements Named { use Greets; public function name() { return "p"; } }
+$p = new P(); echo $p->hi(), "|"; var_dump($p instanceof Named, $p instanceof \Mix\Named);
+### exceptions in namespace
+<?php
+namespace Errs;
+class AppError extends \RuntimeException {}
+function risky() { throw new AppError("bad"); }
+try { risky(); } catch (\LogicException $e) { echo "wrong"; } catch (AppError | \TypeError $e) { echo get_class($e), ":", $e->getMessage(); }
+try { throw new \InvalidArgumentException("i"); } catch (\Exception $e) { echo "|", get_class($e); }
+### enum in namespace
+<?php
+namespace Cards;
+enum Suit: string { case Hearts = "H"; case Spades = "S"; public function label(): string { return ucfirst_($this->name); } }
+function ucfirst_($s) { return $s . "!"; }
+echo Suit::Hearts->value, "|", Suit::from("S")->name, "|", Suit::Hearts->label(), "|", get_class(Suit::Hearts), "|"; var_dump(Suit::Hearts);
+### var_dump and print_r show qualified class names
+<?php
+namespace Out;
+class Item { public $id = 1; private $secret = "s"; }
+var_dump(new Item()); print_r(new Item());
+### class name strings and callables with namespaces
+<?php
+namespace Dyn;
+class Tool { public static function run($x) { return "ran" . $x; } public function go() { return "go"; } }
+function fn1($x) { return "fn" . $x; }
+echo call_user_func('Dyn\fn1', 1), "|", call_user_func('Dyn\Tool::run', 2), "|", call_user_func(['Dyn\Tool', 'run'], 3), "|", call_user_func(__NAMESPACE__ . '\fn1', 4), "|", call_user_func([new Tool(), 'go']);
+### class constant class keyword forms
+<?php
+namespace K;
+class Foo { public function me() { return self::class; } }
+class Bar extends Foo {}
+echo Foo::class, "|", \K\Foo::class, "|", namespace\Bar::class, "|", (new Bar())->me(), "|", \stdClass::class, "|", \Exception::class;
+### closures and use clause unaffected
+<?php
+namespace Cl;
+$base = 10;
+$add = function($x) use ($base) { return $x + $base; };
+$mul = fn($x) => $x * $base;
+echo $add(1), "|", $mul(2), "|", (function() use (&$base) { $base++; return $base; })();
+### static properties and methods through alias
+<?php
+namespace Conf { class Settings { public static $values = ["a" => 1]; public static function get($k) { return self::$values[$k]; } } }
+namespace App { use Conf\Settings as S; S::$values["b"] = 2; echo S::get("a"), S::get("b"), "|", count(S::$values); }
+### define and constant with namespace names
+<?php
+namespace Cst;
+const LOCAL = "l";
+define('Cst\DYN', "d");
+echo LOCAL, "|", \Cst\LOCAL, "|", constant('Cst\LOCAL'), "|", \Cst\DYN, "|"; var_dump(defined('Cst\LOCAL'), defined('LOCAL'));
+### ternary and expressions with constants in namespace
+<?php
+namespace Expr;
+function ok() { return true; }
+const A = 2;
+echo ok() ? A : PHP_INT_SIZE, "|", (ok()) ? "y" : PHP_INT_SIZE, "|", A | 4, "|", A & 3, "|", [A => "k"][2], "|", -A;
+### fully qualified names in global code
+<?php
+class Plain { const V = 1; public static function f() { return "f"; } }
+function gf() { return "gf"; }
+const GC = "gc";
+echo \Plain::V, "|", \Plain::f(), "|", \gf(), "|", \GC, "|", get_class(new \Plain()), "|", \Plain::class;
