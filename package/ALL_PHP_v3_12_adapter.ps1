@@ -53,8 +53,24 @@
 
         $state.Globals = $state.Vars
 
+        # Predefined constants. PHP_EOL is CRLF because the compatibility target is PHP on Windows.
+        $phpConstants = [System.Collections.Generic.Dictionary[string,object]]::new(
+            [System.StringComparer]::Ordinal)
+        $phpConstants['PHP_EOL'] = "`r`n"
+        $phpConstants['PHP_INT_MAX'] = [long]::MaxValue
+        $phpConstants['PHP_INT_MIN'] = [long]::MinValue
+        $phpConstants['PHP_INT_SIZE'] = [long]8
+        $phpConstants['PHP_FLOAT_EPSILON'] = [double]2.220446049250313E-16
+        $phpConstants['PHP_FLOAT_MAX'] = [double]::MaxValue
+        $phpConstants['PHP_FLOAT_MIN'] = [double]2.2250738585072014E-308
+        $phpConstants['PHP_FLOAT_DIG'] = [long]15
+        $phpConstants['INF'] = [double]::PositiveInfinity
+        $phpConstants['NAN'] = [double]::NaN
+        $phpConstants['M_PI'] = [Math]::PI
+        $phpConstants['M_E'] = [Math]::E
+
         # Tokenize before parsing. Unknown characters produce an error, never disappear.
-        $pattern = '(?:\s+|//[^\r\n]*|\#[^\r\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|''(?:\\.|[^''\\])*''|\$\$[A-Za-z_][A-Za-z_0-9]*|\$[A-Za-z_][A-Za-z_0-9]*|\$(?=\{)|\d+(?:\.\d+)?|[A-Za-z_][A-Za-z_0-9]*|<=>|::|\.\.\.|<<=|>>=|<<|>>|===|!==|==|!=|<=|>=|&&|\|\||=>|->|\*\*=|\*\*|\?\?=|\?\?|\?->|\+\+|--|\*=|/=|%=|&=|\|=|\^=|\+=|-=|\.=|[+\-*/%.=<>!?:;{},()\[\]&|^~])'
+        $pattern = '(?:\s+|//[^\r\n]*|\#[^\r\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|''(?:\\.|[^''\\])*''|\$\$[A-Za-z_][A-Za-z_0-9]*|\$[A-Za-z_][A-Za-z_0-9]*|\$(?=\{)|0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|(?:\d[\d_]*(?:\.[\d_]*)?|\.\d[\d_]*)(?:[eE][+-]?\d[\d_]*)?|[A-Za-z_][A-Za-z_0-9]*|<=>|::|\.\.\.|<<=|>>=|<<|>>|===|!==|==|!=|<=|>=|&&|\|\||=>|->|\*\*=|\*\*|\?\?=|\?\?|\?->|\+\+|--|\*=|/=|%=|&=|\|=|\^=|\+=|-=|\.=|[+\-*/%.=<>!?:;{},()\[\]&|^~])'
         $rx = [regex]::new($pattern)
         for ($offset = 0; $offset -lt $source.Length;) {
             $match = $rx.Match($source, $offset)
@@ -234,6 +250,58 @@
             Expect-Token ')'
             return ,($callArgs.ToArray())
         }
+        # PHP numeric literal -> System.Int64 (PHP int) or System.Double (PHP float).
+        # Integer literals that do not fit in 64 bits become floats, as in PHP.
+        # Correctly rounded (round-half-even) conversion of a non-negative BigInteger to a double.
+        function ConvertTo-PhpDoubleFromBigInt($big) {
+            if ($big.Sign -lt 0) { return (-1.0 * (ConvertTo-PhpDoubleFromBigInt ([bigint]::Negate($big)))) }
+            if ($big.IsZero) { return [double]0 }
+            $bytes = $big.ToByteArray()
+            $top = $bytes.Length - 1
+            while ($top -gt 0 -and $bytes[$top] -eq 0) { $top-- }
+            $bitLength = $top * 8
+            $lead = [int]$bytes[$top]
+            while ($lead -gt 0) { $bitLength++; $lead = $lead -shr 1 }
+            $shift = $bitLength - 53
+            if ($shift -le 0) { return [double][long]$big }
+            $scale = [bigint]::Pow(2, $shift)
+            $quotient = [bigint]::Divide($big, $scale)
+            $remainder = $big - ($quotient * $scale)
+            $half = [bigint]::Pow(2, $shift - 1)
+            if ($remainder -gt $half -or ($remainder -eq $half -and -not $quotient.IsEven)) {
+                $quotient = $quotient + 1
+            }
+            return ([double][long]$quotient * [Math]::Pow(2, $shift))
+        }
+        function ConvertFrom-PhpNumberLiteral([string]$token) {
+            $text = $token.Replace('_', '')
+            $inv = [System.Globalization.CultureInfo]::InvariantCulture
+            $radix = 0
+            $body = ''
+            if ($text -match '^0[xX]') { $radix = 16; $body = $text.Substring(2) }
+            elseif ($text -match '^0[bB]') { $radix = 2; $body = $text.Substring(2) }
+            elseif ($text -match '^0[oO]') { $radix = 8; $body = $text.Substring(2) }
+            elseif ($text -match '^0[0-7]+$') { $radix = 8; $body = $text.Substring(1) }
+            if ($radix -ne 0) {
+                $big = [bigint]::Zero
+                foreach ($ch in $body.ToCharArray()) {
+                    $digit = [Convert]::ToInt32([string]$ch, 16)
+                    if ($digit -ge $radix) { throw "ALL PHP: Invalid numeric literal '$token'" }
+                    $big = $big * $radix + $digit
+                }
+                if ($big -le [bigint][long]::MaxValue) { return [long]$big }
+                return (ConvertTo-PhpDoubleFromBigInt $big)
+            }
+            if ($text -match '^\d+$') {
+                $n = [long]0
+                if ([long]::TryParse($text, [System.Globalization.NumberStyles]::None, $inv, [ref]$n)) {
+                    return $n
+                }
+                return (ConvertTo-PhpDoubleFromBigInt ([bigint]::Parse($text, $inv)))
+            }
+            try { return [double]::Parse($text, [System.Globalization.NumberStyles]::Float, $inv) }
+            catch { return [double]::PositiveInfinity }
+        }
         function Read-Array([string]$close) {
             $entries = [System.Collections.Generic.List[object]]::new()
             if ((Peek-Token) -cne $close) {
@@ -273,11 +341,11 @@
                 [void](Next-Token)
                 return (Read-Array ']')
             }
-            if ($token -match '^\d+(?:\.\d+)?$') {
+            if ($token -cmatch '^(?:\d|\.\d)') {
                 [void](Next-Token)
-                $num = [decimal]::Parse($token,
-                    [System.Globalization.CultureInfo]::InvariantCulture)
-                return [pscustomobject]@{ Kind='literal'; Value=$num }
+                return [pscustomobject]@{
+                    Kind='literal'; Value=(ConvertFrom-PhpNumberLiteral $token)
+                }
             }
             if ($token.StartsWith('"')) {
                 [void](Next-Token)
@@ -557,6 +625,14 @@
                 $arg = Read-Expr 14
                 return [pscustomobject]@{ Kind='unary'; Op=$token; Arg=$arg }
             }
+            if ($token -ceq '(' -and ($state.Pos + 2) -lt $state.Tokens.Count -and
+                $state.Tokens[$state.Pos + 2] -ceq ')' -and
+                $state.Tokens[$state.Pos + 1] -in @('int','integer','float','double','string','bool','boolean')) {
+                [void](Next-Token)
+                $castType = (Next-Token).ToLowerInvariant()
+                [void](Next-Token)
+                return [pscustomobject]@{ Kind='cast'; Type=$castType; Arg=(Read-Unary) }
+            }
             if ($token -in @('+', '-', '~')) {
                 [void](Next-Token)
                 $arg = Read-Unary
@@ -683,7 +759,7 @@
                 $op = Next-Token
                 if ($op -in @('++','--')) {
                     $op = if ($op -ceq '++') { '+=' } else { '-=' }
-                    $value = [pscustomobject]@{ Kind='literal'; Value=[decimal]1 }
+                    $value = [pscustomobject]@{ Kind='literal'; Value=[long]1 }
                 } elseif ($op -in @('=','+=','-=','.=','??=','*=','/=','%=','**=','&=','|=','^=','<<=','>>=')) {
                     $value = Read-Expr 1
                 } else {
@@ -1781,7 +1857,15 @@
                 if ($value) { return 'true' }
                 return 'false'
             }
-            if ($value -is [decimal]) { return (To-PhpText $value) }
+            if ($value -is [long]) {
+                return $value.ToString([System.Globalization.CultureInfo]::InvariantCulture)
+            }
+            if ($value -is [double]) {
+                if ([double]::IsNaN($value) -or [double]::IsInfinity($value)) {
+                    throw 'ALL PHP: Inf and NaN cannot be JSON encoded'
+                }
+                return (Format-PhpFloat $value 0).Replace('E', 'e')
+            }
             if ($value -is [string]) { return (Encode-JsonQuoted $value) }
             if (Is-PhpArray $value) {
                 $index = [long]0
@@ -1827,16 +1911,22 @@
             if ($null -eq $value) { return $null }
             if ($value -is [bool] -or $value -is [string]) { return $value }
             if ($value -is [System.ValueType]) {
-                $text = [string]::Format(
-                    [System.Globalization.CultureInfo]::InvariantCulture, '{0}', $value)
-                $parsed = [decimal]0
-                if (-not [decimal]::TryParse($text,
-                    [System.Globalization.NumberStyles]::Float,
-                    [System.Globalization.CultureInfo]::InvariantCulture,
-                    [ref]$parsed)) {
-                    throw 'ALL PHP: JSON number outside supported decimal range'
+                # JSON integers become PHP int when they fit in 64 bits; everything else is float.
+                if ($value -is [double] -or $value -is [single]) { return [double]$value }
+                if ($value -is [decimal]) {
+                    $scale = ([decimal]::GetBits($value)[3] -shr 16) -band 0xFF
+                    if ($scale -eq 0 -and $value -ge $phpIntMinDec -and $value -le $phpIntMaxDec) {
+                        return [long]$value
+                    }
+                    return [double]$value
                 }
-                return $parsed
+                if ($value -is [bigint]) {
+                    if ($value -ge [bigint][long]::MinValue -and $value -le [bigint][long]::MaxValue) {
+                        return [long]$value
+                    }
+                    return [double]$value
+                }
+                return [long]$value
             }
             if ($value -is [array] -or $value -is [System.Collections.ArrayList]) {
                 $array = New-PhpArray
@@ -1866,6 +1956,309 @@
             }
             throw 'ALL PHP: Unsupported decoded JSON type'
         }
+        # ---- PHP number model: int = System.Int64, float = System.Double (IEEE-754) ----
+        $phpIntMinDec = [decimal]::Parse('-9223372036854775808')
+        $phpIntMaxDec = [decimal]::Parse('9223372036854775807')
+        $phpTwo64 = [bigint]::Pow(2, 64)
+        $phpTwo63 = [bigint]::Pow(2, 63)
+        $phpNumericStringRx = [regex]::new(
+            '^[ \t\n\r\v\f]*([+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?)[ \t\n\r\v\f]*$')
+        $phpLeadingNumericRx = [regex]::new(
+            '^[ \t\n\r\v\f]*([+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?)')
+        function Is-PhpNum($value) { return ($value -is [long] -or $value -is [double]) }
+        # Exact decimal expansion of a finite, non-zero double (sign ignored).
+        function Get-PhpFloatParts([double]$d) {
+            $bits = [BitConverter]::DoubleToInt64Bits([Math]::Abs($d))
+            $exp = [int](($bits -shr 52) -band 0x7FF)
+            $frac = $bits -band 0xFFFFFFFFFFFFF
+            if ($exp -eq 0) { $m = [bigint]$frac; $e = -1074 }
+            else { $m = [bigint]($frac -bor 0x10000000000000); $e = $exp - 1075 }
+            if ($e -ge 0) { $unit = [bigint]::Pow(2, $e); $scale = 0 }
+            else { $unit = [bigint]::Pow(5, -$e); $scale = -$e }
+            $n = $m * $unit
+            $digits = $n.ToString()
+            return [pscustomobject]@{
+                Digits=$digits; Point=($digits.Length - $scale); N=$n; Scale=$scale
+                Unit=$unit; Even=$m.IsEven; Boundary=($frac -eq 0 -and $exp -gt 1)
+            }
+        }
+        # Round a digit string to $count significant digits (round-half-even on the exact value).
+        function Round-PhpDigits([string]$digits, [int]$point, [int]$count) {
+            if ($digits.Length -gt $count) {
+                $head = $digits.Substring(0, $count)
+                $rest = $digits.Substring($count)
+                $first = [int]$rest[0] - 48
+                $up = $false
+                if ($first -gt 5) { $up = $true }
+                elseif ($first -eq 5) {
+                    if ($rest.Substring(1).Trim([char]'0').Length -gt 0) { $up = $true }
+                    else { $up = ((([int]$head[$count - 1] - 48) % 2) -eq 1) }
+                }
+                if ($up) {
+                    $chars = $head.ToCharArray()
+                    $i = $count - 1
+                    while ($i -ge 0) {
+                        if ($chars[$i] -eq [char]'9') { $chars[$i] = [char]'0'; $i-- }
+                        else { $chars[$i] = [char]([int]$chars[$i] + 1); break }
+                    }
+                    $head = [string]::new($chars)
+                    if ($i -lt 0) { $head = '1' + $head; $point++ }
+                }
+                $digits = $head
+            }
+            $digits = $digits.TrimEnd([char]'0')
+            if ($digits.Length -eq 0) { $digits = '0' }
+            return [pscustomobject]@{ Digits=$digits; Point=$point }
+        }
+        # True when the decimal 0.<digits> x 10^point converts back to exactly the same double.
+        function Test-PhpFloatRoundTrip($parts, [string]$digits, [int]$point) {
+            $k = $point - $digits.Length + $parts.Scale
+            $c = [bigint]::Parse($digits)
+            $n = $parts.N
+            $unit = $parts.Unit
+            if ($k -ge 0) { $c = $c * [bigint]::Pow(10, $k) }
+            else { $scaleUp = [bigint]::Pow(10, -$k); $n = $n * $scaleUp; $unit = $unit * $scaleUp }
+            $diff = [bigint]::Abs($c - $n)
+            $factor = 2
+            if ($parts.Boundary -and $c -lt $n) { $factor = 4 }
+            $lhs = $diff * $factor
+            if ($lhs -lt $unit) { return $true }
+            return ($lhs -eq $unit -and $parts.Even)
+        }
+        # $precision 14 = PHP "precision" ini default (echo, string conversion).
+        # $precision 0  = shortest round-trip form (serialize_precision=-1: var_dump, json_encode).
+        function Format-PhpFloat([double]$d, [int]$precision) {
+            if ([double]::IsNaN($d)) { return 'NAN' }
+            if ([double]::IsPositiveInfinity($d)) { return 'INF' }
+            if ([double]::IsNegativeInfinity($d)) { return '-INF' }
+            $sign = if ([BitConverter]::DoubleToInt64Bits($d) -lt 0) { '-' } else { '' }
+            if ($d -eq 0) { return ($sign + '0') }
+            $parts = Get-PhpFloatParts $d
+            if ($precision -gt 0) {
+                $limit = $precision
+                $r = Round-PhpDigits $parts.Digits $parts.Point $precision
+            } else {
+                $limit = 17
+                $lo = 1
+                $hi = 17
+                $r = Round-PhpDigits $parts.Digits $parts.Point 17
+                while ($lo -lt $hi) {
+                    $mid = [int][Math]::Floor(($lo + $hi) / 2)
+                    $t = Round-PhpDigits $parts.Digits $parts.Point $mid
+                    if (Test-PhpFloatRoundTrip $parts $t.Digits $t.Point) { $hi = $mid; $r = $t }
+                    else { $lo = $mid + 1 }
+                }
+            }
+            $dg = $r.Digits
+            $pt = $r.Point
+            if ($pt -lt -3 -or $pt -gt $limit) {
+                $e = $pt - 1
+                $mant = $dg.Substring(0, 1) + '.'
+                if ($dg.Length -gt 1) { $mant += $dg.Substring(1) } else { $mant += '0' }
+                if ($e -lt 0) { return ($sign + $mant + 'E-' + [string](-$e)) }
+                return ($sign + $mant + 'E+' + [string]$e)
+            }
+            if ($pt -le 0) { return ($sign + '0.' + ('0' * (-$pt)) + $dg) }
+            if ($pt -ge $dg.Length) { return ($sign + $dg + ('0' * ($pt - $dg.Length))) }
+            return ($sign + $dg.Substring(0, $pt) + '.' + $dg.Substring($pt))
+        }
+        # Numeric string -> int/float, or $null when the string is not numeric.
+        function ConvertFrom-PhpNumericString([string]$text, [bool]$leadingOnly) {
+            $m = if ($leadingOnly) { $phpLeadingNumericRx.Match($text) } else { $phpNumericStringRx.Match($text) }
+            if (-not $m.Success) { return $null }
+            $body = $m.Groups[1].Value
+            $inv = [System.Globalization.CultureInfo]::InvariantCulture
+            if ($body.IndexOfAny([char[]]'.eE') -lt 0) {
+                $n = [long]0
+                if ([long]::TryParse($body, [System.Globalization.NumberStyles]::AllowLeadingSign, $inv, [ref]$n)) {
+                    return $n
+                }
+                return (ConvertTo-PhpDoubleFromBigInt (
+                    [bigint]::Parse($body, [System.Globalization.NumberStyles]::AllowLeadingSign, $inv)))
+            }
+            try { return [double]::Parse($body, [System.Globalization.NumberStyles]::Float, $inv) }
+            catch {
+                if ($body.StartsWith('-')) { return [double]::NegativeInfinity }
+                return [double]::PositiveInfinity
+            }
+        }
+        # float -> int the way PHP does on 64-bit: truncate, wrap modulo 2^64, NAN/INF become 0.
+        function To-PhpInt($value) {
+            if ($value -is [long]) { return $value }
+            if ($value -is [double]) {
+                if ([double]::IsNaN($value) -or [double]::IsInfinity($value)) { return [long]0 }
+                $t = [Math]::Truncate($value)
+                if ($t -ge -9223372036854775808.0 -and $t -lt 9223372036854775808.0) { return [long]$t }
+                $wrapped = [bigint]::Remainder([bigint]$t, $phpTwo64)
+                if ($wrapped -ge $phpTwo63) { $wrapped = $wrapped - $phpTwo64 }
+                elseif ($wrapped -lt -$phpTwo63) { $wrapped = $wrapped + $phpTwo64 }
+                return [long]$wrapped
+            }
+            return (To-PhpInt (To-Number $value))
+        }
+        function Php-Add($a, $b) {
+            if ($a -is [long] -and $b -is [long]) {
+                $r = [System.Decimal]$a + [System.Decimal]$b
+                if ($r -ge $phpIntMinDec -and $r -le $phpIntMaxDec) { return [long]$r }
+            }
+            return ([double]$a + [double]$b)
+        }
+        function Php-Sub($a, $b) {
+            if ($a -is [long] -and $b -is [long]) {
+                $r = [System.Decimal]$a - [System.Decimal]$b
+                if ($r -ge $phpIntMinDec -and $r -le $phpIntMaxDec) { return [long]$r }
+            }
+            return ([double]$a - [double]$b)
+        }
+        function Php-Mul($a, $b) {
+            if ($a -is [long] -and $b -is [long]) {
+                $r = $null
+                try { $r = [System.Decimal]$a * [System.Decimal]$b } catch { $r = $null }
+                if ($null -ne $r -and $r -ge $phpIntMinDec -and $r -le $phpIntMaxDec) { return [long]$r }
+            }
+            return ([double]$a * [double]$b)
+        }
+        function Php-Neg($a) {
+            if ($a -is [long]) {
+                if ($a -eq [long]::MinValue) { return ([double]$a * -1.0) }
+                return [long](-$a)
+            }
+            # Multiply so that negating 0.0 yields IEEE negative zero.
+            return ([double]$a * -1.0)
+        }
+        function Php-Div($a, $b) {
+            if ($b -eq 0) { throw 'ALL PHP: Division by zero' }
+            if ($a -is [long] -and $b -is [long]) {
+                if ($b -eq -1) { return (Php-Neg $a) }
+                $rem = [long]0
+                $quot = [Math]::DivRem([long]$a, [long]$b, [ref]$rem)
+                if ($rem -eq 0) { return [long]$quot }
+            }
+            return ([double]$a / [double]$b)
+        }
+        function Php-Mod($a, $b) {
+            $divisor = To-PhpInt $b
+            if ($divisor -eq 0) { throw 'ALL PHP: Division by zero' }
+            $dividend = To-PhpInt $a
+            if ($divisor -eq -1) { return [long]0 }
+            $rem = [long]0
+            [void][Math]::DivRem([long]$dividend, [long]$divisor, [ref]$rem)
+            return [long]$rem
+        }
+        function Php-Pow($a, $b) {
+            if ($a -is [long] -and $b -is [long] -and $b -ge 0) {
+                $result = [System.Decimal]1
+                $base = [System.Decimal]$a
+                $exp = $b
+                $ok = $true
+                try {
+                    while ($exp -gt 0) {
+                        if (($exp -band 1) -eq 1) { $result = $result * $base }
+                        $exp = $exp -shr 1
+                        if ($exp -gt 0) { $base = $base * $base }
+                    }
+                } catch { $ok = $false }
+                if ($ok -and $result -ge $phpIntMinDec -and $result -le $phpIntMaxDec) { return [long]$result }
+            }
+            return [Math]::Pow([double]$a, [double]$b)
+        }
+        function Php-Shift($a, $b, [bool]$left) {
+            $value = To-PhpInt $a
+            $count = To-PhpInt $b
+            if ($count -lt 0) { throw 'ALL PHP: Bit shift by negative number' }
+            if ($count -ge 64) {
+                if ($left -or $value -ge 0) { return [long]0 }
+                return [long]-1
+            }
+            if ($left) { return [long]($value -shl [int]$count) }
+            return [long]($value -shr [int]$count)
+        }
+        function Compare-PhpNumbers($a, $b) {
+            if ($a -is [long] -and $b -is [long]) {
+                if ($a -lt $b) { return -1 }
+                if ($a -gt $b) { return 1 }
+                return 0
+            }
+            $x = [double]$a
+            $y = [double]$b
+            if ($x -lt $y) { return -1 }
+            if ($x -eq $y) { return 0 }
+            return 1
+        }
+        function Test-PhpNan($value) {
+            if (Is-PhpRefCell $value) { $value = $value.Value }
+            return ($value -is [double] -and [double]::IsNaN($value))
+        }
+        # Explicit casts: (int) (float) (string) (bool).
+        function Convert-PhpCast($value, [string]$type) {
+            if (Is-PhpRefCell $value) { $value = $value.Value }
+            switch ($type) {
+                { $_ -in @('int', 'integer') } {
+                    if ($null -eq $value) { return [long]0 }
+                    if ($value -is [bool]) { if ($value) { return [long]1 }; return [long]0 }
+                    if (Is-PhpNum $value) { return (To-PhpInt $value) }
+                    if ($value -is [string]) {
+                        $parsed = ConvertFrom-PhpNumericString $value $true
+                        if ($null -eq $parsed) { return [long]0 }
+                        if ($parsed -is [double] -and
+                            $phpLeadingNumericRx.Match($value).Groups[1].Value.IndexOfAny([char[]]'.eE') -lt 0) {
+                            # integer syntax too large for 64 bits saturates, like strtol()
+                            if ($parsed -lt 0) { return [long]::MinValue }
+                            return [long]::MaxValue
+                        }
+                        return (To-PhpInt $parsed)
+                    }
+                    if (Is-PhpArray $value) { if ($value.Items.Count -gt 0) { return [long]1 }; return [long]0 }
+                    return [long]1
+                }
+                { $_ -in @('float', 'double') } {
+                    if ($null -eq $value) { return [double]0 }
+                    if ($value -is [bool]) { if ($value) { return [double]1 }; return [double]0 }
+                    if (Is-PhpNum $value) { return [double]$value }
+                    if ($value -is [string]) {
+                        $parsed = ConvertFrom-PhpNumericString $value $true
+                        if ($null -eq $parsed) { return [double]0 }
+                        if ($parsed -eq 0 -and $value.TrimStart().StartsWith('-')) {
+                            return ([double]0 * -1.0)
+                        }
+                        return [double]$parsed
+                    }
+                    if (Is-PhpArray $value) { if ($value.Items.Count -gt 0) { return [double]1 }; return [double]0 }
+                    return [double]1
+                }
+                'string' { return (To-PhpText $value) }
+                default { return [bool](Is-Truthy $value) }
+            }
+        }
+        function Format-PhpVarDump($value, [string]$pad) {
+            if (Is-PhpRefCell $value) { $value = $value.Value }
+            if ($null -eq $value) { return ($pad + "NULL`n") }
+            if ($value -is [bool]) {
+                if ($value) { return ($pad + "bool(true)`n") }
+                return ($pad + "bool(false)`n")
+            }
+            if ($value -is [long]) {
+                return ($pad + 'int(' + $value.ToString([System.Globalization.CultureInfo]::InvariantCulture) + ")`n")
+            }
+            if ($value -is [double]) { return ($pad + 'float(' + (Format-PhpFloat $value 0) + ")`n") }
+            if ($value -is [string]) {
+                $length = [System.Text.Encoding]::UTF8.GetByteCount($value)
+                return ($pad + 'string(' + $length + ') "' + $value + "`"`n")
+            }
+            if (Is-PhpArray $value) {
+                $sb = [System.Text.StringBuilder]::new()
+                [void]$sb.Append($pad + 'array(' + $value.Items.Count + ") {`n")
+                foreach ($key in @($value.Items.Keys)) {
+                    $name = [string]$key
+                    if ($name.StartsWith('i:')) { [void]$sb.Append($pad + '  [' + $name.Substring(2) + "]=>`n") }
+                    else { [void]$sb.Append($pad + '  ["' + $name.Substring(2) + "`"]=>`n") }
+                    [void]$sb.Append((Format-PhpVarDump $value.Items[$key] ($pad + '  ')))
+                }
+                [void]$sb.Append($pad + "}`n")
+                return $sb.ToString()
+            }
+            throw 'ALL PHP: var_dump() of this value type is not implemented'
+        }
         function To-PhpText($value) {
             if (Is-PhpRefCell $value) { $value=$value.Value }
             if ($null -eq $value) { return '' }
@@ -1873,17 +2266,17 @@
                 if ($value) { return '1' }
                 return ''
             }
-            if ($value -is [decimal]) {
-                return $value.ToString('0.############################',
-                    [System.Globalization.CultureInfo]::InvariantCulture)
+            if ($value -is [long]) {
+                return $value.ToString([System.Globalization.CultureInfo]::InvariantCulture)
             }
+            if ($value -is [double]) { return (Format-PhpFloat $value 14) }
             if (Is-PhpArray $value) { throw 'ALL PHP: Array to string conversion is not supported' }
             if (Is-PhpObject $value) {
                 $magic=Find-OptionalPhpMethod $value.Class '__toString'
                 if ($null -ne $magic) {
                     $converted=Invoke-PhpMethod $value '__toString' @()
                     if ($converted -is [string]) { return $converted }
-                    if ($converted -is [decimal] -or $converted -is [bool]) {
+                    if ((Is-PhpNum $converted) -or $converted -is [bool]) {
                         return (To-PhpText $converted)
                     }
                     throw 'ALL PHP: __toString must return string'
@@ -1894,19 +2287,15 @@
         }
         function To-Number($value) {
             if (Is-PhpRefCell $value) { $value=$value.Value }
-            if ($value -is [decimal]) { return $value }
-            if ($null -eq $value) { return [decimal]0 }
+            if ($value -is [long] -or $value -is [double]) { return $value }
+            if ($null -eq $value) { return [long]0 }
             if ($value -is [bool]) {
-                if ($value) { return [decimal]1 }
-                return [decimal]0
+                if ($value) { return [long]1 }
+                return [long]0
             }
-            if ($value -is [string] -and
-                $value -match '^\s*[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?\s*$') {
-                $num = [decimal]0
-                if ([decimal]::TryParse($value,
-                    [System.Globalization.NumberStyles]::Float,
-                    [System.Globalization.CultureInfo]::InvariantCulture,
-                    [ref]$num)) { return $num }
+            if ($value -is [string]) {
+                $parsed = ConvertFrom-PhpNumericString $value $false
+                if ($null -ne $parsed) { return $parsed }
             }
             throw 'ALL PHP: Unsupported numeric operand'
         }
@@ -1914,7 +2303,7 @@
             if (Is-PhpRefCell $value) { $value=$value.Value }
             if ($null -eq $value) { return $false }
             if ($value -is [bool]) { return $value }
-            if ($value -is [decimal]) { return ($value -ne 0) }
+            if ($value -is [long] -or $value -is [double]) { return ($value -ne 0) }
             if ($value -is [string]) {
                 return ($value.Length -gt 0 -and $value -cne '0')
             }
@@ -1927,8 +2316,9 @@
                 return 'i:0'
             }
             if ($null -eq $value) { return 's:' }
-            if ($value -is [decimal]) {
-                $num = [long][decimal]::Truncate($value)
+            if ($value -is [long]) { return "i:$value" }
+            if ($value -is [double]) {
+                $num = To-PhpInt $value
                 return "i:$num"
             }
             if ($value -is [string]) {
@@ -2026,6 +2416,8 @@
             return ((Compare-Values $a $b) -eq 0)
         }
         function Compare-Values($a, $b) {
+            if (Is-PhpRefCell $a) { $a=$a.Value }
+            if (Is-PhpRefCell $b) { $b=$b.Value }
             if ($null -eq $a -and $null -eq $b) { return 0 }
             if ($a -is [bool] -or $b -is [bool] -or
                 $null -eq $a -or $null -eq $b) {
@@ -2033,25 +2425,38 @@
                 $bv = [int][bool](Is-Truthy $b)
                 return $av.CompareTo($bv)
             }
-            if ($a -is [decimal] -and $b -is [decimal]) {
-                return [decimal]::Compare($a, $b)
-            }
+            $aNum = ($a -is [long] -or $a -is [double])
+            $bNum = ($b -is [long] -or $b -is [double])
+            if ($aNum -and $bNum) { return (Compare-PhpNumbers $a $b) }
             if ($a -is [string] -and $b -is [string]) {
-                if ($a -match '^\s*[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?\s*$' -and
-                    $b -match '^\s*[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?\s*$') {
-                    return [decimal]::Compare((To-Number $a),(To-Number $b))
+                $x = ConvertFrom-PhpNumericString $a $false
+                if ($null -ne $x) {
+                    $y = ConvertFrom-PhpNumericString $b $false
+                    if ($null -ne $y) { return (Compare-PhpNumbers $x $y) }
                 }
-                return [string]::CompareOrdinal($a, $b)
+                return [Math]::Sign([string]::CompareOrdinal($a, $b))
             }
-            if (($a -is [decimal] -and $b -is [string]) -or
-                ($a -is [string] -and $b -is [decimal])) {
-                $text = if ($a -is [string]) { $a } else { $b }
-                if ($text -match '^\s*[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?\s*$') {
-                    return [decimal]::Compare((To-Number $a),(To-Number $b))
+            if (($aNum -and $b -is [string]) -or ($a -is [string] -and $bNum)) {
+                if ($a -is [string]) {
+                    $x = ConvertFrom-PhpNumericString $a $false
+                    if ($null -ne $x) { return (Compare-PhpNumbers $x $b) }
+                } else {
+                    $y = ConvertFrom-PhpNumericString $b $false
+                    if ($null -ne $y) { return (Compare-PhpNumbers $a $y) }
                 }
-                return [string]::CompareOrdinal((To-PhpText $a),(To-PhpText $b))
+                return [Math]::Sign([string]::CompareOrdinal((To-PhpText $a),(To-PhpText $b)))
             }
             throw 'ALL PHP: Comparison for these types is not supported'
+        }
+        function Test-PhpRelation($a, $b, [string]$op) {
+            if ((Test-PhpNan $a) -or (Test-PhpNan $b)) { return $false }
+            $c = Compare-Values $a $b
+            switch ($op) {
+                '<' { return ($c -lt 0) }
+                '<=' { return ($c -le 0) }
+                '>' { return ($c -gt 0) }
+                default { return ($c -ge 0) }
+            }
         }
         function Is-StrictEqual($a, $b) {
             return (Php-Equal $a $b $true)
@@ -2084,10 +2489,9 @@
                 'bool' { return ($value -is [bool]) }
                 'string' { return ($value -is [string]) }
                 'int' {
-                    return ($value -is [decimal] -and
-                        [decimal]::Truncate($value) -eq $value)
+                    return ($value -is [long])
                 }
-                'float' { return ($value -is [decimal]) }
+                'float' { return ($value -is [double]) }
                 'array' { return (Is-PhpArray $value) }
                 'object' { return (Is-PhpObject $value) }
                 'iterable' { return (Is-PhpArray $value) }
@@ -2129,53 +2533,85 @@
                 }
                 if ($all) { return $value }
             }
+            # An int is always accepted where float is allowed (and becomes a float).
+            if ($value -is [long]) {
+                foreach ($variant in $union) {
+                    if ($variant -ieq 'float') { return [double]$value }
+                }
+            }
+            # Weak-mode coercion into a union: PHP prefers int, then float, then string, then bool.
+            if ($union.Count -gt 1 -and -not $typeName.Contains('&') -and $null -ne $value) {
+                $hasInt = $false; $hasFloat = $false; $hasString = $false; $hasBool = $false
+                foreach ($variant in $union) {
+                    switch ($variant.ToLowerInvariant()) {
+                        'int' { $hasInt = $true }
+                        'float' { $hasFloat = $true }
+                        'string' { $hasString = $true }
+                        'bool' { $hasBool = $true }
+                    }
+                }
+                if ($value -is [double]) {
+                    if ($hasInt -and -not [double]::IsNaN($value) -and -not [double]::IsInfinity($value) -and
+                        [Math]::Truncate($value) -eq $value -and
+                        $value -ge -9223372036854775808.0 -and $value -lt 9223372036854775808.0) {
+                        return (To-PhpInt $value)
+                    }
+                    if ($hasString) { return (To-PhpText $value) }
+                    if ($hasBool) { return (Is-Truthy $value) }
+                } elseif ($value -is [long]) {
+                    if ($hasString) { return (To-PhpText $value) }
+                    if ($hasBool) { return (Is-Truthy $value) }
+                } elseif ($value -is [string]) {
+                    $parsed = ConvertFrom-PhpNumericString $value $false
+                    if ($parsed -is [long] -and $hasInt) { return $parsed }
+                    if ($null -ne $parsed -and $hasFloat) { return [double]$parsed }
+                    if ($parsed -is [double] -and $hasInt -and [Math]::Truncate($parsed) -eq $parsed -and
+                        $parsed -ge -9223372036854775808.0 -and $parsed -lt 9223372036854775808.0) {
+                        return (To-PhpInt $parsed)
+                    }
+                    if ($hasBool) { return (Is-Truthy $value) }
+                } elseif ($value -is [bool]) {
+                    if ($hasInt) { if ($value) { return [long]1 }; return [long]0 }
+                    if ($hasFloat) { if ($value) { return [double]1 }; return [double]0 }
+                    if ($hasString) { return (To-PhpText $value) }
+                }
+            }
             # Weak PHP scalar conversions for a single primitive annotation.
-            # Numeric kinds are retained as decimal in this interpreter; int/float
-            # boundary and IEEE-754 fidelity remain a separate outstanding gap.
             if ($union.Count -eq 1 -and -not $typeName.Contains('&') -and
                 $null -ne $value) {
                 switch ($typeName.ToLowerInvariant()) {
                     'string' {
-                        if ($value -is [decimal] -or $value -is [bool]) {
+                        if ((Is-PhpNum $value) -or $value -is [bool]) {
                             return (To-PhpText $value)
                         }
                     }
                     'bool' {
-                        if ($value -is [decimal] -or $value -is [string]) {
+                        if ((Is-PhpNum $value) -or $value -is [string]) {
                             return (Is-Truthy $value)
                         }
                     }
                     'int' {
                         if ($value -is [bool]) {
-                            if ($value) { return [decimal]1 }
-                            return [decimal]0
+                            if ($value) { return [long]1 }
+                            return [long]0
                         }
-                        if ($value -is [decimal]) {
-                            return [decimal]::Truncate($value)
+                        if ($value -is [double] -and -not [double]::IsNaN($value) -and
+                            -not [double]::IsInfinity($value)) {
+                            return (To-PhpInt $value)
                         }
                         if ($value -is [string]) {
-                            $parsed=[decimal]0
-                            if ([decimal]::TryParse($value,
-                                [System.Globalization.NumberStyles]::Float,
-                                [System.Globalization.CultureInfo]::InvariantCulture,
-                                [ref]$parsed)) {
-                                return [decimal]::Truncate($parsed)
-                            }
+                            $parsed = ConvertFrom-PhpNumericString $value $false
+                            if ($null -ne $parsed) { return (To-PhpInt $parsed) }
                         }
                     }
                     'float' {
                         if ($value -is [bool]) {
-                            if ($value) { return [decimal]1 }
-                            return [decimal]0
+                            if ($value) { return [double]1 }
+                            return [double]0
                         }
                         if ($value -is [string]) {
-                            $parsed=[decimal]0
-                            if ([decimal]::TryParse($value,
-                                [System.Globalization.NumberStyles]::Float,
-                                [System.Globalization.CultureInfo]::InvariantCulture,
-                                [ref]$parsed)) {
-                                return $parsed
-                            }
+                            $parsed = ConvertFrom-PhpNumericString $value $false
+                            if ($null -ne $parsed) { return [double]$parsed }
                         }
                     }
                 }
@@ -2192,6 +2628,7 @@
                     if (-not (Test-PhpTypeAtom $value $part)) { $all=$false; break }
                 }
                 if ($all) { return }
+                if ($value -is [long] -and $variant -ieq 'float') { return }
             }
             throw "ALL PHP: Type mismatch at property $propertyName (expected $typeName)"
         }
@@ -2450,7 +2887,7 @@
         function Resolve-PhpDynamicVariableName($node) {
             $value = Invoke-PhpExpr $node.NameExpr
             if ($null -eq $value) { return '' }
-            if ($value -isnot [string] -and $value -isnot [decimal] -and
+            if ($value -isnot [string] -and -not (Is-PhpNum $value) -and
                 $value -isnot [bool]) {
                 throw 'ALL PHP: Invalid dynamic variable name type'
             }
@@ -2571,7 +3008,7 @@
                 if ($op -cne '=' -or -not (Is-PhpArray $value)) {
                     throw 'ALL PHP: Destructuring requires array and plain assignment'
                 }
-                $numeric = [decimal]0
+                $numeric = [long]0
                 foreach ($item in $node.Entries) {
                     if ($item.Spread) { throw 'ALL PHP: Cannot unpack into a destructuring target' }
                     $key=$numeric
@@ -2597,34 +3034,18 @@
             if ($op -cne '=') {
                 $previous = Get-LValue $node
                 switch ($op) {
-                    '+=' { $value = (To-Number $previous) + (To-Number $value) }
-                    '-=' { $value = (To-Number $previous) - (To-Number $value) }
+                    '+=' { $value = Php-Add (To-Number $previous) (To-Number $value) }
+                    '-=' { $value = Php-Sub (To-Number $previous) (To-Number $value) }
                     '.=' { $value = (To-PhpText $previous) + (To-PhpText $value) }
-                    '*=' { $value = (To-Number $previous) * (To-Number $value) }
-                    '/=' {
-                        if ((To-Number $value) -eq 0) { throw 'ALL PHP: Division by zero' }
-                        $value = (To-Number $previous) / (To-Number $value)
-                    }
-                    '%=' {
-                        $divisor = [long][decimal]::Truncate((To-Number $value))
-                        if ($divisor -eq 0) { throw 'ALL PHP: Division by zero' }
-                        $dividend = [long][decimal]::Truncate((To-Number $previous))
-                        $value = [decimal]($dividend % $divisor)
-                    }
-                    '&=' { $value = [decimal]([long](To-Number $previous) -band [long](To-Number $value)) }
-                    '|=' { $value = [decimal]([long](To-Number $previous) -bor [long](To-Number $value)) }
-                    '^=' { $value = [decimal]([long](To-Number $previous) -bxor [long](To-Number $value)) }
-                    '<<=' { $value = [decimal]([long](To-Number $previous) -shl [int](To-Number $value)) }
-                    '>>=' { $value = [decimal]([long](To-Number $previous) -shr [int](To-Number $value)) }
-                    '**=' {
-                        $power = [Math]::Pow([double](To-Number $previous),
-                                             [double](To-Number $value))
-                        if ([double]::IsNaN($power) -or [double]::IsInfinity($power)) {
-                            throw 'ALL PHP: Power result outside supported numeric range'
-                        }
-                        try { $value = [decimal]$power }
-                        catch { throw 'ALL PHP: Power result outside supported numeric range' }
-                    }
+                    '*=' { $value = Php-Mul (To-Number $previous) (To-Number $value) }
+                    '/=' { $value = Php-Div (To-Number $previous) (To-Number $value) }
+                    '%=' { $value = Php-Mod (To-Number $previous) (To-Number $value) }
+                    '&=' { $value = [long]((To-PhpInt $previous) -band (To-PhpInt $value)) }
+                    '|=' { $value = [long]((To-PhpInt $previous) -bor (To-PhpInt $value)) }
+                    '^=' { $value = [long]((To-PhpInt $previous) -bxor (To-PhpInt $value)) }
+                    '<<=' { $value = Php-Shift $previous $value $true }
+                    '>>=' { $value = Php-Shift $previous $value $false }
+                    '**=' { $value = Php-Pow (To-Number $previous) (To-Number $value) }
                 }
             }
             if ($node.Kind -eq 'dynamic_variable') {
@@ -2941,7 +3362,7 @@
             }
         }
         function KeyString-ToValue([string]$encoded) {
-            if ($encoded.StartsWith('i:')) { return [decimal]$encoded.Substring(2) }
+            if ($encoded.StartsWith('i:')) { return [long]$encoded.Substring(2) }
             return $encoded.Substring(2)
         }
         function Invoke-PhpFunction([string]$name, $callArgs) {
@@ -2995,7 +3416,7 @@
                 }
                 'json_last_error' {
                     if ($callArgs.Count -ne 0) { throw 'ALL PHP: json_last_error() expects no arguments' }
-                    return [decimal]$state.JsonError
+                    return [long]$state.JsonError
                 }
                 'json_last_error_msg' {
                     if ($callArgs.Count -ne 0) { throw 'ALL PHP: json_last_error_msg() expects no arguments' }
@@ -3005,11 +3426,11 @@
                     if ($callArgs.Count -ne 1 -or -not (Is-PhpArray $callArgs[0])) {
                         throw 'ALL PHP: count() requires one array argument'
                     }
-                    return [decimal]$callArgs[0].Items.Count
+                    return [long]$callArgs[0].Items.Count
                 }
                 'strlen' {
                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: strlen() requires one argument' }
-                    return [decimal]([System.Text.Encoding]::UTF8.GetByteCount((To-PhpText $callArgs[0])))
+                    return [long]([System.Text.Encoding]::UTF8.GetByteCount((To-PhpText $callArgs[0])))
                 }
                 'strtoupper' {
                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: strtoupper() requires one argument' }
@@ -3025,15 +3446,20 @@
                 }
                 'abs' {
                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: abs() requires one argument' }
-                    return [Math]::Abs([decimal](To-Number $callArgs[0]))
+                    $number = To-Number $callArgs[0]
+                    if ($number -is [long]) {
+                        if ($number -eq [long]::MinValue) { return (-[double]$number) }
+                        return [long][Math]::Abs($number)
+                    }
+                    return [Math]::Abs([double]$number)
                 }
                 'array_sum' {
                     if ($callArgs.Count -ne 1 -or -not (Is-PhpArray $callArgs[0])) {
                         throw 'ALL PHP: array_sum() requires one array argument'
                     }
-                    $sum = [decimal]0
+                    $sum = [long]0
                     foreach ($key in $callArgs[0].Items.Keys) {
-                        $sum += (To-Number $callArgs[0].Items[$key])
+                        $sum = Php-Add $sum (To-Number $callArgs[0].Items[$key])
                     }
                     return $sum
                 }
@@ -3063,7 +3489,7 @@
                     for ($i=1; $i -lt $callArgs.Count; $i++) {
                         Set-PhpArrayItem $callArgs[0] $null $callArgs[$i] $true
                     }
-                    return [decimal]$callArgs[0].Items.Count
+                    return [long]$callArgs[0].Items.Count
                 }
                 'array_pop' {
                     if ($callArgs.Count -ne 1 -or -not (Is-PhpArray $callArgs[0])) {
@@ -3130,7 +3556,7 @@
                     }
                     $arr.Items = $replacement.Items
                     $arr.NextIndex = $replacement.NextIndex
-                    return [decimal]$arr.Items.Count
+                    return [long]$arr.Items.Count
                 }
                 'array_reverse' {
                     if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 2 -or
@@ -3305,7 +3731,7 @@
                     if ($offset -gt $haystack.Length) { throw 'ALL PHP: strpos offset is out of range' }
                     $pos = $haystack.IndexOf($needle, $offset, [StringComparison]::Ordinal)
                     if ($pos -lt 0) { return $false }
-                    return [decimal]$pos
+                    return [long]$pos
                 }
                 'substr' {
                     if ($callArgs.Count -lt 2 -or $callArgs.Count -gt 3) {
@@ -3350,6 +3776,98 @@
                         [void]$items.Add((To-PhpText $callArgs[1].Items[$key]))
                     }
                     return [string]::Join($separator, $items.ToArray())
+                }
+                'var_dump' {
+                    if ($callArgs.Count -lt 1) { throw 'ALL PHP: var_dump() requires at least one argument' }
+                    foreach ($item in $callArgs) { [Console]::Write((Format-PhpVarDump $item '')) }
+                    return $null
+                }
+                'gettype' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: gettype() requires one argument' }
+                    $item = $callArgs[0]
+                    if ($null -eq $item) { return 'NULL' }
+                    if ($item -is [bool]) { return 'boolean' }
+                    if ($item -is [long]) { return 'integer' }
+                    if ($item -is [double]) { return 'double' }
+                    if ($item -is [string]) { return 'string' }
+                    if (Is-PhpArray $item) { return 'array' }
+                    return 'object'
+                }
+                { $_ -in @('is_int', 'is_integer', 'is_long') } {
+                    if ($callArgs.Count -ne 1) { throw "ALL PHP: $name() requires one argument" }
+                    return ($callArgs[0] -is [long])
+                }
+                { $_ -in @('is_float', 'is_double') } {
+                    if ($callArgs.Count -ne 1) { throw "ALL PHP: $name() requires one argument" }
+                    return ($callArgs[0] -is [double])
+                }
+                'is_null' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_null() requires one argument' }
+                    return ($null -eq $callArgs[0])
+                }
+                'is_numeric' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_numeric() requires one argument' }
+                    if (Is-PhpNum $callArgs[0]) { return $true }
+                    if ($callArgs[0] -is [string]) {
+                        return ($null -ne (ConvertFrom-PhpNumericString $callArgs[0] $false))
+                    }
+                    return $false
+                }
+                'intval' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: intval() supports one argument; base is not implemented' }
+                    return (Convert-PhpCast $callArgs[0] 'int')
+                }
+                { $_ -in @('floatval', 'doubleval') } {
+                    if ($callArgs.Count -ne 1) { throw "ALL PHP: $name() requires one argument" }
+                    return (Convert-PhpCast $callArgs[0] 'float')
+                }
+                'boolval' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: boolval() requires one argument' }
+                    return [bool](Is-Truthy $callArgs[0])
+                }
+                'intdiv' {
+                    if ($callArgs.Count -ne 2) { throw 'ALL PHP: intdiv() requires two arguments' }
+                    $dividend = To-PhpInt (To-Number $callArgs[0])
+                    $divisor = To-PhpInt (To-Number $callArgs[1])
+                    if ($divisor -eq 0) { throw 'ALL PHP: Division by zero' }
+                    if ($dividend -eq [long]::MinValue -and $divisor -eq -1) {
+                        throw 'ALL PHP: ArithmeticError: Division of PHP_INT_MIN by -1 is not an integer'
+                    }
+                    $rem = [long]0
+                    return [long][Math]::DivRem([long]$dividend, [long]$divisor, [ref]$rem)
+                }
+                'fdiv' {
+                    if ($callArgs.Count -ne 2) { throw 'ALL PHP: fdiv() requires two arguments' }
+                    return ([double](To-Number $callArgs[0]) / [double](To-Number $callArgs[1]))
+                }
+                'pow' {
+                    if ($callArgs.Count -ne 2) { throw 'ALL PHP: pow() requires two arguments' }
+                    return (Php-Pow (To-Number $callArgs[0]) (To-Number $callArgs[1]))
+                }
+                'sqrt' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: sqrt() requires one argument' }
+                    return [Math]::Sqrt([double](To-Number $callArgs[0]))
+                }
+                'floor' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: floor() requires one argument' }
+                    return [Math]::Floor([double](To-Number $callArgs[0]))
+                }
+                'ceil' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: ceil() requires one argument' }
+                    return [Math]::Ceiling([double](To-Number $callArgs[0]))
+                }
+                'is_nan' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_nan() requires one argument' }
+                    return [double]::IsNaN([double](To-Number $callArgs[0]))
+                }
+                'is_infinite' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_infinite() requires one argument' }
+                    return [double]::IsInfinity([double](To-Number $callArgs[0]))
+                }
+                'is_finite' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_finite() requires one argument' }
+                    $number = [double](To-Number $callArgs[0])
+                    return (-not [double]::IsNaN($number) -and -not [double]::IsInfinity($number))
                 }
                 'strval' {
                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: strval() requires one argument' }
@@ -3465,7 +3983,11 @@
         function Invoke-PhpExpr($node) {
             switch ($node.Kind) {
                 'literal' { return $node.Value }
-                'class_name' { return $node.Name }
+                'class_name' {
+                    if ($phpConstants.ContainsKey($node.Name)) { return $phpConstants[$node.Name] }
+                    return $node.Name
+                }
+                'cast' { return (Convert-PhpCast (Invoke-PhpExpr $node.Arg) $node.Type) }
                 'closure' {
                     $cap=[System.Collections.Generic.Dictionary[string,object]]::new(
                         [System.StringComparer]::Ordinal)
@@ -3634,7 +4156,7 @@
                             foreach ($item in $enum.EnumCases) {
                                 if ($enum.BackingType -eq 'string' -and $needle -is [string] -and
                                     $item.Props['value'] -ceq $needle) { return $item }
-                                if ($enum.BackingType -eq 'int' -and $needle -is [decimal] -and
+                                if ($enum.BackingType -eq 'int' -and $needle -is [long] -and
                                     $item.Props['value'] -eq $needle) { return $item }
                             }
                             if ($node.Name -ceq 'tryFrom') { return $null }
@@ -3689,7 +4211,7 @@
                 }
                 'update' {
                     $before = Get-LValue $node.Target
-                    $diff = if ($node.Op -ceq '++') { [decimal]1 } else { [decimal]-1 }
+                    $diff = if ($node.Op -ceq '++') { [long]1 } else { [long]-1 }
                     Set-LValue $node.Target $diff '+='
                     if ($node.Prefix) { return (Get-LValue $node.Target) }
                     return $before
@@ -3944,8 +4466,8 @@
                     switch ($node.Op) {
                         '!' { return (-not (Is-Truthy $value)) }
                         '+' { return (To-Number $value) }
-                        '-' { return (-(To-Number $value)) }
-                        '~' { return [decimal](-bnot [long](To-Number $value)) }
+                        '-' { return (Php-Neg (To-Number $value)) }
+                        '~' { return [long](-bnot (To-PhpInt $value)) }
                     }
                 }
                 'ternary' {
@@ -3994,14 +4516,7 @@
                     $a = Invoke-PhpExpr $node.Left
                     $b = Invoke-PhpExpr $node.Right
                     switch ($node.Op) {
-                        '**' {
-                            $result = [Math]::Pow([double](To-Number $a), [double](To-Number $b))
-                            if ([double]::IsNaN($result) -or [double]::IsInfinity($result)) {
-                                throw 'ALL PHP: Power result outside supported numeric range'
-                            }
-                            try { return [decimal]$result }
-                            catch { throw 'ALL PHP: Power result outside supported numeric range' }
-                        }
+                        '**' { return (Php-Pow (To-Number $a) (To-Number $b)) }
                         '.' { return ((To-PhpText $a) + (To-PhpText $b)) }
                         '+' {
                             if ((Is-PhpArray $a) -and (Is-PhpArray $b)) {
@@ -4013,34 +4528,26 @@
                                 }
                                 return $union
                             }
-                            return ((To-Number $a) + (To-Number $b))
+                            return (Php-Add (To-Number $a) (To-Number $b))
                         }
-                        '-' { return ((To-Number $a) - (To-Number $b)) }
-                        '*' { return ((To-Number $a) * (To-Number $b)) }
-                        '/' {
-                            if ((To-Number $b) -eq 0) { throw 'ALL PHP: Division by zero' }
-                            return ((To-Number $a) / (To-Number $b))
-                        }
-                        '%' {
-                            $divisor = [long][decimal]::Truncate((To-Number $b))
-                            if ($divisor -eq 0) { throw 'ALL PHP: Division by zero' }
-                            $dividend = [long][decimal]::Truncate((To-Number $a))
-                            return [decimal]($dividend % $divisor)
-                        }
+                        '-' { return (Php-Sub (To-Number $a) (To-Number $b)) }
+                        '*' { return (Php-Mul (To-Number $a) (To-Number $b)) }
+                        '/' { return (Php-Div (To-Number $a) (To-Number $b)) }
+                        '%' { return (Php-Mod (To-Number $a) (To-Number $b)) }
                         '==' { return (Php-Equal $a $b $false) }
                         '!=' { return (-not (Php-Equal $a $b $false)) }
                         '===' { return (Is-StrictEqual $a $b) }
                         '!==' { return (-not (Is-StrictEqual $a $b)) }
-                        '<' { return ((Compare-Values $a $b) -lt 0) }
-                        '<=' { return ((Compare-Values $a $b) -le 0) }
-                        '>' { return ((Compare-Values $a $b) -gt 0) }
-                        '>=' { return ((Compare-Values $a $b) -ge 0) }
-                        '<=>' { return [decimal](Compare-Values $a $b) }
-                        '<<' { return [decimal]([long](To-Number $a) -shl [int](To-Number $b)) }
-                        '>>' { return [decimal]([long](To-Number $a) -shr [int](To-Number $b)) }
-                        '&' { return [decimal]([long](To-Number $a) -band [long](To-Number $b)) }
-                        '|' { return [decimal]([long](To-Number $a) -bor [long](To-Number $b)) }
-                        '^' { return [decimal]([long](To-Number $a) -bxor [long](To-Number $b)) }
+                        '<' { return (Test-PhpRelation $a $b '<') }
+                        '<=' { return (Test-PhpRelation $a $b '<=') }
+                        '>' { return (Test-PhpRelation $a $b '>') }
+                        '>=' { return (Test-PhpRelation $a $b '>=') }
+                        '<=>' { return [long](Compare-Values $a $b) }
+                        '<<' { return (Php-Shift $a $b $true) }
+                        '>>' { return (Php-Shift $a $b $false) }
+                        '&' { return [long]((To-PhpInt $a) -band (To-PhpInt $b)) }
+                        '|' { return [long]((To-PhpInt $a) -bor (To-PhpInt $b)) }
+                        '^' { return [long]((To-PhpInt $a) -bxor (To-PhpInt $b)) }
                         'instanceof' {
                             if (-not (Is-PhpObject $a)) { return $false }
                             if ($b -isnot [string]) { throw 'ALL PHP: instanceof class name required' }
@@ -4131,8 +4638,7 @@
                                 throw 'ALL PHP: Backed enum string case expects a string'
                             }
                             if ($node.BackingType -eq 'int' -and
-                                ($backedValue -isnot [decimal] -or
-                                 [decimal]::Truncate($backedValue) -ne $backedValue)) {
+                                ($backedValue -isnot [long])) {
                                 throw 'ALL PHP: Backed enum int case expects an integer'
                             }
                             $uniqueValue=$node.BackingType + ':' + [string]$backedValue
@@ -4600,7 +5106,7 @@
                             }
                             if ($null -ne $node.KeyName) {
                                 if ($key.StartsWith('i:')) {
-                                    Set-PhpVariableValue $node.KeyName ([decimal]$key.Substring(2))
+                                    Set-PhpVariableValue $node.KeyName ([long]$key.Substring(2))
                                 } else {
                                     Set-PhpVariableValue $node.KeyName ($key.Substring(2))
                                 }
