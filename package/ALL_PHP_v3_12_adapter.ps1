@@ -2117,6 +2117,16 @@ class UnhandledMatchError extends Error {}
                 $value.PhpType -ceq 'refcell')
         }
         function Get-PhpVariableValue([string]$name) {
+            if ($name -ceq 'GLOBALS') {
+                # Read-only snapshot of the global symbol table.
+                $snapshot = New-PhpArray
+                foreach ($globalName in @($state.Globals.Keys)) {
+                    $globalValue = $state.Globals[$globalName]
+                    if (Is-PhpRefCell $globalValue) { $globalValue = $globalValue.Value }
+                    Set-PhpArrayItem $snapshot ([string]$globalName) $globalValue $false
+                }
+                return $snapshot
+            }
             $slot=Get-PhpVariableSlot $name
             if (-not $slot.Store.ContainsKey($slot.Key)) {
                 if ($state.GlobalBindings.Contains($name)) { return $null }
@@ -2167,10 +2177,13 @@ class UnhandledMatchError extends Error {}
                         $node.Base.Name
                     } else { Resolve-PhpDynamicVariableName $node.Base }
                     $baseValue=$null
+                    # Writing through an undefined variable creates it; PHP does not warn here.
+                    $state.QuietDepth++
                     try { $baseValue=Get-PhpVariableValue $baseName }
                     catch {
                         if ($_.Exception.Message -notlike 'ALL PHP: Undefined variable*') { throw }
                     }
+                    finally { $state.QuietDepth-- }
                     if ($null -eq $baseValue) { Set-PhpVariableValue $baseName (New-PhpArray) }
                 }
                 $array=Invoke-PhpExpr $node.Base
@@ -3572,10 +3585,13 @@ class UnhandledMatchError extends Error {}
                         $node.Base.Name
                     } else { Resolve-PhpDynamicVariableName $node.Base }
                     $baseValue=$null
+                    # Writing through an undefined variable creates it; PHP does not warn here.
+                    $state.QuietDepth++
                     try { $baseValue=Get-PhpVariableValue $baseName }
                     catch {
                         if ($_.Exception.Message -notlike 'ALL PHP: Undefined variable*') { throw }
                     }
+                    finally { $state.QuietDepth-- }
                     if ($null -eq $baseValue) {
                         Set-PhpVariableValue $baseName (New-PhpArray)
                     }
