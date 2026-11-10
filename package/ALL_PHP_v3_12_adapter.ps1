@@ -58,6 +58,20 @@
                 ThrownObjects = @{}
                 ThrownSeq = 0
                 PreludeLoaded = $false
+                ObjectSeq = 0
+                DumpStack = [System.Collections.Generic.List[object]]::new()
+                Constants = [System.Collections.Generic.Dictionary[string,object]]::new(
+                    [System.StringComparer]::Ordinal)
+                QuietDepth = 0
+                SilenceDepth = 0
+                ErrorReporting = [long]-1
+                ErrorHandler = $null
+                ErrorHandlerMask = [long]-1
+                ErrorHandlerStack = [System.Collections.Generic.List[object]]::new()
+                InErrorHandler = $false
+                ExceptionHandler = $null
+                ExceptionHandlerStack = [System.Collections.Generic.List[object]]::new()
+                Ini = @{}
         }
 
         $state.Globals = $state.Vars
@@ -77,9 +91,33 @@
         $phpConstants['NAN'] = [double]::NaN
         $phpConstants['M_PI'] = [Math]::PI
         $phpConstants['M_E'] = [Math]::E
+        $phpConstants['E_ERROR'] = [long]1
+        $phpConstants['E_WARNING'] = [long]2
+        $phpConstants['E_PARSE'] = [long]4
+        $phpConstants['E_NOTICE'] = [long]8
+        $phpConstants['E_CORE_ERROR'] = [long]16
+        $phpConstants['E_CORE_WARNING'] = [long]32
+        $phpConstants['E_COMPILE_ERROR'] = [long]64
+        $phpConstants['E_COMPILE_WARNING'] = [long]128
+        $phpConstants['E_USER_ERROR'] = [long]256
+        $phpConstants['E_USER_WARNING'] = [long]512
+        $phpConstants['E_USER_NOTICE'] = [long]1024
+        $phpConstants['E_RECOVERABLE_ERROR'] = [long]4096
+        $phpConstants['E_DEPRECATED'] = [long]8192
+        $phpConstants['E_USER_DEPRECATED'] = [long]16384
+        $phpConstants['E_ALL'] = [long]30719
+        # The compatibility target (see docs/COMPAT_TARGET.md).
+        $phpConstants['PHP_VERSION'] = '8.5.12'
+        $phpConstants['PHP_MAJOR_VERSION'] = [long]8
+        $phpConstants['PHP_MINOR_VERSION'] = [long]5
+        $phpConstants['PHP_RELEASE_VERSION'] = [long]12
+        $phpConstants['PHP_VERSION_ID'] = [long]80512
+        $phpConstants['PHP_OS'] = 'WINNT'
+        $phpConstants['PHP_OS_FAMILY'] = 'Windows'
+        $phpConstants['DIRECTORY_SEPARATOR'] = '\'
 
         # Tokenize before parsing. Unknown characters produce an error, never disappear.
-        $pattern = '(?:\s+|//[^\r\n]*|\#[^\r\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|''(?:\\.|[^''\\])*''|\$\$[A-Za-z_][A-Za-z_0-9]*|\$[A-Za-z_][A-Za-z_0-9]*|\$(?=\{)|0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|(?:\d[\d_]*(?:\.[\d_]*)?|\.\d[\d_]*)(?:[eE][+-]?\d[\d_]*)?|[A-Za-z_][A-Za-z_0-9]*|<=>|::|\.\.\.|<<=|>>=|<<|>>|===|!==|==|!=|<=|>=|&&|\|\||=>|->|\*\*=|\*\*|\?\?=|\?\?|\?->|\+\+|--|\*=|/=|%=|&=|\|=|\^=|\+=|-=|\.=|[+\-*/%.=<>!?:;{},()\[\]&|^~])'
+        $pattern = '(?:\s+|//[^\r\n]*|\#[^\r\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|''(?:\\.|[^''\\])*''|\$\$[A-Za-z_][A-Za-z_0-9]*|\$[A-Za-z_][A-Za-z_0-9]*|\$(?=\{)|0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|(?:\d[\d_]*(?:\.[\d_]*)?|\.\d[\d_]*)(?:[eE][+-]?\d[\d_]*)?|[A-Za-z_][A-Za-z_0-9]*|<=>|::|\.\.\.|<<=|>>=|<<|>>|===|!==|==|!=|<=|>=|&&|\|\||=>|->|\*\*=|\*\*|\?\?=|\?\?|\?->|\+\+|--|\*=|/=|%=|&=|\|=|\^=|\+=|-=|\.=|[+\-*/%.=<>!?:;{},()\[\]&|^~@])'
         $rx = [regex]::new($pattern)
         function ConvertTo-PhpTokens([string]$text, $tokens, $lines) {
             $line = 1
@@ -637,6 +675,10 @@
                     throw 'ALL PHP: Invalid prefix update target'
                 }
                 return [pscustomobject]@{ Kind='update'; Target=$target; Op=$token; Prefix=$true }
+            }
+            if ($token -ceq '@') {
+                [void](Next-Token)
+                return [pscustomobject]@{ Kind='silence'; Arg=(Read-Unary) }
             }
             if ($token -ceq '!') {
                 # In PHP, ! binds less tightly than instanceof, but more tightly
@@ -1453,6 +1495,24 @@
                     ValueName=$valueName; ByReference=$byReference; Body=$body
                 }
             }
+            if ($token -eq 'const' -and $state.Pos + 2 -lt $state.Tokens.Count -and
+                $state.Tokens[$state.Pos + 1] -cmatch '^[A-Za-z_][A-Za-z_0-9]*$' -and
+                $state.Tokens[$state.Pos + 2] -ceq '=') {
+                [void](Next-Token)
+                $decls = [System.Collections.Generic.List[object]]::new()
+                while ($true) {
+                    $constName = Next-Token
+                    if ($constName -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                        throw "ALL PHP: Expected constant name, got '$constName'"
+                    }
+                    Expect-Token '='
+                    [void]$decls.Add([pscustomobject]@{ Name=$constName; Value=(Read-Expr 1) })
+                    if ((Peek-Token) -cne ',') { break }
+                    [void](Next-Token)
+                }
+                Expect-Token ';'
+                return [pscustomobject]@{ Kind='constdecl'; Decls=$decls.ToArray() }
+            }
             if ($token -eq 'try') {
                 [void](Next-Token)
                 if ((Peek-Token) -cne '{') { throw "ALL PHP: Expected '{', got '$(Peek-Token)'" }
@@ -1851,6 +1911,167 @@ class UnhandledMatchError extends Error {}
             if (Is-PhpObject $value) { return ('of type ' + $value.Class) }
             return 'of type array'
         }
+        function New-PhpObjectId {
+            $state.ObjectSeq++
+            return $state.ObjectSeq
+        }
+        # Call a PHP callable value (closure, function name, [object, method], invokable object)
+        # with already evaluated arguments.
+        function Invoke-PhpValueCallable($callee, $values) {
+            $values = @($values)
+            if ($null -ne $callee -and $callee.PSObject.Properties['PhpType']) {
+                if ($callee.PhpType -ceq 'closure') {
+                    return (Invoke-PhpCallable $callee.Definition $values $callee.BoundThis '' $callee)
+                }
+                if ($callee.PhpType -ceq 'first_class_callable') {
+                    if ($callee.Mode -eq 'function') {
+                        if ($state.Functions.ContainsKey($callee.Name)) {
+                            return (Invoke-PhpCallable $state.Functions[$callee.Name] $values $null)
+                        }
+                        return (Invoke-PhpFunction $callee.Name $values)
+                    }
+                    if ($callee.Mode -eq 'method') { return (Invoke-PhpMethod $callee.BoundThis $callee.Name $values) }
+                    return (Invoke-PhpStaticMethod $callee.Class $callee.Name $values)
+                }
+            }
+            if (Is-PhpObject $callee) {
+                if ($null -eq (Find-OptionalPhpMethod $callee.Class '__invoke')) { throw 'ALL PHP: Object is not callable' }
+                return (Invoke-PhpMethod $callee '__invoke' $values)
+            }
+            if (Is-PhpArray $callee) {
+                $pair = @($callee.Items.Values)
+                if ($pair.Count -eq 2 -and $pair[1] -is [string]) {
+                    if (Is-PhpObject $pair[0]) { return (Invoke-PhpMethod $pair[0] $pair[1] $values) }
+                    if ($pair[0] -is [string]) { return (Invoke-PhpStaticMethod $pair[0] $pair[1] $values) }
+                }
+                throw 'ALL PHP: Array is not a valid callable'
+            }
+            if ($callee -is [string]) {
+                $split = $callee.IndexOf('::')
+                if ($split -gt 0) {
+                    return (Invoke-PhpStaticMethod $callee.Substring(0, $split) $callee.Substring($split + 2) $values)
+                }
+                if ($state.Functions.ContainsKey($callee)) {
+                    return (Invoke-PhpCallable $state.Functions[$callee] $values $null)
+                }
+                return (Invoke-PhpFunction $callee $values)
+            }
+            throw 'ALL PHP: Value is not callable'
+        }
+        # Number of parameters a user callable declares, or -1 when unknown (builtins, methods).
+        function Get-PhpCallableArity($callee) {
+            if ($null -ne $callee -and $callee.PSObject.Properties['PhpType'] -and
+                $callee.PhpType -ceq 'closure') { return @($callee.Definition.Params).Count }
+            if ($callee -is [string] -and $state.Functions.ContainsKey($callee)) {
+                return @($state.Functions[$callee].Params).Count
+            }
+            return -1
+        }
+        # Raise a PHP diagnostic (E_WARNING, E_NOTICE, E_DEPRECATED, E_USER_*).
+        # A user error handler sees it first. Otherwise it is printed in the PHP CLI format, but only
+        # when the adapter runs with -PhpDiagnostics; the default mode stays silent.
+        function Write-PhpDiagnostic([long]$level, [string]$message) {
+            if ($null -ne $state.ErrorHandler -and -not $state.InErrorHandler -and
+                (($state.ErrorHandlerMask -band $level) -ne 0)) {
+                $handlerArgs = @($level, $message, [string]$state.ScriptName, [long]$state.Line)
+                $arity = Get-PhpCallableArity $state.ErrorHandler
+                if ($arity -ge 0 -and $arity -lt 4) {
+                    if ($arity -eq 0) { $handlerArgs = @() } else { $handlerArgs = @($handlerArgs[0..($arity - 1)]) }
+                }
+                $state.InErrorHandler = $true
+                $handled = $null
+                $savedLine = $state.Line
+                try { $handled = Invoke-PhpValueCallable $state.ErrorHandler $handlerArgs }
+                finally { $state.InErrorHandler = $false; $state.Line = $savedLine }
+                if (-not ($handled -is [bool] -and -not $handled)) { return }
+            }
+            if (-not $PhpDiagnostics) { return }
+            if ($state.SilenceDepth -gt 0) { return }
+            if (($state.ErrorReporting -band $level) -eq 0) { return }
+            $label = 'Warning'
+            if ($level -eq 8 -or $level -eq 1024) { $label = 'Notice' }
+            elseif ($level -eq 8192 -or $level -eq 16384) { $label = 'Deprecated' }
+            elseif ($level -eq 256) { $label = 'Fatal error' }
+            [Console]::Write("`n" + $label + ': ' + $message + ' in ' + $state.ScriptName + ' on line ' + $state.Line + "`n")
+        }
+        function Test-PhpObjectHasProp($object, [string]$name) {
+            if ($object.Props -is [System.Collections.Specialized.OrderedDictionary]) {
+                return $object.Props.Contains($name)
+            }
+            return $object.Props.ContainsKey($name)
+        }
+        # Instance properties in PHP's order: declared ones (ancestors first), then dynamic ones.
+        function Get-PhpObjectDumpEntries($object) {
+            $entries = [System.Collections.Generic.List[object]]::new()
+            $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+            if ($object.Class -ne 'stdClass' -and $state.Classes.ContainsKey($object.Class)) {
+                $chain = Get-PhpClassChain $object.Class
+                for ($i = $chain.Count - 1; $i -ge 0; $i--) {
+                    foreach ($prop in $chain[$i].Properties) {
+                        if ($prop.Static) { continue }
+                        if (-not $seen.Add([string]$prop.Name)) { continue }
+                        $declared = Find-PhpProperty $object.Class $prop.Name $false
+                        if ($null -eq $declared) { $declared = $prop }
+                        $present = Test-PhpObjectHasProp $object $prop.Name
+                        $suffix = ''
+                        $plain = ''
+                        if ($declared.Visibility -eq 'protected') { $suffix = ':protected'; $plain = ':protected' }
+                        elseif ($declared.Visibility -eq 'private') {
+                            $suffix = ':"' + $declared.Owner + '":private'
+                            $plain = ':' + $declared.Owner + ':private'
+                        }
+                        [void]$entries.Add([pscustomobject]@{
+                            Name=[string]$prop.Name; Suffix=$suffix; PlainSuffix=$plain; Present=$present
+                            TypeName=[string]$declared.TypeName
+                            Value=$(if ($present) { $object.Props[$prop.Name] } else { $null })
+                        })
+                    }
+                }
+            }
+            foreach ($key in @($object.Props.Keys)) {
+                if (-not $seen.Add([string]$key)) { continue }
+                [void]$entries.Add([pscustomobject]@{
+                    Name=[string]$key; Suffix=''; PlainSuffix=''; Present=$true; TypeName=''
+                    Value=$object.Props[$key]
+                })
+            }
+            return ,($entries.ToArray())
+        }
+        function Format-PhpPrintR($value, [int]$indent) {
+            if (Is-PhpRefCell $value) { $value = $value.Value }
+            $pad = ' ' * $indent
+            if (Is-PhpArray $value) {
+                $sb = [System.Text.StringBuilder]::new()
+                [void]$sb.Append("Array`n" + $pad + "(`n")
+                foreach ($key in @($value.Items.Keys)) {
+                    [void]$sb.Append($pad + '    [' + ([string]$key).Substring(2) + '] => ' +
+                        (Format-PhpPrintR $value.Items[$key] ($indent + 8)) + "`n")
+                }
+                [void]$sb.Append($pad + ")`n")
+                return $sb.ToString()
+            }
+            if (Is-PhpObject $value) {
+                foreach ($seenObject in $state.DumpStack) {
+                    if ([object]::ReferenceEquals($seenObject, $value)) { return "*RECURSION*" }
+                }
+                [void]$state.DumpStack.Add($value)
+                try {
+                    $sb = [System.Text.StringBuilder]::new()
+                    $isEnum = ($state.Classes.ContainsKey($value.Class) -and
+                        $state.Classes[$value.Class].PSObject.Properties['Enum'] -and $state.Classes[$value.Class].Enum)
+                    $kind = if ($isEnum) { ' Enum' } else { ' Object' }
+                    [void]$sb.Append($value.Class + $kind + "`n" + $pad + "(`n")
+                    foreach ($entry in (Get-PhpObjectDumpEntries $value)) {
+                        if (-not $entry.Present) { continue }
+                        [void]$sb.Append($pad + '    [' + $entry.Name + $entry.PlainSuffix + '] => ' +
+                            (Format-PhpPrintR $entry.Value ($indent + 8)) + "`n")
+                    }
+                    [void]$sb.Append($pad + ")`n")
+                    return $sb.ToString()
+                } finally { $state.DumpStack.RemoveAt($state.DumpStack.Count - 1) }
+            }
+            return (To-PhpText $value)
+        }
         function New-PhpArray {
             return [pscustomobject]@{
                 PhpType='array'
@@ -1899,6 +2120,10 @@ class UnhandledMatchError extends Error {}
             $slot=Get-PhpVariableSlot $name
             if (-not $slot.Store.ContainsKey($slot.Key)) {
                 if ($state.GlobalBindings.Contains($name)) { return $null }
+                if ($PhpDiagnostics -and $state.QuietDepth -eq 0) {
+                    Write-PhpDiagnostic 2 ('Undefined variable $' + $name)
+                    return $null
+                }
                 throw "ALL PHP: Undefined variable '$name'"
             }
             $value=$slot.Store[$slot.Key]
@@ -2144,7 +2369,7 @@ class UnhandledMatchError extends Error {}
         }
         function New-PhpStdObject {
             return [pscustomobject]@{
-                PhpType='object'; Class='stdClass'
+                PhpType='object'; Id=(New-PhpObjectId); Class='stdClass'
                 Props=[System.Collections.Specialized.OrderedDictionary]::new(
                     [System.StringComparer]::Ordinal)
             }
@@ -2502,6 +2727,33 @@ class UnhandledMatchError extends Error {}
                 [void]$sb.Append($pad + "}`n")
                 return $sb.ToString()
             }
+            if (Is-PhpObject $value) {
+                if ($state.Classes.ContainsKey($value.Class) -and
+                    $state.Classes[$value.Class].PSObject.Properties['Enum'] -and
+                    $state.Classes[$value.Class].Enum) {
+                    return ($pad + 'enum(' + $value.Class + '::' + (To-PhpText $value.Props['name']) + ")`n")
+                }
+                foreach ($seenObject in $state.DumpStack) {
+                    if ([object]::ReferenceEquals($seenObject, $value)) { return ($pad + "*RECURSION*`n") }
+                }
+                [void]$state.DumpStack.Add($value)
+                try {
+                    $entries = Get-PhpObjectDumpEntries $value
+                    $count = 0
+                    foreach ($entry in $entries) { if ($entry.Present) { $count++ } }
+                    $id = 0
+                    if ($value.PSObject.Properties['Id']) { $id = $value.Id }
+                    $sb = [System.Text.StringBuilder]::new()
+                    [void]$sb.Append($pad + 'object(' + $value.Class + ')#' + $id + ' (' + $count + ") {`n")
+                    foreach ($entry in $entries) {
+                        [void]$sb.Append($pad + '  ["' + $entry.Name + '"' + $entry.Suffix + "]=>`n")
+                        if ($entry.Present) { [void]$sb.Append((Format-PhpVarDump $entry.Value ($pad + '  '))) }
+                        else { [void]$sb.Append($pad + '  uninitialized(' + $entry.TypeName + ")`n") }
+                    }
+                    [void]$sb.Append($pad + "}`n")
+                    return $sb.ToString()
+                } finally { $state.DumpStack.RemoveAt($state.DumpStack.Count - 1) }
+            }
             throw 'ALL PHP: var_dump() of this value type is not implemented'
         }
         function To-PhpText($value) {
@@ -2598,6 +2850,11 @@ class UnhandledMatchError extends Error {}
             if (-not (Is-PhpArray $array)) { throw 'ALL PHP: Indexing requires array' }
             $keyString = To-PhpKey $key
             if (-not $array.Items.Contains($keyString)) {
+                if ($PhpDiagnostics -and $state.QuietDepth -eq 0) {
+                    if ($keyString.StartsWith('i:')) { Write-PhpDiagnostic 2 ('Undefined array key ' + $keyString.Substring(2)) }
+                    else { Write-PhpDiagnostic 2 ('Undefined array key "' + $keyString.Substring(2) + '"') }
+                    return $null
+                }
                 throw "ALL PHP: Undefined array key '$keyString'"
             }
             $value = $array.Items[$keyString]
@@ -3240,6 +3497,10 @@ class UnhandledMatchError extends Error {}
                         try { return (Invoke-PhpMethod $base '__get' @($node.Name)) }
                         finally { [void]$state.MagicGetActive.Remove($guardKey) }
                     }
+                    if ($PhpDiagnostics -and $state.QuietDepth -eq 0) {
+                        Write-PhpDiagnostic 2 ('Undefined property: ' + $base.Class + '::$' + $node.Name)
+                        return $null
+                    }
                     throw "ALL PHP: Undefined property '$($node.Name)'"
                 }
                 $value=$base.Props[$node.Name]
@@ -3413,6 +3674,8 @@ class UnhandledMatchError extends Error {}
             $state.CurrentCallable = if ($owner.Length -gt 0) { $owner + '::' + $definition.Name } else { $definition.Name }
             $state.CallDepth++
             $oldLine = $state.Line
+            $oldQuiet = $state.QuietDepth
+            $state.QuietDepth = 0
             $frameName = [string]$definition.Name
             if ($owner.Length -gt 0) {
                 if ($null -ne $object) { $frameName = $owner + '->' + $definition.Name }
@@ -3608,6 +3871,7 @@ class UnhandledMatchError extends Error {}
             } finally {
                 $state.CallDepth--
                 $state.Line = $oldLine
+                $state.QuietDepth = $oldQuiet
                 if ($state.CallStack.Count -gt 0) { $state.CallStack.RemoveAt($state.CallStack.Count - 1) }
                 $state.Vars = $oldVars
                 $state.Flow = $oldFlow
@@ -4035,6 +4299,121 @@ class UnhandledMatchError extends Error {}
                     return [string]::Join($separator, $items.ToArray())
                 }
                 '__all_throwable_string' { return (Get-PhpThrowableString $callArgs[0]) }
+                'print_r' {
+                    if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 2) { throw 'ALL PHP: print_r() requires one or two arguments' }
+                    $printed = Format-PhpPrintR $callArgs[0] 0
+                    if ($callArgs.Count -eq 2 -and (Is-Truthy $callArgs[1])) { return $printed }
+                    [Console]::Write($printed)
+                    return $true
+                }
+                'define' {
+                    if ($callArgs.Count -ne 2) { throw 'ALL PHP: define() requires two arguments' }
+                    $constName = To-PhpText $callArgs[0]
+                    if ($state.Constants.ContainsKey($constName) -or $phpConstants.ContainsKey($constName)) {
+                        Write-PhpDiagnostic 2 ('Constant ' + $constName + ' already defined, this will be an error in PHP 9')
+                        return $false
+                    }
+                    $state.Constants[$constName] = Copy-PhpValue $callArgs[1]
+                    return $true
+                }
+                'defined' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: defined() requires one argument' }
+                    $constName = To-PhpText $callArgs[0]
+                    return ($state.Constants.ContainsKey($constName) -or $phpConstants.ContainsKey($constName))
+                }
+                'constant' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: constant() requires one argument' }
+                    $constName = To-PhpText $callArgs[0]
+                    if ($state.Constants.ContainsKey($constName)) { return $state.Constants[$constName] }
+                    if ($phpConstants.ContainsKey($constName)) { return $phpConstants[$constName] }
+                    Throw-PhpError 'Error' ('Undefined constant "' + $constName + '"')
+                }
+                'error_reporting' {
+                    $previous = $state.ErrorReporting
+                    if ($callArgs.Count -ge 1 -and $null -ne $callArgs[0]) { $state.ErrorReporting = To-PhpInt (To-Number $callArgs[0]) }
+                    return [long]$previous
+                }
+                'ini_set' {
+                    if ($callArgs.Count -ne 2) { throw 'ALL PHP: ini_set() requires two arguments' }
+                    $iniName = To-PhpText $callArgs[0]
+                    $previous = $false
+                    if ($state.Ini.ContainsKey($iniName)) { $previous = $state.Ini[$iniName] }
+                    $state.Ini[$iniName] = To-PhpText $callArgs[1]
+                    if ($iniName -ceq 'error_reporting') { $state.ErrorReporting = To-PhpInt (To-Number $callArgs[1]) }
+                    return $previous
+                }
+                'ini_get' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: ini_get() requires one argument' }
+                    $iniName = To-PhpText $callArgs[0]
+                    if ($state.Ini.ContainsKey($iniName)) { return $state.Ini[$iniName] }
+                    return $false
+                }
+                'set_error_handler' {
+                    if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 2) { throw 'ALL PHP: set_error_handler() requires one or two arguments' }
+                    $previous = $state.ErrorHandler
+                    [void]$state.ErrorHandlerStack.Add(@($state.ErrorHandler, $state.ErrorHandlerMask))
+                    $state.ErrorHandler = $callArgs[0]
+                    $state.ErrorHandlerMask = [long]-1
+                    if ($callArgs.Count -eq 2) { $state.ErrorHandlerMask = To-PhpInt (To-Number $callArgs[1]) }
+                    return $previous
+                }
+                'restore_error_handler' {
+                    if ($state.ErrorHandlerStack.Count -gt 0) {
+                        $entry = $state.ErrorHandlerStack[$state.ErrorHandlerStack.Count - 1]
+                        $state.ErrorHandlerStack.RemoveAt($state.ErrorHandlerStack.Count - 1)
+                        $state.ErrorHandler = $entry[0]
+                        $state.ErrorHandlerMask = $entry[1]
+                    }
+                    return $true
+                }
+                'set_exception_handler' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: set_exception_handler() requires one argument' }
+                    $previous = $state.ExceptionHandler
+                    [void]$state.ExceptionHandlerStack.Add($state.ExceptionHandler)
+                    $state.ExceptionHandler = $callArgs[0]
+                    return $previous
+                }
+                'restore_exception_handler' {
+                    if ($state.ExceptionHandlerStack.Count -gt 0) {
+                        $state.ExceptionHandler = $state.ExceptionHandlerStack[$state.ExceptionHandlerStack.Count - 1]
+                        $state.ExceptionHandlerStack.RemoveAt($state.ExceptionHandlerStack.Count - 1)
+                    }
+                    return $true
+                }
+                { $_ -in @('trigger_error', 'user_error') } {
+                    if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 2) { throw "ALL PHP: $name() requires one or two arguments" }
+                    $level = [long]1024
+                    if ($callArgs.Count -eq 2) { $level = To-PhpInt (To-Number $callArgs[1]) }
+                    if ($level -notin @(256, 512, 1024, 16384)) {
+                        Throw-PhpError 'ValueError' 'trigger_error(): Argument #2 ($error_level) must be one of E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE, or E_USER_DEPRECATED'
+                    }
+                    Write-PhpDiagnostic $level (To-PhpText $callArgs[0])
+                    return $true
+                }
+                'str_repeat' {
+                    if ($callArgs.Count -ne 2) { throw 'ALL PHP: str_repeat() requires two arguments' }
+                    $times = To-PhpInt (To-Number $callArgs[1])
+                    if ($times -lt 0) {
+                        Throw-PhpError 'ValueError' 'str_repeat(): Argument #2 ($times) must be greater than or equal to 0'
+                    }
+                    return ((To-PhpText $callArgs[0]) * [int]$times)
+                }
+                'function_exists' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: function_exists() requires one argument' }
+                    return $state.Functions.ContainsKey((To-PhpText $callArgs[0]))
+                }
+                'call_user_func' {
+                    if ($callArgs.Count -lt 1) { throw 'ALL PHP: call_user_func() requires a callable' }
+                    $rest = @()
+                    if ($callArgs.Count -gt 1) { $rest = @($callArgs[1..($callArgs.Count - 1)]) }
+                    return (Invoke-PhpValueCallable $callArgs[0] $rest)
+                }
+                'call_user_func_array' {
+                    if ($callArgs.Count -ne 2 -or -not (Is-PhpArray $callArgs[1])) {
+                        throw 'ALL PHP: call_user_func_array() requires a callable and an array'
+                    }
+                    return (Invoke-PhpValueCallable $callArgs[0] @($callArgs[1].Items.Values))
+                }
                 'get_class' {
                     if ($callArgs.Count -ne 1 -or -not (Is-PhpObject $callArgs[0])) {
                         throw 'ALL PHP: get_class() requires one object argument'
@@ -4249,7 +4628,13 @@ class UnhandledMatchError extends Error {}
         function Invoke-PhpExpr($node) {
             switch ($node.Kind) {
                 'literal' { return $node.Value }
+                'silence' {
+                    $state.SilenceDepth++
+                    try { return (Invoke-PhpExpr $node.Arg) }
+                    finally { $state.SilenceDepth-- }
+                }
                 'class_name' {
+                    if ($state.Constants.ContainsKey($node.Name)) { return $state.Constants[$node.Name] }
                     if ($phpConstants.ContainsKey($node.Name)) { return $phpConstants[$node.Name] }
                     return $node.Name
                 }
@@ -4284,14 +4669,14 @@ class UnhandledMatchError extends Error {}
                     $bound=$null
                     if ($state.Vars.ContainsKey('this')) { $bound=Get-PhpVariableValue 'this' }
                     return [pscustomobject]@{
-                        PhpType='closure'; Definition=$node; Captures=$cap
+                        PhpType='closure'; Id=(New-PhpObjectId); Definition=$node; Captures=$cap
                         BoundThis=$bound; ClassContext=$state.ClassContext
                     }
                 }
                 'first_class_function' {
                     # Defer builtin argument evaluation until the closure is invoked.
                     return [pscustomobject]@{
-                        PhpType='first_class_callable'; Mode='function'; Name=$node.Name
+                        PhpType='first_class_callable'; Id=(New-PhpObjectId); Mode='function'; Name=$node.Name
                     }
                 }
                 'first_class_method' {
@@ -4304,7 +4689,7 @@ class UnhandledMatchError extends Error {}
                         throw "ALL PHP: Undefined method '$($node.Name)'"
                     }
                     return [pscustomobject]@{
-                        PhpType='first_class_callable'; Mode='method'
+                        PhpType='first_class_callable'; Id=(New-PhpObjectId); Mode='method'
                         Name=$node.Name; BoundThis=$object
                     }
                 }
@@ -4314,7 +4699,7 @@ class UnhandledMatchError extends Error {}
                         throw "ALL PHP: Undefined static method '$($node.Name)'"
                     }
                     return [pscustomobject]@{
-                        PhpType='first_class_callable'; Mode='static'
+                        PhpType='first_class_callable'; Id=(New-PhpObjectId); Mode='static'
                         Name=$node.Name; Class=$klass
                     }
                 }
@@ -4322,7 +4707,7 @@ class UnhandledMatchError extends Error {}
                     $callable=Invoke-PhpExpr $node.Callee
                     if ($null -ne $callable -and $callable -is [string]) {
                         return [pscustomobject]@{
-                            PhpType='first_class_callable'; Mode='function'; Name=$callable
+                            PhpType='first_class_callable'; Id=(New-PhpObjectId); Mode='function'; Name=$callable
                         }
                     }
                     if ($null -ne $callable -and $callable.PSObject.Properties['PhpType'] -and
@@ -4332,7 +4717,7 @@ class UnhandledMatchError extends Error {}
                             throw 'ALL PHP: Value is not callable'
                         }
                         return [pscustomobject]@{
-                            PhpType='first_class_callable'; Mode='method'
+                            PhpType='first_class_callable'; Id=(New-PhpObjectId); Mode='method'
                             Name='__invoke'; BoundThis=$callable
                         }
                     }
@@ -4473,7 +4858,7 @@ class UnhandledMatchError extends Error {}
                         $props[$key]=Copy-PhpValue $original.Props[$key]
                     }
                     $copy=[pscustomobject]@{
-                        PhpType='object'; Class=$original.Class; Props=$props
+                        PhpType='object'; Id=(New-PhpObjectId); Class=$original.Class; Props=$props
                     }
                     if ($original.Class -ne 'stdClass') {
                         $hook=$null
@@ -4504,10 +4889,12 @@ class UnhandledMatchError extends Error {}
                 'assign_expr' {
                     if ($node.Op -ceq '??=') {
                         $current = $null
+                        $state.QuietDepth++
                         try { $current = Get-LValue $node.Target }
                         catch {
                             if ($_.Exception.Message -notlike 'ALL PHP: Undefined *') { throw }
                         }
+                        finally { $state.QuietDepth-- }
                         if ($null -ne $current) { return $current }
                     }
                     $replacement = Invoke-PhpExpr $node.Value
@@ -4588,6 +4975,7 @@ class UnhandledMatchError extends Error {}
                                     }
                                 }
                             }
+                            $state.QuietDepth++
                             try {
                                 $value = Invoke-PhpExpr $arg
                             } catch {
@@ -4595,6 +4983,7 @@ class UnhandledMatchError extends Error {}
                                     $found = $false
                                 } else { throw }
                             }
+                            finally { $state.QuietDepth-- }
                             $isset = ($found -and $null -ne $value)
                             if ($node.Name -ceq 'isset' -and -not $isset) { return $false }
                             if ($node.Name -ceq 'empty') { return (-not $found -or -not (Is-Truthy $value)) }
@@ -4707,7 +5096,7 @@ class UnhandledMatchError extends Error {}
                         throw "ALL PHP: Cannot instantiate abstract class '$className'"
                     }
                     $object=[pscustomobject]@{
-                        PhpType='object'; Class=$className
+                        PhpType='object'; Id=(New-PhpObjectId); Class=$className
                         Props=[System.Collections.Generic.Dictionary[string,object]]::new(
                             [System.StringComparer]::Ordinal)
                     }
@@ -4777,10 +5166,12 @@ class UnhandledMatchError extends Error {}
                 'binary' {
                     if ($node.Op -ceq '??') {
                         $leftValue = $null
+                        $state.QuietDepth++
                         try { $leftValue = Invoke-PhpExpr $node.Left }
                         catch {
                             if ($_.Exception.Message -notlike 'ALL PHP: Undefined *') { throw }
                         }
+                        finally { $state.QuietDepth-- }
                         if ($null -ne $leftValue) { return $leftValue }
                         return (Invoke-PhpExpr $node.Right)
                     }
@@ -4844,6 +5235,15 @@ class UnhandledMatchError extends Error {}
             }
             if ($null -ne $node.Line) { $state.Line = $node.Line }
             switch ($node.Kind) {
+                'constdecl' {
+                    foreach ($decl in $node.Decls) {
+                        if ($state.Constants.ContainsKey($decl.Name) -or $phpConstants.ContainsKey($decl.Name)) {
+                            throw "ALL PHP: Constant already declared '$($decl.Name)'"
+                        }
+                        $state.Constants[$decl.Name] = Copy-PhpValue (Invoke-PhpExpr $decl.Value)
+                    }
+                    return
+                }
                 'try' {
                     # $pending holds an error that is still propagating once try/catch has finished;
                     # it is re-raised after finally unless finally itself returns, breaks or continues.
@@ -4983,7 +5383,7 @@ class UnhandledMatchError extends Error {}
                             $props['value']=$backedValue
                         }
                         $caseObject=[pscustomobject]@{
-                            PhpType='object'; Class=$node.Name; Props=$props
+                            PhpType='object'; Id=0; Class=$node.Name; Props=$props
                             EnumCase=$case.Name
                         }
                         [void]$enumCases.Add($caseObject)
@@ -5284,10 +5684,12 @@ class UnhandledMatchError extends Error {}
                 'assign' {
                     if ($node.Op -ceq '??=') {
                         $current = $null
+                        $state.QuietDepth++
                         try { $current = Get-LValue $node.Target }
                         catch {
                             if ($_.Exception.Message -notlike 'ALL PHP: Undefined *') { throw }
                         }
+                        finally { $state.QuietDepth-- }
                         if ($null -ne $current) { return }
                         $replacement = Invoke-PhpExpr $node.Value
                         Set-LValue $node.Target $replacement '='
@@ -5477,6 +5879,12 @@ class UnhandledMatchError extends Error {}
             }
         } catch {
             $uncaught = Get-PhpThrown $_
+            if ($null -ne $uncaught -and $null -ne $state.ExceptionHandler) {
+                $handler = $state.ExceptionHandler
+                $state.ExceptionHandler = $null
+                [void](Invoke-PhpValueCallable $handler @($uncaught))
+                return
+            }
             if ($null -eq $uncaught -or -not $PhpDiagnostics) { throw }
             # Same text the PHP CLI writes with display_errors=1 and html_errors=0.
             [Console]::Write("`nFatal error: Uncaught " +

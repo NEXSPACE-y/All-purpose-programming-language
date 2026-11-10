@@ -1,0 +1,57 @@
+### handler receives undefined variable warning
+<?php
+set_error_handler(function($no, $str, $file, $line) { echo "[$no] $str @ $line\n"; return true; });
+echo "a";
+echo $missing;
+echo "b";
+### undefined variable evaluates to null
+<?php set_error_handler(function($no, $str) { echo "<", $str, ">"; return true; }); $x = $nope; var_dump($x); var_dump($nope2 + 1, $nope3 . "s");
+### handler receives undefined array key warnings
+<?php set_error_handler(function($no, $str) { echo "[$no] $str\n"; return true; }); $a = [1, "k" => 2]; var_dump($a[5]); var_dump($a["missing"]); var_dump($a[0], $a["k"]);
+### handler receives undefined property warning
+<?php set_error_handler(function($no, $str) { echo "[$no] $str\n"; return true; }); class P { public $a = 1; } $p = new P(); var_dump($p->nope); $s = new stdClass(); var_dump($s->gone);
+### null coalescing and isset stay silent
+<?php set_error_handler(function($no, $str) { echo "UNEXPECTED $str\n"; return true; }); $a = []; echo $u ?? "d1", "|", $a["k"] ?? "d2", "|", isset($u) ? "set" : "unset", "|", empty($a["k"]) ? "empty" : "full", "|"; $v ??= "assigned"; echo $v;
+### silence operator still calls handler
+<?php set_error_handler(function($no, $str) { echo "handler:", $str, "\n"; return true; }); $r = @$undefined; var_dump($r);
+### trigger_error levels reach handler
+<?php set_error_handler(function($no, $str, $file, $line) { echo "$no:$str:$line\n"; return true; });
+trigger_error("note");
+trigger_error("warn", E_USER_WARNING);
+trigger_error("dep", E_USER_DEPRECATED);
+user_error("alias", E_USER_NOTICE);
+### trigger_error invalid level
+<?php try { trigger_error("x", 12345); } catch (ValueError $e) { echo $e->getMessage(); }
+### handler mask filters levels
+<?php set_error_handler(function($no, $str) { echo "got $str\n"; return true; }, E_USER_WARNING); trigger_error("w", E_USER_WARNING); @trigger_error("n", E_USER_NOTICE); echo "done";
+### set_error_handler returns previous and restore works
+<?php $h1 = function($n, $s) { echo "h1:$s\n"; return true; }; $h2 = function($n, $s) { echo "h2:$s\n"; return true; }; var_dump(set_error_handler($h1)); $prev = set_error_handler($h2); var_dump($prev === $h1); trigger_error("a"); restore_error_handler(); trigger_error("b"); restore_error_handler(); @trigger_error("c"); echo "end";
+### handler with fewer parameters
+<?php set_error_handler(function($no) { echo "level $no\n"; return true; }); trigger_error("x", E_USER_WARNING); set_error_handler(function() { echo "no params\n"; return true; }); trigger_error("y");
+### handler as function name and method
+<?php function on_error($no, $str) { echo "fn:$str\n"; return true; } class L { public function handle($no, $str) { echo "method:$str\n"; return true; } public static function shandle($no, $str) { echo "static:$str\n"; return true; } } set_error_handler("on_error"); trigger_error("1"); set_error_handler([new L(), "handle"]); trigger_error("2"); set_error_handler(["L", "shandle"]); trigger_error("3"); set_error_handler("L::shandle"); trigger_error("4");
+### handler converting warnings to exceptions
+<?php set_error_handler(function($no, $str, $file, $line) { throw new ErrorException($str, 0); }); try { echo $undefined_thing; echo "not reached"; } catch (ErrorException $e) { echo "caught: ", $e->getMessage(); }
+### handler not re-entered for errors inside itself
+<?php set_error_handler(function($no, $str) { echo "outer:$str\n"; @trigger_error("inner"); return true; }); trigger_error("first"); echo "after";
+### error_reporting get and set
+<?php var_dump(error_reporting()); $old = error_reporting(E_ALL & ~E_USER_NOTICE); var_dump($old, error_reporting()); error_reporting(0); var_dump(error_reporting());
+### error_reporting zero silences without handler
+<?php error_reporting(0); echo $nothing; $a = []; echo $a["x"]; trigger_error("quiet"); echo "silent ok";
+### silence operator without handler
+<?php $a = []; $v = @$a["none"]; $w = @$undef; @trigger_error("hidden", E_USER_WARNING); var_dump($v, $w); echo "ok";
+### ini_set and ini_get round trip
+<?php var_dump(ini_set("precision", "10") !== null, ini_get("precision")); ini_set("error_reporting", "0"); var_dump(error_reporting()); echo $gone; echo "fine";
+### define twice warns through handler
+<?php set_error_handler(function($no, $str) { echo "[$no] $str\n"; return true; }); define("ONCE", 1); var_dump(define("ONCE", 2)); echo ONCE;
+### list destructuring missing key warns
+<?php set_error_handler(function($no, $str) { echo "[$str]"; return true; }); [$a, $b] = [1]; var_dump($a, $b);
+### warning inside function reports function line
+<?php
+set_error_handler(function($no, $str, $file, $line) { echo "$str on $line\n"; return true; });
+function reader() {
+    $x = 1;
+    return $undefinedInside;
+}
+reader();
+echo $topLevel;

@@ -1,0 +1,72 @@
+### var_dump simple object
+<?php class P { public $a = 1; public $b = "x"; } var_dump(new P());
+### var_dump visibility annotations
+<?php class V { public $pub = 1; protected $pro = 2; private $pri = 3; } var_dump(new V());
+### var_dump inherited properties order and private owner
+<?php class A { public $a = 1; private $secret = "a"; protected $shared = "s"; } class B extends A { public $b = 2; private $own = "b"; } var_dump(new B());
+### var_dump object ids in creation order
+<?php class N {} $x = new N(); $y = new N(); $z = new N(); var_dump($z, $x, $y);
+### var_dump stdClass and dynamic properties
+<?php $o = new stdClass(); $o->name = "n"; $o->list = [1, 2]; var_dump($o);
+### var_dump nested objects and arrays
+<?php class Box { public $item; public $tags = []; } $inner = new Box(); $inner->item = 5; $outer = new Box(); $outer->item = $inner; $outer->tags = ["a" => $inner, 0 => 1.5]; var_dump($outer);
+### var_dump same object twice shows same id
+<?php class T { public $v = 1; } $t = new T(); var_dump([$t, $t]);
+### var_dump recursion
+<?php class Node { public $self; } $n = new Node(); $n->self = $n; var_dump($n);
+### var_dump uninitialized typed property
+<?php class U { public int $n; public ?string $s = null; public string $t = "set"; } var_dump(new U());
+### var_dump typed properties after assignment
+<?php class U { public int $n; public float $f; } $u = new U(); $u->n = 5; $u->f = 2; var_dump($u);
+### var_dump enum cases
+<?php enum Suit: string { case Hearts = "H"; case Spades = "S"; } enum Flag { case On; case Off; } var_dump(Suit::Hearts, Flag::Off, [Suit::Spades]);
+### var_dump object holding enum and null
+<?php enum Lvl: int { case Low = 1; } class H { public $lvl; public $none = null; public $ok = true; } $h = new H(); $h->lvl = Lvl::Low; var_dump($h);
+### var_dump empty object
+<?php class E {} var_dump(new E(), new stdClass());
+### var_dump constructor promoted properties
+<?php class Pt { public function __construct(public int $x = 0, protected int $y = 0, private string $label = "p") {} } var_dump(new Pt(3, 4));
+### var_dump cloned object gets new id
+<?php class C { public $v = 1; } $a = new C(); $b = clone $a; $b->v = 2; var_dump($a, $b);
+### print_r scalars
+<?php print_r(1); echo "|"; print_r(1.5); echo "|"; print_r("s"); echo "|"; print_r(true); echo "|"; print_r(false); echo "|"; print_r(null); echo "|";
+### print_r flat array
+<?php print_r([1, "two", 3.5, true, null]);
+### print_r associative and nested array
+<?php print_r(["a" => 1, "b" => [10, 20, ["deep" => "x"]], 5 => "five"]);
+### print_r empty array
+<?php print_r([]); print_r(["e" => []]);
+### print_r object with visibility
+<?php class V { public $pub = 1; protected $pro = [1, 2]; private $pri = "p"; } print_r(new V());
+### print_r nested object and stdClass
+<?php $o = new stdClass(); $o->a = 1; $o->child = new stdClass(); $o->child->b = [1]; print_r($o);
+### print_r return mode
+<?php $s = print_r([1, 2], true); echo strlen($s), "|", $s; var_dump(print_r("x", true));
+### print_r inherited private
+<?php class A { private $a = 1; } class B extends A { private $b = 2; public $c = 3; } print_r(new B());
+### const statement
+<?php const GREETING = "hello"; const ANSWER = 42, RATIO = 1.5; echo GREETING, " ", ANSWER, " ", RATIO; var_dump(ANSWER + 1, RATIO * 2);
+### const expression values
+<?php const BASE = 10; const DOUBLE = BASE * 2; const LIST_ = [1, 2, 3]; const NAME = "n" . "m"; var_dump(DOUBLE, LIST_, NAME);
+### define and constant lookup
+<?php define("SITE", "example"); define("MAX", 5); echo SITE, MAX; var_dump(defined("SITE"), defined("NOPE"), constant("MAX"), defined("PHP_INT_MAX"));
+### constants inside functions and classes
+<?php const LIMIT = 3; define("STEP", 2); function f() { return LIMIT * STEP; } class K { public function g() { return LIMIT + STEP; } } echo f(), "|"; $k = new K(); echo $k->g();
+### undefined constant via constant function
+<?php try { constant("MISSING_ONE"); } catch (Error $e) { echo get_class($e), ": ", $e->getMessage(); }
+### error level constants
+<?php var_dump(E_ALL, E_ERROR, E_WARNING, E_NOTICE, E_DEPRECATED, E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE, E_USER_DEPRECATED, E_ALL & ~E_NOTICE);
+### version and platform constants
+<?php var_dump(PHP_VERSION, PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION, PHP_VERSION_ID, PHP_OS, PHP_OS_FAMILY, DIRECTORY_SEPARATOR);
+### str_repeat
+<?php echo str_repeat("ab", 3), "|", str_repeat("-", 0), "|", str_repeat("x", 1); try { str_repeat("x", -1); } catch (ValueError $e) { echo "|", $e->getMessage(); }
+### call_user_func variants
+<?php function add($a, $b) { return $a + $b; } class M { public function twice($x) { return $x * 2; } public static function neg($x) { return -$x; } } $m = new M(); echo call_user_func("add", 1, 2), "|", call_user_func(function($x) { return $x . "!"; }, "hi"), "|", call_user_func([$m, "twice"], 4), "|", call_user_func(["M", "neg"], 5), "|", call_user_func("M::neg", 6), "|", call_user_func("strtoupper", "up");
+### call_user_func_array
+<?php function join3($a, $b, $c) { return "$a-$b-$c"; } echo call_user_func_array("join3", [1, 2, 3]), "|", call_user_func_array(fn($x, $y) => $x * $y, [6, 7]);
+### function_exists
+<?php function mine() {} var_dump(function_exists("mine"), function_exists("MINE"), function_exists("not_defined_fn"));
+### uncaught exception handler
+<?php set_exception_handler(function($e) { echo "handled: ", get_class($e), " - ", $e->getMessage(); }); echo "start "; throw new RuntimeException("oops"); echo "never";
+### exception handler replaced and restored
+<?php $first = function($e) { echo "first ", $e->getMessage(); }; $second = function($e) { echo "second ", $e->getMessage(); }; var_dump(set_exception_handler($first) === null); set_exception_handler($second); restore_exception_handler(); throw new Exception("x");
