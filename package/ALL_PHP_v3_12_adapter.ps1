@@ -236,8 +236,14 @@
                         $classList = $false
                     } elseif ($phpNameRx.IsMatch($t)) {
                         $lower = $t.ToLowerInvariant()
+                        # Reserved words are legal as constant, method and member names ("const USE",
+                        # "function namespace()", "namespace as bar"); in those positions they are plain names.
                         $isMember = ($prev -ceq '->' -or $prev -ceq '?->' -or $prev -ceq '::')
-                        if (-not $isMember -and $lower -ceq 'namespace') {
+                        $plainName = ($prev -ieq 'const' -or $prev -ieq 'function' -or $prev -ieq 'as' -or
+                            $prev -ieq 'case' -or ($inClass -and ($next -ieq 'as' -or $next -ieq 'insteadof')))
+                        $startsStatement = ($prev -ceq '' -or $prev -ceq ';' -or $prev -ceq '{' -or $prev -ceq '}')
+                        if (-not $isMember -and -not $plainName -and $startsStatement -and
+                            $lower -ceq 'namespace' -and $next -cne '(') {
                             # namespace A\B;   namespace A\B { ... }   namespace { ... }
                             $j = $i + 1
                             $name = ''
@@ -248,7 +254,8 @@
                             $i = $j
                             continue
                         }
-                        if (-not $isMember -and $lower -ceq 'use' -and -not $inClass -and $next -cne '(') {
+                        if (-not $isMember -and -not $plainName -and $startsStatement -and
+                            $lower -ceq 'use' -and -not $inClass -and $next -cne '(') {
                             # use A\B;  use A\B as C;  use function A\f;  use const A\C;  use A\{B, C as D};
                             $kind = 'class'
                             $j = $i + 1
@@ -281,9 +288,9 @@
                         }
                         if ($isMember) {
                             # member name: never resolved
-                        } elseif ($lower -ceq '__namespace__') {
+                        } elseif ($lower -ceq '__namespace__' -and -not $plainName) {
                             $emit = "'" + $ns.Replace('\', '\\') + "'"
-                        } elseif (-not $t.Contains('\') -and $phpReservedNames.Contains($t)) {
+                        } elseif (-not $plainName -and -not $t.Contains('\') -and $phpReservedNames.Contains($t)) {
                             if ($lower -in @('class','interface','trait','enum')) {
                                 if ($lower -ne 'enum' -or $phpNameRx.IsMatch($next)) { $pendingClass = $true }
                             }
