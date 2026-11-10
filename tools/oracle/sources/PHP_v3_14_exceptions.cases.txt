@@ -1,0 +1,113 @@
+### basic try catch
+<?php try { throw new Exception("boom"); } catch (Exception $e) { echo "caught ", $e->getMessage(); } echo " after";
+### code and default values
+<?php try { throw new Exception("m", 42); } catch (Exception $e) { var_dump($e->getMessage(), $e->getCode()); } $d = new Exception(); var_dump($d->getMessage(), $d->getCode(), $d->getPrevious());
+### statements after throw are skipped
+<?php try { echo "a"; throw new Exception("x"); echo "b"; } catch (Exception $e) { echo "c"; } echo "d";
+### no exception skips catch
+<?php try { echo "a"; } catch (Exception $e) { echo "b"; } echo "c";
+### finally always runs
+<?php try { echo "a"; } finally { echo "f"; } try { throw new Exception("x"); } catch (Exception $e) { echo "c"; } finally { echo "g"; }
+### finally with return in try
+<?php function f() { try { return "try"; } finally { echo "finally "; } } echo f();
+### finally return overrides try return
+<?php function f() { try { return "try"; } finally { return "finally"; } } echo f();
+### finally return swallows exception
+<?php function f() { try { throw new Exception("lost"); } finally { return "kept"; } } echo f();
+### finally runs when exception propagates
+<?php function f() { try { throw new Exception("up"); } finally { echo "cleanup "; } } try { f(); } catch (Exception $e) { echo $e->getMessage(); }
+### finally with break and continue in loops
+<?php for ($i = 0; $i < 3; $i++) { try { if ($i == 1) { continue; } if ($i == 2) { break; } echo "body$i "; } finally { echo "fin$i "; } } echo "end";
+### catch order first match wins
+<?php try { throw new InvalidArgumentException("x"); } catch (RuntimeException $e) { echo "runtime"; } catch (LogicException $e) { echo "logic"; } catch (Exception $e) { echo "exception"; }
+### multi catch
+<?php foreach ([1, 2, 3] as $n) { try { if ($n == 1) { throw new TypeError("t"); } if ($n == 2) { throw new ValueError("v"); } throw new RuntimeException("r"); } catch (TypeError | ValueError $e) { echo get_class($e), " "; } catch (Exception $e) { echo "other "; } }
+### catch without variable
+<?php try { throw new Exception("x"); } catch (Exception) { echo "caught without variable"; }
+### catch Throwable catches Error and Exception
+<?php foreach ([new Exception("e"), new Error("r"), new TypeError("t")] as $x) { try { throw $x; } catch (Throwable $t) { echo get_class($t), ":", $t->getMessage(), " "; } }
+### Error is not an Exception
+<?php try { try { throw new Error("err"); } catch (Exception $e) { echo "wrong"; } } catch (Error $e) { echo "right ", $e->getMessage(); }
+### builtin hierarchy instanceof
+<?php $e = new DivisionByZeroError("d"); var_dump($e instanceof ArithmeticError, $e instanceof Error, $e instanceof Throwable, $e instanceof Exception); $o = new OutOfBoundsException("o"); var_dump($o instanceof RuntimeException, $o instanceof LogicException, $o instanceof Exception);
+### spl exception parents
+<?php foreach ([new BadMethodCallException(), new DomainException(), new LengthException(), new OutOfRangeException(), new OverflowException(), new RangeException(), new UnderflowException(), new UnexpectedValueException(), new ArgumentCountError(), new JsonException()] as $e) { echo get_class($e), ":", $e instanceof LogicException ? "L" : "-", $e instanceof RuntimeException ? "R" : "-", $e instanceof Error ? "E" : "-", " "; }
+### user exception class
+<?php class MyEx extends Exception {} try { throw new MyEx("mine", 3); } catch (MyEx $e) { echo get_class($e), "|", $e->getMessage(), "|", $e->getCode(), "|", $e instanceof Exception ? "y" : "n"; }
+### user exception with constructor and extra data
+<?php class HttpError extends RuntimeException { public $status; public function __construct($status, $message) { parent::__construct($message, $status); $this->status = $status; } public function describe() { return $this->status . " " . $this->getMessage(); } } try { throw new HttpError(404, "Not Found"); } catch (HttpError $e) { echo $e->describe(), "|", $e->getCode(); }
+### user exception overriding message property
+<?php class Fixed extends Exception { protected $message = "fixed message"; protected $code = 9; } try { throw new Fixed(); } catch (Exception $e) { echo $e->getMessage(), "|", $e->getCode(); }
+### user exception without parent constructor call
+<?php class Bare extends Exception { public function __construct() {} } try { throw new Bare(); } catch (Exception $e) { var_dump($e->getMessage(), $e->getCode(), $e->getLine()); }
+### exception from nested function calls
+<?php function a() { b(); echo "unreached"; } function b() { c(); } function c() { throw new LogicException("deep"); } try { a(); } catch (LogicException $e) { echo $e->getMessage(); }
+### exception from method
+<?php class Svc { public function run($x) { if ($x < 0) { throw new InvalidArgumentException("negative: " . $x); } return $x * 2; } } $s = new Svc(); try { echo $s->run(2), " "; echo $s->run(-1); } catch (InvalidArgumentException $e) { echo $e->getMessage(); }
+### exception from static method and closure
+<?php class U { public static function fail() { throw new DomainException("static"); } } $f = function() { throw new RangeException("closure"); }; try { U::fail(); } catch (DomainException $e) { echo $e->getMessage(), " "; } try { $f(); } catch (RangeException $e) { echo $e->getMessage(); }
+### rethrow same exception
+<?php try { try { throw new Exception("inner"); } catch (Exception $e) { echo "first "; throw $e; } } catch (Exception $e) { echo "second ", $e->getMessage(); }
+### exception chaining with previous
+<?php try { try { throw new InvalidArgumentException("low", 1); } catch (Exception $e) { throw new RuntimeException("high", 2, $e); } } catch (RuntimeException $e) { $p = $e->getPrevious(); echo $e->getMessage(), "<-", $p->getMessage(), "|", get_class($p), "|", $p->getCode(); var_dump($p->getPrevious()); }
+### throw in catch reaches outer finally
+<?php try { try { throw new Exception("a"); } catch (Exception $e) { throw new Exception("b"); } finally { echo "inner-finally "; } } catch (Exception $e) { echo $e->getMessage(); }
+### exception thrown in finally replaces
+<?php try { try { throw new Exception("first"); } finally { throw new Exception("second"); } } catch (Exception $e) { echo $e->getMessage(), "|", $e->getPrevious() === null ? "no-prev" : $e->getPrevious()->getMessage(); }
+### nested try in loop continues
+<?php $ok = 0; $bad = 0; foreach ([1, 0, 2, 0, 5] as $d) { try { $r = intdiv(10, $d); $ok++; } catch (DivisionByZeroError $e) { $bad++; } } echo $ok, "/", $bad;
+### throw as expression
+<?php $v = null; try { $x = $v ?? throw new Exception("null value"); } catch (Exception $e) { echo $e->getMessage(), "|"; } $f = fn($n) => $n > 0 ? $n : throw new RangeException("not positive"); try { echo $f(3), "|"; echo $f(0); } catch (RangeException $e) { echo $e->getMessage(); }
+### getLine reports the line of creation
+<?php
+function make() {
+    return new Exception("made");
+}
+try {
+    throw new Exception("here");
+} catch (Exception $e) {
+    echo $e->getLine(), "|";
+}
+$m = make();
+echo $m->getLine();
+### getLine is the creation line not the throw line
+<?php
+$e = new RuntimeException("early");
+
+try {
+    throw $e;
+} catch (Exception $caught) {
+    echo $caught->getLine();
+}
+### division by zero error
+<?php try { echo 1 / 0; } catch (DivisionByZeroError $e) { echo get_class($e), ": ", $e->getMessage(); }
+### modulo by zero error
+<?php try { echo 1 % 0; } catch (DivisionByZeroError $e) { echo $e->getMessage(); } try { $a = 5; $a %= 0; } catch (ArithmeticError $e) { echo "|", $e->getMessage(); }
+### float division by zero error
+<?php try { echo 1.5 / 0.0; } catch (DivisionByZeroError $e) { echo $e->getMessage(); } try { $x = 4; $x /= 0; } catch (Error $e) { echo "|", get_class($e); }
+### intdiv errors
+<?php try { intdiv(1, 0); } catch (DivisionByZeroError $e) { echo $e->getMessage(); } try { intdiv(PHP_INT_MIN, -1); } catch (ArithmeticError $e) { echo "|", get_class($e), "|", $e->getMessage(); }
+### negative shift error
+<?php try { echo 1 << -1; } catch (ArithmeticError $e) { echo get_class($e), ": ", $e->getMessage(); }
+### unhandled match error
+<?php foreach ([5, "abc", 1.5, true, null] as $v) { try { echo match($v) { 1 => "one" }; } catch (UnhandledMatchError $e) { echo $e->getMessage(), "\n"; } }
+### enum from value error
+<?php enum Suit: string { case Hearts = "H"; case Spades = "S"; } enum Num: int { case One = 1; } try { Suit::from("X"); } catch (ValueError $e) { echo $e->getMessage(), "\n"; } try { Num::from(9); } catch (ValueError $e) { echo $e->getMessage(), "\n"; } var_dump(Suit::tryFrom("X"));
+### arithmetic continues after caught error
+<?php $total = 0; foreach ([4, 0, 2] as $d) { try { $total += 8 / $d; } catch (DivisionByZeroError $e) { $total += 100; } } var_dump($total);
+### variables assigned before throw are kept
+<?php $a = 1; try { $a = 2; throw new Exception("x"); $a = 3; } catch (Exception $e) { $b = $a; } var_dump($a, $b);
+### catch variable is visible after the block
+<?php try { throw new Exception("kept"); } catch (Exception $e) { } echo $e->getMessage();
+### exception object identity
+<?php $orig = new Exception("same"); try { throw $orig; } catch (Exception $e) { var_dump($e === $orig); }
+### exception inside function restores caller scope
+<?php function f($n) { $local = "inner"; throw new Exception("f" . $n); } $local = "outer"; try { f(1); } catch (Exception $e) { echo $local, "|", $e->getMessage(); }
+### exception through recursion
+<?php function down($n) { if ($n == 0) { throw new Exception("bottom"); } try { down($n - 1); } finally { echo $n; } } try { down(3); } catch (Exception $e) { echo "|", $e->getMessage(); }
+### try finally result value
+<?php function f($x) { try { if ($x) { return "early"; } $r = "late"; } finally { echo "[fin]"; } return $r; } echo f(true), " ", f(false);
+### throw non throwable is an error
+<?php try { throw new stdClass(); } catch (Error $e) { echo get_class($e), ": ", $e->getMessage(); }
+### custom toString free methods on Error
+<?php $e = new Error("msg", 5); var_dump($e->getMessage(), $e->getCode(), $e instanceof Throwable, $e->getPrevious());

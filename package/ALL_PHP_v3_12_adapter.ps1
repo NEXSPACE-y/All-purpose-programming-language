@@ -1,7 +1,9 @@
 ﻿@{
     Name = 'PHP'
     Run = {
-        param([string]$Code)
+        # -PhpDiagnostics: report an uncaught PHP exception the way the PHP CLI does (text on the
+        # output stream) instead of surfacing it as a PowerShell error. Default behaviour is unchanged.
+        param([string]$Code, [switch]$PhpDiagnostics)
         $ErrorActionPreference = 'Stop'
 
         # ALL's own PHP subset interpreter. No PHP executable, eval, or Invoke-Expression.
@@ -49,6 +51,13 @@
                 CurrentCallable = $null
                 ReturnByRef = $false
                 ClassContext = $null
+                TokenLines = [System.Collections.Generic.List[int]]::new()
+                Line = 0
+                ScriptName = 'Command line code'
+                CallStack = [System.Collections.Generic.List[object]]::new()
+                ThrownObjects = @{}
+                ThrownSeq = 0
+                PreludeLoaded = $false
         }
 
         $state.Globals = $state.Vars
@@ -72,21 +81,28 @@
         # Tokenize before parsing. Unknown characters produce an error, never disappear.
         $pattern = '(?:\s+|//[^\r\n]*|\#[^\r\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|''(?:\\.|[^''\\])*''|\$\$[A-Za-z_][A-Za-z_0-9]*|\$[A-Za-z_][A-Za-z_0-9]*|\$(?=\{)|0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|(?:\d[\d_]*(?:\.[\d_]*)?|\.\d[\d_]*)(?:[eE][+-]?\d[\d_]*)?|[A-Za-z_][A-Za-z_0-9]*|<=>|::|\.\.\.|<<=|>>=|<<|>>|===|!==|==|!=|<=|>=|&&|\|\||=>|->|\*\*=|\*\*|\?\?=|\?\?|\?->|\+\+|--|\*=|/=|%=|&=|\|=|\^=|\+=|-=|\.=|[+\-*/%.=<>!?:;{},()\[\]&|^~])'
         $rx = [regex]::new($pattern)
-        for ($offset = 0; $offset -lt $source.Length;) {
-            $match = $rx.Match($source, $offset)
-            if (-not $match.Success -or $match.Index -ne $offset) {
-                throw "ALL PHP: Unknown character at offset $offset"
+        function ConvertTo-PhpTokens([string]$text, $tokens, $lines) {
+            $line = 1
+            for ($offset = 0; $offset -lt $text.Length;) {
+                $match = $rx.Match($text, $offset)
+                if (-not $match.Success -or $match.Index -ne $offset) {
+                    throw "ALL PHP: Unknown character at offset $offset"
+                }
+                $token = $match.Value
+                if (-not [string]::IsNullOrWhiteSpace($token) -and
+                    -not $token.StartsWith('//') -and
+                    -not $token.StartsWith('#') -and
+                    -not $token.StartsWith('/*')) {
+                    [void]$tokens.Add($token)
+                    [void]$lines.Add($line)
+                }
+                if ($token.IndexOf([char]10) -ge 0) { $line += ($token.Split([char]10).Count - 1) }
+                $offset += $token.Length
             }
-            $token = $match.Value
-            if (-not [string]::IsNullOrWhiteSpace($token) -and
-                -not $token.StartsWith('//') -and
-                -not $token.StartsWith('#') -and
-                -not $token.StartsWith('/*')) {
-                [void]$state.Tokens.Add($token)
-            }
-            $offset += $token.Length
+            [void]$tokens.Add('(EOF)')
+            [void]$lines.Add($line)
         }
-        [void]$state.Tokens.Add('(EOF)')
+        ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines
 
         function Peek-Token {
             return $state.Tokens[$state.Pos]
@@ -469,6 +485,10 @@
                     Name='(closure)'
                 }
             }
+            if ($token -eq 'throw') {
+                [void](Next-Token)
+                return [pscustomobject]@{ Kind='throw'; Arg=(Read-Expr 1) }
+            }
             if ($token -eq 'new') {
                 [void](Next-Token)
                 $className = Next-Token
@@ -774,7 +794,16 @@
             Expect-Token $endToken
             return ,($nodes.ToArray())
         }
+        # Every statement node records the source line it starts on.
         function Read-Statement {
+            $line = $state.TokenLines[$state.Pos]
+            $node = Read-StatementCore
+            if ($null -ne $node -and -not $node.PSObject.Properties['Line']) {
+                $node | Add-Member -NotePropertyName Line -NotePropertyValue $line
+            }
+            return $node
+        }
+        function Read-StatementCore {
             $token = Peek-Token
             if ($token -ceq '{') {
                 [void](Next-Token)
@@ -1424,6 +1453,48 @@
                     ValueName=$valueName; ByReference=$byReference; Body=$body
                 }
             }
+            if ($token -eq 'try') {
+                [void](Next-Token)
+                if ((Peek-Token) -cne '{') { throw "ALL PHP: Expected '{', got '$(Peek-Token)'" }
+                $body = Read-Statement
+                $catches = [System.Collections.Generic.List[object]]::new()
+                while ((Peek-Token) -eq 'catch') {
+                    [void](Next-Token)
+                    Expect-Token '('
+                    $types = [System.Collections.Generic.List[string]]::new()
+                    while ($true) {
+                        $typeName = Next-Token
+                        if ($typeName -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                            throw "ALL PHP: Expected class name in catch, got '$typeName'"
+                        }
+                        [void]$types.Add($typeName)
+                        if ((Peek-Token) -cne '|') { break }
+                        [void](Next-Token)
+                    }
+                    $varName = $null
+                    if ((Peek-Token) -cmatch '^\$[A-Za-z_][A-Za-z_0-9]*$') {
+                        $varName = (Next-Token).Substring(1)
+                    }
+                    Expect-Token ')'
+                    if ((Peek-Token) -cne '{') { throw "ALL PHP: Expected '{', got '$(Peek-Token)'" }
+                    $handler = Read-Statement
+                    [void]$catches.Add([pscustomobject]@{
+                        Types=$types.ToArray(); Var=$varName; Body=$handler
+                    })
+                }
+                $finallyBody = $null
+                if ((Peek-Token) -eq 'finally') {
+                    [void](Next-Token)
+                    if ((Peek-Token) -cne '{') { throw "ALL PHP: Expected '{', got '$(Peek-Token)'" }
+                    $finallyBody = Read-Statement
+                }
+                if ($catches.Count -eq 0 -and $null -eq $finallyBody) {
+                    throw 'ALL PHP: Cannot use try without catch or finally'
+                }
+                return [pscustomobject]@{
+                    Kind='try'; Body=$body; Catches=$catches.ToArray(); Finally=$finallyBody
+                }
+            }
             if ($token -eq 'echo') {
                 [void](Next-Token)
                 $callArgs = [System.Collections.Generic.List[object]]::new()
@@ -1608,6 +1679,178 @@
             [void]$statements.Add((Read-Statement))
         }
 
+        # ---- PHP exceptions --------------------------------------------------------------------
+        # Built-in Throwable hierarchy, written in PHP and parsed by this interpreter on first use.
+        $phpPreludeBody = @"
+    protected `$message = '';
+    protected `$code = 0;
+    protected `$file = '';
+    protected `$line = 0;
+    protected `$previous = null;
+    protected `$__trace = '';
+    public function __construct(`$message = null, `$code = null, `$previous = null) {
+        if (`$message !== null) { `$this->message = `$message; }
+        if (`$code !== null) { `$this->code = `$code; }
+        `$this->previous = `$previous;
+    }
+    public function getMessage() { return `$this->message; }
+    public function getCode() { return `$this->code; }
+    public function getPrevious() { return `$this->previous; }
+    public function getFile() { return `$this->file; }
+    public function getLine() { return `$this->line; }
+    public function getTraceAsString() { return `$this->__trace; }
+    public function __toString() { return __all_throwable_string(`$this); }
+"@
+        $phpPreludeSource = "interface Stringable {}`ninterface Throwable extends Stringable {}`n" +
+            "class Exception implements Throwable {`n$phpPreludeBody`n}`n" +
+            "class Error implements Throwable {`n$phpPreludeBody`n}`n" + @"
+class ErrorException extends Exception {}
+class RuntimeException extends Exception {}
+class LogicException extends Exception {}
+class BadFunctionCallException extends LogicException {}
+class BadMethodCallException extends BadFunctionCallException {}
+class DomainException extends LogicException {}
+class InvalidArgumentException extends LogicException {}
+class LengthException extends LogicException {}
+class OutOfRangeException extends LogicException {}
+class OutOfBoundsException extends RuntimeException {}
+class OverflowException extends RuntimeException {}
+class RangeException extends RuntimeException {}
+class UnderflowException extends RuntimeException {}
+class UnexpectedValueException extends RuntimeException {}
+class JsonException extends Exception {}
+class TypeError extends Error {}
+class ArgumentCountError extends TypeError {}
+class ValueError extends Error {}
+class ArithmeticError extends Error {}
+class DivisionByZeroError extends ArithmeticError {}
+class AssertionError extends Error {}
+class UnhandledMatchError extends Error {}
+"@
+        $phpPreludeTriggers = [System.Collections.Generic.HashSet[string]]::new(
+            [System.StringComparer]::OrdinalIgnoreCase)
+        foreach ($word in @('try','catch','throw','Throwable','Stringable','Exception','Error','ErrorException',
+            'RuntimeException','LogicException','BadFunctionCallException','BadMethodCallException',
+            'DomainException','InvalidArgumentException','LengthException','OutOfRangeException',
+            'OutOfBoundsException','OverflowException','RangeException','UnderflowException',
+            'UnexpectedValueException','JsonException','TypeError','ArgumentCountError','ValueError',
+            'ArithmeticError','DivisionByZeroError','AssertionError','UnhandledMatchError')) {
+            [void]$phpPreludeTriggers.Add($word)
+        }
+        function Ensure-PhpPrelude {
+            if ($state.PreludeLoaded) { return }
+            $state.PreludeLoaded = $true
+            if ($null -eq $script:ALLPhpPreludeAst) {
+                $savedTokens = $state.Tokens
+                $savedLines = $state.TokenLines
+                $savedPos = $state.Pos
+                try {
+                    $state.Tokens = [System.Collections.Generic.List[string]]::new()
+                    $state.TokenLines = [System.Collections.Generic.List[int]]::new()
+                    $state.Pos = 0
+                    ConvertTo-PhpTokens $phpPreludeSource $state.Tokens $state.TokenLines
+                    $nodes = [System.Collections.Generic.List[object]]::new()
+                    while ((Peek-Token) -cne '(EOF)') { [void]$nodes.Add((Read-Statement)) }
+                    $script:ALLPhpPreludeAst = $nodes.ToArray()
+                } finally {
+                    $state.Tokens = $savedTokens
+                    $state.TokenLines = $savedLines
+                    $state.Pos = $savedPos
+                }
+            }
+            $savedLine = $state.Line
+            $savedSteps = $state.Steps
+            foreach ($node in $script:ALLPhpPreludeAst) { Invoke-PhpStatement $node }
+            $state.Line = $savedLine
+            $state.Steps = $savedSteps
+        }
+        function Format-PhpTraceArgument($value) {
+            if ($null -ne $value -and $value.PSObject.Properties['PhpType'] -and
+                $value.PhpType -ceq 'named_argument') { $value = $value.Value }
+            if (Is-PhpRefCell $value) { $value = $value.Value }
+            if ($null -eq $value) { return 'NULL' }
+            if ($value -is [bool]) { if ($value) { return 'true' }; return 'false' }
+            if ($value -is [long]) { return $value.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
+            if ($value -is [double]) { return (Format-PhpFloat $value 0) }
+            if ($value -is [string]) {
+                if ($value.Length -gt 15) { return ("'" + $value.Substring(0, 15) + "...'") }
+                return ("'" + $value + "'")
+            }
+            if (Is-PhpArray $value) { return 'Array' }
+            if (Is-PhpObject $value) { return ('Object(' + $value.Class + ')') }
+            return 'Object'
+        }
+        function Format-PhpStackTrace {
+            $sb = [System.Text.StringBuilder]::new()
+            $index = 0
+            for ($i = $state.CallStack.Count - 1; $i -ge 0; $i--) {
+                $frame = $state.CallStack[$i]
+                $parts = [System.Collections.Generic.List[string]]::new()
+                foreach ($item in $frame.Args) { [void]$parts.Add((Format-PhpTraceArgument $item)) }
+                [void]$sb.Append('#' + $index + ' ' + $state.ScriptName + '(' + $frame.Line + '): ' +
+                    $frame.Name + '(' + [string]::Join(', ', $parts.ToArray()) + ")`n")
+                $index++
+            }
+            [void]$sb.Append('#' + $index + ' {main}')
+            return $sb.ToString()
+        }
+        # Called for every freshly created object: Throwables remember where they were created.
+        function Initialize-PhpThrowable($object) {
+            $object.Props['file'] = $state.ScriptName
+            $object.Props['line'] = [long]$state.Line
+            $object.Props['__trace'] = Format-PhpStackTrace
+        }
+        function Get-PhpThrowableString($object) {
+            $text = $object.Class + ': ' + (To-PhpText $object.Props['message']) + ' in ' +
+                (To-PhpText $object.Props['file']) + ':' + (To-PhpText $object.Props['line']) +
+                "`nStack trace:`n" + (To-PhpText $object.Props['__trace'])
+            $previous = $object.Props['previous']
+            if (Is-PhpObject $previous) { return ((Get-PhpThrowableString $previous) + "`n`nNext " + $text) }
+            return $text
+        }
+        # A thrown PHP object travels inside a .NET exception. The message is what a caller that does
+        # not understand PHP exceptions sees (and what the legacy regression fixtures match on).
+        function Throw-PhpObject($object, [string]$legacyText = '') {
+            if ($legacyText.Length -eq 0) {
+                $legacyText = 'ALL PHP: Uncaught ' + $object.Class + ': ' + (To-PhpText $object.Props['message'])
+            }
+            $state.ThrownSeq++
+            $id = [string]$state.ThrownSeq
+            $state.ThrownObjects[$id] = $object
+            $signal = [System.Exception]::new($legacyText)
+            $signal.Data['PhpThrowableId'] = $id
+            throw $signal
+        }
+        function Get-PhpThrown($errorRecord) {
+            $ex = $errorRecord.Exception
+            while ($null -ne $ex) {
+                if ($ex.Data.Contains('PhpThrowableId')) {
+                    $id = [string]$ex.Data['PhpThrowableId']
+                    if ($state.ThrownObjects.ContainsKey($id)) { return $state.ThrownObjects[$id] }
+                }
+                $ex = $ex.InnerException
+            }
+            return $null
+        }
+        # Raise a built-in PHP error from inside the interpreter.
+        function Throw-PhpError([string]$className, [string]$message, [string]$legacyText = '') {
+            Ensure-PhpPrelude
+            $object = Invoke-PhpExpr ([pscustomobject]@{
+                Kind='new'; Name=$className
+                Args=@([pscustomobject]@{ Kind='literal'; Value=$message })
+            })
+            Throw-PhpObject $object $legacyText
+        }
+        function Format-PhpMatchValue($value) {
+            if (Is-PhpRefCell $value) { $value = $value.Value }
+            if ($null -eq $value) { return 'NULL' }
+            if ($value -is [bool]) { if ($value) { return 'true' }; return 'false' }
+            if ($value -is [long]) { return $value.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
+            if ($value -is [double]) { return (Format-PhpFloat $value 0) }
+            if ($value -is [string]) { return ("'" + $value.Replace('\', '\\').Replace("'", "\'") + "'") }
+            if (Is-PhpObject $value) { return ('of type ' + $value.Class) }
+            return 'of type array'
+        }
         function New-PhpArray {
             return [pscustomobject]@{
                 PhpType='array'
@@ -2127,7 +2370,7 @@
             return ([double]$a * -1.0)
         }
         function Php-Div($a, $b) {
-            if ($b -eq 0) { throw 'ALL PHP: Division by zero' }
+            if ($b -eq 0) { Throw-PhpError 'DivisionByZeroError' 'Division by zero' 'ALL PHP: Division by zero' }
             if ($a -is [long] -and $b -is [long]) {
                 if ($b -eq -1) { return (Php-Neg $a) }
                 $rem = [long]0
@@ -2138,7 +2381,7 @@
         }
         function Php-Mod($a, $b) {
             $divisor = To-PhpInt $b
-            if ($divisor -eq 0) { throw 'ALL PHP: Division by zero' }
+            if ($divisor -eq 0) { Throw-PhpError 'DivisionByZeroError' 'Modulo by zero' 'ALL PHP: Division by zero' }
             $dividend = To-PhpInt $a
             if ($divisor -eq -1) { return [long]0 }
             $rem = [long]0
@@ -2165,7 +2408,9 @@
         function Php-Shift($a, $b, [bool]$left) {
             $value = To-PhpInt $a
             $count = To-PhpInt $b
-            if ($count -lt 0) { throw 'ALL PHP: Bit shift by negative number' }
+            if ($count -lt 0) {
+                Throw-PhpError 'ArithmeticError' 'Bit shift by negative number' 'ALL PHP: Bit shift by negative number'
+            }
             if ($count -ge 64) {
                 if ($left -or $value -ge 0) { return [long]0 }
                 return [long]-1
@@ -3167,6 +3412,16 @@
             $state.ClassContext = if ($owner.Length -gt 0) { $owner } else { $null }
             $state.CurrentCallable = if ($owner.Length -gt 0) { $owner + '::' + $definition.Name } else { $definition.Name }
             $state.CallDepth++
+            $oldLine = $state.Line
+            $frameName = [string]$definition.Name
+            if ($owner.Length -gt 0) {
+                if ($null -ne $object) { $frameName = $owner + '->' + $definition.Name }
+                else { $frameName = $owner + '::' + $definition.Name }
+            }
+            if ($frameName.Length -eq 0) { $frameName = '{closure}' }
+            $frameArgs = @()
+            if ($null -ne $callArgs) { $frameArgs = @($callArgs) }
+            [void]$state.CallStack.Add([pscustomobject]@{ Name=$frameName; Line=$state.Line; Args=$frameArgs })
             try {
                 if ($null -ne $closure) {
                     $state.ClassContext=$closure.ClassContext
@@ -3352,6 +3607,8 @@
                 return (Convert-PhpTypedValue $state.Flow.Value $returnType 'return value')
             } finally {
                 $state.CallDepth--
+                $state.Line = $oldLine
+                if ($state.CallStack.Count -gt 0) { $state.CallStack.RemoveAt($state.CallStack.Count - 1) }
                 $state.Vars = $oldVars
                 $state.Flow = $oldFlow
                 $state.GlobalBindings = $oldGlobals
@@ -3777,6 +4034,13 @@
                     }
                     return [string]::Join($separator, $items.ToArray())
                 }
+                '__all_throwable_string' { return (Get-PhpThrowableString $callArgs[0]) }
+                'get_class' {
+                    if ($callArgs.Count -ne 1 -or -not (Is-PhpObject $callArgs[0])) {
+                        throw 'ALL PHP: get_class() requires one object argument'
+                    }
+                    return [string]$callArgs[0].Class
+                }
                 'var_dump' {
                     if ($callArgs.Count -lt 1) { throw 'ALL PHP: var_dump() requires at least one argument' }
                     foreach ($item in $callArgs) { [Console]::Write((Format-PhpVarDump $item '')) }
@@ -3829,9 +4093,11 @@
                     if ($callArgs.Count -ne 2) { throw 'ALL PHP: intdiv() requires two arguments' }
                     $dividend = To-PhpInt (To-Number $callArgs[0])
                     $divisor = To-PhpInt (To-Number $callArgs[1])
-                    if ($divisor -eq 0) { throw 'ALL PHP: Division by zero' }
+                    if ($divisor -eq 0) {
+                        Throw-PhpError 'DivisionByZeroError' 'Division by zero' 'ALL PHP: Division by zero'
+                    }
                     if ($dividend -eq [long]::MinValue -and $divisor -eq -1) {
-                        throw 'ALL PHP: ArithmeticError: Division of PHP_INT_MIN by -1 is not an integer'
+                        Throw-PhpError 'ArithmeticError' 'Division of PHP_INT_MIN by -1 is not an integer' 'ALL PHP: ArithmeticError: Division of PHP_INT_MIN by -1 is not an integer'
                     }
                     $rem = [long]0
                     return [long][Math]::DivRem([long]$dividend, [long]$divisor, [ref]$rem)
@@ -3988,6 +4254,15 @@
                     return $node.Name
                 }
                 'cast' { return (Convert-PhpCast (Invoke-PhpExpr $node.Arg) $node.Type) }
+                'throw' {
+                    Ensure-PhpPrelude
+                    $thrownValue = Invoke-PhpExpr $node.Arg
+                    if (-not (Is-PhpObject $thrownValue)) { Throw-PhpError 'Error' 'Can only throw objects' }
+                    if (-not (Test-PhpInstanceOf $thrownValue.Class 'Throwable')) {
+                        Throw-PhpError 'Error' 'Cannot throw objects that do not implement Throwable'
+                    }
+                    Throw-PhpObject $thrownValue
+                }
                 'closure' {
                     $cap=[System.Collections.Generic.Dictionary[string,object]]::new(
                         [System.StringComparer]::Ordinal)
@@ -4160,7 +4435,8 @@
                                     $item.Props['value'] -eq $needle) { return $item }
                             }
                             if ($node.Name -ceq 'tryFrom') { return $null }
-                            throw 'ALL PHP: ValueError: invalid backing value for enum'
+                            $shown = if ($needle -is [string]) { '"' + $needle + '"' } else { To-PhpText $needle }
+                            Throw-PhpError 'ValueError' ($shown + ' is not a valid backing value for enum ' + $enum.Name) 'ALL PHP: ValueError: invalid backing value for enum'
                         }
                     }
                     $def=Find-OptionalPhpMethod $klass $node.Name
@@ -4448,6 +4724,9 @@
                             $object.Props[$prop.Name]=Copy-PhpValue (Convert-PhpTypedValue $val ([string]$prop.TypeName) ('property ' + $prop.Name))
                         }
                     }
+                    if ($state.PreludeLoaded -and (Test-PhpInstanceOf $className 'Throwable')) {
+                        Initialize-PhpThrowable $object
+                    }
                     $construct=$null
                     try { $construct=Find-PhpMethod $className '__construct' }
                     catch {
@@ -4493,7 +4772,7 @@
                         }
                     }
                     if ($null -ne $defaultArm) { return (Invoke-PhpExpr $defaultArm.Value) }
-                    throw 'ALL PHP: UnhandledMatchError'
+                    Throw-PhpError 'UnhandledMatchError' ('Unhandled match case ' + (Format-PhpMatchValue $subjectValue)) 'ALL PHP: UnhandledMatchError'
                 }
                 'binary' {
                     if ($node.Op -ceq '??') {
@@ -4563,7 +4842,63 @@
             if ($state.Steps -gt 100000) {
                 throw 'ALL PHP: Statement limit reached (100000)'
             }
+            if ($null -ne $node.Line) { $state.Line = $node.Line }
             switch ($node.Kind) {
+                'try' {
+                    # $pending holds an error that is still propagating once try/catch has finished;
+                    # it is re-raised after finally unless finally itself returns, breaks or continues.
+                    $pending = $null
+                    try {
+                        try { Invoke-PhpStatement $node.Body }
+                        catch {
+                            $thrown = Get-PhpThrown $_
+                            if ($null -eq $thrown) { throw }
+                            $handler = $null
+                            foreach ($candidate in $node.Catches) {
+                                foreach ($typeName in $candidate.Types) {
+                                    if (Test-PhpInstanceOf $thrown.Class $typeName) { $handler = $candidate; break }
+                                }
+                                if ($null -ne $handler) { break }
+                            }
+                            if ($null -eq $handler) { throw }
+                            $state.Flow.Returned = $false
+                            $state.Flow.LoopControl = $null
+                            if ($null -ne $handler.Var) { Set-PhpVariableValue $handler.Var $thrown }
+                            Invoke-PhpStatement $handler.Body
+                        }
+                    } catch { $pending = $_ }
+                    if ($null -ne $node.Finally) {
+                        # finally runs with a clean control-flow state; a return/break/continue that
+                        # was already under way resumes afterwards unless finally issues its own.
+                        $flow = $state.Flow
+                        $saved = @{}
+                        foreach ($name in @($flow.Keys)) { $saved[$name] = $flow[$name] }
+                        $flow.Returned = $false
+                        $flow.LoopControl = $null
+                        try { Invoke-PhpStatement $node.Finally }
+                        catch {
+                            # An exception raised by finally replaces the pending one and keeps it
+                            # reachable at the end of its "previous" chain.
+                            $replacement = Get-PhpThrown $_
+                            $original = if ($null -ne $pending) { Get-PhpThrown $pending } else { $null }
+                            if ($null -ne $replacement -and $null -ne $original -and
+                                -not [object]::ReferenceEquals($replacement, $original)) {
+                                $tail = $replacement
+                                $cyclic = $false
+                                while (Is-PhpObject $tail.Props['previous']) {
+                                    $tail = $tail.Props['previous']
+                                    if ([object]::ReferenceEquals($tail, $original)) { $cyclic = $true; break }
+                                }
+                                if (-not $cyclic) { $tail.Props['previous'] = $original }
+                            }
+                            throw
+                        }
+                        if ($flow.Returned -or $null -ne $flow.LoopControl) { $pending = $null }
+                        else { foreach ($name in @($saved.Keys)) { $flow[$name] = $saved[$name] } }
+                    }
+                    if ($null -ne $pending) { throw $pending }
+                    return
+                }
                 'block' {
                     foreach ($s in $node.Body) {
                         if ($state.Flow.Returned -or $null -ne $state.Flow.LoopControl) { break }
@@ -4770,7 +5105,9 @@
                                 if ($parentMethod.Final) {
                                     throw "ALL PHP: Cannot override final method '$($method.Name)'"
                                 }
-                                if ($parentMethod.Visibility -ne 'private') {
+                                # PHP does not check constructor signatures against a concrete parent.
+                                if ($parentMethod.Visibility -ne 'private' -and
+                                    ($method.Name -ine '__construct' -or $parentMethod.Abstract)) {
                                     Assert-PhpMethodSignature $method $parentMethod $method.Name
                                 }
                             }
@@ -4814,7 +5151,8 @@
                                 }
                                 if ($null -ne $inherited) {
                                     if ($inherited.Final) { throw 'ALL PHP: Cannot override final method via trait' }
-                                    if ($inherited.Visibility -ne 'private') {
+                                    if ($inherited.Visibility -ne 'private' -and
+                                        ($method.Name -ine '__construct' -or $inherited.Abstract)) {
                                         Assert-PhpMethodSignature $imported $inherited $method.Name
                                     }
                                 }
@@ -5127,9 +5465,23 @@
             }
             throw 'ALL PHP: Internal statement error'
         }
-        foreach ($statement in $statements) {
-            if ($state.Flow.Returned) { break }
-            Invoke-PhpStatement $statement
+        # Load the built-in exception classes up front when the program mentions any of them, so
+        # that user classes can extend them.
+        foreach ($programToken in $state.Tokens) {
+            if ($phpPreludeTriggers.Contains($programToken)) { Ensure-PhpPrelude; break }
+        }
+        try {
+            foreach ($statement in $statements) {
+                if ($state.Flow.Returned) { break }
+                Invoke-PhpStatement $statement
+            }
+        } catch {
+            $uncaught = Get-PhpThrown $_
+            if ($null -eq $uncaught -or -not $PhpDiagnostics) { throw }
+            # Same text the PHP CLI writes with display_errors=1 and html_errors=0.
+            [Console]::Write("`nFatal error: Uncaught " +
+                (Get-PhpThrowableString $uncaught) + "`n  thrown in " + (To-PhpText $uncaught.Props['file']) +
+                ' on line ' + (To-PhpText $uncaught.Props['line']) + "`n")
         }
     }
 }

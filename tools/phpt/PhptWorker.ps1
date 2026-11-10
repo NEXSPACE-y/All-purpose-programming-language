@@ -16,6 +16,13 @@ $utf8 = New-Object System.Text.UTF8Encoding($false)
 $adapter = & $AdapterPath
 if ($null -eq $adapter -or $adapter.Run -isnot [scriptblock]) { throw 'adapter did not load' }
 $runPhp = $adapter.Run
+# Adapters from v3.14 on can print uncaught exceptions the way the PHP CLI does; PHPT expects that.
+$phpDiagnostics = $false
+if ($null -ne $runPhp.Ast.ParamBlock) {
+    foreach ($parameter in $runPhp.Ast.ParamBlock.Parameters) {
+        if ($parameter.Name.VariablePath.UserPath -eq 'PhpDiagnostics') { $phpDiagnostics = $true }
+    }
+}
 $tests = @([IO.File]::ReadAllLines($ListFile, $utf8) | Where-Object { $_ })
 
 # Sections that need a runtime facility the adapter entry point (-Code only) cannot be given.
@@ -116,7 +123,8 @@ for ($i = $StartIndex; $i -lt $tests.Count; $i++) {
             $sw = [Diagnostics.Stopwatch]::StartNew()
             try {
                 [Console]::SetOut($writer)
-                $null = @(& $runPhp -Code $code)
+                if ($phpDiagnostics) { $null = @(& $runPhp -Code $code -PhpDiagnostics) }
+                else { $null = @(& $runPhp -Code $code) }
             } catch {
                 $failure = [string]$_.Exception.Message
             } finally {
