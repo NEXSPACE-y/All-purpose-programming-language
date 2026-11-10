@@ -1,0 +1,11 @@
+# 127.0.0.1:18888 のみで動作。合計3リクエスト後に自動終了。
+関数 応答する(要求) {
+    もし (要求["path"] == "/hello") {
+        返す {"status": 200, "body": "Hello ALL!", "content_type": "text/plain; charset=utf-8"}
+    }
+    もし (要求["path"] == "/json") {
+        返す {"status": 200, "body": json_encode({"message": "こんにちは世界"}), "content_type": "application/json; charset=utf-8"}
+    }
+    返す {"status": 404, "body": "Not found"}
+}
+HTTP配信(18888, "応答する", 3)

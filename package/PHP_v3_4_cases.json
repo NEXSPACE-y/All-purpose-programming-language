@@ -1,0 +1,302 @@
+[
+  {
+    "name": "assignment in grouped echo",
+    "code": "<?php $a=0; echo ($a=9).\":\".$a;",
+    "expected": "9:9"
+  },
+  {
+    "name": "chained assignment",
+    "code": "<?php $a=$b=7; echo $a.\":\".$b;",
+    "expected": "7:7"
+  },
+  {
+    "name": "assignment in if condition",
+    "code": "<?php if (($n=5)>2) {echo $n;}",
+    "expected": "5"
+  },
+  {
+    "name": "assignment inside function call",
+    "code": "<?php function inc($v){return $v+1;} echo inc($n=3).\":\".$n;",
+    "expected": "4:3"
+  },
+  {
+    "name": "expression compound multiply",
+    "code": "<?php $x=3; echo ($x*=5).\":\".$x;",
+    "expected": "15:15"
+  },
+  {
+    "name": "expression compound divide",
+    "code": "<?php $x=12; echo ($x/=4).\":\".$x;",
+    "expected": "3:3"
+  },
+  {
+    "name": "expression compound remainder",
+    "code": "<?php $x=14; echo ($x%=5).\":\".$x;",
+    "expected": "4:4"
+  },
+  {
+    "name": "expression compound power",
+    "code": "<?php $x=2; echo ($x**=5).\":\".$x;",
+    "expected": "32:32"
+  },
+  {
+    "name": "expression compound concat",
+    "code": "<?php $x=\"A\"; echo ($x.=\"B\").\":\".$x;",
+    "expected": "AB:AB"
+  },
+  {
+    "name": "compound update statement",
+    "code": "<?php $x=7; $x*=3; $x-=2; echo $x;",
+    "expected": "19"
+  },
+  {
+    "name": "for multiplication update",
+    "code": "<?php for($i=1;$i<5;$i*=2){echo $i;}",
+    "expected": "124"
+  },
+  {
+    "name": "nested assignment expression",
+    "code": "<?php $a=2; $b=($a+=6); echo $a.\":\".$b;",
+    "expected": "8:8"
+  },
+  {
+    "name": "coalesce assignment expression",
+    "code": "<?php $x=null; echo ($x??=11).\":\".$x;",
+    "expected": "11:11"
+  },
+  {
+    "name": "coalesce lazy expression",
+    "code": "<?php $x=2; echo ($x??=1/0);",
+    "expected": "2"
+  },
+  {
+    "name": "append assignment expression",
+    "code": "<?php $a=[]; echo ($a[]=3).\":\".count($a);",
+    "expected": "3:1"
+  },
+  {
+    "name": "chained compound assignment",
+    "code": "<?php $b=4; $a=($b*=3); echo $a.\":\".$b;",
+    "expected": "12:12"
+  },
+  {
+    "name": "array copy scalar overwrite",
+    "code": "<?php $a=[1]; $b=$a; $b[0]=9; echo $a[0].\":\".$b[0];",
+    "expected": "1:9"
+  },
+  {
+    "name": "array copy associative overwrite",
+    "code": "<?php $a=[\"x\"=>1]; $b=$a; $b[\"x\"]=2; echo $a[\"x\"].\":\".$b[\"x\"];",
+    "expected": "1:2"
+  },
+  {
+    "name": "array copy append isolation",
+    "code": "<?php $a=[1]; $b=$a; $b[]=4; echo count($a).\":\".count($b);",
+    "expected": "1:2"
+  },
+  {
+    "name": "array copy nested isolation",
+    "code": "<?php $a=[[1,2]]; $b=$a; $b[0][0]=9; echo $a[0][0].\":\".$b[0][0];",
+    "expected": "1:9"
+  },
+  {
+    "name": "array value copied into outer array",
+    "code": "<?php $a=[1]; $b=[$a]; $a[0]=8; echo $b[0][0].\":\".$a[0];",
+    "expected": "1:8"
+  },
+  {
+    "name": "function array argument by value",
+    "code": "<?php function add($a){$a[]=8; return count($a);} $a=[1]; echo add($a).\":\".count($a);",
+    "expected": "2:1"
+  },
+  {
+    "name": "function array builtin mutation isolated",
+    "code": "<?php function popit($a){array_pop($a);return count($a);} $a=[1,2]; echo popit($a).\":\".count($a);",
+    "expected": "1:2"
+  },
+  {
+    "name": "foreach array by value",
+    "code": "<?php $a=[[1]]; foreach($a as $v){$v[0]=7;} echo $a[0][0];",
+    "expected": "1"
+  },
+  {
+    "name": "object assignment remains identity",
+    "code": "<?php class A{public $x=1;} $a=new A(); $b=$a; $b->x=9; echo $a->x;",
+    "expected": "9"
+  },
+  {
+    "name": "array push after clone",
+    "code": "<?php $a=[1]; $b=$a; array_push($b,4); echo implode(\",\",$a).\"|\".implode(\",\",$b);",
+    "expected": "1|1,4"
+  },
+  {
+    "name": "array pop after clone",
+    "code": "<?php $a=[1,2]; $b=$a; array_pop($b); echo count($a).\":\".count($b);",
+    "expected": "2:1"
+  },
+  {
+    "name": "array unshift after clone",
+    "code": "<?php $a=[1,2]; $b=$a; array_unshift($b,0); echo count($a).\":\".implode(\",\",$b);",
+    "expected": "2:0,1,2"
+  },
+  {
+    "name": "array next index preserved after clone",
+    "code": "<?php $a=[3=>\"v\"]; $b=$a; $b[]=\"x\"; echo implode(\",\",array_keys($b));",
+    "expected": "3,4"
+  },
+  {
+    "name": "json encode list",
+    "code": "<?php echo json_encode([1,2,3]);",
+    "expected": "[1,2,3]"
+  },
+  {
+    "name": "json encode associative",
+    "code": "<?php echo json_encode([\"a\"=>1,\"b\"=>2]);",
+    "expected": "{\"a\":1,\"b\":2}"
+  },
+  {
+    "name": "json encode nested",
+    "code": "<?php echo json_encode([\"a\"=>[1,2],\"x\"=>true]);",
+    "expected": "{\"a\":[1,2],\"x\":true}"
+  },
+  {
+    "name": "json encode empty array",
+    "code": "<?php echo json_encode([]);",
+    "expected": "[]"
+  },
+  {
+    "name": "json encode null",
+    "code": "<?php echo json_encode([\"x\"=>null]);",
+    "expected": "{\"x\":null}"
+  },
+  {
+    "name": "json encode Unicode",
+    "code": "<?php echo json_encode(\"太郎\");",
+    "expected": "\"\\u592a\\u90ce\""
+  },
+  {
+    "name": "json encode slash",
+    "code": "<?php echo json_encode(\"a/b\");",
+    "expected": "\"a\\/b\""
+  },
+  {
+    "name": "json encode line break",
+    "code": "<?php echo json_encode(\"line\\nx\");",
+    "expected": "\"line\\nx\""
+  },
+  {
+    "name": "json encode emoji",
+    "code": "<?php echo json_encode(\"🐟\");",
+    "expected": "\"\\ud83d\\udc1f\""
+  },
+  {
+    "name": "json encode class property",
+    "code": "<?php class A{public $x=3;} echo json_encode(new A());",
+    "expected": "{\"x\":3}"
+  },
+  {
+    "name": "json decode associative object",
+    "code": "<?php $a=json_decode('{\"name\":\"ALL\",\"score\":10}',true); echo $a[\"name\"].\"/\".$a[\"score\"];",
+    "expected": "ALL/10"
+  },
+  {
+    "name": "json decode stdClass property",
+    "code": "<?php $o=json_decode('{\"name\":\"ALL\"}'); echo $o->name;",
+    "expected": "ALL"
+  },
+  {
+    "name": "json decode nested stdClass",
+    "code": "<?php $o=json_decode('{\"child\":{\"v\":2}}'); echo $o->child->v;",
+    "expected": "2"
+  },
+  {
+    "name": "json decode array",
+    "code": "<?php $a=json_decode('[1,2,3]'); echo count($a).\":\".$a[1];",
+    "expected": "3:2"
+  },
+  {
+    "name": "json decode nested array",
+    "code": "<?php $a=json_decode('[[10,20],[30]]'); echo $a[0][1];",
+    "expected": "20"
+  },
+  {
+    "name": "json decode object with array",
+    "code": "<?php $a=json_decode('{\"x\":[1,2]}',true); echo $a[\"x\"][1];",
+    "expected": "2"
+  },
+  {
+    "name": "json decode booleans null",
+    "code": "<?php $a=json_decode('{\"flag\":true,\"none\":null}',true); echo ($a[\"flag\"]?\"yes\":\"no\").\":\".($a[\"none\"]??\"nil\");",
+    "expected": "yes:nil"
+  },
+  {
+    "name": "json roundtrip associative",
+    "code": "<?php echo json_encode(json_decode('{\"a\":1}',true));",
+    "expected": "{\"a\":1}"
+  },
+  {
+    "name": "json roundtrip list",
+    "code": "<?php echo json_encode(json_decode('[3,true,null]'));",
+    "expected": "[3,true,null]"
+  },
+  {
+    "name": "json decode null literal",
+    "code": "<?php $a=json_decode('null'); echo ($a===null)?\"null\":\"bad\";",
+    "expected": "null"
+  },
+  {
+    "name": "json decode invalid syntax error",
+    "code": "<?php $a=json_decode('broken'); echo json_last_error().\":\".json_last_error_msg();",
+    "expected": "4:Syntax error"
+  },
+  {
+    "name": "json reset error",
+    "code": "<?php $a=json_decode('broken'); $b=json_decode('true'); echo json_last_error_msg();",
+    "expected": "No error"
+  },
+  {
+    "name": "json decode singleton array",
+    "code": "<?php $a=json_decode('[1]'); echo count($a).\":\".$a[0];",
+    "expected": "1:1"
+  },
+  {
+    "name": "json decode empty array",
+    "code": "<?php $a=json_decode('[]'); echo count($a);",
+    "expected": "0"
+  },
+  {
+    "name": "json decode empty object",
+    "code": "<?php $a=json_decode('{}'); echo json_encode($a);",
+    "expected": "{}"
+  },
+  {
+    "name": "json decode empty assoc object",
+    "code": "<?php $a=json_decode('{}',true); echo json_encode($a);",
+    "expected": "[]"
+  },
+  {
+    "name": "json decode numeric key",
+    "code": "<?php $a=json_decode('{\"2\":\"v\"}',true); echo json_encode($a);",
+    "expected": "{\"2\":\"v\"}"
+  },
+  {
+    "name": "json decode object order",
+    "code": "<?php $a=json_decode('{\"a\":1,\"b\":2}'); echo json_encode($a);",
+    "expected": "{\"a\":1,\"b\":2}"
+  },
+  {
+    "name": "json decode scalar number",
+    "code": "<?php $a=json_decode('42'); echo $a;",
+    "expected": "42"
+  },
+  {
+    "name": "json decode scalar float",
+    "code": "<?php $a=json_decode('3.5'); echo $a;",
+    "expected": "3.5"
+  },
+  {
+    "name": "json encode object array",
+    "code": "<?php echo json_encode([\"a\"=>[\"x\"=>true],\"b\"=>null]);",
+    "expected": "{\"a\":{\"x\":true},\"b\":null}"
+  }
+]

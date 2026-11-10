@@ -1,0 +1,12 @@
+[
+  {
+    "name": "reference argument unsupported (now implemented)",
+    "code": "<?php function f(&$x){$x=1;}",
+    "expected": ""
+  },
+  {
+    "name": "closure ref capture unsupported (now implemented)",
+    "code": "<?php $x=1;$f=function() use (&$x){return $x;};",
+    "expected": ""
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "name": "private method blocked",
+    "code": "<?php class A{private function secret(){return 1;}} echo (new A())->secret();",
+    "error_contains": "private member"
+  },
+  {
+    "name": "private property blocked",
+    "code": "<?php class A{private $secret=1;} echo (new A())->secret;",
+    "error_contains": "private member"
+  },
+  {
+    "name": "protected property blocked",
+    "code": "<?php class A{protected $secret=1;} echo (new A())->secret;",
+    "error_contains": "protected member"
+  },
+  {
+    "name": "private static property blocked",
+    "code": "<?php class A{private static $x=1;} echo A::$x;",
+    "error_contains": "private member"
+  },
+  {
+    "name": "unknown named argument blocked",
+    "code": "<?php function f($a){return $a;} echo f(z:1);",
+    "error_contains": "Unknown named parameter"
+  },
+  {
+    "name": "positional after named blocked",
+    "code": "<?php function f($a,$b){return $a+$b;} echo f(b:1,2);",
+    "error_contains": "Positional argument after named argument"
+  },
+  {
+    "name": "reference argument unsupported",
+    "code": "<?php function f(&$x){$x=1;}",
+    "error_contains": "Reference parameters are not yet supported"
+  },
+  {
+    "name": "closure ref capture unsupported",
+    "code": "<?php $x=1;$f=function() use (&$x){return $x;};",
+    "error_contains": "Reference captures are not yet supported"
+  }
+]

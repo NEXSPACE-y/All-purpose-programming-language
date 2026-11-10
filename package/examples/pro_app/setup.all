@@ -1,0 +1,2 @@
+let applied = sql_migrate("items.sqlite","migrations")
+println(concat("Applied SQL migrations: ",applied))

@@ -1,0 +1,11 @@
+# v1.2: long-running ALL API, intended for a TLS reverse proxy on the same host.
+関数 API(要求) {
+    もし (要求["path"] == "/health") {
+        返す {"status":200,"body":"OK","content_type":"text/plain; charset=utf-8"}
+    }
+    もし (要求["path"] == "/api/hello") {
+        返す {"status":200,"body":"{\"hello\":\"ALL\"}","content_type":"application/json; charset=utf-8"}
+    }
+    返す {"status":404,"body":"not found"}
+}
+HTTP常時配信(18888,"API")

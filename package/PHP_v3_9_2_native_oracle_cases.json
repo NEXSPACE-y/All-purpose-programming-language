@@ -1,0 +1,12 @@
+﻿[
+  {
+    "name": "closure reference return replaces outdated rejection guard",
+    "code": "<?php $x=1;$f=function &() use (&$x) {return $x;};$r =& $f();$r=7;echo $x;",
+    "expected": "7"
+  },
+  {
+    "name": "byref variadic propagates writes replaces outdated rejection guard",
+    "code": "<?php function f(&...$args) {$args[0]=10;} $a=3;f($a);echo $a;",
+    "expected": "10"
+  }
+]

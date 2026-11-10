@@ -1,0 +1,182 @@
+--- a/ALL_PHP_v3_11_adapter.ps1
++++ b/ALL_PHP_v3_12_adapter.ps1
+@@ -36,6 +36,8 @@
+             MagicGetActive = [System.Collections.Generic.HashSet[string]]::new(
+                 [System.StringComparer]::Ordinal)
+             MagicSetActive = [System.Collections.Generic.HashSet[string]]::new(
++                [System.StringComparer]::Ordinal)
++            PropertyHookActive = [System.Collections.Generic.HashSet[string]]::new(
+                 [System.StringComparer]::Ordinal)
+             Globals = $null
+                 GlobalBindings = [System.Collections.Generic.HashSet[string]]::new(
+@@ -1120,11 +1122,76 @@
+                         if ($isReadOnly -and $null -ne $defaultExpr) {
+                             throw 'ALL PHP: readonly property cannot have a default value'
+                         }
+-                        Expect-Token ';'
++                        $getHook=$null
++                        $setHook=$null
++                        $hookBacked=($null -ne $defaultExpr)
++                        if ((Peek-Token) -ceq '{') {
++                            if ($isStatic) { throw 'ALL PHP: Static property hooks are not supported by PHP' }
++                            if ($isReadOnly) { throw 'ALL PHP: readonly property cannot declare hooks' }
++                            Expect-Token '{'
++                            while ((Peek-Token) -cne '}') {
++                                if ((Peek-Token) -ceq '(EOF)') {
++                                    throw 'ALL PHP: Missing property hook closing brace'
++                                }
++                                $hookName=Next-Token
++                                if ($hookName -notin @('get','set')) {
++                                    throw "ALL PHP: Unknown property hook '$hookName'"
++                                }
++                                if ($hookName -ceq 'get' -and $null -ne $getHook -or
++                                    $hookName -ceq 'set' -and $null -ne $setHook) {
++                                    throw 'ALL PHP: Duplicate property hook'
++                                }
++                                $hookParams=@()
++                                if ((Peek-Token) -ceq '(') {
++                                    if ($hookName -ceq 'get') {
++                                        throw 'ALL PHP: Getter hook takes no arguments'
++                                    }
++                                    $hookParams=Read-Parameters $false
++                                    if ($hookParams.Count -ne 1 -or
++                                        $hookParams[0].ByRef -or $hookParams[0].Variadic -or
++                                        $null -ne $hookParams[0].Default) {
++                                        throw 'ALL PHP: Setter hook must have one regular parameter'
++                                    }
++                                }
++                                $body=$null
++                                $expr=$null
++                                $arrow=$false
++                                $hookSourceStart=$state.Pos
++                                if ((Peek-Token) -ceq '=>') {
++                                    Expect-Token '=>'
++                                    $expr=Read-Expr 1
++                                    Expect-Token ';'
++                                    $arrow=$true
++                                } elseif ((Peek-Token) -ceq '{') {
++                                    $body=Read-Statement
++                                } else {
++                                    throw 'ALL PHP: Expected property hook body'
++                                }
++                                if ($hookName -ceq 'set' -and $arrow) {
++                                    $hookBacked=$true
++                                }
++                                for ($hi=$hookSourceStart; $hi + 2 -lt $state.Pos; $hi++) {
++                                    if ($state.Tokens[$hi] -ceq '$this' -and
++                                        $state.Tokens[$hi + 1] -ceq '->' -and
++                                        $state.Tokens[$hi + 2] -ceq $propName) {
++                                        $hookBacked=$true
++                                    }
++                                }
++                                $hook=[pscustomobject]@{
++                                    Body=$body; Expr=$expr; Arrow=$arrow; Params=$hookParams
++                                }
++                                if ($hookName -ceq 'get') { $getHook=$hook }
++                                else { $setHook=$hook }
++                            }
++                            Expect-Token '}'
++                        } else {
++                            Expect-Token ';'
++                        }
+                         [void]$properties.Add([pscustomobject]@{
+                             Name=$propName; Default=$defaultExpr
+                             Visibility=$visibility; Static=$isStatic; Owner=$name
+                             TypeName=$propertyType; Readonly=$isReadOnly
++                            GetHook=$getHook; SetHook=$setHook; HookBacked=$hookBacked
+                         })
+                     }
+                 }
+@@ -2386,6 +2453,50 @@
+             }
+             return $name
+         }
++        function Invoke-PhpPropertyHook($object, $declared, [string]$mode, $value=$null) {
++            $hook=if ($mode -ceq 'get') { $declared.GetHook } else { $declared.SetHook }
++            if ($null -eq $hook) { throw 'ALL PHP: Missing property hook' }
++            $hookKey=([string]$object.GetHashCode() + ':' + [string]$declared.Name)
++            if (-not $state.PropertyHookActive.Add($hookKey)) {
++                throw 'ALL PHP: Recursive property hook invocation'
++            }
++            try {
++                $parameters=@()
++                if ($mode -ceq 'set') {
++                    if ($null -ne $hook.Params -and $hook.Params.Count -eq 1) {
++                        $parameters=@($hook.Params)
++                    } else {
++                        $parameters=@([pscustomobject]@{
++                            Name='value'; Default=$null; TypeName=''; ByRef=$false
++                            Variadic=$false; Promoted=$false
++                        })
++                    }
++                }
++                $hookDefinition=[pscustomobject]@{
++                    Name=('__property_' + $mode + '_' + $declared.Name)
++                    Abstract=$false; ReturnByRef=$false; ReturnType=''
++                    Params=$parameters; Body=$hook.Body; Expr=$hook.Expr
++                }
++                $callArgs=if ($mode -ceq 'get') { @() } else { ,$value }
++                $result=Invoke-PhpCallable $hookDefinition $callArgs $object $declared.Owner
++                if ($mode -ceq 'get') {
++                    return (Convert-PhpTypedValue $result ([string]$declared.TypeName) ('property ' + $declared.Name))
++                }
++                if ($hook.Arrow) {
++                    # PHP expression-bodied setter writes the expression result
++                    # into the backing storage. Within its own hook, access to
++                    # this property bypasses the hook (same as PHP).
++                    $target=[pscustomobject]@{
++                        Kind='property'; Base=[pscustomobject]@{Kind='literal';Value=$object}
++                        Name=$declared.Name; NullSafe=$false
++                    }
++                    Set-LValue $target $result '='
++                }
++                return $null
++            } finally {
++                [void]$state.PropertyHookActive.Remove($hookKey)
++            }
++        }
+         function Get-LValue($node) {
+             if ($node.Kind -eq 'dynamic_variable') {
+                 return (Get-PhpVariableValue (Resolve-PhpDynamicVariableName $node))
+@@ -2413,6 +2524,19 @@
+                 $present = if ($base.Props -is [System.Collections.Specialized.OrderedDictionary]) {
+                     $base.Props.Contains($node.Name)
+                 } else { $base.Props.ContainsKey($node.Name) }
++                if ($null -ne $declared -and $declared.PSObject.Properties['GetHook'] -and
++                    $null -ne $declared.GetHook -and
++                    -not $state.PropertyHookActive.Contains(
++                        ([string]$base.GetHashCode() + ':' + $node.Name))) {
++                    return (Invoke-PhpPropertyHook $base $declared 'get')
++                }
++                if ($null -ne $declared -and $declared.PSObject.Properties['SetHook'] -and
++                    $null -ne $declared.SetHook -and $null -eq $declared.GetHook -and
++                    -not $declared.HookBacked -and
++                    -not $state.PropertyHookActive.Contains(
++                        ([string]$base.GetHashCode() + ':' + $node.Name))) {
++                    throw "ALL PHP: Property '$($node.Name)' is write-only"
++                }
+                 if (-not $present) {
+                     if ($null -ne $declared -and
+                         -not [string]::IsNullOrEmpty([string]$declared.TypeName)) {
+@@ -2558,6 +2682,21 @@
+                     }
+                 }
+                 if ($null -ne $declared) {
++                    if ($declared.PSObject.Properties['SetHook'] -and
++                        $null -ne $declared.SetHook -and
++                        -not $state.PropertyHookActive.Contains(
++                            ([string]$base.GetHashCode() + ':' + $node.Name))) {
++                        $value=Convert-PhpTypedValue $value ([string]$declared.TypeName) ('property ' + $node.Name)
++                        [void](Invoke-PhpPropertyHook $base $declared 'set' $value)
++                        return
++                    }
++                    if ($declared.PSObject.Properties['GetHook'] -and
++                        $null -ne $declared.GetHook -and $null -eq $declared.SetHook -and
++                        -not $declared.HookBacked -and
++                        -not $state.PropertyHookActive.Contains(
++                            ([string]$base.GetHashCode() + ':' + $node.Name))) {
++                        throw "ALL PHP: Property '$($node.Name)' is get-only"
++                    }
+                     if ([bool]$declared.Readonly) {
+                         if ($present) { throw "ALL PHP: Cannot modify readonly property '$($node.Name)'" }
+                         if ($null -eq $state.ClassContext -or $state.ClassContext -ine $declared.Owner) {

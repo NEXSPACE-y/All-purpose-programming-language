@@ -1,0 +1,252 @@
+[
+  {
+    "name": "power simple",
+    "code": "<?php echo 2 ** 10;",
+    "expected": "1024"
+  },
+  {
+    "name": "power right associativity",
+    "code": "<?php echo 2 ** 3 ** 2;",
+    "expected": "512"
+  },
+  {
+    "name": "power unary precedence",
+    "code": "<?php echo -2 ** 2;",
+    "expected": "-4"
+  },
+  {
+    "name": "power negative exponent",
+    "code": "<?php echo 2 ** -2;",
+    "expected": "0.25"
+  },
+  {
+    "name": "power negative base",
+    "code": "<?php echo (-2) ** 3;",
+    "expected": "-8"
+  },
+  {
+    "name": "power multiplication precedence",
+    "code": "<?php echo 2 * 3 ** 2;",
+    "expected": "18"
+  },
+  {
+    "name": "coalesce undefined variable",
+    "code": "<?php echo $unknown ?? \"fallback\";",
+    "expected": "fallback"
+  },
+  {
+    "name": "coalesce null",
+    "code": "<?php $x=null; echo $x ?? \"backup\";",
+    "expected": "backup"
+  },
+  {
+    "name": "coalesce defined",
+    "code": "<?php $x=8; echo $x ?? 99;",
+    "expected": "8"
+  },
+  {
+    "name": "coalesce zero",
+    "code": "<?php $x=0; echo $x ?? 99;",
+    "expected": "0"
+  },
+  {
+    "name": "coalesce missing array key",
+    "code": "<?php $a=[\"x\"=>1]; echo $a[\"notthere\"] ?? \"missing\";",
+    "expected": "missing"
+  },
+  {
+    "name": "coalesce nested right",
+    "code": "<?php $a=null; $b=null; echo $a ?? $b ?? 47;",
+    "expected": "47"
+  },
+  {
+    "name": "coalesce logical precedence",
+    "code": "<?php echo false || true ?? 7;",
+    "expected": "1"
+  },
+  {
+    "name": "coalesce ternary precedence",
+    "code": "<?php echo false ?? true ? \"yes\" : \"no\";",
+    "expected": "no"
+  },
+  {
+    "name": "ternary true",
+    "code": "<?php echo true ? \"Y\" : \"N\";",
+    "expected": "Y"
+  },
+  {
+    "name": "ternary false",
+    "code": "<?php echo 2 > 3 ? \"Y\" : \"N\";",
+    "expected": "N"
+  },
+  {
+    "name": "ternary short false",
+    "code": "<?php echo 0 ?: \"empty\";",
+    "expected": "empty"
+  },
+  {
+    "name": "ternary short true",
+    "code": "<?php echo 4 ?: \"empty\";",
+    "expected": "4"
+  },
+  {
+    "name": "ternary lazy branch",
+    "code": "<?php echo true ? 10 : (1 / 0);",
+    "expected": "10"
+  },
+  {
+    "name": "elseif branch",
+    "code": "<?php $n=2; if($n===1){echo \"a\";} elseif($n===2){echo \"b\";} else {echo \"c\";}",
+    "expected": "b"
+  },
+  {
+    "name": "elseif else",
+    "code": "<?php $n=3; if($n===1){echo \"a\";} elseif($n===2){echo \"b\";} else {echo \"c\";}",
+    "expected": "c"
+  },
+  {
+    "name": "match arm",
+    "code": "<?php $n=2; echo match($n) { 1=>\"one\", 2=>\"two\", default=>\"other\" };",
+    "expected": "two"
+  },
+  {
+    "name": "match fallback",
+    "code": "<?php echo match(5){1=>\"one\",default=>\"other\"};",
+    "expected": "other"
+  },
+  {
+    "name": "match multiple conditions",
+    "code": "<?php echo match(3){1,2=>\"low\",3,4=>\"high\",default=>\"other\"};",
+    "expected": "high"
+  },
+  {
+    "name": "match lazy arm",
+    "code": "<?php echo match(1){1=>\"ok\",default=>1/0};",
+    "expected": "ok"
+  },
+  {
+    "name": "match no arm",
+    "code": "<?php echo match(99){1=>\"one\"};",
+    "error_contains": "UnhandledMatchError"
+  },
+  {
+    "name": "array keys",
+    "code": "<?php $a=[\"first\"=>7,\"last\"=>8]; echo array_keys($a)[0];",
+    "expected": "first"
+  },
+  {
+    "name": "array values",
+    "code": "<?php $a=[\"a\"=>7,\"b\"=>8]; echo array_values($a)[1];",
+    "expected": "8"
+  },
+  {
+    "name": "array key first",
+    "code": "<?php echo array_key_first([11=>\"a\",12=>\"b\"]);",
+    "expected": "11"
+  },
+  {
+    "name": "array key last",
+    "code": "<?php echo array_key_last([\"one\"=>1,\"two\"=>2]);",
+    "expected": "two"
+  },
+  {
+    "name": "PHP 8.5 array_first",
+    "code": "<?php echo array_first([\"a\"=>11,\"b\"=>22]);",
+    "expected": "11"
+  },
+  {
+    "name": "PHP 8.5 array_last",
+    "code": "<?php echo array_last([\"a\"=>11,\"b\"=>22]);",
+    "expected": "22"
+  },
+  {
+    "name": "PHP 8.5 array_first empty",
+    "code": "<?php echo array_first([]) ?? \"empty\";",
+    "expected": "empty"
+  },
+  {
+    "name": "PHP 8.5 array_last empty",
+    "code": "<?php echo array_last([]) ?? \"empty\";",
+    "expected": "empty"
+  },
+  {
+    "name": "in_array loose",
+    "code": "<?php echo in_array(\"2\",[2,3]);",
+    "expected": "1"
+  },
+  {
+    "name": "in_array strict",
+    "code": "<?php echo in_array(\"2\",[2,3],true);",
+    "expected": ""
+  },
+  {
+    "name": "string contains true",
+    "code": "<?php echo str_contains(\"Hello World\",\"World\");",
+    "expected": "1"
+  },
+  {
+    "name": "string contains case sensitive",
+    "code": "<?php echo str_contains(\"Hello World\",\"world\");",
+    "expected": ""
+  },
+  {
+    "name": "string starts with",
+    "code": "<?php echo str_starts_with(\"abcdef\",\"abc\");",
+    "expected": "1"
+  },
+  {
+    "name": "string ends with",
+    "code": "<?php echo str_ends_with(\"abcdef\",\"def\");",
+    "expected": "1"
+  },
+  {
+    "name": "strpos zero",
+    "code": "<?php echo strpos(\"abc\",\"a\");",
+    "expected": "0"
+  },
+  {
+    "name": "strpos not found",
+    "code": "<?php echo strpos(\"abc\",\"z\");",
+    "expected": ""
+  },
+  {
+    "name": "strpos offset",
+    "code": "<?php echo strpos(\"ababa\",\"ba\",2);",
+    "expected": "3"
+  },
+  {
+    "name": "substr simple",
+    "code": "<?php echo substr(\"abcdef\",2,3);",
+    "expected": "cde"
+  },
+  {
+    "name": "substr negative start",
+    "code": "<?php echo substr(\"abcdef\",-2);",
+    "expected": "ef"
+  },
+  {
+    "name": "substr negative length",
+    "code": "<?php echo substr(\"abcdef\",1,-2);",
+    "expected": "bcd"
+  },
+  {
+    "name": "str_replace scalar",
+    "code": "<?php echo str_replace(\"world\",\"ALL\",\"hello world\");",
+    "expected": "hello ALL"
+  },
+  {
+    "name": "explode index",
+    "code": "<?php echo explode(\",\",\"a,b,c\")[1];",
+    "expected": "b"
+  },
+  {
+    "name": "implode",
+    "code": "<?php echo implode(\"-\", [1,2,3]);",
+    "expected": "1-2-3"
+  },
+  {
+    "name": "explode implode combined",
+    "code": "<?php echo implode(\"/\",explode(\",\",\"a,b,c\"));",
+    "expected": "a/b/c"
+  }
+]

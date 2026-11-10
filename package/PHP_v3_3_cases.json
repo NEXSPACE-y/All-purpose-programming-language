@@ -1,0 +1,248 @@
+[
+  {
+    "name": "switch basic",
+    "code": "<?php $x=2; switch($x){case 1:echo \"one\";break;case 2:echo \"two\";break;default:echo \"other\";}",
+    "expected": "two"
+  },
+  {
+    "name": "switch loose compare",
+    "code": "<?php switch(2){case \"2\":echo \"matched\";break;default:echo \"other\";}",
+    "expected": "matched"
+  },
+  {
+    "name": "switch fallthrough",
+    "code": "<?php $x=1; switch($x){case 1:echo \"a\";case 2:echo \"b\";break;default:echo \"c\";}",
+    "expected": "ab"
+  },
+  {
+    "name": "switch default before match",
+    "code": "<?php switch(2){default:echo \"default\";break;case 2:echo \"two\";break;}",
+    "expected": "two"
+  },
+  {
+    "name": "switch default no match",
+    "code": "<?php switch(5){case 1:echo \"x\";break;default:echo \"fallback\";}",
+    "expected": "fallback"
+  },
+  {
+    "name": "switch empty",
+    "code": "<?php switch(5){} echo \"ok\";",
+    "expected": "ok"
+  },
+  {
+    "name": "switch no match no default",
+    "code": "<?php switch(4){case 2:echo \"no\";} echo \"ok\";",
+    "expected": "ok"
+  },
+  {
+    "name": "switch expressions",
+    "code": "<?php $x=3; switch($x){case 1+2:echo \"yes\";break;default:echo \"no\";}",
+    "expected": "yes"
+  },
+  {
+    "name": "switch in for loop break",
+    "code": "<?php for($i=0;$i<3;$i++){switch($i){case 1: echo \"x\";break;default:echo \"y\";}}",
+    "expected": "yxy"
+  },
+  {
+    "name": "switch in function",
+    "code": "<?php function calc($x){switch($x){case 5:return \"five\";default:return \"other\";}} echo calc(5);",
+    "expected": "five"
+  },
+  {
+    "name": "switch nested",
+    "code": "<?php switch(1){case 1:switch(2){case 2:echo \"a\";break;default:echo \"no\";} echo \"b\";break;default:echo \"x\";}",
+    "expected": "ab"
+  },
+  {
+    "name": "coalesce assign undefined",
+    "code": "<?php $x ??= 17; echo $x;",
+    "expected": "17"
+  },
+  {
+    "name": "coalesce assign null",
+    "code": "<?php $x=null; $x ??= \"new\"; echo $x;",
+    "expected": "new"
+  },
+  {
+    "name": "coalesce assign preserves zero",
+    "code": "<?php $x=0; $x ??= 99; echo $x;",
+    "expected": "0"
+  },
+  {
+    "name": "coalesce assign preserves false",
+    "code": "<?php $x=false; $x ??= true; echo $x ? \"T\" : \"F\";",
+    "expected": "F"
+  },
+  {
+    "name": "coalesce assign array missing",
+    "code": "<?php $a=[\"x\"=>1]; $a[\"y\"] ??= 8; echo $a[\"y\"];",
+    "expected": "8"
+  },
+  {
+    "name": "coalesce assign array present",
+    "code": "<?php $a=[\"x\"=>4]; $a[\"x\"] ??= 8; echo $a[\"x\"];",
+    "expected": "4"
+  },
+  {
+    "name": "coalesce assign lazy",
+    "code": "<?php $x=7; $x ??= 10/0; echo $x;",
+    "expected": "7"
+  },
+  {
+    "name": "nullsafe null property",
+    "code": "<?php $o=null; echo $o?->name ?? \"missing\";",
+    "expected": "missing"
+  },
+  {
+    "name": "nullsafe null method lazy",
+    "code": "<?php $o=null; echo $o?->hello(1/0) ?? \"fallback\";",
+    "expected": "fallback"
+  },
+  {
+    "name": "nullsafe object property",
+    "code": "<?php class A{public $name=\"Tiger\";} $o=new A(); echo $o?->name;",
+    "expected": "Tiger"
+  },
+  {
+    "name": "nullsafe object method",
+    "code": "<?php class A{function hello(){return \"hi\";}} $o=new A(); echo $o?->hello();",
+    "expected": "hi"
+  },
+  {
+    "name": "array push",
+    "code": "<?php $a=[2]; $n=array_push($a,3,4); echo \"$n:\".implode(\",\",$a);",
+    "expected": "3:2,3,4"
+  },
+  {
+    "name": "array push empty args",
+    "code": "<?php $a=[2,3]; echo array_push($a);",
+    "expected": "2"
+  },
+  {
+    "name": "array pop",
+    "code": "<?php $a=[\"a\",\"b\"]; echo array_pop($a).\"/\".count($a);",
+    "expected": "b/1"
+  },
+  {
+    "name": "array pop empty",
+    "code": "<?php $a=[]; echo array_pop($a) ?? \"empty\";",
+    "expected": "empty"
+  },
+  {
+    "name": "array pop reappend",
+    "code": "<?php $a=[1,2]; array_pop($a); $a[]=3; echo implode(\",\",array_keys($a));",
+    "expected": "0,1"
+  },
+  {
+    "name": "array shift",
+    "code": "<?php $a=[9,8]; echo array_shift($a).\"/\".implode(\",\",$a);",
+    "expected": "9/8"
+  },
+  {
+    "name": "array shift renumber",
+    "code": "<?php $a=[5=>\"a\",7=>\"b\"]; array_shift($a); echo implode(\",\",array_keys($a));",
+    "expected": "0"
+  },
+  {
+    "name": "array unshift",
+    "code": "<?php $a=[\"b\",\"c\"]; echo array_unshift($a,\"a\").\"/\".implode(\",\",$a);",
+    "expected": "3/a,b,c"
+  },
+  {
+    "name": "array unshift associative",
+    "code": "<?php $a=[\"k\"=>\"v\",9=>\"n\"]; array_unshift($a,\"first\"); echo implode(\",\",array_keys($a));",
+    "expected": "0,k,1"
+  },
+  {
+    "name": "array reverse",
+    "code": "<?php echo implode(\",\",array_reverse([1,2,3]));",
+    "expected": "3,2,1"
+  },
+  {
+    "name": "array reverse numeric reindex",
+    "code": "<?php echo implode(\",\",array_keys(array_reverse([4=>\"a\",6=>\"b\"])));",
+    "expected": "0,1"
+  },
+  {
+    "name": "array reverse keep keys",
+    "code": "<?php echo implode(\",\",array_keys(array_reverse([4=>\"a\",6=>\"b\"],true)));",
+    "expected": "6,4"
+  },
+  {
+    "name": "array merge numeric",
+    "code": "<?php echo implode(\",\",array_merge([1,2],[3,4]));",
+    "expected": "1,2,3,4"
+  },
+  {
+    "name": "array merge string override",
+    "code": "<?php $a=array_merge([\"x\"=>1,\"z\"=>3],[\"x\"=>2]); echo $a[\"x\"].\"/\".implode(\",\",array_keys($a));",
+    "expected": "2/x,z"
+  },
+  {
+    "name": "array merge no arrays",
+    "code": "<?php echo count(array_merge());",
+    "expected": "0"
+  },
+  {
+    "name": "array slice",
+    "code": "<?php echo implode(\",\",array_slice([1,2,3,4],1,2));",
+    "expected": "2,3"
+  },
+  {
+    "name": "array slice negative offset",
+    "code": "<?php echo implode(\",\",array_slice([1,2,3,4],-2));",
+    "expected": "3,4"
+  },
+  {
+    "name": "array slice negative length",
+    "code": "<?php echo implode(\",\",array_slice([1,2,3,4],1,-1));",
+    "expected": "2,3"
+  },
+  {
+    "name": "array slice preserved keys",
+    "code": "<?php echo implode(\",\",array_keys(array_slice([4=>\"a\",6=>\"b\",8=>\"c\"],1,2,true)));",
+    "expected": "6,8"
+  },
+  {
+    "name": "interpolate basic",
+    "code": "<?php $name=\"ALL\"; echo \"Hello $name\";",
+    "expected": "Hello ALL"
+  },
+  {
+    "name": "interpolate braced",
+    "code": "<?php $name=\"ALL\"; echo \"Hello {$name}!\";",
+    "expected": "Hello ALL!"
+  },
+  {
+    "name": "interpolate escaped dollar",
+    "code": "<?php $name=\"ALL\"; echo \"Price: \\$name\";",
+    "expected": "Price: $name"
+  },
+  {
+    "name": "interpolate function scope",
+    "code": "<?php function greet($name){return \"Hi $name\";} echo greet(\"Kai\");",
+    "expected": "Hi Kai"
+  },
+  {
+    "name": "interpolate local after assignment",
+    "code": "<?php $name=\"old\"; $text=\"V=$name\"; $name=\"new\"; echo $text;",
+    "expected": "V=old"
+  },
+  {
+    "name": "interpolate utf8",
+    "code": "<?php $name=\"太郎\"; echo \"ようこそ $name\";",
+    "expected": "ようこそ 太郎"
+  },
+  {
+    "name": "interpolate escapes",
+    "code": "<?php $name=\"x\"; echo \"A\\n$name\\tB\";",
+    "expected": "A\nx\tB"
+  },
+  {
+    "name": "interpolate undefined variable",
+    "code": "<?php echo \"x{$missing}y\";",
+    "expected": "xy",
+    "reference_emits_warning": true
+  }
+]

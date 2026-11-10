@@ -1,0 +1,137 @@
+[
+  {
+    "name": "variadic byref mutate two",
+    "code": "<?php function f(&...$xs){ $xs[0]=11; $xs[1]=22; } $a=1;$b=2;f($a,$b);echo $a,\":\",$b;",
+    "expected": "11:22"
+  },
+  {
+    "name": "variadic byref single",
+    "code": "<?php function f(&...$xs){$xs[0]=5;} $a=1;f($a);echo $a;",
+    "expected": "5"
+  },
+  {
+    "name": "variadic byref array element",
+    "code": "<?php function f(&...$xs){$xs[0]=8;} $a=[3,4];f($a[0]);echo $a[0];",
+    "expected": "8"
+  },
+  {
+    "name": "variadic byref object property",
+    "code": "<?php function f(&...$xs){$xs[0]=7;} $o=new stdClass;$o->v=3;f($o->v);echo $o->v;",
+    "expected": "7"
+  },
+  {
+    "name": "variadic byref preexisting alias",
+    "code": "<?php function f(&...$xs){$xs[0]=1;} $a=2;$x=&$a;f($x);echo $a;",
+    "expected": "1"
+  },
+  {
+    "name": "variadic byref no args",
+    "code": "<?php function f(&...$xs){echo count($xs);} f();",
+    "expected": "0"
+  },
+  {
+    "name": "variadic byref named capture",
+    "code": "<?php function f(&...$xs){$xs[\"hello\"]=2;} $a=1;f(hello:$a);echo $a;",
+    "expected": "2"
+  },
+  {
+    "name": "variadic byref named param",
+    "code": "<?php function f(&...$xs){$xs[\"xs\"]=4;} $a=1;f(xs:$a);echo $a;",
+    "expected": "4"
+  },
+  {
+    "name": "variadic regular unchanged",
+    "code": "<?php function f(...$xs){echo count($xs);} f(1,2);",
+    "expected": "2"
+  },
+  {
+    "name": "enum unit case name",
+    "code": "<?php enum E {case A;case B;} echo E::A->name;",
+    "expected": "A"
+  },
+  {
+    "name": "enum singleton identity",
+    "code": "<?php enum E{case A;} echo E::A===E::A?\"same\":\"diff\";",
+    "expected": "same"
+  },
+  {
+    "name": "enum distinct identity",
+    "code": "<?php enum E{case A;case B;} echo E::A===E::B?\"same\":\"diff\";",
+    "expected": "diff"
+  },
+  {
+    "name": "enum cases count",
+    "code": "<?php enum E{case A;case B;} echo count(E::cases());",
+    "expected": "2"
+  },
+  {
+    "name": "enum cases traversal",
+    "code": "<?php enum E{case A;case B;} foreach(E::cases() as $e)echo $e->name;",
+    "expected": "AB"
+  },
+  {
+    "name": "enum unit instanceof",
+    "code": "<?php enum E{case A;} echo E::A instanceof UnitEnum?\"yes\":\"no\";",
+    "expected": "yes"
+  },
+  {
+    "name": "enum class instanceof",
+    "code": "<?php enum E{case A;} echo E::A instanceof E?\"yes\":\"no\";",
+    "expected": "yes"
+  },
+  {
+    "name": "enum class literal",
+    "code": "<?php enum E{case A;} echo E::class;",
+    "expected": "E"
+  },
+  {
+    "name": "enum backed string value",
+    "code": "<?php enum E:string{case Red=\"red\";} echo E::Red->value;",
+    "expected": "red"
+  },
+  {
+    "name": "enum backed int value",
+    "code": "<?php enum E:int{case One=1;} echo E::One->value;",
+    "expected": "1"
+  },
+  {
+    "name": "enum backed from string",
+    "code": "<?php enum E:string{case Red=\"red\";} echo E::from(\"red\")->name;",
+    "expected": "Red"
+  },
+  {
+    "name": "enum backed tryFrom missing",
+    "code": "<?php enum E:int{case One=1;} echo E::tryFrom(2)===null?\"none\":\"bad\";",
+    "expected": "none"
+  },
+  {
+    "name": "enum backed tryFrom present",
+    "code": "<?php enum E:int{case One=1;} echo E::tryFrom(1)->name;",
+    "expected": "One"
+  },
+  {
+    "name": "enum backed interface",
+    "code": "<?php enum E:int{case One=1;} echo E::One instanceof BackedEnum?\"yes\":\"no\";",
+    "expected": "yes"
+  },
+  {
+    "name": "enum unit not backed",
+    "code": "<?php enum E{case X;} echo E::X instanceof BackedEnum?\"bad\":\"ok\";",
+    "expected": "ok"
+  },
+  {
+    "name": "enum method",
+    "code": "<?php enum E{case A;function label(){return $this->name;}} echo E::A->label();",
+    "expected": "A"
+  },
+  {
+    "name": "enum static method",
+    "code": "<?php enum E{case A;static function answer(){return 42;}} echo E::answer();",
+    "expected": "42"
+  },
+  {
+    "name": "enum method combined",
+    "code": "<?php enum E:string{case A=\"a\";function label(){return $this->value;}} echo E::A->label();",
+    "expected": "a"
+  }
+]

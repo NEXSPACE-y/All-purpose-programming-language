@@ -1,0 +1,37 @@
+[
+  {
+    "name": "bitwise and assign",
+    "code": "<?php $n=7;$n&=3;echo $n;",
+    "expected": "3"
+  },
+  {
+    "name": "bitwise or assign",
+    "code": "<?php $n=2;$n|=5;echo $n;",
+    "expected": "7"
+  },
+  {
+    "name": "bitwise xor assign",
+    "code": "<?php $n=7;$n^=5;echo $n;",
+    "expected": "2"
+  },
+  {
+    "name": "bitwise left shift assign",
+    "code": "<?php $n=2;$n<<=3;echo $n;",
+    "expected": "16"
+  },
+  {
+    "name": "bitwise right shift assign",
+    "code": "<?php $n=32;$n>>=3;echo $n;",
+    "expected": "4"
+  },
+  {
+    "name": "bitwise assign expression",
+    "code": "<?php $n=5;echo ($n&=3).\":\".$n;",
+    "expected": "1:1"
+  },
+  {
+    "name": "bitwise combined",
+    "code": "<?php $n=5;$n|=8;$n^=1;echo $n;",
+    "expected": "12"
+  }
+]

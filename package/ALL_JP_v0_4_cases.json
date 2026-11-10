@@ -1,0 +1,164 @@
+[
+  {
+    "name": "JP print Hello World",
+    "mode": "all",
+    "all": "表示(\"Hello World!!\")",
+    "expected": "Hello World!!"
+  },
+  {
+    "name": "EN print Hello World",
+    "mode": "all",
+    "all": "print(\"Hello World!!\")",
+    "expected": "Hello World!!"
+  },
+  {
+    "name": "JP output Japanese string",
+    "mode": "all",
+    "all": "表示(\"こんにちは世界！！\")",
+    "expected": "こんにちは世界！！"
+  },
+  {
+    "name": "JP variable identifier",
+    "mode": "all",
+    "all": "変数 年齢 = 20;表示(年齢)",
+    "expected": "20"
+  },
+  {
+    "name": "JP if and JP variable",
+    "mode": "all",
+    "all": "変数 数値=10;もし(数値>5){表示(\"成功！\")}",
+    "expected": "成功！"
+  },
+  {
+    "name": "JP false branch with English else",
+    "mode": "all",
+    "all": "変数 点数=3;もし(点数>5){表示(\"A\")}else{表示(\"B\")}",
+    "expected": "B"
+  },
+  {
+    "name": "English let and JP print",
+    "mode": "all",
+    "all": "let 値=7;表示(値)",
+    "expected": "7"
+  },
+  {
+    "name": "JP let and English print",
+    "mode": "all",
+    "all": "変数 score=8;print(score)",
+    "expected": "8"
+  },
+  {
+    "name": "Mixed JP and EN output",
+    "mode": "all",
+    "all": "変数 合計=1;合計=合計+2;print(合計);表示(合計)",
+    "expected": "33"
+  },
+  {
+    "name": "JP function name",
+    "mode": "all",
+    "all": "fn 加算(左,右){return 左+右};表示(加算(12,30))",
+    "expected": "42"
+  },
+  {
+    "name": "JP names nested",
+    "mode": "all",
+    "all": "変数 数列=[1,2,3];表示(数列[1])",
+    "expected": "2"
+  },
+  {
+    "name": "JP unicode hiragana",
+    "mode": "all",
+    "all": "変数 ねこ=5;表示(ねこ)",
+    "expected": "5"
+  },
+  {
+    "name": "JP unicode katakana",
+    "mode": "all",
+    "all": "変数 カタカナ=6;表示(カタカナ)",
+    "expected": "6"
+  },
+  {
+    "name": "JP unicode combining mark",
+    "mode": "all",
+    "all": "変数 パン=4;表示(パン)",
+    "expected": "4"
+  },
+  {
+    "name": "Unicode JP identifier ASCII digits",
+    "mode": "all",
+    "all": "変数 値2=12;表示(値2)",
+    "expected": "12"
+  },
+  {
+    "name": "Alias not replaced inside double string",
+    "mode": "all",
+    "all": "print(\"表示 変数 もし\")",
+    "expected": "表示 変数 もし"
+  },
+  {
+    "name": "Alias not replaced inside single string",
+    "mode": "all",
+    "all": "print('表示 変数 もし')",
+    "expected": "表示 変数 もし"
+  },
+  {
+    "name": "Alias not replaced inside line comment",
+    "mode": "all",
+    "all": "// 表示 変数 もし\n表示(\"OK\")",
+    "expected": "OK"
+  },
+  {
+    "name": "Alias not replaced inside hash comment",
+    "mode": "all",
+    "all": "# 表示 変数 もし\nprint(\"OK\")",
+    "expected": "OK"
+  },
+  {
+    "name": "Keyword scanner offset after JP token",
+    "mode": "all",
+    "all": "表示(\"A\");表示(\"B\")",
+    "expected": "AB"
+  },
+  {
+    "name": "Keyword scanner offset mixed",
+    "mode": "all",
+    "all": "表示(\"A\");print(\"B\");表示(\"C\")",
+    "expected": "ABC"
+  },
+  {
+    "name": "Unicode multiline code",
+    "mode": "all",
+    "all": "変数 半径=3\nもし(半径>2){\n表示(\"大\")\n}",
+    "expected": "大"
+  },
+  {
+    "name": "JP alias blocked as identifier",
+    "mode": "error",
+    "all": "変数 表示=1",
+    "message_contains": "Invalid identifier"
+  },
+  {
+    "name": "JP expression with math",
+    "mode": "all",
+    "all": "変数 長さ=3;変数 幅=4;表示(長さ*幅)",
+    "expected": "12"
+  },
+  {
+    "name": "Existing English with Japanese variable",
+    "mode": "all",
+    "all": "let 人数 = 2;if (人数==2) {print(\"ok\")}",
+    "expected": "ok"
+  },
+  {
+    "name": "JP function call using JP and EN",
+    "mode": "all",
+    "all": "fn 計算(a){return a^2};変数 結果=計算(5);表示(結果)",
+    "expected": "25"
+  },
+  {
+    "name": "Unsupported standalone Japan word",
+    "mode": "error",
+    "all": "こんにちは世界",
+    "message_contains": "Unknown statement"
+  }
+]

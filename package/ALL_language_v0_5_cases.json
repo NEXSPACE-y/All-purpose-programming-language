@@ -1,0 +1,260 @@
+﻿[
+  {
+    "name": "Hello English",
+    "mode": "all",
+    "all": "print(\"Hello World!!\")",
+    "expected": "Hello World!!"
+  },
+  {
+    "name": "Hello Japanese",
+    "mode": "all",
+    "all": "表示(\"Hello World!!\")",
+    "expected": "Hello World!!"
+  },
+  {
+    "name": "JP output line",
+    "mode": "all",
+    "all": "表示行(\"こんにちは世界\")",
+    "expected": "こんにちは世界\n"
+  },
+  {
+    "name": "JP while",
+    "mode": "all",
+    "all": "変数 n=0;繰り返す(n<3){表示(n);n=n+1}",
+    "expected": "012"
+  },
+  {
+    "name": "JP if else",
+    "mode": "all",
+    "all": "変数 n=1;もし(n>2){表示(\"A\")}それ以外{表示(\"B\")}",
+    "expected": "B"
+  },
+  {
+    "name": "JP function and return",
+    "mode": "all",
+    "all": "関数 足す(左,右){返す 左+右};表示(足す(8,9))",
+    "expected": "17"
+  },
+  {
+    "name": "Map literal index",
+    "mode": "all",
+    "all": "let m={\"a\":2,\"b\":3};print(m[\"a\"])",
+    "expected": "2"
+  },
+  {
+    "name": "Map length",
+    "mode": "all",
+    "all": "let m={\"a\":2,\"b\":3};print(len(m))",
+    "expected": "2"
+  },
+  {
+    "name": "Map reassignment",
+    "mode": "all",
+    "all": "let m={\"x\":5};m[\"x\"]=10;print(m[\"x\"])",
+    "expected": "10"
+  },
+  {
+    "name": "Map new key",
+    "mode": "all",
+    "all": "let m={};m[\"日本語\"]=8;print(m[\"日本語\"])",
+    "expected": "8"
+  },
+  {
+    "name": "Map contains yes",
+    "mode": "all",
+    "all": "let m={\"x\":1};print(has_key(m,\"x\"))",
+    "expected": "true"
+  },
+  {
+    "name": "Map contains no",
+    "mode": "all",
+    "all": "let m={\"x\":1};print(has_key(m,\"z\"))",
+    "expected": "false"
+  },
+  {
+    "name": "Map keys ordered",
+    "mode": "all",
+    "all": "let m={\"a\":1,\"b\":2};print(keys(m))",
+    "expected": "[a,b]"
+  },
+  {
+    "name": "Map values ordered",
+    "mode": "all",
+    "all": "let m={\"a\":1,\"b\":2};print(values(m))",
+    "expected": "[1,2]"
+  },
+  {
+    "name": "Map remove",
+    "mode": "all",
+    "all": "let m={\"a\":1};print(remove_key(m,\"a\"));print(len(m))",
+    "expected": "true0"
+  },
+  {
+    "name": "Map remove missing",
+    "mode": "all",
+    "all": "let m={};print(remove_key(m,\"a\"))",
+    "expected": "false"
+  },
+  {
+    "name": "Map nesting",
+    "mode": "all",
+    "all": "let m={\"x\":{\"y\":11}};print(m[\"x\"][\"y\"])",
+    "expected": "11"
+  },
+  {
+    "name": "Map numeric key",
+    "mode": "all",
+    "all": "let m={1:\"one\"};print(m[1])",
+    "expected": "one"
+  },
+  {
+    "name": "Map null",
+    "mode": "all",
+    "all": "let m={\"nil\":null};print(m[\"nil\"])",
+    "expected": "null"
+  },
+  {
+    "name": "Map truthy",
+    "mode": "all",
+    "all": "if({\"a\":1}){print(\"T\")}else{print(\"F\")}",
+    "expected": "T"
+  },
+  {
+    "name": "Map falsey",
+    "mode": "all",
+    "all": "if({}){print(\"T\")}else{print(\"F\")}",
+    "expected": "F"
+  },
+  {
+    "name": "Foreach basic",
+    "mode": "all",
+    "all": "let n=0;foreach(x in [1,2,3]){n=n+x};print(n)",
+    "expected": "6"
+  },
+  {
+    "name": "Foreach Japanese",
+    "mode": "all",
+    "all": "変数 合計=0;各要素(番号 内 [1,2,3]){合計=合計+番号};表示(合計)",
+    "expected": "6"
+  },
+  {
+    "name": "Foreach break",
+    "mode": "all",
+    "all": "foreach(x in [1,2,3,4]){if(x==3){break};print(x)}",
+    "expected": "12"
+  },
+  {
+    "name": "Foreach continue",
+    "mode": "all",
+    "all": "foreach(x in [1,2,3,4]){if(x==2){continue};print(x)}",
+    "expected": "134"
+  },
+  {
+    "name": "Foreach restore variable",
+    "mode": "all",
+    "all": "let x=9;foreach(x in [1,2]){print(x)};print(x)",
+    "expected": "129"
+  },
+  {
+    "name": "Try catch thrown",
+    "mode": "all",
+    "all": "try{throw \"boom\"}catch(error){print(error)}",
+    "expected": "boom"
+  },
+  {
+    "name": "Try catch error",
+    "mode": "all",
+    "all": "try{print(1/0)}catch(問題){print(\"caught\")}",
+    "expected": "caught"
+  },
+  {
+    "name": "Try no error",
+    "mode": "all",
+    "all": "try{print(\"good\")}catch(問題){print(\"bad\")}",
+    "expected": "good"
+  },
+  {
+    "name": "Try function return",
+    "mode": "all",
+    "all": "fn t(){try{return 5}catch(err){return 7}};print(t())",
+    "expected": "5"
+  },
+  {
+    "name": "JSON encode scalar",
+    "mode": "all",
+    "all": "print(json_encode(12))",
+    "expected": "12"
+  },
+  {
+    "name": "JSON decode scalar",
+    "mode": "all",
+    "all": "print(json_decode(\"12\"))",
+    "expected": "12"
+  },
+  {
+    "name": "JSON decode map",
+    "mode": "all",
+    "all": "let d=json_decode('{\"a\":2}');print(d[\"a\"])",
+    "expected": "2"
+  },
+  {
+    "name": "JSON encode map",
+    "mode": "all",
+    "all": "print(json_encode({\"a\":1}))",
+    "expected": "{\"a\":1}"
+  },
+  {
+    "name": "JSON roundtrip",
+    "mode": "all",
+    "all": "let d=json_decode(json_encode({\"a\":2,\"b\":[3,4]}));print(d[\"b\"][1])",
+    "expected": "4"
+  },
+  {
+    "name": "JSON Unicode",
+    "mode": "all",
+    "all": "let d=json_decode(json_encode({\"名前\":\"太郎\"}));print(d[\"名前\"])",
+    "expected": "太郎"
+  },
+  {
+    "name": "Duplicate map key",
+    "mode": "error",
+    "all": "print({\"a\":1,\"a\":2})",
+    "message_contains": "Duplicate key"
+  },
+  {
+    "name": "Missing map key",
+    "mode": "error",
+    "all": "let m={};print(m[\"missing\"])",
+    "message_contains": "Missing key"
+  },
+  {
+    "name": "Bad foreach",
+    "mode": "error",
+    "all": "foreach(x in 1){print(x)}",
+    "message_contains": "foreach requires a list"
+  },
+  {
+    "name": "Uncaught throw",
+    "mode": "error",
+    "all": "throw \"bad\"",
+    "message_contains": "bad"
+  },
+  {
+    "name": "Map key list forbidden",
+    "mode": "error",
+    "all": "print({[1]:2})",
+    "message_contains": "Dictionary key"
+  },
+  {
+    "name": "No map on scalar index",
+    "mode": "error",
+    "all": "print(3[0])",
+    "message_contains": "Indexing requires a list or map"
+  },
+  {
+    "name": "Unclosed map",
+    "mode": "error",
+    "all": "let m={\"a\":1",
+    "message_contains": "Expected"
+  }
+]

@@ -1,0 +1,17 @@
+# Replace USER and /home/USER as appropriate; run as nonprivileged account.
+[Unit]
+Description=ALL multiprocess API
+After=network.target
+[Service]
+User=USER
+WorkingDirectory=/home/USER/projects/all-api
+ExecStart=/usr/bin/pwsh -NoProfile -File /home/USER/ALL/ALL_serve_pool.ps1 -File /home/USER/projects/all-api/service.all -StopFile /home/USER/ALL/stop/pool.stop -Workers 4 -Port 18888
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=45
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/USER/projects/all-api /home/USER/ALL/stop
+[Install]
+WantedBy=multi-user.target

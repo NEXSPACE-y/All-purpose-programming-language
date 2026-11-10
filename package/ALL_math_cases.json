@@ -1,0 +1,709 @@
+[
+  {
+    "name": "Hello World regression",
+    "mode": "all",
+    "all": "print(\"Hello World！\")",
+    "expected": "Hello World！"
+  },
+  {
+    "name": "Hello World double quote",
+    "mode": "all",
+    "all": "print(\"Hello, ALL!\")",
+    "expected": "Hello, ALL!"
+  },
+  {
+    "name": "Newline statement separation",
+    "mode": "all",
+    "all": "let x = 6\nlet y = 7\nprint(x*y)",
+    "expected": "42"
+  },
+  {
+    "name": "Semicolon separation",
+    "mode": "all",
+    "all": "let x=5; let y=3; print(x+y)",
+    "expected": "8"
+  },
+  {
+    "name": "Double quotes escaped",
+    "mode": "all",
+    "all": "print(\"Hello\\nALL\")",
+    "expected": "Hello\nALL"
+  },
+  {
+    "name": "Single quotes",
+    "mode": "all",
+    "all": "print('Hi')",
+    "expected": "Hi"
+  },
+  {
+    "name": "Println",
+    "mode": "all",
+    "all": "println(42)",
+    "expected": "42\n"
+  },
+  {
+    "name": "Println empty",
+    "mode": "all",
+    "all": "println()",
+    "expected": "\n"
+  },
+  {
+    "name": "Comment line",
+    "mode": "all",
+    "all": "# test\nprint(5)",
+    "expected": "5"
+  },
+  {
+    "name": "Comment slash",
+    "mode": "all",
+    "all": "// test\nprint(6)",
+    "expected": "6"
+  },
+  {
+    "name": "Unary precedence",
+    "mode": "all",
+    "all": "print(-2^2)",
+    "expected": "-4"
+  },
+  {
+    "name": "Power right associative",
+    "mode": "all",
+    "all": "print(2^3^2)",
+    "expected": "512"
+  },
+  {
+    "name": "Negative exponent",
+    "mode": "all",
+    "all": "print(2^-3)",
+    "expected": "0.125"
+  },
+  {
+    "name": "Parentheses",
+    "mode": "all",
+    "all": "print((2+3)*4)",
+    "expected": "20"
+  },
+  {
+    "name": "Variable reuse",
+    "mode": "all",
+    "all": "let a=6;let b=a^2;print(b)",
+    "expected": "36"
+  },
+  {
+    "name": "Comparison",
+    "mode": "all",
+    "all": "print(3<4)",
+    "expected": "true"
+  },
+  {
+    "name": "Boolean combination",
+    "mode": "all",
+    "all": "print(3<4&&4<5)",
+    "expected": "true"
+  },
+  {
+    "name": "Logical not",
+    "mode": "all",
+    "all": "print(!(2>3))",
+    "expected": "true"
+  },
+  {
+    "name": "Division by zero",
+    "mode": "error",
+    "all": "print(1/0)",
+    "message_contains": "Division by zero"
+  },
+  {
+    "name": "Reject unknown token",
+    "mode": "error",
+    "all": "print(2);$unsafe",
+    "message_contains": "Unknown token"
+  },
+  {
+    "name": "Reject unknown statement",
+    "mode": "error",
+    "all": "print(2);unknown(1)",
+    "message_contains": "Unknown statement"
+  },
+  {
+    "name": "Reject invalid assignment",
+    "mode": "error",
+    "all": "let pi=3",
+    "message_contains": "Cannot assign"
+  },
+  {
+    "name": "Unknown math function",
+    "mode": "error",
+    "all": "print(nonexistent(10))",
+    "message_contains": "Unknown function"
+  },
+  {
+    "name": "Domain error",
+    "mode": "error",
+    "all": "print(sqrt(-1))",
+    "message_contains": "sqrt domain"
+  },
+  {
+    "name": "Invalid log",
+    "mode": "error",
+    "all": "print(log(0))",
+    "message_contains": "log domain"
+  },
+  {
+    "name": "Factorial limit",
+    "mode": "error",
+    "all": "print(factorial(28))",
+    "message_contains": "factorial requires an integer"
+  },
+  {
+    "name": "Integral odd interval",
+    "mode": "error",
+    "all": "print(integrate(\"x\",0,1,3))",
+    "message_contains": "Simpson intervals"
+  },
+  {
+    "name": "PHP parity: addition",
+    "mode": "pair",
+    "all": "print(10+20)",
+    "expected": "30",
+    "php": "<?php echo 10+20;"
+  },
+  {
+    "name": "PHP parity: precedence",
+    "mode": "pair",
+    "all": "print(2+3*4)",
+    "expected": "14",
+    "php": "<?php echo 2+3*4;"
+  },
+  {
+    "name": "PHP parity: grouping",
+    "mode": "pair",
+    "all": "print((2+3)*4)",
+    "expected": "20",
+    "php": "<?php echo (2+3)*4;"
+  },
+  {
+    "name": "PHP parity: subtraction",
+    "mode": "pair",
+    "all": "print(15-40)",
+    "expected": "-25",
+    "php": "<?php echo 15-40;"
+  },
+  {
+    "name": "PHP parity: negative",
+    "mode": "pair",
+    "all": "print(-9+3)",
+    "expected": "-6",
+    "php": "<?php echo -9+3;"
+  },
+  {
+    "name": "PHP parity: multiplication",
+    "mode": "pair",
+    "all": "print(7*8)",
+    "expected": "56",
+    "php": "<?php echo 7*8;"
+  },
+  {
+    "name": "PHP parity: exact division",
+    "mode": "pair",
+    "all": "print(81/9)",
+    "expected": "9",
+    "php": "<?php echo 81/9;"
+  },
+  {
+    "name": "PHP parity: decimal division",
+    "mode": "pair",
+    "all": "print(7.5/2.5)",
+    "expected": "3",
+    "php": "<?php echo 7.5/2.5;"
+  },
+  {
+    "name": "PHP parity: modulo",
+    "mode": "pair",
+    "all": "print(23%5)",
+    "expected": "3",
+    "php": "<?php echo 23%5;"
+  },
+  {
+    "name": "PHP parity: negative modulo",
+    "mode": "pair",
+    "all": "print(-23%5)",
+    "expected": "-3",
+    "php": "<?php echo -23%5;"
+  },
+  {
+    "name": "PHP parity: abs",
+    "mode": "pair",
+    "all": "print(abs(-15))",
+    "expected": "15",
+    "php": "<?php echo abs(-15);"
+  },
+  {
+    "name": "PHP parity: variable",
+    "mode": "pair",
+    "all": "let value=21;print(value*2)",
+    "expected": "42",
+    "php": "<?php $value=21;echo $value*2;"
+  },
+  {
+    "name": "PHP parity: variable reassignment",
+    "mode": "pair",
+    "all": "let a=10;a=a+11;print(a)",
+    "expected": "21",
+    "php": "<?php $a=10;$a=$a+11;echo $a;"
+  },
+  {
+    "name": "PHP parity: sum vs array_sum",
+    "mode": "pair",
+    "all": "print(sum(2,3,5))",
+    "expected": "10",
+    "php": "<?php echo array_sum([2,3,5]);"
+  },
+  {
+    "name": "PHP parity: order with abs",
+    "mode": "pair",
+    "all": "print(abs(-7)*3)",
+    "expected": "21",
+    "php": "<?php echo abs(-7)*3;"
+  },
+  {
+    "name": "PHP parity: decimal addition",
+    "mode": "pair",
+    "all": "print(1.5+2.25)",
+    "expected": "3.75",
+    "php": "<?php echo 1.5+2.25;"
+  },
+  {
+    "name": "PHP parity: hello",
+    "mode": "pair",
+    "all": "print(\"Hello World！\")",
+    "expected": "Hello World！",
+    "php": "<?php echo \"Hello World！\";"
+  },
+  {
+    "name": "PHP reference: sqrt",
+    "mode": "native",
+    "all": "print(sqrt(81))",
+    "php_reference": "<?php echo sqrt(81);",
+    "expected": "9",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: sqrt irrational",
+    "mode": "native",
+    "all": "print(sqrt(2))",
+    "php_reference": "<?php echo sqrt(2);",
+    "expected": "1.4142135623731",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: pow",
+    "mode": "native",
+    "all": "print(pow(2,10))",
+    "php_reference": "<?php echo pow(2,10);",
+    "expected": "1024",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: exponent syntax",
+    "mode": "native",
+    "all": "print(3^4)",
+    "php_reference": "<?php echo 3**4;",
+    "expected": "81",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: floor",
+    "mode": "native",
+    "all": "print(floor(-2.3))",
+    "php_reference": "<?php echo floor(-2.3);",
+    "expected": "-3",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: ceil",
+    "mode": "native",
+    "all": "print(ceil(-2.3))",
+    "php_reference": "<?php echo ceil(-2.3);",
+    "expected": "-2",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: round half positive",
+    "mode": "native",
+    "all": "print(round(2.5))",
+    "php_reference": "<?php echo round(2.5);",
+    "expected": "3",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: round half negative",
+    "mode": "native",
+    "all": "print(round(-2.5))",
+    "php_reference": "<?php echo round(-2.5);",
+    "expected": "-3",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: round precision",
+    "mode": "native",
+    "all": "print(round(3.14159,2))",
+    "php_reference": "<?php echo round(3.14159,2);",
+    "expected": "3.14",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: sin 0",
+    "mode": "native",
+    "all": "print(sin(0))",
+    "php_reference": "<?php echo sin(0);",
+    "expected": "0",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: sin pi/6",
+    "mode": "native",
+    "all": "print(sin(pi/6))",
+    "php_reference": "<?php echo sin(M_PI/6);",
+    "expected": "0.5",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: cos 0",
+    "mode": "native",
+    "all": "print(cos(0))",
+    "php_reference": "<?php echo cos(0);",
+    "expected": "1",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: tan 0",
+    "mode": "native",
+    "all": "print(tan(0))",
+    "php_reference": "<?php echo tan(0);",
+    "expected": "0",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: atan2",
+    "mode": "native",
+    "all": "print(atan2(0,-1))",
+    "php_reference": "<?php echo atan2(0,-1);",
+    "expected": "3.1415926535898",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: hypot",
+    "mode": "native",
+    "all": "print(hypot(3,4))",
+    "php_reference": "<?php echo hypot(3,4);",
+    "expected": "5",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: log",
+    "mode": "native",
+    "all": "print(log(e))",
+    "php_reference": "<?php echo log(M_E);",
+    "expected": "1",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: log base",
+    "mode": "native",
+    "all": "print(log(8,2))",
+    "php_reference": "<?php echo log(8,2);",
+    "expected": "3",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: log10",
+    "mode": "native",
+    "all": "print(log10(1000))",
+    "php_reference": "<?php echo log10(1000);",
+    "expected": "3",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: exp",
+    "mode": "native",
+    "all": "print(exp(1))",
+    "php_reference": "<?php echo exp(1);",
+    "expected": "2.718281828459",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: min",
+    "mode": "native",
+    "all": "print(min(4,2,8))",
+    "php_reference": "<?php echo min(4,2,8);",
+    "expected": "2",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: max",
+    "mode": "native",
+    "all": "print(max(4,2,8))",
+    "php_reference": "<?php echo max(4,2,8);",
+    "expected": "8",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: pi",
+    "mode": "native",
+    "all": "print(pi)",
+    "php_reference": "<?php echo M_PI;",
+    "expected": "3.1415926535898",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: degrees",
+    "mode": "native",
+    "all": "print(deg(pi))",
+    "php_reference": "<?php echo rad2deg(M_PI);",
+    "expected": "180",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "PHP reference: radians",
+    "mode": "native",
+    "all": "print(rad(180))",
+    "php_reference": "<?php echo deg2rad(180);",
+    "expected": "3.1415926535898",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "Math: cbrt negative",
+    "mode": "all",
+    "all": "print(cbrt(-27))",
+    "expected": "-3"
+  },
+  {
+    "name": "Math: truncate",
+    "mode": "all",
+    "all": "print(trunc(-2.8))",
+    "expected": "-2"
+  },
+  {
+    "name": "Math: sign",
+    "mode": "all",
+    "all": "print(sign(-9))",
+    "expected": "-1"
+  },
+  {
+    "name": "Math: clamp",
+    "mode": "all",
+    "all": "print(clamp(20,0,10))",
+    "expected": "10"
+  },
+  {
+    "name": "Math: log2",
+    "mode": "all",
+    "all": "print(log2(256))",
+    "expected": "8"
+  },
+  {
+    "name": "Math: factorial",
+    "mode": "all",
+    "all": "print(factorial(10))",
+    "expected": "3628800"
+  },
+  {
+    "name": "Math: gcd",
+    "mode": "all",
+    "all": "print(gcd(54,24))",
+    "expected": "6"
+  },
+  {
+    "name": "Math: lcm",
+    "mode": "all",
+    "all": "print(lcm(12,18))",
+    "expected": "36"
+  },
+  {
+    "name": "Math: choose",
+    "mode": "all",
+    "all": "print(choose(10,3))",
+    "expected": "120"
+  },
+  {
+    "name": "Math: permutation",
+    "mode": "all",
+    "all": "print(perm(6,2))",
+    "expected": "30"
+  },
+  {
+    "name": "Math: Fibonacci",
+    "mode": "all",
+    "all": "print(fib(20))",
+    "expected": "6765"
+  },
+  {
+    "name": "Math: prime yes",
+    "mode": "all",
+    "all": "print(isprime(97))",
+    "expected": "true"
+  },
+  {
+    "name": "Math: prime no",
+    "mode": "all",
+    "all": "print(isprime(100))",
+    "expected": "false"
+  },
+  {
+    "name": "Math: vector",
+    "mode": "all",
+    "all": "print(vec(1,2,3))",
+    "expected": "[1,2,3]"
+  },
+  {
+    "name": "Math: dot product",
+    "mode": "all",
+    "all": "print(dot(vec(1,2,3),vec(4,5,6)))",
+    "expected": "32"
+  },
+  {
+    "name": "Math: vector norm",
+    "mode": "all",
+    "all": "print(norm(vec(3,4)))",
+    "expected": "5"
+  },
+  {
+    "name": "Math: vector distance",
+    "mode": "all",
+    "all": "print(distance(vec(0,0),vec(3,4)))",
+    "expected": "5"
+  },
+  {
+    "name": "Math: vector cross",
+    "mode": "all",
+    "all": "print(cross(vec(1,0,0),vec(0,1,0)))",
+    "expected": "[0,0,1]"
+  },
+  {
+    "name": "Math: matrix literal",
+    "mode": "all",
+    "all": "print(mat(2,2,1,2,3,4))",
+    "expected": "[[1,2],[3,4]]"
+  },
+  {
+    "name": "Math: matrix transpose",
+    "mode": "all",
+    "all": "print(transpose(mat(2,2,1,2,3,4)))",
+    "expected": "[[1,3],[2,4]]"
+  },
+  {
+    "name": "Math: matrix multiplication",
+    "mode": "all",
+    "all": "print(matmul(mat(2,2,1,2,3,4),mat(2,2,5,6,7,8)))",
+    "expected": "[[19,22],[43,50]]"
+  },
+  {
+    "name": "Math: determinant",
+    "mode": "all",
+    "all": "print(det(mat(2,2,1,2,3,4)))",
+    "expected": "-2"
+  },
+  {
+    "name": "Math: sum",
+    "mode": "all",
+    "all": "print(sum(1,2,3,4))",
+    "expected": "10"
+  },
+  {
+    "name": "Math: mean",
+    "mode": "all",
+    "all": "print(mean(1,2,3,4))",
+    "expected": "2.5"
+  },
+  {
+    "name": "Math: median odd",
+    "mode": "all",
+    "all": "print(median(9,2,5))",
+    "expected": "5"
+  },
+  {
+    "name": "Math: median even",
+    "mode": "all",
+    "all": "print(median(1,2,3,4))",
+    "expected": "2.5"
+  },
+  {
+    "name": "Math: population variance",
+    "mode": "all",
+    "all": "print(variance(1,2,3))",
+    "expected": "0.6666666666666666",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "Math: population stdev",
+    "mode": "all",
+    "all": "print(stdev(1,2,3))",
+    "expected": "0.816496580927726",
+    "compare": "numeric",
+    "tolerance": 1e-09
+  },
+  {
+    "name": "Math: vector mean",
+    "mode": "all",
+    "all": "print(mean(vec(1,2,3,4)))",
+    "expected": "2.5"
+  },
+  {
+    "name": "Math: numerical derivative",
+    "mode": "all",
+    "all": "print(derivative(\"x^3\",2))",
+    "expected": "12",
+    "compare": "numeric",
+    "tolerance": 1e-06
+  },
+  {
+    "name": "Math: numerical Simpson integral",
+    "mode": "all",
+    "all": "print(integrate(\"x^2\",0,2,200))",
+    "expected": "2.6666666666666665",
+    "compare": "numeric",
+    "tolerance": 1e-08
+  },
+  {
+    "name": "Math: numerical sine derivative",
+    "mode": "all",
+    "all": "print(derivative(\"sin(x)\",0))",
+    "expected": "1",
+    "compare": "numeric",
+    "tolerance": 1e-06
+  },
+  {
+    "name": "Math: numerical sine integral",
+    "mode": "all",
+    "all": "print(integrate(\"sin(x)\",0,pi,200))",
+    "expected": "2",
+    "compare": "numeric",
+    "tolerance": 1e-08
+  }
+]

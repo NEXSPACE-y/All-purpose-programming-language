@@ -1,0 +1,351 @@
+--- ALL_PHP_v3_9_2_adapter.ps1
++++ ALL_PHP_v3_10_adapter.ps1
+@@ -352,10 +352,15 @@
+                     $returnByRef=$true
+                 }
+                 $params=Read-Parameters
++                $returnType=''
+                 $captures=[System.Collections.Generic.List[object]]::new()
+                 $body=$null
+                 $expr=$null
+                 if ($arrow) {
++                    if ((Peek-Token) -ceq ':') {
++                        [void](Next-Token)
++                        $returnType=Read-PhpTypeAnnotation
++                    }
+                     Expect-Token '=>'
+                     $expr=Read-Expr 1
+                 } else {
+@@ -380,13 +385,17 @@
+                         }
+                         Expect-Token ')'
+                     }
++                    if ((Peek-Token) -ceq ':') {
++                        [void](Next-Token)
++                        $returnType=Read-PhpTypeAnnotation
++                    }
+                     if ((Peek-Token) -cne '{') { throw 'ALL PHP: Closure body must be a block' }
+                     $body=Read-Statement
+                 }
+                 return [pscustomobject]@{
+                     Kind='closure'; Params=@($params); Body=$body; Expr=$expr
+                     Captures=$captures.ToArray(); Arrow=$arrow
+-                    ReturnByRef=$returnByRef
++                    ReturnByRef=$returnByRef; ReturnType=$returnType
+                     Name='(closure)'
+                 }
+             }
+@@ -1251,6 +1260,44 @@
+             return [pscustomobject]@{ Kind='exprstmt'; Expr=$expr }
+ 
+         }
++        function Read-PhpTypeAnnotation {
++            $first = Peek-Token
++            $prefix = ''
++            if ($first -ceq '?') {
++                [void](Next-Token)
++                $prefix = '?'
++                $first = Peek-Token
++            }
++            if ($first -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
++                throw 'ALL PHP: Expected type name'
++            }
++            $typeText = $prefix + (Next-Token)
++            while ((Peek-Token) -in @('|','&')) {
++                $separator = Peek-Token
++                if ($separator -eq '&') {
++                    # An ampersand before a variable is a by-reference parameter,
++                    # not an intersection type separator.
++                    if ($state.Pos + 1 -ge $state.Tokens.Count -or
++                        $state.Tokens[$state.Pos + 1] -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
++                        break
++                    }
++                }
++                [void](Next-Token)
++                $part = Next-Token
++                if ($part -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
++                    throw 'ALL PHP: Expected type name after union/intersection separator'
++                }
++                $typeText += $separator + $part
++            }
++            if ($typeText -cmatch '^\?mixed$' -or
++                ($typeText -match '(?i)\bmixed\b' -and $typeText.Contains('|'))) {
++                throw 'ALL PHP: mixed cannot be nullable or part of union'
++            }
++            if ($typeText -cmatch '^\?(?:void|never)$') {
++                throw 'ALL PHP: void and never cannot be nullable'
++            }
++            return $typeText
++        }
+         function Read-Parameters {
+             Expect-Token '('
+             $parameters = [System.Collections.Generic.List[object]]::new()
+@@ -1258,6 +1305,14 @@
+             if ((Peek-Token) -cne ')') {
+                 while ($true) {
+                     if ($sawVariadic) { throw 'ALL PHP: Variadic parameter must be last' }
++                    $typeName = ''
++                    if ((Peek-Token) -ceq '?' -or
++                        (Peek-Token) -cmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
++                        $typeName=Read-PhpTypeAnnotation
++                        if ($typeName -in @('void','never')) {
++                            throw 'ALL PHP: void and never are return-only types'
++                        }
++                    }
+                     $byRef = $false
+                     if ((Peek-Token) -ceq '&') {
+                         $byRef = $true
+@@ -1286,7 +1341,7 @@
+                     }
+                     [void]$parameters.Add([pscustomobject]@{
+                         Name=$param.Substring(1); Default=$default; Variadic=$variadic
+-                        ByRef=$byRef
++                        ByRef=$byRef; TypeName=$typeName
+                     })
+                     if ((Peek-Token) -cne ',') { break }
+                     [void](Next-Token)
+@@ -1308,6 +1363,11 @@
+                 throw 'ALL PHP: Expected function name'
+             }
+             $parameters = Read-Parameters
++            $returnType=''
++            if ((Peek-Token) -ceq ':') {
++                [void](Next-Token)
++                $returnType=Read-PhpTypeAnnotation
++            }
+             $body=$null
+             if ($declarationOnly) {
+                 Expect-Token ';'
+@@ -1319,7 +1379,7 @@
+                 Kind='functiondef'; Name=$name; Params=@($parameters); Body=$body
+                 Visibility='public'; Static=$false; Owner=$null
+                 Abstract=$declarationOnly; Final=$false
+-                ReturnByRef=$returnByRef
++                ReturnByRef=$returnByRef; ReturnType=$returnType
+             }
+         }
+ 
+@@ -1865,6 +1925,114 @@
+             }
+             return $name
+         }
++        function Test-PhpTypeAtom($value, [string]$type) {
++            if (Is-PhpRefCell $value) { $value=$value.Value }
++            switch ($type.ToLowerInvariant()) {
++                'mixed' { return $true }
++                'null' { return ($null -eq $value) }
++                'true' { return ($value -is [bool] -and $value) }
++                'false' { return ($value -is [bool] -and -not $value) }
++                'bool' { return ($value -is [bool]) }
++                'string' { return ($value -is [string]) }
++                'int' {
++                    return ($value -is [decimal] -and
++                        [decimal]::Truncate($value) -eq $value)
++                }
++                'float' { return ($value -is [decimal]) }
++                'array' { return (Is-PhpArray $value) }
++                'object' { return (Is-PhpObject $value) }
++                'iterable' { return (Is-PhpArray $value) }
++                'callable' {
++                    if ($value -is [string]) { return $state.Functions.ContainsKey($value) }
++                    if ($null -eq $value) { return $false }
++                    if ($value.PSObject.Properties['PhpType']) {
++                        if ($value.PhpType -in @('closure','first_class_callable')) { return $true }
++                    }
++                    if (Is-PhpObject $value) {
++                        return ($null -ne (Find-OptionalPhpMethod $value.Class '__invoke'))
++                    }
++                    return $false
++                }
++                'void' { return ($null -eq $value) }
++                'never' { return $false }
++                default {
++                    if (-not (Is-PhpObject $value)) { return $false }
++                    $className=$type
++                    if ($type -in @('self','parent','static')) {
++                        $className=Resolve-PhpClass $type
++                    }
++                    return (Test-PhpInstanceOf $value.Class $className)
++                }
++            }
++        }
++        function Convert-PhpTypedValue($value, [string]$typeName, [string]$location) {
++            if ([string]::IsNullOrEmpty($typeName)) { return $value }
++            if ($typeName.StartsWith('?')) {
++                if ($null -eq $value) { return $null }
++                $typeName=$typeName.Substring(1)
++            }
++            $union = $typeName.Split([char]'|')
++            foreach ($variant in $union) {
++                $parts=$variant.Split([char]'&')
++                $all=$true
++                foreach ($part in $parts) {
++                    if (-not (Test-PhpTypeAtom $value $part)) { $all=$false; break }
++                }
++                if ($all) { return $value }
++            }
++            # Weak PHP scalar conversions for a single primitive annotation.
++            # Numeric kinds are retained as decimal in this interpreter; int/float
++            # boundary and IEEE-754 fidelity remain a separate outstanding gap.
++            if ($union.Count -eq 1 -and -not $typeName.Contains('&') -and
++                $null -ne $value) {
++                switch ($typeName.ToLowerInvariant()) {
++                    'string' {
++                        if ($value -is [decimal] -or $value -is [bool]) {
++                            return (To-PhpText $value)
++                        }
++                    }
++                    'bool' {
++                        if ($value -is [decimal] -or $value -is [string]) {
++                            return (Is-Truthy $value)
++                        }
++                    }
++                    'int' {
++                        if ($value -is [bool]) {
++                            if ($value) { return [decimal]1 }
++                            return [decimal]0
++                        }
++                        if ($value -is [decimal]) {
++                            return [decimal]::Truncate($value)
++                        }
++                        if ($value -is [string]) {
++                            $parsed=[decimal]0
++                            if ([decimal]::TryParse($value,
++                                [System.Globalization.NumberStyles]::Float,
++                                [System.Globalization.CultureInfo]::InvariantCulture,
++                                [ref]$parsed)) {
++                                return [decimal]::Truncate($parsed)
++                            }
++                        }
++                    }
++                    'float' {
++                        if ($value -is [bool]) {
++                            if ($value) { return [decimal]1 }
++                            return [decimal]0
++                        }
++                        if ($value -is [string]) {
++                            $parsed=[decimal]0
++                            if ([decimal]::TryParse($value,
++                                [System.Globalization.NumberStyles]::Float,
++                                [System.Globalization.CultureInfo]::InvariantCulture,
++                                [ref]$parsed)) {
++                                return $parsed
++                            }
++                        }
++                    }
++                }
++            }
++            throw "ALL PHP: Type mismatch at $location (expected $typeName)"
++        }
+         function Copy-PhpTraitMethod($method, [string]$newName, [string]$visibility) {
+             if ([string]::IsNullOrEmpty($visibility)) { $visibility=$method.Visibility }
+             return [pscustomobject]@{
+@@ -1872,7 +2040,7 @@
+                 Params=$method.Params; Body=$method.Body; Expr=$method.Expr
+                 Visibility=$visibility; Static=$method.Static
+                 Owner=$method.Owner; Abstract=$method.Abstract; Final=$method.Final
+-                ReturnByRef=$method.ReturnByRef
++                ReturnByRef=$method.ReturnByRef; ReturnType=$method.ReturnType
+             }
+         }
+         function Get-PhpTraitComposition($declaration) {
+@@ -2316,7 +2484,7 @@
+             $state.ReturnByRef=$functionReturnsByRef
+             $state.Vars = [System.Collections.Generic.Dictionary[string,object]]::new(
+                 [System.StringComparer]::Ordinal)
+-            $state.Flow = @{ Returned=$false; Value=$null; RefCell=$null; LoopControl=$null; LoopDepth=0 }
++            $state.Flow = @{ Returned=$false; ReturnedWithExpr=$false; Value=$null; RefCell=$null; LoopControl=$null; LoopDepth=0 }
+             $state.GlobalBindings = [System.Collections.Generic.HashSet[string]]::new(
+                 [System.StringComparer]::Ordinal)
+             $state.StaticBindings = [System.Collections.Generic.HashSet[string]]::new(
+@@ -2423,7 +2591,36 @@
+                         throw "ALL PHP: Too few arguments for $($definition.Name)"
+                     }
+                 }
++                # Enforce declared parameter types after resolving named/default/variadic
++                # arguments and before entering the function body.
++                foreach ($param in $definition.Params) {
++                    if (-not $param.PSObject.Properties['TypeName'] -or
++                        [string]::IsNullOrEmpty($param.TypeName)) { continue }
++                    $name=[string]$param.Name
++                    if ($param.Variadic) {
++                        $argsArray=$state.Vars[$name]
++                        foreach ($key in @($argsArray.Items.Keys)) {
++                            $item=$argsArray.Items[$key]
++                            $cell=$null
++                            if (Is-PhpRefCell $item) { $cell=$item; $item=$item.Value }
++                            $checked=Convert-PhpTypedValue $item $param.TypeName ('argument $' + $name)
++                            if ($null -ne $cell) { $cell.Value=$checked }
++                            else { $argsArray.Items[$key]=$checked }
++                        }
++                    } else {
++                        $item=$state.Vars[$name]
++                        $cell=$null
++                        if (Is-PhpRefCell $item) { $cell=$item; $item=$item.Value }
++                        $checked=Convert-PhpTypedValue $item $param.TypeName ('argument $' + $name)
++                        if ($null -ne $cell) { $cell.Value=$checked }
++                        else { $state.Vars[$name]=$checked }
++                    }
++                }
+                 if ($null -ne $object) { $state.Vars['this'] = $object }
++                $returnType=''
++                if ($definition.PSObject.Properties['ReturnType']) {
++                    $returnType=[string]$definition.ReturnType
++                }
+                 if ($null -ne $definition.Expr) {
+                     if ($state.ReturnByRef) {
+                         $expr=$definition.Expr
+@@ -2434,19 +2631,34 @@
+                         } else {
+                             throw 'ALL PHP: Reference return requires a writable value'
+                         }
++                        $cell.Value=Convert-PhpTypedValue $cell.Value $returnType 'return value'
+                         if ($referenceContext) { return $cell }
+                         return $cell.Value
+                     }
+-                    return (Invoke-PhpExpr $definition.Expr)
++                    $result=Invoke-PhpExpr $definition.Expr
++                    if ($returnType -eq 'void') {
++                        throw 'ALL PHP: void function cannot return a value'
++                    }
++                    if ($returnType -eq 'never') {
++                        throw 'ALL PHP: never function returned a value'
++                    }
++                    return (Convert-PhpTypedValue $result $returnType 'return value')
+                 }
+                 Invoke-PhpStatement $definition.Body
++                if ($returnType -eq 'never') {
++                    throw 'ALL PHP: never function returned'
++                }
++                if ($returnType -eq 'void' -and $state.Flow.ReturnedWithExpr) {
++                    throw 'ALL PHP: void function cannot return a value'
++                }
+                 if ($referenceContext) {
+                     if (-not (Is-PhpRefCell $state.Flow.RefCell)) {
+                         throw 'ALL PHP: Function did not return a reference'
+                     }
++                    $state.Flow.RefCell.Value=Convert-PhpTypedValue $state.Flow.RefCell.Value $returnType 'return value'
+                     return $state.Flow.RefCell
+                 }
+-                return $state.Flow.Value
++                return (Convert-PhpTypedValue $state.Flow.Value $returnType 'return value')
+             } finally {
+                 $state.CallDepth--
+                 $state.Vars = $oldVars
+@@ -3788,7 +4000,7 @@
+                                 Params=$method.Params; Body=$method.Body; Expr=$method.Expr
+                                 Visibility=$method.Visibility; Static=$method.Static
+                                 Owner=$node.Name; Abstract=$method.Abstract; Final=$method.Final
+-                                ReturnByRef=$method.ReturnByRef
++                                ReturnByRef=$method.ReturnByRef; ReturnType=$method.ReturnType
+                             }
+                             if ($null -ne $node.Parent) {
+                                 $inherited=$null
+@@ -3903,6 +4115,7 @@
+                     }
+                     $state.Flow.RefCell=$cell
+                     $state.Flow.Value = $value
++                    $state.Flow.ReturnedWithExpr=($null -ne $node.Expr)
+                     $state.Flow.Returned = $true
+                     return
+                 }

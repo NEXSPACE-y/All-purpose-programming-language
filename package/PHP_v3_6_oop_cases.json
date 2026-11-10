@@ -1,0 +1,117 @@
+[
+  {
+    "name": "interface basic",
+    "code": "<?php interface I { public function run(); } class C implements I { public function run(){ return \"yes\"; } } echo (new C())->run();",
+    "expected": "yes"
+  },
+  {
+    "name": "interface instanceof",
+    "code": "<?php interface I { public function run(); } class C implements I { public function run(){ return 1; } } $x=new C(); echo $x instanceof I ? \"yes\" : \"no\";",
+    "expected": "yes"
+  },
+  {
+    "name": "interface mismatch false",
+    "code": "<?php interface I { public function run(); } class C { public function run(){ return 1; } } $x=new C(); echo $x instanceof I ? \"yes\" : \"no\";",
+    "expected": "no"
+  },
+  {
+    "name": "interface extends",
+    "code": "<?php interface Base { public function base(); } interface I extends Base { public function run(); } class C implements I { public function base(){ return 2; } public function run(){ return 3; } } $x = new C(); echo $x->base()+$x->run();",
+    "expected": "5"
+  },
+  {
+    "name": "multiple interface",
+    "code": "<?php interface I { public function a(); } interface J { public function b(); } class C implements I, J { public function a(){ return 3; } public function b(){return 4;} } echo (new C())->a() + (new C())->b();",
+    "expected": "7"
+  },
+  {
+    "name": "interface inheritance in class",
+    "code": "<?php interface I {public function a();} class P implements I {public function a(){return 4;}} class C extends P {} $x=new C(); echo $x instanceof I ? \"yes\" : \"no\";",
+    "expected": "yes"
+  },
+  {
+    "name": "interface extends multiple",
+    "code": "<?php interface A {public function a();} interface B {public function b();} interface C extends A,B {public function c();} class D implements C {public function a(){return 1;} public function b(){return 2;} public function c(){return 3;}} $x=new D(); echo $x instanceof A ? $x->a()+$x->b()+$x->c():0;",
+    "expected": "6"
+  },
+  {
+    "name": "interface constant direct",
+    "code": "<?php interface I { const CODE = 7; public function a(); } echo I::CODE;",
+    "expected": "7"
+  },
+  {
+    "name": "interface constant inherited",
+    "code": "<?php interface I { const CODE = 7; public function a(); } class C implements I {public function a(){return 3;}} echo C::CODE;",
+    "expected": "7"
+  },
+  {
+    "name": "interface extends constant",
+    "code": "<?php interface A {const CODE = 5;} interface B extends A {} echo B::CODE;",
+    "expected": "5"
+  },
+  {
+    "name": "abstract method",
+    "code": "<?php abstract class A { abstract public function score(); } class C extends A { public function score(){ return 8; } } echo (new C())->score();",
+    "expected": "8"
+  },
+  {
+    "name": "abstract default method",
+    "code": "<?php abstract class A { public function calc($n){return $n+3;} abstract public function score();} class C extends A {public function score(){return 5;}} echo (new C())->calc((new C())->score());",
+    "expected": "8"
+  },
+  {
+    "name": "abstract inheritance",
+    "code": "<?php abstract class A { abstract public function read(); } abstract class B extends A {} class C extends B { public function read(){return \"ok\";} } echo (new C())->read();",
+    "expected": "ok"
+  },
+  {
+    "name": "abstract extra optional args",
+    "code": "<?php abstract class A { abstract public function calc($n); } class C extends A {public function calc($n,$more=2){return $n+$more;}} echo (new C())->calc(5);",
+    "expected": "7"
+  },
+  {
+    "name": "abstract protected override",
+    "code": "<?php abstract class A { abstract protected function show(); public function display(){return $this->show();} } class C extends A {public function show(){return \"yes\";}} echo (new C())->display();",
+    "expected": "yes"
+  },
+  {
+    "name": "final class usable",
+    "code": "<?php final class C {public function a(){return 4;}} echo (new C())->a();",
+    "expected": "4"
+  },
+  {
+    "name": "final method usable",
+    "code": "<?php class P { final public function a(){return 6;} } class C extends P {} echo (new C())->a();",
+    "expected": "6"
+  },
+  {
+    "name": "interface default argument",
+    "code": "<?php interface I {public function run($x=5);} class C implements I {public function run($x=5){return $x;}} echo (new C())->run();",
+    "expected": "5"
+  },
+  {
+    "name": "interface static function",
+    "code": "<?php interface I {public static function run();} class C implements I {public static function run(){return 3;}} echo C::run();",
+    "expected": "3"
+  },
+  {
+    "name": "interface abstract subclass",
+    "code": "<?php interface I {public function run();} abstract class P implements I {} class C extends P {public function run(){return \"yes\";}} echo (new C())->run();",
+    "expected": "yes"
+  },
+  {
+    "name": "interface named args",
+    "code": "<?php interface I {public function run($a,$b=2);} class C implements I {public function run($a,$b=2){return $a+$b;}} echo (new C())->run(b:4,a:3);",
+    "expected": "7"
+  },
+  {
+    "name": "non-public helper",
+    "code": "<?php interface I {public function run();} class C implements I {private function helper(){return 5;} public function run(){return $this->helper();}} echo (new C())->run();",
+    "expected": "5"
+  },
+  {
+    "name": "abstract static function",
+    "code": "<?php abstract class P {abstract public static function run();} class C extends P {public static function run(){return 9;}} echo C::run();",
+    "expected": "9"
+  }
+]

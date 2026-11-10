@@ -1,0 +1,21 @@
+# ALL Japanese/English hybrid: database-backed API application.
+# Initialize with: all run examples/pro_app/setup.all
+# Run using the multiprocess gateway (SQLite persists data across workers).
+
+関数 応答する(要求) {
+    if (要求["path"] == "/health") {
+        return {"status":200,"body":"OK"}
+    }
+    if (要求["path"] == "/items" && 要求["method"] == "GET") {
+        let items = sql_query("items.sqlite", "SELECT id,name,qty FROM items ORDER BY id")
+        return {"status":200,"body":json_encode(items),"content_type":"application/json; charset=utf-8"}
+    }
+    if (要求["path"] == "/items" && 要求["method"] == "POST") {
+        let item = json_decode(要求["body"])
+        let changed = sql_exec("items.sqlite", "INSERT INTO items(name,qty) VALUES(?,?)", [item["name"],item["qty"]])
+        return {"status":201,"body":"created"}
+    }
+    return {"status":404,"body":"Not found"}
+}
+
+HTTP常時配信(18888,"応答する")

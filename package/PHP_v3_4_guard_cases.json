@@ -1,0 +1,17 @@
+[
+  {
+    "name": "unsupported json_encode option must reject",
+    "code": "<?php echo json_encode([],1);",
+    "error_contains": "json_encode() supports one argument"
+  },
+  {
+    "name": "unsupported json_decode depth must reject",
+    "code": "<?php echo json_decode(\"{}\",true,1);",
+    "error_contains": "json_decode() supports one or two arguments"
+  },
+  {
+    "name": "compound division by zero must reject",
+    "code": "<?php $x=12; $x/=0;",
+    "error_contains": "Division by zero"
+  }
+]

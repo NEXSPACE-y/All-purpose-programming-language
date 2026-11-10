@@ -1,0 +1,200 @@
+[
+  {
+    "name": "Natural Hello World",
+    "mode": "all",
+    "all": "「Hello World!!」と表示する",
+    "expected": "Hello World!!"
+  },
+  {
+    "name": "Natural Japanese Hello",
+    "mode": "all",
+    "all": "「こんにちは世界」を表示する",
+    "expected": "こんにちは世界"
+  },
+  {
+    "name": "Natural output identifier",
+    "mode": "all",
+    "all": "変数 年齢=23\n年齢を表示する",
+    "expected": "23"
+  },
+  {
+    "name": "Natural output line",
+    "mode": "all",
+    "all": "変数 名前=\"花子\"\n名前を改行して表示する",
+    "expected": "花子\n"
+  },
+  {
+    "name": "Natural conditional >=",
+    "mode": "all",
+    "all": "変数 年齢=20\n年齢が18以上なら {\n「成人です」と表示する\n}",
+    "expected": "成人です"
+  },
+  {
+    "name": "Natural conditional optional もし",
+    "mode": "all",
+    "all": "変数 年齢=20\nもし年齢が18以上だったら {\n「成人です」を表示する\n}",
+    "expected": "成人です"
+  },
+  {
+    "name": "Natural conditional else",
+    "mode": "all",
+    "all": "変数 年齢=15\n年齢が18以上なら {\n「成人」と表示する\n}\nそうでなければ {\n「未成年」と表示する\n}",
+    "expected": "未成年"
+  },
+  {
+    "name": "Natural condition strict greater",
+    "mode": "all",
+    "all": "変数 数=3\n数が3より大きいなら {\n「NG」と表示する\n}\nそうでなければ {\n「OK」と表示する\n}",
+    "expected": "OK"
+  },
+  {
+    "name": "Natural condition less than",
+    "mode": "all",
+    "all": "変数 数=3\n数が4未満なら {\n「OK」と表示する\n}",
+    "expected": "OK"
+  },
+  {
+    "name": "Natural condition <=",
+    "mode": "all",
+    "all": "変数 数=3\n数が3以下なら {\n「OK」と表示する\n}",
+    "expected": "OK"
+  },
+  {
+    "name": "Natural condition equality",
+    "mode": "all",
+    "all": "変数 数=3\n数が3と等しいなら {\n「YES」と表示する\n}",
+    "expected": "YES"
+  },
+  {
+    "name": "Natural condition not equal",
+    "mode": "all",
+    "all": "変数 数=3\n数が4と異なるなら {\n「YES」と表示する\n}",
+    "expected": "YES"
+  },
+  {
+    "name": "Natural JP declaration",
+    "mode": "all",
+    "all": "合計という変数を10とする\n合計を表示する",
+    "expected": "10"
+  },
+  {
+    "name": "Natural JP assignment",
+    "mode": "all",
+    "all": "合計という変数を10とする\n合計に20を代入する\n合計を表示する",
+    "expected": "20"
+  },
+  {
+    "name": "Natural JP addition",
+    "mode": "all",
+    "all": "合計という変数を10とする\n合計に5を足す\n合計を表示する",
+    "expected": "15"
+  },
+  {
+    "name": "Natural JP subtraction",
+    "mode": "all",
+    "all": "合計という変数を10とする\n合計から3を引く\n合計を表示する",
+    "expected": "7"
+  },
+  {
+    "name": "Natural while",
+    "mode": "all",
+    "all": "合計という変数を0とする\n合計が3未満の間繰り返す {\n合計に1を足す\n}\n合計を表示する",
+    "expected": "3"
+  },
+  {
+    "name": "Natural foreach",
+    "mode": "all",
+    "all": "合計という変数を0とする\n[1,2,3,4]の各要素を 値 として繰り返す {\n合計に値を足す\n}\n合計を表示する",
+    "expected": "10"
+  },
+  {
+    "name": "Natural return",
+    "mode": "all",
+    "all": "関数 二倍(x) {\nx * 2を返す\n}\n二倍(7)を表示する",
+    "expected": "14"
+  },
+  {
+    "name": "Natural map key existence",
+    "mode": "all",
+    "all": "変数 社員={\"名前\":\"太郎\",\"年齢\":23}\n社員に「名前」という項目がある場合 {\n社員の「名前」を表示する\n}",
+    "expected": "太郎"
+  },
+  {
+    "name": "Natural map absent",
+    "mode": "all",
+    "all": "変数 社員={\"名前\":\"太郎\"}\n社員に「住所」という項目がある場合 {\n「ある」と表示する\n}\nそうでなければ {\n「ない」と表示する\n}",
+    "expected": "ない"
+  },
+  {
+    "name": "Natural Japanese quote in comparison",
+    "mode": "all",
+    "all": "変数 名前=\"太郎\"\n名前が「太郎」と等しいなら {\n「一致」と表示する\n}",
+    "expected": "一致"
+  },
+  {
+    "name": "Natural and English mixed",
+    "mode": "all",
+    "all": "let 年齢=18\n年齢が18以上なら {\nprint(\"OK\")\n}",
+    "expected": "OK"
+  },
+  {
+    "name": "Natural mixed function with JP return",
+    "mode": "all",
+    "all": "fn 計算(x){\nx + 5を返す\n}\n計算(4)を表示する",
+    "expected": "9"
+  },
+  {
+    "name": "Natural comment preservation",
+    "mode": "all",
+    "all": "// 年齢が18以上なら {\n「OK」と表示する",
+    "expected": "OK"
+  },
+  {
+    "name": "Natural string preservation",
+    "mode": "all",
+    "all": "print(\"年齢が18以上なら { は文章です\")",
+    "expected": "年齢が18以上なら { は文章です"
+  },
+  {
+    "name": "Natural inline mathematical expression",
+    "mode": "all",
+    "all": "変数 合計=10\n合計に 2 * 3 を加える\n合計を表示する",
+    "expected": "16"
+  },
+  {
+    "name": "Natural newline braces",
+    "mode": "all",
+    "all": "変数 年齢=18\n年齢が18以上なら\n{\n「OK」と表示する\n}",
+    "expected": "OK"
+  },
+  {
+    "name": "Natural unicode variable",
+    "mode": "all",
+    "all": "在庫数という変数を3とする\n在庫数に2を足す\n在庫数を表示する",
+    "expected": "5"
+  },
+  {
+    "name": "Reject malformed Japanese condition",
+    "mode": "error",
+    "all": "年齢が18以上 {\n\"OK\"を表示する\n}",
+    "message_contains": "Unknown statement"
+  },
+  {
+    "name": "Reject unsupported unstructured language",
+    "mode": "error",
+    "all": "年齢を調べていい感じに表示して",
+    "message_contains": "Unknown statement"
+  },
+  {
+    "name": "Reject undefined Japanese variable",
+    "mode": "error",
+    "all": "存在しない変数を表示する",
+    "message_contains": "Undefined variable"
+  },
+  {
+    "name": "Reject malformed Japanese quote escape",
+    "mode": "error",
+    "all": "「abc\"def」を表示する",
+    "message_contains": "Escapes inside"
+  }
+]

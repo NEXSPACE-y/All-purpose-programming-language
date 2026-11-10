@@ -1,0 +1,127 @@
+[
+  {
+    "name": "variable variable assign/read",
+    "code": "<?php $k='value'; $$k=12; echo $value;",
+    "expected": "12"
+  },
+  {
+    "name": "variable variable updating",
+    "code": "<?php $k='count'; $count=3; $$k += 4; echo $count;",
+    "expected": "7"
+  },
+  {
+    "name": "variable variable to another",
+    "code": "<?php $a='x'; $x='y'; $$a='z'; echo $x;",
+    "expected": "z"
+  },
+  {
+    "name": "dynamic braced variable",
+    "code": "<?php $name='score'; ${$name}=28; echo $score;",
+    "expected": "28"
+  },
+  {
+    "name": "dynamic braced array access",
+    "code": "<?php $name='a'; $a=[1,2]; ${$name}[0]=9; echo $a[0];",
+    "expected": "9"
+  },
+  {
+    "name": "dynamic braced dynamic name",
+    "code": "<?php $a=['target']; $target=88; echo ${$a[0]};",
+    "expected": "88"
+  },
+  {
+    "name": "variable variable unset",
+    "code": "<?php $name='foo'; $foo=3; unset($$name); echo isset($foo)?'bad':'ok';",
+    "expected": "ok"
+  },
+  {
+    "name": "variable variable function local",
+    "code": "<?php function f(){ $name='x'; $$name=11; return $x; } echo f();",
+    "expected": "11"
+  },
+  {
+    "name": "variable variable preincrement",
+    "code": "<?php $key='v'; $v=5; ++$$key; echo $v;",
+    "expected": "6"
+  },
+  {
+    "name": "variable variable alias normal",
+    "code": "<?php $which='x'; $x=2; $alias =& $x; $$which=7; echo $alias;",
+    "expected": "7"
+  },
+  {
+    "name": "magic invoke value",
+    "code": "<?php class Adder {public function __invoke($n){return $n+3;}} $f=new Adder(); echo $f(9);",
+    "expected": "12"
+  },
+  {
+    "name": "magic invoke named arg",
+    "code": "<?php class Times {public function __invoke($x,$y=2){return $x*$y;}} $f=new Times(); echo $f(y:3,x:4);",
+    "expected": "12"
+  },
+  {
+    "name": "magic tostring echo",
+    "code": "<?php class Label {public function __toString(){return 'hello';}} $x=new Label(); echo $x;",
+    "expected": "hello"
+  },
+  {
+    "name": "magic tostring concat",
+    "code": "<?php class Val {public function __toString(){return 'x';}} $x=new Val(); echo 'v'.$x;",
+    "expected": "vx"
+  },
+  {
+    "name": "magic get undefined",
+    "code": "<?php class Box {public function __get($name){return 'found:'.$name;}} $b=new Box(); echo $b->missing;",
+    "expected": "found:missing"
+  },
+  {
+    "name": "magic get selected",
+    "code": "<?php class Names {public $value='ok'; public function __get($name){return 'magic';}} $n=new Names(); echo $n->value;",
+    "expected": "ok"
+  },
+  {
+    "name": "magic set and get",
+    "code": "<?php class Bag {public $items=[]; public function __set($key,$value){$this->items[$key]=$value;} public function __get($key){return $this->items[$key];}} $b=new Bag(); $b->color='red'; echo $b->color;",
+    "expected": "red"
+  },
+  {
+    "name": "magic set stored property",
+    "code": "<?php class Holder {public $field='old'; public function __set($name,$value){echo 'magic';}} $h=new Holder(); $h->field='new'; echo $h->field;",
+    "expected": "new"
+  },
+  {
+    "name": "magic call missing",
+    "code": "<?php class Proxy {public function __call($name,$args){return $name.':'.count($args);}} $p=new Proxy(); echo $p->hello(1,2,3);",
+    "expected": "hello:3"
+  },
+  {
+    "name": "magic call named array",
+    "code": "<?php class Proxy {public function __call($name,$args){return $name.':'.$args['x'];}} $p=new Proxy(); echo $p->hello(x:7);",
+    "expected": "hello:7"
+  },
+  {
+    "name": "magic call does not override",
+    "code": "<?php class App {public function call(){return 1;} public function __call($name,$args){return 2;}} $a=new App(); echo $a->call();",
+    "expected": "1"
+  },
+  {
+    "name": "magic get in inherited method",
+    "code": "<?php class B {public function __get($name){return $name.'-ok';}} class C extends B {} $c=new C(); echo $c->foo;",
+    "expected": "foo-ok"
+  },
+  {
+    "name": "magic callStatic missing",
+    "code": "<?php class Proxy{public static function __callStatic($n,$a){return $n.':'.count($a);}} echo Proxy::foo(1,2);",
+    "expected": "foo:2"
+  },
+  {
+    "name": "magic callStatic named",
+    "code": "<?php class Proxy{public static function __callStatic($n,$a){return $a['x'];}} echo Proxy::foo(x:42);",
+    "expected": "42"
+  },
+  {
+    "name": "magic tostring number coercion",
+    "code": "<?php class N{public function __toString(){return 5;}} echo new N();",
+    "expected": "5"
+  }
+]

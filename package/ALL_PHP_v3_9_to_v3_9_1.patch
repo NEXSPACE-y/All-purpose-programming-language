@@ -1,0 +1,247 @@
+--- ALL_PHP_v3_9_adapter.ps1
++++ ALL_PHP_v3_9_1_working.ps1
+@@ -45,6 +45,7 @@
+                 FunctionStatics = [System.Collections.Generic.Dictionary[string,object]]::new(
+                     [System.StringComparer]::Ordinal)
+                 CurrentCallable = $null
++                ReturnByRef = $false
+                 ClassContext = $null
+         }
+ 
+@@ -345,8 +346,10 @@
+             if ($token -eq 'function' -or $token -eq 'fn') {
+                 $arrow=($token -eq 'fn')
+                 [void](Next-Token)
+-                if ($token -eq 'function' -and (Peek-Token) -ceq '&') {
+-                    throw 'ALL PHP: Closure return by reference is not yet supported'
++                $returnByRef=$false
++                if ((Peek-Token) -ceq '&') {
++                    [void](Next-Token)
++                    $returnByRef=$true
+                 }
+                 $params=Read-Parameters
+                 $captures=[System.Collections.Generic.List[object]]::new()
+@@ -383,6 +386,7 @@
+                 return [pscustomobject]@{
+                     Kind='closure'; Params=@($params); Body=$body; Expr=$expr
+                     Captures=$captures.ToArray(); Arrow=$arrow
++                    ReturnByRef=$returnByRef
+                     Name='(closure)'
+                 }
+             }
+@@ -629,7 +633,7 @@
+                     }
+                     [void](Next-Token)
+                     $refTarget=Read-Postfix
+-                    if ($refTarget.Kind -notin @('variable','dynamic_variable','index','property','static_property')) {
++                    if ($refTarget.Kind -notin @('variable','dynamic_variable','index','property','static_property','call','method','static_method','invoke')) {
+                         throw 'ALL PHP: Reference source must be a writable value'
+                     }
+                     if (($left.Kind -eq 'property' -and $left.NullSafe) -or
+@@ -703,7 +707,10 @@
+             }
+             if ($token -eq 'function' -and
+                 $state.Pos + 1 -lt $state.Tokens.Count -and
+-                $state.Tokens[$state.Pos + 1] -cmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
++                ($state.Tokens[$state.Pos + 1] -cmatch '^[A-Za-z_][A-Za-z_0-9]*$' -or
++                 ($state.Tokens[$state.Pos + 1] -ceq '&' -and
++                  $state.Pos + 2 -lt $state.Tokens.Count -and
++                  $state.Tokens[$state.Pos + 2] -cmatch '^[A-Za-z_][A-Za-z_0-9]*$'))) {
+                 return (Read-Function)
+             }
+             if ($token -eq 'global') {
+@@ -1291,6 +1298,11 @@
+         }
+         function Read-Function([bool]$declarationOnly = $false) {
+             Expect-Token 'function'
++            $returnByRef=$false
++            if ((Peek-Token) -ceq '&') {
++                [void](Next-Token)
++                $returnByRef=$true
++            }
+             $name = Next-Token
+             if ($name -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                 throw 'ALL PHP: Expected function name'
+@@ -1307,6 +1319,7 @@
+                 Kind='functiondef'; Name=$name; Params=@($parameters); Body=$body
+                 Visibility='public'; Static=$false; Owner=$null
+                 Abstract=$declarationOnly; Final=$false
++                ReturnByRef=$returnByRef
+             }
+         }
+ 
+@@ -1859,6 +1872,7 @@
+                 Params=$method.Params; Body=$method.Body; Expr=$method.Expr
+                 Visibility=$visibility; Static=$method.Static
+                 Owner=$method.Owner; Abstract=$method.Abstract; Final=$method.Final
++                ReturnByRef=$method.ReturnByRef
+             }
+         }
+         function Get-PhpTraitComposition($declaration) {
+@@ -1988,6 +2002,11 @@
+             return $false
+         }
+         function Assert-PhpMethodSignature($implementation, $required, [string]$context) {
++            # PHP rejects an implementation that drops & from a required
++            # reference-returning method; adding & to a value method is allowed.
++            if ([bool]$required.ReturnByRef -and -not [bool]$implementation.ReturnByRef) {
++                throw "ALL PHP: Incompatible reference-returning method '$context'"
++            }
+             if ([bool]$implementation.Static -ne [bool]$required.Static) {
+                 throw "ALL PHP: Static/non-static method mismatch for '$context'"
+             }
+@@ -2280,7 +2299,7 @@
+             }
+             throw 'ALL PHP: Invalid assignment target'
+         }
+-        function Invoke-PhpCallable($definition, $callArgs, $object, [string]$owner = '', $closure = $null) {
++        function Invoke-PhpCallable($definition, $callArgs, $object, [string]$owner = '', $closure = $null, [bool]$referenceContext = $false) {
+             if ($definition.Abstract) { throw 'ALL PHP: Cannot invoke an abstract method' }
+             if ($state.CallDepth -ge 64) { throw 'ALL PHP: Call depth limit reached (64)' }
+             $oldVars = $state.Vars
+@@ -2289,9 +2308,15 @@
+             $oldStatics = $state.StaticBindings
+             $oldCallable = $state.CurrentCallable
+             $oldContext = $state.ClassContext
++            $oldReturnByRef=$state.ReturnByRef
++            $functionReturnsByRef=($definition.PSObject.Properties['ReturnByRef'] -and $definition.ReturnByRef)
++            if ($referenceContext -and -not $functionReturnsByRef) {
++                throw 'ALL PHP: Function does not return by reference'
++            }
++            $state.ReturnByRef=$functionReturnsByRef
+             $state.Vars = [System.Collections.Generic.Dictionary[string,object]]::new(
+                 [System.StringComparer]::Ordinal)
+-            $state.Flow = @{ Returned=$false; Value=$null; LoopControl=$null; LoopDepth=0 }
++            $state.Flow = @{ Returned=$false; Value=$null; RefCell=$null; LoopControl=$null; LoopDepth=0 }
+             $state.GlobalBindings = [System.Collections.Generic.HashSet[string]]::new(
+                 [System.StringComparer]::Ordinal)
+             $state.StaticBindings = [System.Collections.Generic.HashSet[string]]::new(
+@@ -2400,9 +2425,27 @@
+                 }
+                 if ($null -ne $object) { $state.Vars['this'] = $object }
+                 if ($null -ne $definition.Expr) {
++                    if ($state.ReturnByRef) {
++                        $expr=$definition.Expr
++                        if ($expr.Kind -in @('variable','dynamic_variable','index','property','static_property')) {
++                            $cell=Get-PhpLValueCell $expr
++                        } elseif ($expr.Kind -in @('call','method','static_method','invoke')) {
++                            $cell=Invoke-PhpReferenceCall $expr
++                        } else {
++                            throw 'ALL PHP: Reference return requires a writable value'
++                        }
++                        if ($referenceContext) { return $cell }
++                        return $cell.Value
++                    }
+                     return (Invoke-PhpExpr $definition.Expr)
+                 }
+                 Invoke-PhpStatement $definition.Body
++                if ($referenceContext) {
++                    if (-not (Is-PhpRefCell $state.Flow.RefCell)) {
++                        throw 'ALL PHP: Function did not return a reference'
++                    }
++                    return $state.Flow.RefCell
++                }
+                 return $state.Flow.Value
+             } finally {
+                 $state.CallDepth--
+@@ -2412,6 +2455,7 @@
+                 $state.StaticBindings = $oldStatics
+                 $state.CurrentCallable = $oldCallable
+                 $state.ClassContext = $oldContext
++                $state.ReturnByRef = $oldReturnByRef
+             }
+         }
+         function KeyString-ToValue([string]$encoded) {
+@@ -2887,6 +2931,55 @@
+             }
+             throw "ALL PHP: Undefined class constant '$constName'"
+         }
++        function Invoke-PhpReferenceCall($node) {
++            # A function declared with & returns the same cell as its lvalue.
++            # Ordinary function calls continue to return the dereferenced value.
++            if ($node.Kind -eq 'call') {
++                if (-not $state.Functions.ContainsKey($node.Name)) {
++                    throw 'ALL PHP: Reference return requires a declared function'
++                }
++                $def=$state.Functions[$node.Name]
++                $args=Evaluate-PhpUserArguments $node.Args $def
++                return (Invoke-PhpCallable $def $args $null '' $null $true)
++            }
++            if ($node.Kind -eq 'method') {
++                $object=Invoke-PhpExpr $node.Base
++                if (-not (Is-PhpObject $object)) { throw 'ALL PHP: Reference method requires object' }
++                $def=Find-PhpMethod $object.Class $node.Name
++                Assert-PhpVisibility $def.Visibility $def.Owner
++                $args=Evaluate-PhpUserArguments $node.Args $def
++                $receiver=if ($def.Static) { $null } else { $object }
++                return (Invoke-PhpCallable $def $args $receiver $def.Owner $null $true)
++            }
++            if ($node.Kind -eq 'static_method') {
++                $klass=Resolve-PhpClass ([string](Invoke-PhpExpr $node.Base))
++                $def=Find-PhpMethod $klass $node.Name
++                Assert-PhpVisibility $def.Visibility $def.Owner
++                $args=Evaluate-PhpUserArguments $node.Args $def
++                $receiver=$null
++                if (-not $def.Static -and $state.Vars.ContainsKey('this')) {
++                    $receiver=Get-PhpVariableValue 'this'
++                }
++                if (-not $def.Static -and -not (Is-PhpObject $receiver)) {
++                    throw 'ALL PHP: Non-static method cannot be called statically'
++                }
++                return (Invoke-PhpCallable $def $args $receiver $def.Owner $null $true)
++            }
++            if ($node.Kind -eq 'invoke') {
++                $callee=Invoke-PhpExpr $node.Callee
++                if ($null -ne $callee -and $callee.PSObject.Properties['PhpType'] -and
++                    $callee.PhpType -ceq 'closure') {
++                    $args=Evaluate-PhpUserArguments $node.Args $callee.Definition
++                    return (Invoke-PhpCallable $callee.Definition $args $callee.BoundThis '' $callee $true)
++                }
++                if ($callee -is [string] -and $state.Functions.ContainsKey($callee)) {
++                    $def=$state.Functions[$callee]
++                    $args=Evaluate-PhpUserArguments $node.Args $def
++                    return (Invoke-PhpCallable $def $args $null '' $null $true)
++                }
++            }
++            throw 'ALL PHP: Reference return requires a reference-returning callable'
++        }
+         function Invoke-PhpExpr($node) {
+             switch ($node.Kind) {
+                 'literal' { return $node.Value }
+@@ -3120,7 +3213,11 @@
+                     return $before
+                 }
+                 'assign_ref' {
+-                    $cell=Get-PhpLValueCell $node.Source
++                    $cell=if ($node.Source.Kind -in @('call','method','static_method','invoke')) {
++                        Invoke-PhpReferenceCall $node.Source
++                    } else {
++                        Get-PhpLValueCell $node.Source
++                    }
+                     Set-PhpReferenceTarget $node.Target $cell
+                     return $cell.Value
+                 }
+@@ -3788,7 +3885,22 @@
+                 'return' {
+                     if ($state.CallDepth -eq 0) { throw 'ALL PHP: Return outside function' }
+                     $value = $null
+-                    if ($null -ne $node.Expr) { $value = Invoke-PhpExpr $node.Expr }
++                    $cell = $null
++                    if ($null -ne $node.Expr) {
++                        if ($state.ReturnByRef) {
++                            if ($node.Expr.Kind -in @('variable','dynamic_variable','index','property','static_property')) {
++                                $cell=Get-PhpLValueCell $node.Expr
++                            } elseif ($node.Expr.Kind -in @('call','method','static_method','invoke')) {
++                                $cell=Invoke-PhpReferenceCall $node.Expr
++                            } else {
++                                throw 'ALL PHP: Reference return requires a writable value'
++                            }
++                            $value=$cell.Value
++                        } else {
++                            $value=Invoke-PhpExpr $node.Expr
++                        }
++                    }
++                    $state.Flow.RefCell=$cell
+                     $state.Flow.Value = $value
+                     $state.Flow.Returned = $true
+                     return

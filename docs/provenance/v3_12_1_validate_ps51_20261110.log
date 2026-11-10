@@ -1,0 +1,722 @@
+PASS [PowerShell Syntax]: 85 scripts
+PASS [SHA-256]: 187 packaged files
+PASS [C# Compilation]: ALL_sqlite_driver.cs
+PASS [C# Compilation]: ALL_ConcurrentGateway.cs
+ALL preflight PASS. No installed ALL files were changed.
+PASS [PHP v3.1.1]: Smoke
+PASS [PHP v3.1.1]: echo
+PASS [PHP v3.1.1]: arithmetic precedence
+PASS [PHP v3.1.1]: array literal and index
+PASS [PHP v3.1.1]: array append
+PASS [PHP v3.1.1]: associative array
+PASS [PHP v3.1.1]: count builtin
+PASS [PHP v3.1.1]: foreach key/value
+PASS [PHP v3.1.1]: function return
+PASS [PHP v3.1.1]: function local scope
+PASS [PHP v3.1.1]: class method
+PASS [PHP v3.1.1]: constructor and property
+PASS [PHP v3.1.1]: numeric string arithmetic
+PASS [PHP v3.1.1]: loose equality
+PASS [PHP v3.1.1]: strict equality
+PASS [PHP v3.1.1]: concat precedence
+PASS [PHP v3.1.1]: strlen builtin
+PASS [PHP v3.1.1]: for loop basic
+PASS [PHP v3.1.1]: for loop multiple updates
+PASS [PHP v3.1.1]: for loop empty condition and break
+PASS [PHP v3.1.1]: do while
+PASS [PHP v3.1.1]: while continue
+PASS [PHP v3.1.1]: for continue executes update
+PASS [PHP v3.1.1]: nested for break
+PASS [PHP v3.1.1]: foreach continue
+PASS [PHP v3.1.1]: isset defined
+PASS [PHP v3.1.1]: isset undefined
+PASS [PHP v3.1.1]: isset null
+PASS [PHP v3.1.1]: empty literal
+PASS [PHP v3.1.1]: empty undefined
+PASS [PHP v3.1.1]: isset missing array key
+PASS [PHP v3.1.1]: unset variable
+PASS [PHP v3.1.1]: unset array key
+PASS [PHP v3.1.1]: array_key_exists
+PASS [PHP v3.1.1]: array_sum
+PASS [PHP v3.1.1]: strtoupper ascii
+PASS [PHP v3.1.1]: strtolower ascii
+PASS [PHP v3.1.1]: trim builtin
+PASS [PHP v3.1.1]: abs builtin
+PASS [PHP v3.1.1]: is_array
+PASS [PHP v3.1.1]: is_string
+PASS [PHP v3.1.1]: is_bool
+PASS [PHP v3.1.1]: strval
+PASS [PHP v3.1.1]: standalone postincrement
+PASS [PHP v3.1.1]: standalone postdecrement
+PASS [PHP v3.2]: power simple
+PASS [PHP v3.2]: power right associativity
+PASS [PHP v3.2]: power unary precedence
+PASS [PHP v3.2]: power negative exponent
+PASS [PHP v3.2]: power negative base
+PASS [PHP v3.2]: power multiplication precedence
+PASS [PHP v3.2]: coalesce undefined variable
+PASS [PHP v3.2]: coalesce null
+PASS [PHP v3.2]: coalesce defined
+PASS [PHP v3.2]: coalesce zero
+PASS [PHP v3.2]: coalesce missing array key
+PASS [PHP v3.2]: coalesce nested right
+PASS [PHP v3.2]: coalesce logical precedence
+PASS [PHP v3.2]: coalesce ternary precedence
+PASS [PHP v3.2]: ternary true
+PASS [PHP v3.2]: ternary false
+PASS [PHP v3.2]: ternary short false
+PASS [PHP v3.2]: ternary short true
+PASS [PHP v3.2]: ternary lazy branch
+PASS [PHP v3.2]: elseif branch
+PASS [PHP v3.2]: elseif else
+PASS [PHP v3.2]: match arm
+PASS [PHP v3.2]: match fallback
+PASS [PHP v3.2]: match multiple conditions
+PASS [PHP v3.2]: match lazy arm
+PASS [PHP v3.2]: match no arm
+PASS [PHP v3.2]: array keys
+PASS [PHP v3.2]: array values
+PASS [PHP v3.2]: array key first
+PASS [PHP v3.2]: array key last
+PASS [PHP v3.2]: PHP 8.5 array_first
+PASS [PHP v3.2]: PHP 8.5 array_last
+PASS [PHP v3.2]: PHP 8.5 array_first empty
+PASS [PHP v3.2]: PHP 8.5 array_last empty
+PASS [PHP v3.2]: in_array loose
+PASS [PHP v3.2]: in_array strict
+PASS [PHP v3.2]: string contains true
+PASS [PHP v3.2]: string contains case sensitive
+PASS [PHP v3.2]: string starts with
+PASS [PHP v3.2]: string ends with
+PASS [PHP v3.2]: strpos zero
+PASS [PHP v3.2]: strpos not found
+PASS [PHP v3.2]: strpos offset
+PASS [PHP v3.2]: substr simple
+PASS [PHP v3.2]: substr negative start
+PASS [PHP v3.2]: substr negative length
+PASS [PHP v3.2]: str_replace scalar
+PASS [PHP v3.2]: explode index
+PASS [PHP v3.2]: implode
+PASS [PHP v3.2]: explode implode combined
+PASS [PHP v3.3 reference]: switch basic
+PASS [PHP v3.3 reference]: switch loose compare
+PASS [PHP v3.3 reference]: switch fallthrough
+PASS [PHP v3.3 reference]: switch default before match
+PASS [PHP v3.3 reference]: switch default no match
+PASS [PHP v3.3 reference]: switch empty
+PASS [PHP v3.3 reference]: switch no match no default
+PASS [PHP v3.3 reference]: switch expressions
+PASS [PHP v3.3 reference]: switch in for loop break
+PASS [PHP v3.3 reference]: switch in function
+PASS [PHP v3.3 reference]: switch nested
+PASS [PHP v3.3 reference]: coalesce assign undefined
+PASS [PHP v3.3 reference]: coalesce assign null
+PASS [PHP v3.3 reference]: coalesce assign preserves zero
+PASS [PHP v3.3 reference]: coalesce assign preserves false
+PASS [PHP v3.3 reference]: coalesce assign array missing
+PASS [PHP v3.3 reference]: coalesce assign array present
+PASS [PHP v3.3 reference]: coalesce assign lazy
+PASS [PHP v3.3 reference]: nullsafe null property
+PASS [PHP v3.3 reference]: nullsafe null method lazy
+PASS [PHP v3.3 reference]: nullsafe object property
+PASS [PHP v3.3 reference]: nullsafe object method
+PASS [PHP v3.3 reference]: array push
+PASS [PHP v3.3 reference]: array push empty args
+PASS [PHP v3.3 reference]: array pop
+PASS [PHP v3.3 reference]: array pop empty
+PASS [PHP v3.3 reference]: array pop reappend
+PASS [PHP v3.3 reference]: array shift
+PASS [PHP v3.3 reference]: array shift renumber
+PASS [PHP v3.3 reference]: array unshift
+PASS [PHP v3.3 reference]: array unshift associative
+PASS [PHP v3.3 reference]: array reverse
+PASS [PHP v3.3 reference]: array reverse numeric reindex
+PASS [PHP v3.3 reference]: array reverse keep keys
+PASS [PHP v3.3 reference]: array merge numeric
+PASS [PHP v3.3 reference]: array merge string override
+PASS [PHP v3.3 reference]: array merge no arrays
+PASS [PHP v3.3 reference]: array slice
+PASS [PHP v3.3 reference]: array slice negative offset
+PASS [PHP v3.3 reference]: array slice negative length
+PASS [PHP v3.3 reference]: array slice preserved keys
+PASS [PHP v3.3 reference]: interpolate basic
+PASS [PHP v3.3 reference]: interpolate braced
+PASS [PHP v3.3 reference]: interpolate escaped dollar
+PASS [PHP v3.3 reference]: interpolate function scope
+PASS [PHP v3.3 reference]: interpolate local after assignment
+PASS [PHP v3.3 reference]: interpolate utf8
+PASS [PHP v3.3 reference]: interpolate escapes
+PASS [PHP v3.3 reference]: interpolate undefined variable
+PASS [PHP v3.3 fail-closed]: reject duplicate switch default
+PASS [PHP v3.3 fail-closed]: reject nullsafe assignment
+PASS [PHP v3.3 fail-closed]: reject complex interpolation rather than silently misexecute
+PASS [PHP v3.4 native oracle]: assignment in grouped echo
+PASS [PHP v3.4 native oracle]: chained assignment
+PASS [PHP v3.4 native oracle]: assignment in if condition
+PASS [PHP v3.4 native oracle]: assignment inside function call
+PASS [PHP v3.4 native oracle]: expression compound multiply
+PASS [PHP v3.4 native oracle]: expression compound divide
+PASS [PHP v3.4 native oracle]: expression compound remainder
+PASS [PHP v3.4 native oracle]: expression compound power
+PASS [PHP v3.4 native oracle]: expression compound concat
+PASS [PHP v3.4 native oracle]: compound update statement
+PASS [PHP v3.4 native oracle]: for multiplication update
+PASS [PHP v3.4 native oracle]: nested assignment expression
+PASS [PHP v3.4 native oracle]: coalesce assignment expression
+PASS [PHP v3.4 native oracle]: coalesce lazy expression
+PASS [PHP v3.4 native oracle]: append assignment expression
+PASS [PHP v3.4 native oracle]: chained compound assignment
+PASS [PHP v3.4 native oracle]: array copy scalar overwrite
+PASS [PHP v3.4 native oracle]: array copy associative overwrite
+PASS [PHP v3.4 native oracle]: array copy append isolation
+PASS [PHP v3.4 native oracle]: array copy nested isolation
+PASS [PHP v3.4 native oracle]: array value copied into outer array
+PASS [PHP v3.4 native oracle]: function array argument by value
+PASS [PHP v3.4 native oracle]: function array builtin mutation isolated
+PASS [PHP v3.4 native oracle]: foreach array by value
+PASS [PHP v3.4 native oracle]: object assignment remains identity
+PASS [PHP v3.4 native oracle]: array push after clone
+PASS [PHP v3.4 native oracle]: array pop after clone
+PASS [PHP v3.4 native oracle]: array unshift after clone
+PASS [PHP v3.4 native oracle]: array next index preserved after clone
+PASS [PHP v3.4 native oracle]: json encode list
+PASS [PHP v3.4 native oracle]: json encode associative
+PASS [PHP v3.4 native oracle]: json encode nested
+PASS [PHP v3.4 native oracle]: json encode empty array
+PASS [PHP v3.4 native oracle]: json encode null
+PASS [PHP v3.4 native oracle]: json encode Unicode
+PASS [PHP v3.4 native oracle]: json encode slash
+PASS [PHP v3.4 native oracle]: json encode line break
+PASS [PHP v3.4 native oracle]: json encode emoji
+PASS [PHP v3.4 native oracle]: json encode class property
+PASS [PHP v3.4 native oracle]: json decode associative object
+PASS [PHP v3.4 native oracle]: json decode stdClass property
+PASS [PHP v3.4 native oracle]: json decode nested stdClass
+PASS [PHP v3.4 native oracle]: json decode array
+PASS [PHP v3.4 native oracle]: json decode nested array
+PASS [PHP v3.4 native oracle]: json decode object with array
+PASS [PHP v3.4 native oracle]: json decode booleans null
+PASS [PHP v3.4 native oracle]: json roundtrip associative
+PASS [PHP v3.4 native oracle]: json roundtrip list
+PASS [PHP v3.4 native oracle]: json decode null literal
+PASS [PHP v3.4 native oracle]: json decode invalid syntax error
+PASS [PHP v3.4 native oracle]: json reset error
+PASS [PHP v3.4 native oracle]: json decode singleton array
+PASS [PHP v3.4 native oracle]: json decode empty array
+PASS [PHP v3.4 native oracle]: json decode empty object
+PASS [PHP v3.4 native oracle]: json decode empty assoc object
+PASS [PHP v3.4 native oracle]: json decode numeric key
+PASS [PHP v3.4 native oracle]: json decode object order
+PASS [PHP v3.4 native oracle]: json decode scalar number
+PASS [PHP v3.4 native oracle]: json decode scalar float
+PASS [PHP v3.4 native oracle]: json encode object array
+PASS [PHP v3.4 fail-closed]: unsupported json_encode option must reject
+PASS [PHP v3.4 fail-closed]: unsupported json_decode depth must reject
+PASS [PHP v3.4 fail-closed]: compound division by zero must reject
+PASS [PHP v3.5 variables/operators/arrays]: prefix increment
+PASS [PHP v3.5 variables/operators/arrays]: postfix increment
+PASS [PHP v3.5 variables/operators/arrays]: prefix decrement
+PASS [PHP v3.5 variables/operators/arrays]: postfix decrement
+PASS [PHP v3.5 variables/operators/arrays]: postfix array element
+PASS [PHP v3.5 variables/operators/arrays]: postfix expression statement
+PASS [PHP v3.5 variables/operators/arrays]: prefix expression statement
+PASS [PHP v3.5 variables/operators/arrays]: bitwise and
+PASS [PHP v3.5 variables/operators/arrays]: bitwise or
+PASS [PHP v3.5 variables/operators/arrays]: bitwise xor
+PASS [PHP v3.5 variables/operators/arrays]: bitwise complement
+PASS [PHP v3.5 variables/operators/arrays]: bitwise left shift
+PASS [PHP v3.5 variables/operators/arrays]: bitwise right shift
+PASS [PHP v3.5 variables/operators/arrays]: bitwise logical precedence
+PASS [PHP v3.5 variables/operators/arrays]: spaceship less
+PASS [PHP v3.5 variables/operators/arrays]: spaceship equal
+PASS [PHP v3.5 variables/operators/arrays]: spaceship greater
+PASS [PHP v3.5 variables/operators/arrays]: array union numeric
+PASS [PHP v3.5 variables/operators/arrays]: array union strings
+PASS [PHP v3.5 variables/operators/arrays]: strict array equal
+PASS [PHP v3.5 variables/operators/arrays]: strict array order differs
+PASS [PHP v3.5 variables/operators/arrays]: loose array order differs
+PASS [PHP v3.5 variables/operators/arrays]: nested strict arrays
+PASS [PHP v3.5 variables/operators/arrays]: strict arrays unequal values
+PASS [PHP v3.5 variables/operators/arrays]: array spread numeric
+PASS [PHP v3.5 variables/operators/arrays]: array spread string
+PASS [PHP v3.5 variables/operators/arrays]: array spread numeric renumber
+PASS [PHP v3.5 variables/operators/arrays]: array spread nested
+PASS [PHP v3.5 variables/operators/arrays]: new stdClass
+PASS [PHP v3.5 variables/operators/arrays]: object strict reference
+PASS [PHP v3.5 variables/operators/arrays]: object strict distinct
+PASS [PHP v3.5 variables/operators/arrays]: object loose same values
+PASS [PHP v3.5 variables/operators/arrays]: object loose changed values
+PASS [PHP v3.5 variables/operators/arrays]: destructure positional
+PASS [PHP v3.5 variables/operators/arrays]: destructure associative
+PASS [PHP v3.5 variables/operators/arrays]: destructure nested
+PASS [PHP v3.5 variables/operators/arrays]: destructure reassignment
+PASS [PHP v3.5 variables/operators/arrays]: operator precedence concat shift
+PASS [PHP v3.5 variables/operators/arrays]: operator precedence add concat
+PASS [PHP v3.5 variables/operators/arrays]: operator precedence instanceof negation
+PASS [PHP v3.5 functions/scopes]: default argument simple
+PASS [PHP v3.5 functions/scopes]: default argument provided
+PASS [PHP v3.5 functions/scopes]: default argument array
+PASS [PHP v3.5 functions/scopes]: default parameter local write isolation
+PASS [PHP v3.5 functions/scopes]: named argument reverse
+PASS [PHP v3.5 functions/scopes]: named argument with default
+PASS [PHP v3.5 functions/scopes]: named argument only
+PASS [PHP v3.5 functions/scopes]: variadic empty
+PASS [PHP v3.5 functions/scopes]: variadic multiple
+PASS [PHP v3.5 functions/scopes]: variadic unpack array
+PASS [PHP v3.5 functions/scopes]: global var read
+PASS [PHP v3.5 functions/scopes]: global var write
+PASS [PHP v3.5 functions/scopes]: global declaration multiple
+PASS [PHP v3.5 functions/scopes]: static local persistence
+PASS [PHP v3.5 functions/scopes]: static local with array
+PASS [PHP v3.5 functions/scopes]: static recursive function
+PASS [PHP v3.5 functions/scopes]: closure use capture
+PASS [PHP v3.5 functions/scopes]: closure argument default
+PASS [PHP v3.5 functions/scopes]: closure capture by value
+PASS [PHP v3.5 functions/scopes]: arrow function
+PASS [PHP v3.5 functions/scopes]: arrow captured outer
+PASS [PHP v3.5 functions/scopes]: arrow with default
+PASS [PHP v3.5 functions/scopes]: closure returned function
+PASS [PHP v3.5 functions/scopes]: dynamic variable function
+PASS [PHP v3.5 functions/scopes]: immediate arrow invocation
+PASS [PHP v3.5 functions/scopes]: global array mutation
+PASS [PHP v3.5 functions/scopes]: global array new
+PASS [PHP v3.5 OOP]: inherit inherited method
+PASS [PHP v3.5 OOP]: inherit inherited property
+PASS [PHP v3.5 OOP]: inherit override method
+PASS [PHP v3.5 OOP]: inherit instanceof
+PASS [PHP v3.5 OOP]: inherit instanceof false
+PASS [PHP v3.5 OOP]: parent static method call
+PASS [PHP v3.5 OOP]: parent method instance dispatch
+PASS [PHP v3.5 OOP]: parent constructor
+PASS [PHP v3.5 OOP]: protected method child access
+PASS [PHP v3.5 OOP]: private method internal access
+PASS [PHP v3.5 OOP]: private property internal access
+PASS [PHP v3.5 OOP]: protected property inherited child
+PASS [PHP v3.5 OOP]: static property initial
+PASS [PHP v3.5 OOP]: static property update
+PASS [PHP v3.5 OOP]: static property inherited share
+PASS [PHP v3.5 OOP]: static method
+PASS [PHP v3.5 OOP]: static method named arguments
+PASS [PHP v3.5 OOP]: class constant
+PASS [PHP v3.5 OOP]: class const inherited
+PASS [PHP v3.5 OOP]: class class name
+PASS [PHP v3.5 OOP]: private static access from method
+PASS [PHP v3.5 OOP]: class named constructor
+PASS [PHP v3.5 OOP]: method default argument
+PASS [PHP v3.5 OOP]: stdClass member assignment
+PASS [PHP v3.5 OOP]: clone separates property
+PASS [PHP v3.5 OOP]: clone keeps object nested identity
+PASS [PHP v3.5 OOP]: clone invokes hook
+PASS [PHP v3.5 still fail-closed]: private method blocked
+PASS [PHP v3.5 still fail-closed]: private property blocked
+PASS [PHP v3.5 still fail-closed]: protected property blocked
+PASS [PHP v3.5 still fail-closed]: private static property blocked
+PASS [PHP v3.5 still fail-closed]: unknown named argument blocked
+PASS [PHP v3.5 still fail-closed]: positional after named blocked
+PASS [PHP v3.5 guards now supported]: reference argument unsupported (now implemented)
+PASS [PHP v3.5 guards now supported]: closure ref capture unsupported (now implemented)
+PASS [PHP v3.6 OOP native oracle]: interface basic
+PASS [PHP v3.6 OOP native oracle]: interface instanceof
+PASS [PHP v3.6 OOP native oracle]: interface mismatch false
+PASS [PHP v3.6 OOP native oracle]: interface extends
+PASS [PHP v3.6 OOP native oracle]: multiple interface
+PASS [PHP v3.6 OOP native oracle]: interface inheritance in class
+PASS [PHP v3.6 OOP native oracle]: interface extends multiple
+PASS [PHP v3.6 OOP native oracle]: interface constant direct
+PASS [PHP v3.6 OOP native oracle]: interface constant inherited
+PASS [PHP v3.6 OOP native oracle]: interface extends constant
+PASS [PHP v3.6 OOP native oracle]: abstract method
+PASS [PHP v3.6 OOP native oracle]: abstract default method
+PASS [PHP v3.6 OOP native oracle]: abstract inheritance
+PASS [PHP v3.6 OOP native oracle]: abstract extra optional args
+PASS [PHP v3.6 OOP native oracle]: abstract protected override
+PASS [PHP v3.6 OOP native oracle]: final class usable
+PASS [PHP v3.6 OOP native oracle]: final method usable
+PASS [PHP v3.6 OOP native oracle]: interface default argument
+PASS [PHP v3.6 OOP native oracle]: interface static function
+PASS [PHP v3.6 OOP native oracle]: interface abstract subclass
+PASS [PHP v3.6 OOP native oracle]: interface named args
+PASS [PHP v3.6 OOP native oracle]: non-public helper
+PASS [PHP v3.6 OOP native oracle]: abstract static function
+PASS [PHP v3.6 references native oracle]: reference variable basic
+PASS [PHP v3.6 references native oracle]: reference variable reverse
+PASS [PHP v3.6 references native oracle]: reference reassignment
+PASS [PHP v3.6 references native oracle]: reference unset alias
+PASS [PHP v3.6 references native oracle]: reference alias chained
+PASS [PHP v3.6 references native oracle]: reference local by value
+PASS [PHP v3.6 references native oracle]: reference simple byref parameter
+PASS [PHP v3.6 references native oracle]: reference multiple byref parameters
+PASS [PHP v3.6 references native oracle]: reference byval isolation
+PASS [PHP v3.6 references native oracle]: reference function mixed
+PASS [PHP v3.6 references native oracle]: reference function argument expression
+PASS [PHP v3.6 references native oracle]: reference closure capture mutation
+PASS [PHP v3.6 references native oracle]: reference closure repeated
+PASS [PHP v3.6 references native oracle]: reference closure by value contrast
+PASS [PHP v3.6 references native oracle]: reference function static reference
+PASS [PHP v3.6 references native oracle]: reference method byref
+PASS [PHP v3.6 references native oracle]: reference named byref
+PASS [PHP v3.6 references native oracle]: reference static method byref
+PASS [PHP v3.6 references native oracle]: reference byref closure argument
+PASS [PHP v3.6 references native oracle]: reference bind undefined source
+PASS [PHP v3.6 references native oracle]: reference array by value arg
+PASS [PHP v3.6 references native oracle]: reference captured by-value aliases
+PASS [PHP v3.6 compound operators native oracle]: bitwise and assign
+PASS [PHP v3.6 compound operators native oracle]: bitwise or assign
+PASS [PHP v3.6 compound operators native oracle]: bitwise xor assign
+PASS [PHP v3.6 compound operators native oracle]: bitwise left shift assign
+PASS [PHP v3.6 compound operators native oracle]: bitwise right shift assign
+PASS [PHP v3.6 compound operators native oracle]: bitwise assign expression
+PASS [PHP v3.6 compound operators native oracle]: bitwise combined
+PASS [PHP v3.6 traits native oracle]: trait method
+PASS [PHP v3.6 traits native oracle]: trait method override by class
+PASS [PHP v3.6 traits native oracle]: trait method overrides parent
+PASS [PHP v3.6 traits native oracle]: trait property
+PASS [PHP v3.6 traits native oracle]: trait property update
+PASS [PHP v3.6 traits native oracle]: trait protected method
+PASS [PHP v3.6 traits native oracle]: trait private method
+PASS [PHP v3.6 traits native oracle]: trait method calls property
+PASS [PHP v3.6 traits native oracle]: trait static method
+PASS [PHP v3.6 traits native oracle]: trait static property
+PASS [PHP v3.6 traits native oracle]: trait implements interface
+PASS [PHP v3.6 traits native oracle]: trait parent method
+PASS [PHP v3.6 traits native oracle]: trait multiple distinct
+PASS [PHP retained fail-closed]: missing interface implementation
+PASS [PHP retained fail-closed]: extend final class
+PASS [PHP retained fail-closed]: override final method
+PASS [PHP retained fail-closed]: instantiate abstract
+PASS [PHP retained fail-closed]: nonabstract declares abstract method
+PASS [PHP retained fail-closed]: missing concrete method
+PASS [PHP retained fail-closed]: private interface member
+PASS [PHP retained fail-closed]: interface method body not allowed
+PASS [PHP retained fail-closed]: unknown interface extended
+PASS [PHP retained fail-closed]: unknown interface implemented
+PASS [PHP retained fail-closed]: incompatible required args
+PASS [PHP retained fail-closed]: argument byref requires variable
+PASS [PHP retained fail-closed]: undefined trait
+PASS [PHP retained fail-closed]: conflicting trait methods
+PASS [PHP retained fail-closed]: unsupported trait extends
+PASS [PHP retained fail-closed]: trait cannot instantiate
+PASS [PHP v3.9.2 native oracle replacement]: closure reference return replaces outdated rejection guard
+PASS [PHP v3.9.2 native oracle replacement]: byref variadic propagates writes replaces outdated rejection guard
+PASS [PHP previously supported]: unsupported trait alias adaptation (now supported)
+PASS [PHP previously supported]: unsupported nested trait use (now supported)
+PASS [PHP v3.7 dynamic variables and magic]: variable variable assign/read
+PASS [PHP v3.7 dynamic variables and magic]: variable variable updating
+PASS [PHP v3.7 dynamic variables and magic]: variable variable to another
+PASS [PHP v3.7 dynamic variables and magic]: dynamic braced variable
+PASS [PHP v3.7 dynamic variables and magic]: dynamic braced array access
+PASS [PHP v3.7 dynamic variables and magic]: dynamic braced dynamic name
+PASS [PHP v3.7 dynamic variables and magic]: variable variable unset
+PASS [PHP v3.7 dynamic variables and magic]: variable variable function local
+PASS [PHP v3.7 dynamic variables and magic]: variable variable preincrement
+PASS [PHP v3.7 dynamic variables and magic]: variable variable alias normal
+PASS [PHP v3.7 dynamic variables and magic]: magic invoke value
+PASS [PHP v3.7 dynamic variables and magic]: magic invoke named arg
+PASS [PHP v3.7 dynamic variables and magic]: magic tostring echo
+PASS [PHP v3.7 dynamic variables and magic]: magic tostring concat
+PASS [PHP v3.7 dynamic variables and magic]: magic get undefined
+PASS [PHP v3.7 dynamic variables and magic]: magic get selected
+PASS [PHP v3.7 dynamic variables and magic]: magic set and get
+PASS [PHP v3.7 dynamic variables and magic]: magic set stored property
+PASS [PHP v3.7 dynamic variables and magic]: magic call missing
+PASS [PHP v3.7 dynamic variables and magic]: magic call named array
+PASS [PHP v3.7 dynamic variables and magic]: magic call does not override
+PASS [PHP v3.7 dynamic variables and magic]: magic get in inherited method
+PASS [PHP v3.7 dynamic variables and magic]: magic callStatic missing
+PASS [PHP v3.7 dynamic variables and magic]: magic callStatic named
+PASS [PHP v3.7 dynamic variables and magic]: magic tostring number coercion
+PASS [PHP v3.7 trait composition]: trait alias unqualified
+PASS [PHP v3.7 trait composition]: trait alias qualified
+PASS [PHP v3.7 trait composition]: trait alias keeps original
+PASS [PHP v3.7 trait composition]: trait alias visibility private
+PASS [PHP v3.7 trait composition]: trait alias visibility only
+PASS [PHP v3.7 trait composition]: trait insteadof first
+PASS [PHP v3.7 trait composition]: trait insteadof second
+PASS [PHP v3.7 trait composition]: trait insteadof and alias loser
+PASS [PHP v3.7 trait composition]: trait insteadof other method
+PASS [PHP v3.7 trait composition]: trait nested use
+PASS [PHP v3.7 trait composition]: trait nested multi step
+PASS [PHP v3.7 trait composition]: trait nested own override
+PASS [PHP v3.7 trait composition]: trait nested property
+PASS [PHP v3.7 trait composition]: trait nested extra method
+PASS [PHP v3.7 trait composition]: trait alias inherited method override
+PASS [PHP v3.7 trait composition]: trait alias method from second
+PASS [PHP v3.7 trait composition]: trait alias static method
+PASS [PHP v3.7 trait composition]: trait alias and class override
+PASS [PHP v3.7 trait composition]: trait alias separate use groups
+PASS [PHP v3.7 trait composition]: trait alias nested trait method
+PASS [PHP previously supported]: array element reference (now supported)
+PASS [PHP v3.8 native oracle]: ref array item read write
+PASS [PHP v3.8 native oracle]: ref array item reverse assignment
+PASS [PHP v3.8 native oracle]: ref array aliases two indexes
+PASS [PHP v3.8 native oracle]: ref array source index to var
+PASS [PHP v3.8 native oracle]: ref array append element
+PASS [PHP v3.8 native oracle]: ref array missing key creates element
+PASS [PHP v3.8 native oracle]: ref array nested key
+PASS [PHP v3.8 native oracle]: ref array copied aliases retain reference
+PASS [PHP v3.8 native oracle]: ref array copied unrelated values separate
+PASS [PHP v3.8 native oracle]: ref array unset item keeps referenced variable
+PASS [PHP v3.8 native oracle]: ref array overwrite through alias
+PASS [PHP v3.8 native oracle]: ref array alias rebound from one key to another
+PASS [PHP v3.8 native oracle]: ref property to variable
+PASS [PHP v3.8 native oracle]: ref variable to property
+PASS [PHP v3.8 native oracle]: ref property to property
+PASS [PHP v3.8 native oracle]: ref static property read
+PASS [PHP v3.8 native oracle]: ref static property assign
+PASS [PHP v3.8 native oracle]: ref index increment
+PASS [PHP v3.8 native oracle]: foreach by ref multiply
+PASS [PHP v3.8 native oracle]: foreach keyed by ref
+PASS [PHP v3.8 native oracle]: foreach ref last alias persists
+PASS [PHP v3.8 native oracle]: foreach ref and value copy separate
+PASS [PHP v3.8 native oracle]: foreach by value preserves referenced items
+PASS [PHP v3.8 native oracle]: ref parameter indexed array
+PASS [PHP v3.8 native oracle]: ref parameter indexed associative
+PASS [PHP v3.8 native oracle]: ref parameter object property
+PASS [PHP v3.8 native oracle]: ref parameter static property
+PASS [PHP v3.8 native oracle]: ref parameter named argument index
+PASS [PHP v3.8 native oracle]: ref closure captured variable index
+PASS [PHP v3.8 native oracle]: first class function
+PASS [PHP v3.8 native oracle]: first class function named args
+PASS [PHP v3.8 native oracle]: first class builtin strlen
+PASS [PHP v3.8 native oracle]: first class builtin substr
+PASS [PHP v3.8 native oracle]: first class instance method
+PASS [PHP v3.8 native oracle]: first class bound method identity
+PASS [PHP v3.8 native oracle]: first class static method
+PASS [PHP v3.8 native oracle]: first class variable function
+PASS [PHP v3.8 native oracle]: first class callable anonymous closure
+PASS [PHP v3.8 native oracle]: first class callable invoke object
+PASS [PHP v3.8 native oracle]: magic isset missing false
+PASS [PHP v3.8 native oracle]: magic isset missing true
+PASS [PHP v3.8 native oracle]: magic isset existing does not call hook
+PASS [PHP v3.8 native oracle]: magic empty invokes isset and get
+PASS [PHP v3.8 native oracle]: magic empty missing false returns true
+PASS [PHP v3.8 native oracle]: magic unset missing calls hook
+PASS [PHP v3.8 native oracle]: magic unset existing does not call hook
+PASS [PHP v3.8 native oracle]: magic unset property after unsetting
+PASS [PHP v3.9 PHP 8.4 oracle]: variadic byref mutate two
+PASS [PHP v3.9 PHP 8.4 oracle]: variadic byref single
+PASS [PHP v3.9 PHP 8.4 oracle]: variadic byref array element
+PASS [PHP v3.9 PHP 8.4 oracle]: variadic byref object property
+PASS [PHP v3.9 PHP 8.4 oracle]: variadic byref preexisting alias
+PASS [PHP v3.9 PHP 8.4 oracle]: variadic byref no args
+PASS [PHP v3.9 PHP 8.4 oracle]: variadic byref named capture
+PASS [PHP v3.9 PHP 8.4 oracle]: variadic byref named param
+PASS [PHP v3.9 PHP 8.4 oracle]: variadic regular unchanged
+PASS [PHP v3.9 PHP 8.4 oracle]: enum unit case name
+PASS [PHP v3.9 PHP 8.4 oracle]: enum singleton identity
+PASS [PHP v3.9 PHP 8.4 oracle]: enum distinct identity
+PASS [PHP v3.9 PHP 8.4 oracle]: enum cases count
+PASS [PHP v3.9 PHP 8.4 oracle]: enum cases traversal
+PASS [PHP v3.9 PHP 8.4 oracle]: enum unit instanceof
+PASS [PHP v3.9 PHP 8.4 oracle]: enum class instanceof
+PASS [PHP v3.9 PHP 8.4 oracle]: enum class literal
+PASS [PHP v3.9 PHP 8.4 oracle]: enum backed string value
+PASS [PHP v3.9 PHP 8.4 oracle]: enum backed int value
+PASS [PHP v3.9 PHP 8.4 oracle]: enum backed from string
+PASS [PHP v3.9 PHP 8.4 oracle]: enum backed tryFrom missing
+PASS [PHP v3.9 PHP 8.4 oracle]: enum backed tryFrom present
+PASS [PHP v3.9 PHP 8.4 oracle]: enum backed interface
+PASS [PHP v3.9 PHP 8.4 oracle]: enum unit not backed
+PASS [PHP v3.9 PHP 8.4 oracle]: enum method
+PASS [PHP v3.9 PHP 8.4 oracle]: enum static method
+PASS [PHP v3.9 PHP 8.4 oracle]: enum method combined
+PASS [PHP v3.9.1 reference returns]: reference return global
+PASS [PHP v3.9.1 reference returns]: reference return static local
+PASS [PHP v3.9.1 reference returns]: reference return method property
+PASS [PHP v3.9.1 reference returns]: reference return static property
+PASS [PHP v3.9.1 reference returns]: reference return array element
+PASS [PHP v3.9.1 reference returns]: reference return passthrough
+PASS [PHP v3.9.1 reference returns]: reference return closure capture
+PASS [PHP v3.9.1 reference returns]: reference return nested function
+PASS [PHP v3.9.1 reference returns]: reference return normal value call
+PASS [PHP v3.9.1 reference returns]: reference return arrow captured value
+PASS [PHP v3.9.1 reference returns]: reference return named byref param
+PASS [PHP v3.9.1 reference returns]: reference return array nested index
+PASS [PHP v3.9.1 reference returns]: reference return dynamic variable callable
+PASS [PHP v3.9.1 reference returns]: reference return trait method
+PASS [PHP v3.9.1 reference returns]: reference return interface contract
+PASS [PHP v3.9.1 reference returns]: reference return arrow parameter value
+PASS [PHP v3.10 typed parameters and returns]: typed int basic
+PASS [PHP v3.10 typed parameters and returns]: typed int numeric string
+PASS [PHP v3.10 typed parameters and returns]: typed int fractional decimal
+PASS [PHP v3.10 typed parameters and returns]: typed int bool to int
+PASS [PHP v3.10 typed parameters and returns]: typed float numeric string
+PASS [PHP v3.10 typed parameters and returns]: typed bool string zero
+PASS [PHP v3.10 typed parameters and returns]: typed bool string nonzero
+PASS [PHP v3.10 typed parameters and returns]: typed string numeric
+PASS [PHP v3.10 typed parameters and returns]: typed string boolean
+PASS [PHP v3.10 typed parameters and returns]: typed nullable int null
+PASS [PHP v3.10 typed parameters and returns]: typed nullable int value
+PASS [PHP v3.10 typed parameters and returns]: typed nullable string null
+PASS [PHP v3.10 typed parameters and returns]: typed union int|string integer
+PASS [PHP v3.10 typed parameters and returns]: typed union int|string string
+PASS [PHP v3.10 typed parameters and returns]: typed union int|float fractional
+PASS [PHP v3.10 typed parameters and returns]: typed bool|string bool
+PASS [PHP v3.10 typed parameters and returns]: typed union null|int null
+PASS [PHP v3.10 typed parameters and returns]: typed mixed accepts int
+PASS [PHP v3.10 typed parameters and returns]: typed mixed accepts null
+PASS [PHP v3.10 typed parameters and returns]: typed array input
+PASS [PHP v3.10 typed parameters and returns]: typed object input
+PASS [PHP v3.10 typed parameters and returns]: typed class input
+PASS [PHP v3.10 typed parameters and returns]: typed parent class input
+PASS [PHP v3.10 typed parameters and returns]: typed interface input
+PASS [PHP v3.10 typed parameters and returns]: typed callable closure
+PASS [PHP v3.10 typed parameters and returns]: typed closure argument
+PASS [PHP v3.10 typed parameters and returns]: typed closure return
+PASS [PHP v3.10 typed parameters and returns]: typed arrow argument
+PASS [PHP v3.10 typed parameters and returns]: typed arrow return
+PASS [PHP v3.10 typed parameters and returns]: typed instance method
+PASS [PHP v3.10 typed parameters and returns]: typed static method
+PASS [PHP v3.10 typed parameters and returns]: typed inheritance call
+PASS [PHP v3.10 typed parameters and returns]: typed named args
+PASS [PHP v3.10 typed parameters and returns]: typed default arg
+PASS [PHP v3.10 typed parameters and returns]: typed variadic args
+PASS [PHP v3.10 typed parameters and returns]: typed byref arg
+PASS [PHP v3.10 typed parameters and returns]: typed return int conversion
+PASS [PHP v3.10 typed parameters and returns]: typed return float
+PASS [PHP v3.10 typed parameters and returns]: typed return bool
+PASS [PHP v3.10 typed parameters and returns]: typed return string
+PASS [PHP v3.10 typed parameters and returns]: typed return nullable
+PASS [PHP v3.10 typed parameters and returns]: typed return array
+PASS [PHP v3.10 typed parameters and returns]: typed return object
+PASS [PHP v3.10 typed parameters and returns]: typed return class
+PASS [PHP v3.10 typed parameters and returns]: typed return callable
+PASS [PHP v3.10 typed parameters and returns]: typed return mixed
+PASS [PHP v3.10 typed parameters and returns]: typed void return
+PASS [PHP v3.10 typed parameters and returns]: typed void fallthrough
+PASS [PHP v3.10 typed parameters and returns]: typed closure captured value
+PASS [PHP v3.10 typed parameters and returns]: typed nullable class
+PASS [PHP v3.10 typed parameters and returns]: typed union classes
+PASS [PHP v3.10 typed parameters and returns]: typed false literal
+PASS [PHP v3.10 typed parameters and returns]: typed true literal
+PASS [PHP v3.10 typed parameters and returns]: reject int nonnumeric
+PASS [PHP v3.10 typed parameters and returns]: reject array scalar
+PASS [PHP v3.10 typed parameters and returns]: reject object scalar
+PASS [PHP v3.10 typed parameters and returns]: reject string array
+PASS [PHP v3.10 typed parameters and returns]: reject custom class wrong
+PASS [PHP v3.10 typed parameters and returns]: reject return int null
+PASS [PHP v3.10 typed parameters and returns]: reject return array string
+PASS [PHP v3.10 typed parameters and returns]: reject return object scalar
+PASS [PHP v3.10 typed parameters and returns]: reject return class wrong
+PASS [PHP v3.10 typed parameters and returns]: reject variadic wrong element
+PASS [PHP v3.10 typed parameters and returns]: reject nullable int string
+PASS [PHP v3.10 typed parameters and returns]: reject return union mismatch
+PASS [PHP v3.10 typed parameters and returns]: reject void return value
+PASS [PHP v3.11 properties/readonly/promotion]: typed int initialized
+PASS [PHP v3.11 properties/readonly/promotion]: typed int late initialized
+PASS [PHP v3.11 properties/readonly/promotion]: typed string default
+PASS [PHP v3.11 properties/readonly/promotion]: typed bool default
+PASS [PHP v3.11 properties/readonly/promotion]: typed nullable no default
+PASS [PHP v3.11 properties/readonly/promotion]: typed nullable initialized null
+PASS [PHP v3.11 properties/readonly/promotion]: typed nullable initialized int
+PASS [PHP v3.11 properties/readonly/promotion]: typed nullable late assigned null
+PASS [PHP v3.11 properties/readonly/promotion]: typed uninitialized is empty
+PASS [PHP v3.11 properties/readonly/promotion]: typed after unset is uninitialized
+PASS [PHP v3.11 properties/readonly/promotion]: typed integer weak coercion
+PASS [PHP v3.11 properties/readonly/promotion]: typed string weak coercion
+PASS [PHP v3.11 properties/readonly/promotion]: typed bool weak coercion
+PASS [PHP v3.11 properties/readonly/promotion]: typed class property
+PASS [PHP v3.11 properties/readonly/promotion]: typed array property
+PASS [PHP v3.11 properties/readonly/promotion]: typed object property
+PASS [PHP v3.11 properties/readonly/promotion]: typed union int value
+PASS [PHP v3.11 properties/readonly/promotion]: typed union string value
+PASS [PHP v3.11 properties/readonly/promotion]: typed public property update
+PASS [PHP v3.11 properties/readonly/promotion]: typed protected property
+PASS [PHP v3.11 properties/readonly/promotion]: typed private property
+PASS [PHP v3.11 properties/readonly/promotion]: typed inherited property
+PASS [PHP v3.11 properties/readonly/promotion]: typed inherited property reassigned
+PASS [PHP v3.11 properties/readonly/promotion]: typed typed property class second object
+PASS [PHP v3.11 properties/readonly/promotion]: typed static default
+PASS [PHP v3.11 properties/readonly/promotion]: typed static mutable
+PASS [PHP v3.11 properties/readonly/promotion]: typed static weak coercion
+PASS [PHP v3.11 properties/readonly/promotion]: typed static inherited
+PASS [PHP v3.11 properties/readonly/promotion]: readonly constructed
+PASS [PHP v3.11 properties/readonly/promotion]: readonly initialized another method
+PASS [PHP v3.11 properties/readonly/promotion]: readonly nullable init null
+PASS [PHP v3.11 properties/readonly/promotion]: readonly private getter
+PASS [PHP v3.11 properties/readonly/promotion]: readonly protected getter child
+PASS [PHP v3.11 properties/readonly/promotion]: promoted int property
+PASS [PHP v3.11 properties/readonly/promotion]: promoted string property
+PASS [PHP v3.11 properties/readonly/promotion]: promoted weak coerced
+PASS [PHP v3.11 properties/readonly/promotion]: promoted default argument
+PASS [PHP v3.11 properties/readonly/promotion]: promoted nullable property
+PASS [PHP v3.11 properties/readonly/promotion]: promoted public untyped
+PASS [PHP v3.11 properties/readonly/promotion]: promoted multiple properties
+PASS [PHP v3.11 properties/readonly/promotion]: promoted with normal parameter
+PASS [PHP v3.11 properties/readonly/promotion]: promoted body sees property
+PASS [PHP v3.11 properties/readonly/promotion]: promoted protected getter
+PASS [PHP v3.11 properties/readonly/promotion]: promoted private getter
+PASS [PHP v3.11 properties/readonly/promotion]: promoted readonly
+PASS [PHP v3.11 properties/readonly/promotion]: promoted readonly default
+PASS [PHP v3.11 properties/readonly/promotion]: promoted named arguments
+PASS [PHP v3.11 properties/readonly/promotion]: promoted nullable readonly
+PASS [PHP v3.11 properties/readonly/promotion]: readonly class constructed
+PASS [PHP v3.11 properties/readonly/promotion]: readonly class promoted
+PASS [PHP v3.11 properties/readonly/promotion]: readonly class promoted default
+PASS [PHP v3.11 properties/readonly/promotion]: readonly class inherits readonly
+PASS [PHP v3.11 properties/readonly/promotion]: readonly class getter
+PASS [PHP v3.11 properties/readonly/promotion]: readonly class nullable
+PASS [PHP v3.11 properties/readonly/promotion]: uninitialized typed instance read
+PASS [PHP v3.11 properties/readonly/promotion]: uninitialized typed static read
+PASS [PHP v3.11 properties/readonly/promotion]: typed instance mismatch
+PASS [PHP v3.11 properties/readonly/promotion]: typed static mismatch
+PASS [PHP v3.11 properties/readonly/promotion]: typed object wrong class
+PASS [PHP v3.11 properties/readonly/promotion]: typed nullable mismatch
+PASS [PHP v3.11 properties/readonly/promotion]: readonly assign twice
+PASS [PHP v3.11 properties/readonly/promotion]: readonly assign outside
+PASS [PHP v3.11 properties/readonly/promotion]: readonly no type
+PASS [PHP v3.11 properties/readonly/promotion]: readonly default not allowed
+PASS [PHP v3.11 properties/readonly/promotion]: readonly static not allowed
+PASS [PHP v3.11 properties/readonly/promotion]: readonly class untyped field
+PASS [PHP v3.11 properties/readonly/promotion]: readonly class dynamic field
+PASS [PHP v3.11 properties/readonly/promotion]: readonly class cannot extend plain
+PASS [PHP v3.11 properties/readonly/promotion]: plain cannot extend readonly
+PASS [PHP v3.11 properties/readonly/promotion]: readonly class static forbidden
+PASS [PHP v3.11 properties/readonly/promotion]: readonly promoted missing type
+PASS [PHP v3.11 properties/readonly/promotion]: typed property default mismatch
+PASS [PHP v3.11 properties/readonly/promotion]: typed static default mismatch
+PASS [PHP v3.11 properties/readonly/promotion]: duplicate promoted and declared
+PASS [PHP v3.11 properties/readonly/promotion]: promoted param non constructor
+PASS [PHP v3.11 properties/readonly/promotion]: private read blocked
+PASS [PHP v3.11 properties/readonly/promotion]: promoted readonly assign twice
+PASS [PHP v3.12 property hooks]: virtual getter expression
+PASS [PHP v3.12 property hooks]: virtual getter block
+PASS [PHP v3.12 property hooks]: setter arrow transforms
+PASS [PHP v3.12 property hooks]: getter arrow transforms
+PASS [PHP v3.12 property hooks]: getter and setter arrow transforms
+PASS [PHP v3.12 property hooks]: setter block normalizes
+PASS [PHP v3.12 property hooks]: numeric get transforms
+PASS [PHP v3.12 property hooks]: numeric set transforms
+PASS [PHP v3.12 property hooks]: typed string weak cast
+PASS [PHP v3.12 property hooks]: inherited hook
+PASS [PHP v3.12 property hooks]: independent object storage
+PASS [PHP v3.12 property hooks]: getter reads separate field
+PASS [PHP v3.12 property hooks]: hook with initial value
+PASS [PHP v3.12 property hooks]: get-only property rejects assignment
+PASS [PHP v3.12 property hooks]: readonly hook rejected
+PASS [PHP v3.12 property hooks]: static hook rejected
+PASS [PHP v3.12 property hooks]: duplicate getter rejected
+PASS [PHP v3.12 property hooks]: get-only backed accepts write
+PASS [PHP v3.12 property hooks]: setter-only backed readable
+PASS [PHP v3.12 property hooks]: explicit typed setter
+PASS [PHP v3.12 property hooks]: setter only virtual cannot read
+PASS [PHP v3.12 property hooks]: getter type mismatch
+PASS [PHP v3.12 property hooks]: duplicate setter rejected
+PASS [historical parity]: PHP parity: addition
+PASS [historical parity]: PHP parity: precedence
+PASS [historical parity]: PHP parity: grouping
+PASS [historical parity]: PHP parity: subtraction
+PASS [historical parity]: PHP parity: negative
+PASS [historical parity]: PHP parity: multiplication
+PASS [historical parity]: PHP parity: exact division
+PASS [historical parity]: PHP parity: decimal division
+PASS [historical parity]: PHP parity: modulo
+PASS [historical parity]: PHP parity: negative modulo
+PASS [historical parity]: PHP parity: abs
+PASS [historical parity]: PHP parity: variable
+PASS [historical parity]: PHP parity: variable reassignment
+PASS [historical parity]: PHP parity: sum vs array_sum
+PASS [historical parity]: PHP parity: order with abs
+PASS [historical parity]: PHP parity: decimal addition
+PASS [historical parity]: PHP parity: hello
+ALL PHP v3.12 (direct candidate): 716/716 passed; 0 failed

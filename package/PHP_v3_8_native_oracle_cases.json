@@ -1,0 +1,237 @@
+[
+  {
+    "name": "ref array item read write",
+    "code": "<?php $a=[3,5]; $r =& $a[0]; $r=9; echo $a[0];",
+    "expected": "9"
+  },
+  {
+    "name": "ref array item reverse assignment",
+    "code": "<?php $a=[3,5]; $v=4; $a[0] =& $v; $v=7; echo $a[0];",
+    "expected": "7"
+  },
+  {
+    "name": "ref array aliases two indexes",
+    "code": "<?php $a=[1,2]; $a[0] =& $a[1]; $a[1]=8; echo $a[0];",
+    "expected": "8"
+  },
+  {
+    "name": "ref array source index to var",
+    "code": "<?php $a=['x'=>4]; $r =& $a['x']; $a['x']+=5; echo $r;",
+    "expected": "9"
+  },
+  {
+    "name": "ref array append element",
+    "code": "<?php $a=[1]; $r =& $a[]; $r=7; echo implode(',', $a);",
+    "expected": "1,7"
+  },
+  {
+    "name": "ref array missing key creates element",
+    "code": "<?php $a=[]; $r =& $a['item']; $r='yes'; echo $a['item'];",
+    "expected": "yes"
+  },
+  {
+    "name": "ref array nested key",
+    "code": "<?php $a=[[2]]; $r =& $a[0][0]; $r=6; echo $a[0][0];",
+    "expected": "6"
+  },
+  {
+    "name": "ref array copied aliases retain reference",
+    "code": "<?php $v=2; $a=[]; $a[0] =& $v; $b=$a; $v=8; echo $b[0];",
+    "expected": "8"
+  },
+  {
+    "name": "ref array copied unrelated values separate",
+    "code": "<?php $a=[2,4]; $b=$a; $b[0]=9; echo $a[0].'/'.$b[0];",
+    "expected": "2/9"
+  },
+  {
+    "name": "ref array unset item keeps referenced variable",
+    "code": "<?php $a=[1]; $r =& $a[0]; unset($a[0]); $r=3; echo count($a).'/'.$r;",
+    "expected": "0/3"
+  },
+  {
+    "name": "ref array overwrite through alias",
+    "code": "<?php $n=2; $a=[0]; $a[0] =& $n; $a[0]+=5; echo $n;",
+    "expected": "7"
+  },
+  {
+    "name": "ref array alias rebound from one key to another",
+    "code": "<?php $a=[1,2]; $r =& $a[0]; $r =& $a[1]; $r=9; echo $a[0].'/'.$a[1];",
+    "expected": "1/9"
+  },
+  {
+    "name": "ref property to variable",
+    "code": "<?php $o=new stdClass(); $o->v=2; $r =& $o->v; $r=10; echo $o->v;",
+    "expected": "10"
+  },
+  {
+    "name": "ref variable to property",
+    "code": "<?php $o=new stdClass(); $x=2; $o->n =& $x; $x=7; echo $o->n;",
+    "expected": "7"
+  },
+  {
+    "name": "ref property to property",
+    "code": "<?php $o=new stdClass(); $o->x=1; $o->y =& $o->x; $o->y=9; echo $o->x;",
+    "expected": "9"
+  },
+  {
+    "name": "ref static property read",
+    "code": "<?php class StaticA { public static $n=3; } $r =& StaticA::$n; $r=5; echo StaticA::$n;",
+    "expected": "5"
+  },
+  {
+    "name": "ref static property assign",
+    "code": "<?php class StaticB { public static $n=3; } $r=8; StaticB::$n =& $r; $r=6; echo StaticB::$n;",
+    "expected": "6"
+  },
+  {
+    "name": "ref index increment",
+    "code": "<?php $a=[10]; $v =& $a[0]; $v++; echo $a[0];",
+    "expected": "11"
+  },
+  {
+    "name": "foreach by ref multiply",
+    "code": "<?php $a=[1,2,3]; foreach($a as &$v){$v*=2;} unset($v); echo implode(',', $a);",
+    "expected": "2,4,6"
+  },
+  {
+    "name": "foreach keyed by ref",
+    "code": "<?php $a=['one'=>1,'two'=>2]; foreach($a as $k=>&$v){$v+=1;} unset($v); echo $a['one'].'/'.$a['two'];",
+    "expected": "2/3"
+  },
+  {
+    "name": "foreach ref last alias persists",
+    "code": "<?php $a=[1,2]; foreach($a as &$v){} $v=9; echo $a[1];",
+    "expected": "9"
+  },
+  {
+    "name": "foreach ref and value copy separate",
+    "code": "<?php $a=[1,2]; $b=$a; foreach($b as &$v){$v=7;} unset($v); echo $a[0].'/'.$b[0];",
+    "expected": "1/7"
+  },
+  {
+    "name": "foreach by value preserves referenced items",
+    "code": "<?php $a=[1,2]; $x =& $a[1]; foreach($a as $v){$v=9;} echo $a[1];",
+    "expected": "2"
+  },
+  {
+    "name": "ref parameter indexed array",
+    "code": "<?php function plusRef(&$v){$v+=3;} $a=[1,2]; plusRef($a[0]); echo $a[0];",
+    "expected": "4"
+  },
+  {
+    "name": "ref parameter indexed associative",
+    "code": "<?php function stepRef(&$v){$v+=5;} $a=['n'=>3]; stepRef($a['n']); echo $a['n'];",
+    "expected": "8"
+  },
+  {
+    "name": "ref parameter object property",
+    "code": "<?php function propRef(&$v){$v=8;} $o=new stdClass(); $o->v=2; propRef($o->v); echo $o->v;",
+    "expected": "8"
+  },
+  {
+    "name": "ref parameter static property",
+    "code": "<?php class StaticC {public static $n=1;} function staticRef(&$v){$v++;} staticRef(StaticC::$n); echo StaticC::$n;",
+    "expected": "2"
+  },
+  {
+    "name": "ref parameter named argument index",
+    "code": "<?php function namedRef(&$item){$item+=4;} $a=[1]; namedRef(item:$a[0]); echo $a[0];",
+    "expected": "5"
+  },
+  {
+    "name": "ref closure captured variable index",
+    "code": "<?php $a=[1]; $r =& $a[0]; $f=function() use (&$r){$r+=2;}; $f(); echo $a[0];",
+    "expected": "3"
+  },
+  {
+    "name": "first class function",
+    "code": "<?php function addC($x,$y){return $x+$y;} $f=addC(...); echo $f(2,4);",
+    "expected": "6"
+  },
+  {
+    "name": "first class function named args",
+    "code": "<?php function joinC($a,$b){return $a.'/'.$b;} $f=joinC(...); echo $f(b:'Y',a:'X');",
+    "expected": "X/Y"
+  },
+  {
+    "name": "first class builtin strlen",
+    "code": "<?php $f=strlen(...); echo $f('abcd');",
+    "expected": "4"
+  },
+  {
+    "name": "first class builtin substr",
+    "code": "<?php $f=substr(...); echo $f('hello',1,2);",
+    "expected": "el"
+  },
+  {
+    "name": "first class instance method",
+    "code": "<?php class FnC{public function inc($v){return $v+1;}} $o=new FnC(); $f=$o->inc(...); echo $f(7);",
+    "expected": "8"
+  },
+  {
+    "name": "first class bound method identity",
+    "code": "<?php class FnD{public $n=1; public function get(){return $this->n;}} $o=new FnD(); $f=$o->get(...); $o->n=9; echo $f();",
+    "expected": "9"
+  },
+  {
+    "name": "first class static method",
+    "code": "<?php class FnE{public static function mul($v){return $v*3;}} $f=FnE::mul(...); echo $f(4);",
+    "expected": "12"
+  },
+  {
+    "name": "first class variable function",
+    "code": "<?php function squareC($v){return $v*$v;} $name='squareC'; $f=$name(...); echo $f(5);",
+    "expected": "25"
+  },
+  {
+    "name": "first class callable anonymous closure",
+    "code": "<?php $f=(function($n){return $n+2;})(...); echo $f(8);",
+    "expected": "10"
+  },
+  {
+    "name": "first class callable invoke object",
+    "code": "<?php class FnF{public function __invoke($n){return $n*2;}} $o=new FnF(); $f=$o(...); echo $f(4);",
+    "expected": "8"
+  },
+  {
+    "name": "magic isset missing false",
+    "code": "<?php class HasA{public function __isset($k){return false;}} $o=new HasA(); echo isset($o->missing)?'Y':'N';",
+    "expected": "N"
+  },
+  {
+    "name": "magic isset missing true",
+    "code": "<?php class HasB{public function __isset($k){return $k==='x';}} $o=new HasB(); echo isset($o->x)?'Y':'N';",
+    "expected": "Y"
+  },
+  {
+    "name": "magic isset existing does not call hook",
+    "code": "<?php class HasC{public $x=2; public function __isset($k){return false;}} $o=new HasC(); echo isset($o->x)?'Y':'N';",
+    "expected": "Y"
+  },
+  {
+    "name": "magic empty invokes isset and get",
+    "code": "<?php class HasD{public function __isset($k){return true;} public function __get($k){return 0;}} $o=new HasD(); echo empty($o->x)?'Y':'N';",
+    "expected": "Y"
+  },
+  {
+    "name": "magic empty missing false returns true",
+    "code": "<?php class HasE{public function __isset($k){return false;} public function __get($k){return 99;}} $o=new HasE(); echo empty($o->x)?'Y':'N';",
+    "expected": "Y"
+  },
+  {
+    "name": "magic unset missing calls hook",
+    "code": "<?php class HasF{public $hit=0; public function __unset($k){$this->hit=1;}} $o=new HasF(); unset($o->missing); echo $o->hit;",
+    "expected": "1"
+  },
+  {
+    "name": "magic unset existing does not call hook",
+    "code": "<?php class HasG{public $x=2;public $hit=0;public function __unset($k){$this->hit=1;}} $o=new HasG(); unset($o->x); echo $o->hit;",
+    "expected": "0"
+  },
+  {
+    "name": "magic unset property after unsetting",
+    "code": "<?php class HasH{public $x=1; public $hits=0; public function __unset($k){$this->hits+=1;}} $o=new HasH(); unset($o->x); unset($o->x); echo $o->hits;",
+    "expected": "1"
+  }
+]

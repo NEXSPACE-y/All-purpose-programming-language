@@ -1,0 +1,137 @@
+[
+  {
+    "name": "default argument simple",
+    "code": "<?php function f($a,$b=4){return $a+$b;} echo f(3);",
+    "expected": "7"
+  },
+  {
+    "name": "default argument provided",
+    "code": "<?php function f($a,$b=4){return $a+$b;} echo f(3,5);",
+    "expected": "8"
+  },
+  {
+    "name": "default argument array",
+    "code": "<?php function f($a=[2,3]){return $a[1];} echo f();",
+    "expected": "3"
+  },
+  {
+    "name": "default parameter local write isolation",
+    "code": "<?php function f($a=[1]){$a[0]=9;return $a[0];} echo f().\":\".f();",
+    "expected": "9:9"
+  },
+  {
+    "name": "named argument reverse",
+    "code": "<?php function f($a,$b){return $a.\"/\".$b;} echo f(b: 2, a: 1);",
+    "expected": "1/2"
+  },
+  {
+    "name": "named argument with default",
+    "code": "<?php function f($a,$b=4,$c=9){return $a+$b+$c;} echo f(1,c:3);",
+    "expected": "8"
+  },
+  {
+    "name": "named argument only",
+    "code": "<?php function f($a=1,$b=2){return $a.\"-\".$b;} echo f(b:7);",
+    "expected": "1-7"
+  },
+  {
+    "name": "variadic empty",
+    "code": "<?php function f(...$args){return count($args);} echo f();",
+    "expected": "0"
+  },
+  {
+    "name": "variadic multiple",
+    "code": "<?php function f($x,...$args){return $x+count($args);} echo f(2,5,6,7);",
+    "expected": "5"
+  },
+  {
+    "name": "variadic unpack array",
+    "code": "<?php function f(...$args){return implode(\",\",$args);} echo f(1,2,3);",
+    "expected": "1,2,3"
+  },
+  {
+    "name": "global var read",
+    "code": "<?php $x=7; function f(){global $x;return $x;} echo f();",
+    "expected": "7"
+  },
+  {
+    "name": "global var write",
+    "code": "<?php $x=7; function f(){global $x; $x+=3;} f(); echo $x;",
+    "expected": "10"
+  },
+  {
+    "name": "global declaration multiple",
+    "code": "<?php $a=1;$b=2;function f(){global $a,$b; $a+=$b;} f(); echo $a;",
+    "expected": "3"
+  },
+  {
+    "name": "static local persistence",
+    "code": "<?php function c(){static $n=0; $n++;return $n;} echo c().\":\".c().\":\".c();",
+    "expected": "1:2:3"
+  },
+  {
+    "name": "static local with array",
+    "code": "<?php function f(){static $a=[1];$a[]=2;return count($a);} echo f().\":\".f();",
+    "expected": "2:3"
+  },
+  {
+    "name": "static recursive function",
+    "code": "<?php function r($n){static $s=0;$s++;if($n==0){return $s;}return r($n-1);} echo r(3).\":\".r(0);",
+    "expected": "4:5"
+  },
+  {
+    "name": "closure use capture",
+    "code": "<?php $x=7; $f=function($y) use ($x){return $x+$y;}; echo $f(5);",
+    "expected": "12"
+  },
+  {
+    "name": "closure argument default",
+    "code": "<?php $f=function($n=2){return $n*3;}; echo $f();",
+    "expected": "6"
+  },
+  {
+    "name": "closure capture by value",
+    "code": "<?php $x=4; $f=function() use($x){return $x;};$x=9; echo $f();",
+    "expected": "4"
+  },
+  {
+    "name": "arrow function",
+    "code": "<?php $f=fn($x)=>$x*3; echo $f(4);",
+    "expected": "12"
+  },
+  {
+    "name": "arrow captured outer",
+    "code": "<?php $n=5;$f=fn($x)=>$x+$n; $n=10; echo $f(2);",
+    "expected": "7"
+  },
+  {
+    "name": "arrow with default",
+    "code": "<?php $f=fn($x=2)=>$x*4; echo $f();",
+    "expected": "8"
+  },
+  {
+    "name": "closure returned function",
+    "code": "<?php function make($x){return fn($y)=>$x+$y;} $f=make(6);echo $f(8);",
+    "expected": "14"
+  },
+  {
+    "name": "dynamic variable function",
+    "code": "<?php function mul($a,$b){return $a*$b;}$f=\"mul\"; echo $f(3,5);",
+    "expected": "15"
+  },
+  {
+    "name": "immediate arrow invocation",
+    "code": "<?php echo (fn($x)=>$x+1)(8);",
+    "expected": "9"
+  },
+  {
+    "name": "global array mutation",
+    "code": "<?php $a=[1];function f(){global $a;$a[0]=9;}f();echo $a[0];",
+    "expected": "9"
+  },
+  {
+    "name": "global array new",
+    "code": "<?php function f(){global $a;$a[]=\"x\";} f();echo $a[0];",
+    "expected": "x"
+  }
+]

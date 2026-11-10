@@ -1,0 +1,12 @@
+import "lib/calc.all"
+「lib/titles.all」をモジュールとして読み込む
+
+# このデータファイルは実行時の作業ディレクトリに置く
+変数 商品一覧 = read_json("orders.json")
+変数 合計 = 0
+foreach (商品 in 商品一覧) {
+    合計 = 合計 + 金額(商品["単価"], 商品["数量"])
+}
+println(見出し("商品売上"))
+合計を改行して表示する
+write_json("result.json", {"合計": 合計})

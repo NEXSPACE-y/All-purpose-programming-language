@@ -1,0 +1,487 @@
+﻿[
+  {
+    "name": "typed int initialized",
+    "code": "<?php class A{public int $x=5;}echo (new A())->x;",
+    "oracle_php_exit": 0,
+    "expected": "5"
+  },
+  {
+    "name": "typed int late initialized",
+    "code": "<?php class A{public int $x;function set(){ $this->x=8; }}$a=new A();$a->set();echo $a->x;",
+    "oracle_php_exit": 0,
+    "expected": "8"
+  },
+  {
+    "name": "typed string default",
+    "code": "<?php class A{public string $x=\"hello\";}echo (new A())->x;",
+    "oracle_php_exit": 0,
+    "expected": "hello"
+  },
+  {
+    "name": "typed bool default",
+    "code": "<?php class A{public bool $x=true;}echo (new A())->x;",
+    "oracle_php_exit": 0,
+    "expected": "1"
+  },
+  {
+    "name": "typed nullable no default",
+    "code": "<?php class A{public ?int $x;}echo isset((new A())->x)?\"T\":\"F\";",
+    "oracle_php_exit": 0,
+    "expected": "F"
+  },
+  {
+    "name": "typed nullable initialized null",
+    "code": "<?php class A{public ?int $x=null;}echo isset((new A())->x)?\"T\":\"F\";",
+    "oracle_php_exit": 0,
+    "expected": "F"
+  },
+  {
+    "name": "typed nullable initialized int",
+    "code": "<?php class A{public ?int $x=9;}echo (new A())->x;",
+    "oracle_php_exit": 0,
+    "expected": "9"
+  },
+  {
+    "name": "typed nullable late assigned null",
+    "code": "<?php class A{public ?int $x;function set(){ $this->x=null; }}$a=new A();$a->set();echo isset($a->x)?\"T\":\"F\";",
+    "oracle_php_exit": 0,
+    "expected": "F"
+  },
+  {
+    "name": "typed uninitialized is empty",
+    "code": "<?php class A{public int $x;} $a=new A(); echo empty($a->x)?\"T\":\"F\";",
+    "oracle_php_exit": 0,
+    "expected": "T"
+  },
+  {
+    "name": "typed after unset is uninitialized",
+    "code": "<?php class A{public int $x=3;} $a=new A(); unset($a->x); echo isset($a->x)?\"T\":\"F\";",
+    "oracle_php_exit": 0,
+    "expected": "F"
+  },
+  {
+    "name": "typed integer weak coercion",
+    "code": "<?php class A{public int $x;} $a=new A();$a->x=\"12\";echo $a->x;",
+    "oracle_php_exit": 0,
+    "expected": "12"
+  },
+  {
+    "name": "typed string weak coercion",
+    "code": "<?php class A{public string $x;} $a=new A();$a->x=12;echo $a->x;",
+    "oracle_php_exit": 0,
+    "expected": "12"
+  },
+  {
+    "name": "typed bool weak coercion",
+    "code": "<?php class A{public bool $x;} $a=new A();$a->x=\"1\";echo $a->x?\"T\":\"F\";",
+    "oracle_php_exit": 0,
+    "expected": "T"
+  },
+  {
+    "name": "typed class property",
+    "code": "<?php class B{public int $n=7;}class A{public B $b;} $a=new A();$a->b=new B();echo $a->b->n;",
+    "oracle_php_exit": 0,
+    "expected": "7"
+  },
+  {
+    "name": "typed array property",
+    "code": "<?php class A{public array $a=[2,3];}echo (new A())->a[1];",
+    "oracle_php_exit": 0,
+    "expected": "3"
+  },
+  {
+    "name": "typed object property",
+    "code": "<?php class A{public object $x;} $a=new A();$a->x=new stdClass();$a->x->q=7;echo $a->x->q;",
+    "oracle_php_exit": 0,
+    "expected": "7"
+  },
+  {
+    "name": "typed union int value",
+    "code": "<?php class A{public int|string $x;} $a=new A();$a->x=7;echo $a->x;",
+    "oracle_php_exit": 0,
+    "expected": "7"
+  },
+  {
+    "name": "typed union string value",
+    "code": "<?php class A{public int|string $x;} $a=new A();$a->x=\"s\";echo $a->x;",
+    "oracle_php_exit": 0,
+    "expected": "s"
+  },
+  {
+    "name": "typed public property update",
+    "code": "<?php class A{public int $x=1;} $a=new A();$a->x+=4;echo $a->x;",
+    "oracle_php_exit": 0,
+    "expected": "5"
+  },
+  {
+    "name": "typed protected property",
+    "code": "<?php class A{protected int $x=4;function get(){return $this->x;}} echo (new A())->get();",
+    "oracle_php_exit": 0,
+    "expected": "4"
+  },
+  {
+    "name": "typed private property",
+    "code": "<?php class A{private int $x=4;function get(){return $this->x;}} echo (new A())->get();",
+    "oracle_php_exit": 0,
+    "expected": "4"
+  },
+  {
+    "name": "typed inherited property",
+    "code": "<?php class A{public int $x=3;}class B extends A{}echo (new B())->x;",
+    "oracle_php_exit": 0,
+    "expected": "3"
+  },
+  {
+    "name": "typed inherited property reassigned",
+    "code": "<?php class A{public int $x=3;}class B extends A{function go(){ $this->x=7;}}$b=new B();$b->go();echo $b->x;",
+    "oracle_php_exit": 0,
+    "expected": "7"
+  },
+  {
+    "name": "typed typed property class second object",
+    "code": "<?php class A{public int $x;} $a=new A();$b=new A();$a->x=5;$b->x=8;echo $a->x,\":\",$b->x;",
+    "oracle_php_exit": 0,
+    "expected": "5:8"
+  },
+  {
+    "name": "typed static default",
+    "code": "<?php class A{public static int $x=12;}echo A::$x;",
+    "oracle_php_exit": 0,
+    "expected": "12"
+  },
+  {
+    "name": "typed static mutable",
+    "code": "<?php class A{public static int $x=1;} A::$x=7; echo A::$x;",
+    "oracle_php_exit": 0,
+    "expected": "7"
+  },
+  {
+    "name": "typed static weak coercion",
+    "code": "<?php class A{public static int $x;} A::$x=\"9\"; echo A::$x;",
+    "oracle_php_exit": 0,
+    "expected": "9"
+  },
+  {
+    "name": "typed static inherited",
+    "code": "<?php class A{public static int $x=5;}class B extends A{}echo B::$x;",
+    "oracle_php_exit": 0,
+    "expected": "5"
+  },
+  {
+    "name": "readonly constructed",
+    "code": "<?php class A{public readonly int $x;function __construct(int $x){$this->x=$x;}}echo (new A(7))->x;",
+    "oracle_php_exit": 0,
+    "expected": "7"
+  },
+  {
+    "name": "readonly initialized another method",
+    "code": "<?php class A{public readonly int $x;function init(int $x){$this->x=$x;}}$a=new A();$a->init(5);echo $a->x;",
+    "oracle_php_exit": 0,
+    "expected": "5"
+  },
+  {
+    "name": "readonly nullable init null",
+    "code": "<?php class A{public readonly ?int $x;function __construct(){$this->x=null;}}echo isset((new A())->x)?\"T\":\"F\";",
+    "oracle_php_exit": 0,
+    "expected": "F"
+  },
+  {
+    "name": "readonly private getter",
+    "code": "<?php class A{private readonly string $s;function __construct(){$this->s=\"ok\";}function get(){return $this->s;}}echo (new A())->get();",
+    "oracle_php_exit": 0,
+    "expected": "ok"
+  },
+  {
+    "name": "readonly protected getter child",
+    "code": "<?php class A{protected readonly int $x;function __construct(){$this->x=4;}}class B extends A{function get(){return $this->x;}}echo (new B())->get();",
+    "oracle_php_exit": 0,
+    "expected": "4"
+  },
+  {
+    "name": "promoted int property",
+    "code": "<?php class A{function __construct(public int $x){}}echo (new A(8))->x;",
+    "oracle_php_exit": 0,
+    "expected": "8"
+  },
+  {
+    "name": "promoted string property",
+    "code": "<?php class A{function __construct(public string $x){}}echo (new A(\"s\"))->x;",
+    "oracle_php_exit": 0,
+    "expected": "s"
+  },
+  {
+    "name": "promoted weak coerced",
+    "code": "<?php class A{function __construct(public int $x){}}echo (new A(\"12\"))->x;",
+    "oracle_php_exit": 0,
+    "expected": "12"
+  },
+  {
+    "name": "promoted default argument",
+    "code": "<?php class A{function __construct(public int $x=6){}}echo (new A())->x;",
+    "oracle_php_exit": 0,
+    "expected": "6"
+  },
+  {
+    "name": "promoted nullable property",
+    "code": "<?php class A{function __construct(public ?int $x=null){}}echo isset((new A())->x)?\"T\":\"F\";",
+    "oracle_php_exit": 0,
+    "expected": "F"
+  },
+  {
+    "name": "promoted public untyped",
+    "code": "<?php class A{function __construct(public $x){}}echo (new A(17))->x;",
+    "oracle_php_exit": 0,
+    "expected": "17"
+  },
+  {
+    "name": "promoted multiple properties",
+    "code": "<?php class A{function __construct(public int $x, public int $y){}}$a=new A(2,5);echo $a->x+$a->y;",
+    "oracle_php_exit": 0,
+    "expected": "7"
+  },
+  {
+    "name": "promoted with normal parameter",
+    "code": "<?php class A{function __construct(public int $x,int $y){$this->x+=$y;}}echo (new A(3,4))->x;",
+    "oracle_php_exit": 0,
+    "expected": "7"
+  },
+  {
+    "name": "promoted body sees property",
+    "code": "<?php class A{function __construct(public int $x){echo $this->x;}}new A(9);",
+    "oracle_php_exit": 0,
+    "expected": "9"
+  },
+  {
+    "name": "promoted protected getter",
+    "code": "<?php class A{function __construct(protected int $x){}function get(){return $this->x;}}echo (new A(12))->get();",
+    "oracle_php_exit": 0,
+    "expected": "12"
+  },
+  {
+    "name": "promoted private getter",
+    "code": "<?php class A{function __construct(private int $x){}function get(){return $this->x;}}echo (new A(22))->get();",
+    "oracle_php_exit": 0,
+    "expected": "22"
+  },
+  {
+    "name": "promoted readonly",
+    "code": "<?php class A{function __construct(public readonly int $x){}}echo (new A(15))->x;",
+    "oracle_php_exit": 0,
+    "expected": "15"
+  },
+  {
+    "name": "promoted readonly default",
+    "code": "<?php class A{function __construct(public readonly int $x=9){}}echo (new A())->x;",
+    "oracle_php_exit": 0,
+    "expected": "9"
+  },
+  {
+    "name": "promoted named arguments",
+    "code": "<?php class A{function __construct(public int $x,public int $y){}}echo (new A(y:4,x:3))->x;",
+    "oracle_php_exit": 0,
+    "expected": "3"
+  },
+  {
+    "name": "promoted nullable readonly",
+    "code": "<?php class A{function __construct(public readonly ?int $x=null){}}echo isset((new A())->x)?\"T\":\"F\";",
+    "oracle_php_exit": 0,
+    "expected": "F"
+  },
+  {
+    "name": "readonly class constructed",
+    "code": "<?php readonly class A{public int $x;function __construct(int $x){$this->x=$x;}}echo (new A(2))->x;",
+    "oracle_php_exit": 0,
+    "expected": "2"
+  },
+  {
+    "name": "readonly class promoted",
+    "code": "<?php readonly class A{function __construct(public int $x){}}echo (new A(7))->x;",
+    "oracle_php_exit": 0,
+    "expected": "7"
+  },
+  {
+    "name": "readonly class promoted default",
+    "code": "<?php readonly class A{function __construct(public int $x=3){}}echo (new A())->x;",
+    "oracle_php_exit": 0,
+    "expected": "3"
+  },
+  {
+    "name": "readonly class inherits readonly",
+    "code": "<?php readonly class A{public int $x;function __construct(){$this->x=2;}}readonly class B extends A{}echo (new B())->x;",
+    "oracle_php_exit": 0,
+    "expected": "2"
+  },
+  {
+    "name": "readonly class getter",
+    "code": "<?php readonly class A{private string $x;function __construct(){$this->x=\"v\";}function get(){return $this->x;}}echo (new A())->get();",
+    "oracle_php_exit": 0,
+    "expected": "v"
+  },
+  {
+    "name": "readonly class nullable",
+    "code": "<?php readonly class A{public ?int $x;function __construct(){$this->x=null;}}echo isset((new A())->x)?\"T\":\"F\";",
+    "oracle_php_exit": 0,
+    "expected": "F"
+  },
+  {
+    "name": "uninitialized typed instance read",
+    "code": "<?php class A{public int $x;} echo (new A())->x;",
+    "error_contains": "must not be accessed before initialization",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "uninitialized typed static read",
+    "code": "<?php class A{public static int $x;} echo A::$x;",
+    "error_contains": "must not be accessed before initialization",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "typed instance mismatch",
+    "code": "<?php class A{public int $x;} $a=new A();$a->x=\"bad\";",
+    "error_contains": "Type mismatch",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "typed static mismatch",
+    "code": "<?php class A{public static int $x;} A::$x=\"bad\";",
+    "error_contains": "Type mismatch",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "typed object wrong class",
+    "code": "<?php class A{public int $x;} class B{public A $a;}$b=new B();$b->a=new stdClass();",
+    "error_contains": "Type mismatch",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "typed nullable mismatch",
+    "code": "<?php class A{public ?int $x;} $a=new A();$a->x=\"bad\";",
+    "error_contains": "Type mismatch",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "readonly assign twice",
+    "code": "<?php class A{public readonly int $x;function __construct(){$this->x=1;}}$a=new A();$a->x=3;",
+    "error_contains": "Cannot modify readonly property",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "readonly assign outside",
+    "code": "<?php class A{public readonly int $x;} $a=new A();$a->x=3;",
+    "error_contains": "outside its declaring class",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "readonly no type",
+    "code": "<?php class A{public readonly $x;}",
+    "error_contains": "requires a type",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "readonly default not allowed",
+    "code": "<?php class A{public readonly int $x=3;}",
+    "error_contains": "cannot have a default",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "readonly static not allowed",
+    "code": "<?php class A{public static readonly int $x;}",
+    "error_contains": "readonly static property",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "readonly class untyped field",
+    "code": "<?php readonly class A{public $x;}",
+    "error_contains": "requires a type",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "readonly class dynamic field",
+    "code": "<?php readonly class A{public int $x;function __construct(){$this->x=1;}}$a=new A();$a->other=4;",
+    "error_contains": "Cannot create dynamic property",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "readonly class cannot extend plain",
+    "code": "<?php class A{} readonly class B extends A{}",
+    "error_contains": "cannot extend non-readonly class",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "plain cannot extend readonly",
+    "code": "<?php readonly class A{} class B extends A{}",
+    "error_contains": "cannot extend readonly class",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "readonly class static forbidden",
+    "code": "<?php readonly class A{public static int $x=2;}",
+    "error_contains": "readonly static property",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "readonly promoted missing type",
+    "code": "<?php class A{function __construct(public readonly $x){}}",
+    "error_contains": "must have a type",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "typed property default mismatch",
+    "code": "<?php class A{public int $x=\"text\";}",
+    "error_contains": "Type mismatch",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "typed static default mismatch",
+    "code": "<?php class A{public static int $x=\"text\";}",
+    "error_contains": "Type mismatch",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "duplicate promoted and declared",
+    "code": "<?php class A{public int $x;function __construct(public int $x){}}",
+    "error_contains": "Duplicate property",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "promoted param non constructor",
+    "code": "<?php class A{function f(public int $x){}}",
+    "error_contains": "Only constructor parameters",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "private read blocked",
+    "code": "<?php class A{private int $x=3;}echo (new A())->x;",
+    "error_contains": "private member",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  },
+  {
+    "name": "promoted readonly assign twice",
+    "code": "<?php class A{function __construct(public readonly int $x){}}$a=new A(3);$a->x=4;",
+    "error_contains": "Cannot modify readonly property",
+    "oracle_php_exit": 255,
+    "oracle_error_type": ""
+  }
+]

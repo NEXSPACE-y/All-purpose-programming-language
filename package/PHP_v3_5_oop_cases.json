@@ -1,0 +1,137 @@
+[
+  {
+    "name": "inherit inherited method",
+    "code": "<?php class A{public function f(){return 7;}} class B extends A{} echo (new B())->f();",
+    "expected": "7"
+  },
+  {
+    "name": "inherit inherited property",
+    "code": "<?php class A{public $x=3;} class B extends A{} echo (new B())->x;",
+    "expected": "3"
+  },
+  {
+    "name": "inherit override method",
+    "code": "<?php class A{public function f(){return 3;}} class B extends A{public function f(){return 8;}} echo (new B())->f();",
+    "expected": "8"
+  },
+  {
+    "name": "inherit instanceof",
+    "code": "<?php class A{} class B extends A{} $b=new B(); echo (($b instanceof A)&&($b instanceof B))?\"yes\":\"no\";",
+    "expected": "yes"
+  },
+  {
+    "name": "inherit instanceof false",
+    "code": "<?php class A{} class B{} $b=new B(); echo ($b instanceof A)?\"yes\":\"no\";",
+    "expected": "no"
+  },
+  {
+    "name": "parent static method call",
+    "code": "<?php class A{public static function f(){return 4;}} class B extends A{} echo B::f();",
+    "expected": "4"
+  },
+  {
+    "name": "parent method instance dispatch",
+    "code": "<?php class A{public function f(){return 3;}} class B extends A{public function f(){return parent::f()+5;}} echo (new B())->f();",
+    "expected": "8"
+  },
+  {
+    "name": "parent constructor",
+    "code": "<?php class A{public $x=0;public function __construct($x){$this->x=$x;}} class B extends A{public function __construct($x){parent::__construct($x+2);}} echo (new B(5))->x;",
+    "expected": "7"
+  },
+  {
+    "name": "protected method child access",
+    "code": "<?php class A{protected function f(){return 3;}} class B extends A{public function call(){return $this->f();}} echo (new B())->call();",
+    "expected": "3"
+  },
+  {
+    "name": "private method internal access",
+    "code": "<?php class A{private function f(){return 9;} public function call(){return $this->f();}} echo (new A())->call();",
+    "expected": "9"
+  },
+  {
+    "name": "private property internal access",
+    "code": "<?php class A{private $x=3;public function get(){return $this->x;}} echo (new A())->get();",
+    "expected": "3"
+  },
+  {
+    "name": "protected property inherited child",
+    "code": "<?php class A{protected $x=4;}class B extends A{public function get(){return $this->x;}} echo (new B())->get();",
+    "expected": "4"
+  },
+  {
+    "name": "static property initial",
+    "code": "<?php class A{public static $x=4;} echo A::$x;",
+    "expected": "4"
+  },
+  {
+    "name": "static property update",
+    "code": "<?php class A{public static $x=4;} A::$x+=3;echo A::$x;",
+    "expected": "7"
+  },
+  {
+    "name": "static property inherited share",
+    "code": "<?php class A{public static $x=1;}class B extends A{} B::$x=5; echo A::$x;",
+    "expected": "5"
+  },
+  {
+    "name": "static method",
+    "code": "<?php class A{public static function f($x){return $x+2;}}echo A::f(5);",
+    "expected": "7"
+  },
+  {
+    "name": "static method named arguments",
+    "code": "<?php class A{public static function f($a,$b=2){return $a+$b;}} echo A::f(b:4,a:1);",
+    "expected": "5"
+  },
+  {
+    "name": "class constant",
+    "code": "<?php class A{public const X=7;} echo A::X;",
+    "expected": "7"
+  },
+  {
+    "name": "class const inherited",
+    "code": "<?php class A{public const X=7;} class B extends A{} echo B::X;",
+    "expected": "7"
+  },
+  {
+    "name": "class class name",
+    "code": "<?php class A{} echo A::class;",
+    "expected": "A"
+  },
+  {
+    "name": "private static access from method",
+    "code": "<?php class A{private static $x=5;public static function get(){return self::$x;}} echo A::get();",
+    "expected": "5"
+  },
+  {
+    "name": "class named constructor",
+    "code": "<?php class A{public $x=0;public function __construct($a,$b=3){$this->x=$a+$b;}} echo (new A(b:4,a:2))->x;",
+    "expected": "6"
+  },
+  {
+    "name": "method default argument",
+    "code": "<?php class A{public function f($x=5){return $x*2;}} echo (new A())->f();",
+    "expected": "10"
+  },
+  {
+    "name": "stdClass member assignment",
+    "code": "<?php $o = new stdClass(); $o->a=\"v\"; echo $o->a;",
+    "expected": "v"
+  },
+  {
+    "name": "clone separates property",
+    "code": "<?php class A{public $x=1;}$a=new A();$b=clone $a;$b->x=8;echo $a->x.\":\".$b->x;",
+    "expected": "1:8"
+  },
+  {
+    "name": "clone keeps object nested identity",
+    "code": "<?php class A{public $child;} $a=new A();$a->child=new stdClass();$a->child->x=1;$b=clone $a;$b->child->x=7;echo $a->child->x;",
+    "expected": "7"
+  },
+  {
+    "name": "clone invokes hook",
+    "code": "<?php class A{public $x=1;public function __clone(){$this->x+=2;}}$a=new A();$b=clone $a;echo $a->x.\":\".$b->x;",
+    "expected": "1:3"
+  }
+]
