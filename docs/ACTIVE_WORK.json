@@ -1,0 +1,82 @@
+{
+  "status": "ACTIVE_NOT_COMPLETE",
+  "authorized_work": true,
+  "stage1": {
+    "goal": "Independent full PHP 8.5.12 compatibility",
+    "platforms": ["Windows 11 x64", "Linux x64"],
+    "sapis": ["CLI", "built-in Web server", "CGI", "FastCGI", "Apache module", "FPM on Linux"],
+    "standard_extensions": true,
+    "unchanged_existing_native_extension_binaries": true,
+    "complete": false
+  },
+  "stage2": {
+    "goal": "Grow ALL's own Japanese/English language to PHP-equivalent full capability, with bidirectional PHP/ALL calls and shared data",
+    "implementation_started": false,
+    "start_condition": "Stage 1 is complete and accepted"
+  },
+  "approved_design": {
+    "option_A": true,
+    "description": "ALL-owned native ABI layer, pinned SDK types, existing MSVC/SDK and reviewed value/call boundary integration; no stock PHP execution delegation",
+    "broader_native_execution_core_option_B": false,
+    "additional_PHP_source_component_adoption_option_C": false
+  },
+  "workspace": {
+    "worktree": "C:\\Users\\rinpa\\ALL-php-compat-20261112",
+    "branch": "codex/php-8.5.12-full-compat-20261112",
+    "continuation_base": "9d8171712828a0b57555b8eb1e1ca5c475391244",
+    "original_checkout": "C:\\Users\\rinpa\\All-purpose-programming-language",
+    "installed_ALL": "C:\\Users\\rinpa\\ALL",
+    "installed_ALL_modified": false,
+    "main_merged_or_pushed": false
+  },
+  "verified_checkpoints": [
+    {
+      "commit": "3af5462b18379fceca89cb9a88e233ac6677b81e",
+      "component": "PHP v3.17 namespace/runtime binding and prelude isolation",
+      "default_regression": "965/965 PASS; original 940 definitions/expectations preserved",
+      "strict_new_examples": "25/25 exact stdout/stderr bytes and exit statuses",
+      "source_sha256": "244b5c1385a5c5c298d9e6ea43d7b28ba65b4b4b7b131577cf45729a62de7f39",
+      "report": "reports/v3_17-validation-20261112-final/README.md"
+    },
+    {
+      "commit": "f555de3",
+      "component": "First independent native ABI candidate against unchanged php_dl_test.dll",
+      "selected_native_comparisons": "37 cases in 2 registration modes; 74/74 records matched",
+      "bridge_contract_checks": 24,
+      "candidate_dll_sha256": "b2ffd9f38abd20894b064b53a94e4a05e5d39eaa2055e910db6d762558e46757",
+      "report": "reports/native-abi-implementation-20261112/README.md",
+      "limits": "Selected Windows module/operations only. Object execution, arrays, refs, resources, callbacks, other modules, Linux and Web are incomplete."
+    }
+  ],
+  "in_progress": [
+    {
+      "component": "PHP v3.18 explicit CLI context",
+      "package_source_sha256": "6cfde5e729ff594741b6bb3a254a5bcbd25c2a1ef62f2ad4c9f2b9642b1efb8a",
+      "integration": "Exact reviewed candidate copied into the isolated package; full 965 regression pending at this record",
+      "prior_same_source_examples": "CLI 14/14; exit 23/23; selected legacy 73/73; generic context reuse 3/3",
+      "report": "reports/php-cli-candidate-20261112/assessment.json"
+    },
+    {
+      "component": "Optional NativeContext integration with the actual PHP evaluator",
+      "path": "tools/candidates/php-native/",
+      "state": "Isolated implementation; not yet merged or accepted",
+      "base_sha256": "6cfde5e729ff594741b6bb3a254a5bcbd25c2a1ef62f2ad4c9f2b9642b1efb8a"
+    },
+    {
+      "component": "Reference-only PHP API inventory",
+      "path": "reports/php-api-inventory-20261112/",
+      "observation": "37 profiles; 35/36 DLLs loaded; php_pdo_firebird startup failure retained; 13934 exposure candidates are UNVERIFIED/NOT_ASSESSED",
+      "candidate_function_implementation_verified_by_inventory": false
+    }
+  ],
+  "pending_owner_input": [
+    "Linux execution environment: WSL2 plus Ubuntu 24.04 LTS provisioning permission, or an existing Linux x64 host. WSL/VM/container execution environment was not found. No OS changes, install or reboot has been performed."
+  ],
+  "completion_policy": {
+    "PHP_FULL_COMPATIBLE": false,
+    "requirements_inventory_exhaustive": false,
+    "do_not_count_registration_or_selected_test_passes_as_full_compatibility": true,
+    "do_not_start_other_languages_or_ALL_stage2_early": true,
+    "keep_real_failed_and_partial_measurements": true
+  }
+}
