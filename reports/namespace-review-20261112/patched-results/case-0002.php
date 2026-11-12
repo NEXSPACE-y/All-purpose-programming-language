@@ -1,0 +1,1 @@
+<?php namespace A; try {$f=missing(...); echo 'created|';} finally {echo 'finally';}

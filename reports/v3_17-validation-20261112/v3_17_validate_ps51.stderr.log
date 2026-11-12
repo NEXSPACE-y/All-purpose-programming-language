@@ -1,0 +1,8 @@
+Expected 25 runtime namespace oracle cases
+î≠ê∂èÍèä C:\Users\rinpa\ALL-php-compat-20261112\package\ALL_PHP_v3_17_namespace_test.ps1:8 ï∂éö:31
++ ... .Count -ne 25) { throw 'Expected 25 runtime namespace oracle cases' }
++                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Expected 25 run...ce oracle cases:String) [], RuntimeException
+    + FullyQualifiedErrorId : Expected 25 runtime namespace oracle cases
+ 
+

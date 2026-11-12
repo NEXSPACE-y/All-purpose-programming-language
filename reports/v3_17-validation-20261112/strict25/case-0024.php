@@ -1,0 +1,1 @@
+<?php namespace A; function probe($n){return strlen(1/$n);} try{probe(0);}catch(\DivisionByZeroError $e){echo 'caught|';} if(true){function strlen($s){return 9;}} echo probe(1);

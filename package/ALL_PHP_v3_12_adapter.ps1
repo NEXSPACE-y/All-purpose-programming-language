@@ -72,6 +72,7 @@
                 ExceptionHandler = $null
                 ExceptionHandlerStack = [System.Collections.Generic.List[object]]::new()
                 Ini = @{}
+                NamespaceFallbacks = [System.Collections.Generic.Dictionary[int,string]]::new()
         }
 
         $state.Globals = $state.Vars
@@ -115,6 +116,25 @@
         $phpConstants['PHP_OS'] = 'WINNT'
         $phpConstants['PHP_OS_FAMILY'] = 'Windows'
         $phpConstants['DIRECTORY_SEPARATOR'] = '\'
+
+        # Names backed by the builtin dispatcher below. Unlike declarations collected while
+        # parsing, these functions exist before execution, even if a call raises an exception.
+        $phpBuiltinNames = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+        foreach ($builtinName in @(
+            'json_encode','json_decode','json_last_error','json_last_error_msg','count','strlen',
+            'strtoupper','strtolower','trim','abs','array_sum','array_key_exists','is_array',
+            'is_string','is_bool','array_push','array_pop','array_shift','array_unshift',
+            'array_reverse','array_merge','array_slice','array_keys','array_values',
+            'array_key_first','array_key_last','array_first','array_last','in_array',
+            'str_contains','str_starts_with','str_ends_with','strpos','substr','str_replace',
+            'explode','implode','__all_throwable_string','print_r','define','defined','constant',
+            'error_reporting','ini_set','ini_get','set_error_handler','restore_error_handler',
+            'set_exception_handler','restore_exception_handler','trigger_error','user_error',
+            'str_repeat','function_exists','call_user_func','call_user_func_array','get_class',
+            'var_dump','gettype','is_int','is_integer','is_long','is_float','is_double',
+            'is_null','is_numeric','intval','floatval','doubleval','boolval','intdiv','fdiv',
+            'pow','sqrt','floor','ceil','is_nan','is_infinite','is_finite','strval'
+        )) { [void]$phpBuiltinNames.Add($builtinName) }
 
         # Tokenize before parsing. Unknown characters produce an error, never disappear.
         $pattern = '(?:\s+|//[^\r\n]*|\#[^\r\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|''(?:\\.|[^''\\])*''|\$\$[A-Za-z_][A-Za-z_0-9]*|\$[A-Za-z_][A-Za-z_0-9]*|\$(?=\{)|0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|(?:\d[\d_]*(?:\.[\d_]*)?|\.\d[\d_]*)(?:[eE][+-]?\d[\d_]*)?|\\?[A-Za-z_][A-Za-z_0-9]*(?:\\[A-Za-z_][A-Za-z_0-9]*)*\\?|<=>|::|\.\.\.|<<=|>>=|<<|>>|===|!==|==|!=|<=|>=|&&|\|\||=>|->|\*\*=|\*\*|\?\?=|\?\?|\?->|\+\+|--|\*=|/=|%=|&=|\|=|\^=|\+=|-=|\.=|[+\-*/%.=<>!?:;{},()\[\]&|^~@])'
@@ -161,6 +181,7 @@
             $declConsts = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
             $outTokens = [System.Collections.Generic.List[string]]::new()
             $outLines = [System.Collections.Generic.List[int]]::new()
+            $outFallbacks = [System.Collections.Generic.Dictionary[int,string]]::new()
             foreach ($pass in 1, 2) {
                 $ns = ''
                 $depth = 0
@@ -199,18 +220,14 @@
                     $q = & $qualify $name
                     if ($null -ne $q) { return $q }
                     if ($useFunc.ContainsKey($name)) { return $useFunc[$name] }
-                    $local = & $prefix $name
-                    if ($declFunctions.Contains($local)) { return $local }
-                    return $name
+                    return (& $prefix $name)
                 }
                 $resolveConst = {
                     param($name)
                     $q = & $qualify $name
                     if ($null -ne $q) { return $q }
                     if ($useConst.ContainsKey($name)) { return $useConst[$name] }
-                    $local = & $prefix $name
-                    if ($declConsts.Contains($local)) { return $local }
-                    return $name
+                    return (& $prefix $name)
                 }
                 for ($i = 0; $i -lt $total; $i++) {
                     $t = $tokens[$i]
@@ -219,6 +236,7 @@
                     $inClass = ($classStack.Count -gt 0)
                     $atMember = ($inClass -and $depth -eq $classStack.Peek())
                     $emit = $t
+                    $fallback = $null
                     if ($t -ceq '{') {
                         $depth++
                         if ($pendingClass) { $classStack.Push($depth); $pendingClass = $false }
@@ -367,14 +385,26 @@
                                 elseif ($k -ge 1 -and $tokens[$k] -ceq '(' -and $tokens[$k - 1] -ieq 'catch') { $isType = $true }
                             }
                             if ($isType) { $emit = & $resolveClass $t }
-                            elseif ($next -ceq '(') { $emit = & $resolveFunc $t }
-                            else { $emit = & $resolveConst $t }
+                            elseif ($next -ceq '(') {
+                                $emit = & $resolveFunc $t
+                                if ($ns.Length -gt 0 -and -not $t.Contains('\') -and -not $useFunc.ContainsKey($t)) {
+                                    $fallback = $t
+                                }
+                            } else {
+                                $emit = & $resolveConst $t
+                                if ($ns.Length -gt 0 -and -not $t.Contains('\') -and -not $useConst.ContainsKey($t)) {
+                                    $fallback = $t
+                                }
+                            }
                         }
                     }
-                    if ($pass -eq 2) { [void]$outTokens.Add($emit); [void]$outLines.Add($lines[$i]) }
+                    if ($pass -eq 2) {
+                        if ($null -ne $fallback) { $outFallbacks[$outTokens.Count] = $fallback }
+                        [void]$outTokens.Add($emit); [void]$outLines.Add($lines[$i])
+                    }
                 }
             }
-            return [pscustomobject]@{ Tokens=$outTokens; Lines=$outLines }
+            return [pscustomobject]@{ Tokens=$outTokens; Lines=$outLines; Fallbacks=$outFallbacks }
         }
         ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines
         # Only programs that actually use namespaces, imports or qualified names take this pass.
@@ -393,6 +423,7 @@
         if ($needsNameResolution) {
             $resolvedNames = Resolve-PhpNamespaceTokens $state.Tokens $state.TokenLines
             $state.Tokens = $resolvedNames.Tokens
+            $state.NamespaceFallbacks = $resolvedNames.Fallbacks
             $state.TokenLines = $resolvedNames.Lines
         }
 
@@ -639,6 +670,10 @@
         }
         function Read-Primary {
             $token = Peek-Token
+            $fallbackName = $null
+            if ($state.NamespaceFallbacks.ContainsKey($state.Pos)) {
+                $fallbackName = $state.NamespaceFallbacks[$state.Pos]
+            }
             if ($token -ceq '(') {
                 [void](Next-Token)
                 $expr = Read-Expr 1
@@ -809,13 +844,13 @@
                 if ((Peek-Token) -ceq '(') {
                     if (Take-PhpFirstClassCallableArgs) {
                         return [pscustomobject]@{
-                            Kind='first_class_function'; Name=$token
+                            Kind='first_class_function'; Name=$token; Fallback=$fallbackName; ResolvedName=$null
                         }
                     }
                     $callArgs = Read-Arguments
-                    return [pscustomobject]@{ Kind='call'; Name=$token; Args=@($callArgs) }
+                    return [pscustomobject]@{ Kind='call'; Name=$token; Args=@($callArgs); Fallback=$fallbackName; ResolvedName=$null }
                 }
-                return [pscustomobject]@{ Kind='class_name'; Name=$token }
+                return [pscustomobject]@{ Kind='class_name'; Name=$token; Fallback=$fallbackName; ResolvedName=$null }
             }
             throw "ALL PHP: Unsupported expression starting with '$token'"
         }
@@ -2058,10 +2093,14 @@ class UnhandledMatchError extends Error {}
                 $savedTokens = $state.Tokens
                 $savedLines = $state.TokenLines
                 $savedPos = $state.Pos
+                $savedFallbacks = $state.NamespaceFallbacks
                 try {
                     $state.Tokens = [System.Collections.Generic.List[string]]::new()
                     $state.TokenLines = [System.Collections.Generic.List[int]]::new()
                     $state.Pos = 0
+                    # The prelude is separate source. Source-token positions must never attach
+                    # namespace fallback metadata to its cached AST or leak into later Runs.
+                    $state.NamespaceFallbacks = [System.Collections.Generic.Dictionary[int,string]]::new()
                     ConvertTo-PhpTokens $phpPreludeSource $state.Tokens $state.TokenLines
                     $nodes = [System.Collections.Generic.List[object]]::new()
                     while ((Peek-Token) -cne '(EOF)') { [void]$nodes.Add((Read-Statement)) }
@@ -2070,6 +2109,7 @@ class UnhandledMatchError extends Error {}
                     $state.Tokens = $savedTokens
                     $state.TokenLines = $savedLines
                     $state.Pos = $savedPos
+                    $state.NamespaceFallbacks = $savedFallbacks
                 }
             }
             $savedLine = $state.Line
@@ -4846,14 +4886,43 @@ class UnhandledMatchError extends Error {}
             }
             throw "ALL PHP: Undefined class constant '$constName'"
         }
+        function Resolve-PhpFunctionNodeName($node) {
+            if (-not $node.PSObject.Properties['Fallback'] -or $null -eq $node.Fallback) {
+                if ($state.Functions.ContainsKey($node.Name) -or $phpBuiltinNames.Contains($node.Name)) { return $node.Name }
+                Throw-PhpError 'Error' ("Call to undefined function " + $node.Name + '()')
+            }
+            if ($null -ne $node.ResolvedName) { return $node.ResolvedName }
+            # A call site's first successful namespace/global binding is retained, like PHP's
+            # runtime cache. Conditional/nested declarations are not installed during parsing.
+            if ($state.Functions.ContainsKey($node.Name)) { $node.ResolvedName = $node.Name }
+            elseif ($state.Functions.ContainsKey($node.Fallback) -or $phpBuiltinNames.Contains($node.Fallback)) {
+                $node.ResolvedName = $node.Fallback
+            } else {
+                # A failed lookup must remain unresolved: a later conditional declaration can
+                # install the function before this same expression is reached again.
+                Throw-PhpError 'Error' ("Call to undefined function " + $node.Name + '()')
+            }
+            return $node.ResolvedName
+        }
+        function Resolve-PhpConstantNodeName($node) {
+            if (-not $node.PSObject.Properties['Fallback'] -or $null -eq $node.Fallback) { return $node.Name }
+            if ($null -ne $node.ResolvedName) { return $node.ResolvedName }
+            if ($state.Constants.ContainsKey($node.Name) -or $phpConstants.ContainsKey($node.Name)) {
+                $node.ResolvedName = $node.Name
+            } elseif ($state.Constants.ContainsKey($node.Fallback) -or $phpConstants.ContainsKey($node.Fallback)) {
+                $node.ResolvedName = $node.Fallback
+            } else { return $node.Name }
+            return $node.ResolvedName
+        }
         function Invoke-PhpReferenceCall($node) {
             # A function declared with & returns the same cell as its lvalue.
             # Ordinary function calls continue to return the dereferenced value.
             if ($node.Kind -eq 'call') {
-                if (-not $state.Functions.ContainsKey($node.Name)) {
+                $callName = Resolve-PhpFunctionNodeName $node
+                if (-not $state.Functions.ContainsKey($callName)) {
                     throw 'ALL PHP: Reference return requires a declared function'
                 }
-                $def=$state.Functions[$node.Name]
+                $def=$state.Functions[$callName]
                 $args=Evaluate-PhpUserArguments $node.Args $def
                 return (Invoke-PhpCallable $def $args $null '' $null $true)
             }
@@ -4904,8 +4973,9 @@ class UnhandledMatchError extends Error {}
                     finally { $state.SilenceDepth-- }
                 }
                 'class_name' {
-                    if ($state.Constants.ContainsKey($node.Name)) { return $state.Constants[$node.Name] }
-                    if ($phpConstants.ContainsKey($node.Name)) { return $phpConstants[$node.Name] }
+                    $constantName = Resolve-PhpConstantNodeName $node
+                    if ($state.Constants.ContainsKey($constantName)) { return $state.Constants[$constantName] }
+                    if ($phpConstants.ContainsKey($constantName)) { return $phpConstants[$constantName] }
                     return $node.Name
                 }
                 'cast' { return (Convert-PhpCast (Invoke-PhpExpr $node.Arg) $node.Type) }
@@ -4946,7 +5016,7 @@ class UnhandledMatchError extends Error {}
                 'first_class_function' {
                     # Defer builtin argument evaluation until the closure is invoked.
                     return [pscustomobject]@{
-                        PhpType='first_class_callable'; Id=(New-PhpObjectId); Mode='function'; Name=$node.Name
+                        PhpType='first_class_callable'; Id=(New-PhpObjectId); Mode='function'; Name=(Resolve-PhpFunctionNodeName $node)
                     }
                 }
                 'first_class_method' {
@@ -5308,9 +5378,10 @@ class UnhandledMatchError extends Error {}
                         }
                         return $null
                     }
-                    if ($state.Functions.ContainsKey($node.Name)) {
-                        $args=Evaluate-PhpUserArguments $node.Args $state.Functions[$node.Name]
-                        return (Invoke-PhpCallable $state.Functions[$node.Name] $args $null)
+                    $callName = Resolve-PhpFunctionNodeName $node
+                    if ($state.Functions.ContainsKey($callName)) {
+                        $args=Evaluate-PhpUserArguments $node.Args $state.Functions[$callName]
+                        return (Invoke-PhpCallable $state.Functions[$callName] $args $null)
                     }
                     $callArgs = [System.Collections.Generic.List[object]]::new()
                     foreach ($arg in $node.Args) {
@@ -5323,7 +5394,7 @@ class UnhandledMatchError extends Error {}
                             [void]$callArgs.Add((Invoke-PhpExpr $arg))
                         }
                     }
-                    return (Invoke-PhpFunction $node.Name ($callArgs.ToArray()))
+                    return (Invoke-PhpFunction $callName ($callArgs.ToArray()))
                 }
                 'method' {
                     $base = Invoke-PhpExpr $node.Base

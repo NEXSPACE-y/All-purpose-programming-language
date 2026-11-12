@@ -1,0 +1,1 @@
+<?php namespace { const VALUE = 'global'; } namespace A { define('A\VALUE', null); var_dump(VALUE); }

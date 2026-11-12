@@ -1,0 +1,16 @@
+[
+  {"id":"output.trailing-space", "code":"<?php echo \"x \\n\";"},
+  {"id":"numeric.int64-overflow", "code":"<?php var_dump(PHP_INT_MAX + 1);"},
+  {"id":"numeric.strict-int-float", "code":"<?php var_dump(1 === 1.0);"},
+  {"id":"namespace.static-function", "code":"<?php namespace A; function f(){return 3;} echo f();"},
+  {"id":"namespace.dynamic-constant", "code":"<?php namespace A; define('A\\VALUE', 7); echo VALUE;"},
+  {"id":"namespace.dynamic-function", "code":"<?php namespace A; if (true) { function strlen($x){return 9;} } echo strlen('abc');"},
+  {"id":"namespace.duplicate-alias", "code":"<?php namespace A; use B\\C as D; use E\\F as D; echo 'unreachable';"},
+  {"id":"diagnostics.undefined-variable", "code":"<?php echo $missing;"},
+  {"id":"diagnostics.uncaught-exception", "code":"<?php throw new Exception('example');"},
+  {"id":"execution.exit-code", "code":"<?php echo 'before'; exit(7); echo 'after';"},
+  {"id":"generator.iteration", "code":"<?php function g(){ yield 1; yield 2; } foreach(g() as $v){echo $v;}"},
+  {"id":"syntax.heredoc", "code":"<?php echo <<<TEXT\nhello\nTEXT;"},
+  {"id":"syntax.unicode-escape", "code":"<?php echo \"\\u{1F600}\";"},
+  {"id":"reflection.attribute", "code":"<?php #[Attribute] class A {} #[A] class B {} echo count((new ReflectionClass(B::class))->getAttributes());"}
+]

@@ -1,0 +1,26 @@
+{
+    "pid":  24536,
+    "startedUtc":  "2026-11-12T11:42:53.5303625Z",
+    "finishedUtc":  "2026-11-12T11:46:22.9804267Z",
+    "durationSeconds":  208.622,
+    "validator":  "package/ALL_PHP_v3_17_validate.ps1",
+    "arguments":  [
+                      "-CompileCSharp"
+                  ],
+    "installedMode":  false,
+    "exitCode":  1,
+    "failure":  "Expected 25 runtime namespace oracle cases\r\n発生場所 C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_17_namespace_test.ps1:8 文字:31\r\n+ ... .Count -ne 25) { throw \u0027Expected 25 runtime namespace oracle cases\u0027 }\r\n+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (Expected 25 run...ce oracle cases:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : Expected 25 runtime namespace oracle cases\r\n \r\n",
+    "packageUnchanged":  true,
+    "helperAssemblies":  [
+                             {
+                                 "fullName":  "rmqztphg, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+                                 "location":  "",
+                                 "fileExists":  false
+                             },
+                             {
+                                 "fullName":  "pfcfg3dm, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+                                 "location":  "",
+                                 "fileExists":  false
+                             }
+                         ]
+}

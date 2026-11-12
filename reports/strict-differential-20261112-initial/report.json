@@ -1,0 +1,757 @@
+{
+  "schema_version": 1,
+  "status": "NOT_COMPLETE",
+  "measurement": "exact stdout bytes, stderr bytes, process exit code; no normalization",
+  "scope": "listed examples only; not full PHP conformance, PHPT, Web, native ABI or side-effect coverage",
+  "inputs_before": {
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "adapter": "2f462dee734635968d540d1f8bf68fd30e0eebec662081c4ccb409bde57fc934",
+    "cases": "3777954335328c0157bd7df54abcdd14a24313b3e0c7c0877e5791f792fcb22f",
+    "worker": "a51eca467577db58c638b7988e3927b1cb11fbbf41658259b44b0ff72955ae76"
+  },
+  "inputs_after": {
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "adapter": "2f462dee734635968d540d1f8bf68fd30e0eebec662081c4ccb409bde57fc934",
+    "cases": "3777954335328c0157bd7df54abcdd14a24313b3e0c7c0877e5791f792fcb22f",
+    "worker": "a51eca467577db58c638b7988e3927b1cb11fbbf41658259b44b0ff72955ae76"
+  },
+  "inputs_unchanged": true,
+  "timeout_seconds": 30,
+  "total": 14,
+  "passed": 5,
+  "different": 9,
+  "results": [
+    {
+      "id": "output.trailing-space",
+      "source_sha256": "85bcee6769b8c1ac49804d1794a7d0fec74a66dcee0e0b95016622f5ed0b53a1",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0000.php",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.24160000000847504,
+        "stdout_base64": "eCAK",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "x \n",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0000.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 1.956587499997113,
+        "stdout_base64": "eCAK",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "x \n",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0000.php"
+        ]
+      }
+    },
+    {
+      "id": "numeric.int64-overflow",
+      "source_sha256": "c62b78fda8caee5d0005b5c97f24ecd73e06586b8d80d90d0489c31b91984b9a",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0001.php",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.18777640000917017,
+        "stdout_base64": "ZmxvYXQoOS4yMjMzNzIwMzY4NTQ3NzZFKzE4KQo=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "float(9.223372036854776E+18)\n",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0001.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.263056299998425,
+        "stdout_base64": "ZmxvYXQoOS4yMjMzNzIwMzY4NTQ3NzZFKzE4KQo=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "float(9.223372036854776E+18)\n",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0001.php"
+        ]
+      }
+    },
+    {
+      "id": "numeric.strict-int-float",
+      "source_sha256": "4d532d28c640af99c3480817e825e75a69ecda7b32d9d356ef161e966c6f8fb5",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0002.php",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.1811331000062637,
+        "stdout_base64": "Ym9vbChmYWxzZSkK",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "bool(false)\n",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0002.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.0169038000167347,
+        "stdout_base64": "Ym9vbChmYWxzZSkK",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "bool(false)\n",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0002.php"
+        ]
+      }
+    },
+    {
+      "id": "namespace.static-function",
+      "source_sha256": "2d4dfeb16db15dfca88793c5e0f49690ab6ac05b678fe48b3710e935f9b8272f",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0003.php",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.20755719998851418,
+        "stdout_base64": "Mw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0003.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.4291268000379205,
+        "stdout_base64": "Mw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0003.php"
+        ]
+      }
+    },
+    {
+      "id": "namespace.dynamic-constant",
+      "source_sha256": "a8ee64cb507c7404ef77542982e7e67293006de651b6d891fd6f68d399f5552b",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0004.php",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "stdout_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.20285870000952855,
+        "stdout_base64": "Nw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "7",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0004.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.37563120003324,
+        "stdout_base64": "VkFMVUU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "VALUE",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0004.php"
+        ]
+      }
+    },
+    {
+      "id": "namespace.dynamic-function",
+      "source_sha256": "8e62126c95b77c550ebafc467c127795c76f72e3276725824f1de485d513e9b8",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0005.php",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.20283059997018427,
+        "stdout_base64": "OQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "9",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0005.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.6190326999640092,
+        "stdout_base64": "OQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "9",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0005.php"
+        ]
+      }
+    },
+    {
+      "id": "namespace.duplicate-alias",
+      "source_sha256": "8e0de984ae8d54a0cbd615d2f0e483cd805fe3bd42d92aa35b92d9b709daa932",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0006.php",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.20453129999805242,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IENhbm5vdCB1c2UgRVxGIGFzIEQgYmVjYXVzZSB0aGUgbmFtZSBpcyBhbHJlYWR5IGluIHVzZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHN0cmljdC1kaWZmZXJlbnRpYWwtMjAyNjExMTItaW5pdGlhbFxjYXNlLTAwMDYucGhwIG9uIGxpbmUgMQpTdGFjayB0cmFjZToKIzAge21haW59Cg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Cannot use E\\F as D because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0006.php on line 1\nStack trace:\n#0 {main}\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0006.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.177472100011073,
+        "stdout_base64": "dW5yZWFjaGFibGU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "unreachable",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0006.php"
+        ]
+      }
+    },
+    {
+      "id": "diagnostics.undefined-variable",
+      "source_sha256": "adaf75915f60b8f346a2c812cf8e05967658f65a824716debc30094f2e22b3d0",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0007.php",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.24061560002155602,
+        "stdout_base64": "",
+        "stderr_base64": "V2FybmluZzogVW5kZWZpbmVkIHZhcmlhYmxlICRtaXNzaW5nIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNcc3RyaWN0LWRpZmZlcmVudGlhbC0yMDI2MTExMi1pbml0aWFsXGNhc2UtMDAwNy5waHAgb24gbGluZSAxCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Warning: Undefined variable $missing in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0007.php on line 1\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0007.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 1.9612076999619603,
+        "stdout_base64": "Cldhcm5pbmc6IFVuZGVmaW5lZCB2YXJpYWJsZSAkbWlzc2luZyBpbiBDb21tYW5kIGxpbmUgY29kZSBvbiBsaW5lIDEK",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "\nWarning: Undefined variable $missing in Command line code on line 1\n",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0007.php"
+        ]
+      }
+    },
+    {
+      "id": "diagnostics.uncaught-exception",
+      "source_sha256": "9b29cc4ad741d894c558f82e59b6e3182049e0943979715d90f095bdc960b73e",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0008.php",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.21533829998224974,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IFVuY2F1Z2h0IEV4Y2VwdGlvbjogZXhhbXBsZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHN0cmljdC1kaWZmZXJlbnRpYWwtMjAyNjExMTItaW5pdGlhbFxjYXNlLTAwMDgucGhwOjEKU3RhY2sgdHJhY2U6CiMwIHttYWlufQogIHRocm93biBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHN0cmljdC1kaWZmZXJlbnRpYWwtMjAyNjExMTItaW5pdGlhbFxjYXNlLTAwMDgucGhwIG9uIGxpbmUgMQo=",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Uncaught Exception: example in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0008.php:1\nStack trace:\n#0 {main}\n  thrown in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0008.php on line 1\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0008.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 6.958324900013395,
+        "stdout_base64": "CkZhdGFsIGVycm9yOiBVbmNhdWdodCBFeGNlcHRpb246IGV4YW1wbGUgaW4gQ29tbWFuZCBsaW5lIGNvZGU6MQpTdGFjayB0cmFjZToKIzAge21haW59CiAgdGhyb3duIGluIENvbW1hbmQgbGluZSBjb2RlIG9uIGxpbmUgMQo=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "\nFatal error: Uncaught Exception: example in Command line code:1\nStack trace:\n#0 {main}\n  thrown in Command line code on line 1\n",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0008.php"
+        ]
+      }
+    },
+    {
+      "id": "execution.exit-code",
+      "source_sha256": "b8291236158e4594c9b4feb528cf512bdcf48f43a6e0ea7de4799fffb1ac3fbc",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0009.php",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 7,
+        "elapsed_seconds": 0.18830480001633987,
+        "stdout_base64": "YmVmb3Jl",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "before",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0009.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 2.106797699991148,
+        "stdout_base64": "YmVmb3Jl",
+        "stderr_base64": "QUxMIFBIUDogVW5kZWZpbmVkIGZ1bmN0aW9uICdleGl0Jw0K",
+        "stdout_utf8_preview": "before",
+        "stderr_utf8_preview": "ALL PHP: Undefined function 'exit'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0009.php"
+        ]
+      }
+    },
+    {
+      "id": "generator.iteration",
+      "source_sha256": "f3f62c5fdfacea23096682777af4d3d64a48e8031a37d1321f17546f474ff142",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0010.php",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.28656059998320416,
+        "stdout_base64": "MTI=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "12",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0010.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 1.6270029000006616,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5kZWZpbmVkIGNvbnN0YW50IGluIGV4cHJlc3Npb24gc3RhdGVtZW50DQo=",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Undefined constant in expression statement\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0010.php"
+        ]
+      }
+    },
+    {
+      "id": "syntax.heredoc",
+      "source_sha256": "45282aa677d1121c230560eab3988d27a7dd54c68f825cc1ad576f026562cc16",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0011.php",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.16848039999604225,
+        "stdout_base64": "aGVsbG8=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "hello",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0011.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 1.6072207000106573,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5zdXBwb3J0ZWQgZXhwcmVzc2lvbiBzdGFydGluZyB3aXRoICc8PCcNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unsupported expression starting with '<<'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0011.php"
+        ]
+      }
+    },
+    {
+      "id": "syntax.unicode-escape",
+      "source_sha256": "2d0712cc3aa81dba42ed0611685c276f754059d379e7503ded74a375984a4505",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0012.php",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.18127299996558577,
+        "stdout_base64": "8J+YgA==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "😀",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0012.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 1.876121300039813,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogSGV4YWRlY2ltYWwsIG9jdGFsIGFuZCBVbmljb2RlIHN0cmluZyBlc2NhcGVzIGFyZSBub3QgaW1wbGVtZW50ZWQNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Hexadecimal, octal and Unicode string escapes are not implemented\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0012.php"
+        ]
+      }
+    },
+    {
+      "id": "reflection.attribute",
+      "source_sha256": "58a43164fd986a6bfb1178fa421c4e032738bb4e960dde8d4365321baf27ea10",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0013.php",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "stdout_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.1868547999765724,
+        "stdout_base64": "MQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "1",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0013.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 1.3315954999998212,
+        "stdout_base64": "",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\strict-differential-20261112-initial\\case-0013.php"
+        ]
+      }
+    }
+  ]
+}

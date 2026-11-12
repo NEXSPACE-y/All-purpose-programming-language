@@ -1,0 +1,12 @@
+{
+  "fixturePath": "package/PHP_v3_17_namespace_runtime_oracle_cases.json",
+  "fixtureSha256": "00561fa0183bc7905638d67d06f68bee26b873a600c7e438e05e8516b77be341",
+  "adapterSha256": "244b5c1385a5c5c298d9e6ea43d7b28ba65b4b4b7b131577cf45729a62de7f39",
+  "mapping": "id=originalfixture.name;code=originalfixture.code;noexpectedoutput",
+  "count": 25,
+  "original14CasesSha256": "3777954335328c0157bd7df54abcdd14a24313b3e0c7c0877e5791f792fcb22f",
+  "comparatorSha256": "f9d7c8161d000dde5b4314998a053ca8b2333d2e93edc630b6243058a13f60cd",
+  "workerSha256": "a51eca467577db58c638b7988e3927b1cb11fbbf41658259b44b0ff72955ae76",
+  "isolationHarnessSha256": "073ee5540ff3c1e04a02210f30fa04dfbc0753f51a603df18004d6b8293510d3",
+  "sourceCommit": "9d8171712828a0b57555b8eb1e1ca5c475391244"
+}

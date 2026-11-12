@@ -1,0 +1,46 @@
+{
+    "schema_version":  "1.0",
+    "status":  "FAIL",
+    "process_id":  12084,
+    "powershell_version":  "5.1.26100.9818",
+    "parity":  1,
+    "repetitions":  150,
+    "seed_shape":  "binary",
+    "repeated_fragment":  "X+X;",
+    "extra_semicolon_placement":  "after namespace A; before define",
+    "execution_mode":  "same adapter Run scriptblock, seed then second; fresh process per parity; no cache reset",
+    "adapter_path":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+    "adapter_sha256_before":  "f9a5efbbb7ead6b3b8a81aef9a8f21138d647ffe0b3154955f3db46c6043ae36",
+    "adapter_sha256_after":  "f9a5efbbb7ead6b3b8a81aef9a8f21138d647ffe0b3154955f3db46c6043ae36",
+    "inputs_unchanged":  true,
+    "seed_sha256":  "6413ef37f393159eb8f3a894471f5e1cfad88053cb9cf96035837ebcb2f55cd7",
+    "second_sha256":  "5f59cfb3cecb11ad497b0b9368cdc62bd6416371e4a86e3af270c01ef8c8d8c4",
+    "seed_expected":  "",
+    "second_expected":  "clean",
+    "seed_passed":  true,
+    "second_passed":  false,
+    "seed":  {
+                 "label":  "seed",
+                 "stdout":  "",
+                 "pipeline":  [
+
+                              ],
+                 "error":  null,
+                 "elapsed_ms":  9458
+             },
+    "second":  {
+                   "label":  "second",
+                   "stdout":  "",
+                   "pipeline":  [
+
+                                ],
+                   "error":  {
+                                 "message":  "ALL PHP: Uncaught Error: Call to undefined function __all_throwable_string()",
+                                 "type":  "System.Exception",
+                                 "fully_qualified_error_id":  "ALL PHP: Uncaught Error: Call to undefined function __all_throwable_string()",
+                                 "position":  "At C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1:2171 char:13\r\n+             throw $signal\r\n+             ~~~~~~~~~~~~~",
+                                 "script_stack_trace":  "at Throw-PhpObject, C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1: line 2171\r\nat Throw-PhpError, C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1: line 2191\r\nat Resolve-PhpFunctionNodeName, C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1: line 4898\r\nat Invoke-PhpExpr, C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1: line 5376\r\nat Invoke-PhpStatement, C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1: line 6011\r\nat Invoke-PhpStatement, C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1: line 5641\r\nat Invoke-PhpCallable, C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1: line 4161\r\nat Invoke-PhpMethod, C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1: line 4840\r\nat Invoke-PhpExpr, C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1: line 5401\r\nat Invoke-PhpExpr, C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1: line 5235\r\nat Invoke-PhpStatement, C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1: line 6039\r\nat \u003cScriptBlock\u003e, C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1: line 6214\r\nat Invoke-Observed, C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\Test-PreludeIsolation.ps1: line 39\r\nat \u003cScriptBlock\u003e, C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\Test-PreludeIsolation.ps1: line 65"
+                             },
+                   "elapsed_ms":  740
+               }
+}

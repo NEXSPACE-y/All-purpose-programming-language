@@ -1,0 +1,1 @@
+<?php namespace A; define('A\Sub\VALUE', 'qualified'); echo Sub\VALUE;

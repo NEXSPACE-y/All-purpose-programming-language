@@ -1,0 +1,168 @@
+{
+  "php_path": "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+  "php_sha256_before": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+  "php_sha256_after": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+  "mode": "official oracle separate process for each saved legal PHP source; candidate never delegates",
+  "results": [
+    {
+      "case": "parity-0",
+      "stage": "seed",
+      "argv": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-d",
+        "date.timezone=UTC",
+        "reports\\prelude-isolation-20261112-before\\parity-0\\seed.php"
+      ],
+      "source_sha256": "90e266e316f9e21e45ee54cd3b73651af91e0b82cc25c55e9b76ab717bc68aa7",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "matches_expected": true
+    },
+    {
+      "case": "parity-0",
+      "stage": "second",
+      "argv": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-d",
+        "date.timezone=UTC",
+        "reports\\prelude-isolation-20261112-before\\parity-0\\second.php"
+      ],
+      "source_sha256": "5f59cfb3cecb11ad497b0b9368cdc62bd6416371e4a86e3af270c01ef8c8d8c4",
+      "exit_code": 0,
+      "stdout": "clean",
+      "stderr": "",
+      "matches_expected": true
+    },
+    {
+      "case": "parity-1",
+      "stage": "seed",
+      "argv": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-d",
+        "date.timezone=UTC",
+        "reports\\prelude-isolation-20261112-before\\parity-1\\seed.php"
+      ],
+      "source_sha256": "286ca2f950f930d65636983cfee85dc5809ab0c1e8196fe76ade4d7d15d1e8b4",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "matches_expected": true
+    },
+    {
+      "case": "parity-1",
+      "stage": "second",
+      "argv": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-d",
+        "date.timezone=UTC",
+        "reports\\prelude-isolation-20261112-before\\parity-1\\second.php"
+      ],
+      "source_sha256": "5f59cfb3cecb11ad497b0b9368cdc62bd6416371e4a86e3af270c01ef8c8d8c4",
+      "exit_code": 0,
+      "stdout": "clean",
+      "stderr": "",
+      "matches_expected": true
+    },
+    {
+      "case": "binary-parity-0",
+      "stage": "seed",
+      "argv": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-d",
+        "date.timezone=UTC",
+        "reports\\prelude-isolation-20261112-before\\binary-parity-0\\seed.php"
+      ],
+      "source_sha256": "61bdd74840e75876b6cfe43d1a85cf65fe644d7e74ca8fb96005d9555d1c24e9",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "matches_expected": true
+    },
+    {
+      "case": "binary-parity-0",
+      "stage": "second",
+      "argv": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-d",
+        "date.timezone=UTC",
+        "reports\\prelude-isolation-20261112-before\\binary-parity-0\\second.php"
+      ],
+      "source_sha256": "5f59cfb3cecb11ad497b0b9368cdc62bd6416371e4a86e3af270c01ef8c8d8c4",
+      "exit_code": 0,
+      "stdout": "clean",
+      "stderr": "",
+      "matches_expected": true
+    },
+    {
+      "case": "binary-parity-1",
+      "stage": "seed",
+      "argv": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-d",
+        "date.timezone=UTC",
+        "reports\\prelude-isolation-20261112-before\\binary-parity-1\\seed.php"
+      ],
+      "source_sha256": "6413ef37f393159eb8f3a894471f5e1cfad88053cb9cf96035837ebcb2f55cd7",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "matches_expected": true
+    },
+    {
+      "case": "binary-parity-1",
+      "stage": "second",
+      "argv": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-d",
+        "date.timezone=UTC",
+        "reports\\prelude-isolation-20261112-before\\binary-parity-1\\second.php"
+      ],
+      "source_sha256": "5f59cfb3cecb11ad497b0b9368cdc62bd6416371e4a86e3af270c01ef8c8d8c4",
+      "exit_code": 0,
+      "stdout": "clean",
+      "stderr": "",
+      "matches_expected": true
+    }
+  ]
+}

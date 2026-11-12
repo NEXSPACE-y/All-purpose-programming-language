@@ -1,0 +1,40 @@
+{
+    "schema_version":  "1.0",
+    "status":  "PASS",
+    "process_id":  23768,
+    "powershell_version":  "5.1.26100.9818",
+    "parity":  1,
+    "repetitions":  150,
+    "seed_shape":  "binary",
+    "repeated_fragment":  "X+X;",
+    "extra_semicolon_placement":  "after namespace A; before define",
+    "execution_mode":  "same adapter Run scriptblock, seed then second; fresh process per parity; no cache reset",
+    "adapter_path":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+    "adapter_sha256_before":  "244b5c1385a5c5c298d9e6ea43d7b28ba65b4b4b7b131577cf45729a62de7f39",
+    "adapter_sha256_after":  "244b5c1385a5c5c298d9e6ea43d7b28ba65b4b4b7b131577cf45729a62de7f39",
+    "inputs_unchanged":  true,
+    "seed_sha256":  "6413ef37f393159eb8f3a894471f5e1cfad88053cb9cf96035837ebcb2f55cd7",
+    "second_sha256":  "5f59cfb3cecb11ad497b0b9368cdc62bd6416371e4a86e3af270c01ef8c8d8c4",
+    "seed_expected":  "",
+    "second_expected":  "clean",
+    "seed_passed":  true,
+    "second_passed":  true,
+    "seed":  {
+                 "label":  "seed",
+                 "stdout":  "",
+                 "pipeline":  [
+
+                              ],
+                 "error":  null,
+                 "elapsed_ms":  23163
+             },
+    "second":  {
+                   "label":  "second",
+                   "stdout":  "clean",
+                   "pipeline":  [
+
+                                ],
+                   "error":  null,
+                   "elapsed_ms":  2537
+               }
+}

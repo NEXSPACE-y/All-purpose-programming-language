@@ -1,0 +1,1 @@
+<?php namespace { function read(){return 17;} } namespace A { if (false) { function read(){return 3;} } echo read(); }

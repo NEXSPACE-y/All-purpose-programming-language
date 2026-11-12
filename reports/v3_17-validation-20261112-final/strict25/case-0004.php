@@ -1,0 +1,1 @@
+<?php namespace A; function read(){return VALUE;} define('A\VALUE', 19); echo read();

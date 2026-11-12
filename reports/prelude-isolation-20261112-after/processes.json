@@ -1,0 +1,18 @@
+[
+  {
+    "parity": 0,
+    "pid": 14164,
+    "exitCode": 0,
+    "startedUtc": "2026-11-12T11:54:12.0052446Z",
+    "finishedUtc": "2026-11-12T11:54:45.3438331Z",
+    "report": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\prelude-isolation-20261112-after\\binary-parity-0\\report.json"
+  },
+  {
+    "parity": 1,
+    "pid": 23768,
+    "exitCode": 0,
+    "startedUtc": "2026-11-12T11:54:45.3625918Z",
+    "finishedUtc": "2026-11-12T11:55:14.0595811Z",
+    "report": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\prelude-isolation-20261112-after\\binary-parity-1\\report.json"
+  }
+]

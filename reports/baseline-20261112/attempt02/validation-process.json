@@ -1,0 +1,26 @@
+{
+    "pid":  25596,
+    "startedUtc":  "2026-11-12T11:23:09.0962276Z",
+    "finishedUtc":  "2026-11-12T11:25:52.2854134Z",
+    "durationSeconds":  162.155,
+    "validator":  "package/ALL_PHP_v3_16_validate.ps1",
+    "arguments":  [
+                      "-CompileCSharp"
+                  ],
+    "installedMode":  false,
+    "exitCode":  0,
+    "failure":  null,
+    "packageUnchanged":  true,
+    "helperAssemblies":  [
+                             {
+                                 "fullName":  "vbbsirvu, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+                                 "location":  "",
+                                 "fileExists":  false
+                             },
+                             {
+                                 "fullName":  "522ujj0x, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+                                 "location":  "",
+                                 "fileExists":  false
+                             }
+                         ]
+}

@@ -1,0 +1,37 @@
+{
+  "source": "reports/PHPT_CORE_ALL_v3_16.jsonl",
+  "sha256": "539e51c5bd36c84417240c5536bc7a20f2e8eacd566df467cc84003b9ec850d7",
+  "historicalReportOnly": true,
+  "newRunPerformed": false,
+  "total": 5819,
+  "verdicts": [
+    {
+      "Name": "ALL_ERROR",
+      "Count": 4114
+    },
+    {
+      "Name": "CRASH",
+      "Count": 1
+    },
+    {
+      "Name": "MEMORY",
+      "Count": 2
+    },
+    {
+      "Name": "NOT_RUNNABLE",
+      "Count": 9
+    },
+    {
+      "Name": "OUTPUT_DIFF",
+      "Count": 905
+    },
+    {
+      "Name": "PASS",
+      "Count": 745
+    },
+    {
+      "Name": "TIMEOUT",
+      "Count": 43
+    }
+  ]
+}

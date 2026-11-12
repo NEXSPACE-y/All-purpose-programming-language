@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "status": "NOT_COMPLETE",
+  "measurement": "exact stdout bytes, stderr bytes, process exit code; no normalization",
+  "scope": "listed examples only; not full PHP conformance, PHPT, Web, native ABI or side-effect coverage",
+  "inputs_before": {
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "adapter": "35b7573773b3fa23383f4334e47345f9db9274591457b028ce81cee0efc7b202",
+    "cases": "84a935d87215b8b7b2a6ab118e93512a89e1cbac88c94a215a087c1b74730564",
+    "worker": "a51eca467577db58c638b7988e3927b1cb11fbbf41658259b44b0ff72955ae76"
+  },
+  "inputs_after": {
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "adapter": "35b7573773b3fa23383f4334e47345f9db9274591457b028ce81cee0efc7b202",
+    "cases": "84a935d87215b8b7b2a6ab118e93512a89e1cbac88c94a215a087c1b74730564",
+    "worker": "a51eca467577db58c638b7988e3927b1cb11fbbf41658259b44b0ff72955ae76"
+  },
+  "inputs_unchanged": true,
+  "timeout_seconds": 30.0,
+  "total": 2,
+  "passed": 2,
+  "different": 0,
+  "results": [
+    {
+      "id": "cache.closure-instances",
+      "source_sha256": "fc18d356439ca07a681c0b524eabd88c3f4ab234fbf0c14334e9079c82963205",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\namespace-review-20261112\\closure-cache-results\\case-0000.php",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.1734207000117749,
+        "stdout_base64": "M3wz",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "3|3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\namespace-review-20261112\\closure-cache-results\\case-0000.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.4503740000072867,
+        "stdout_base64": "M3wz",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "3|3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\namespace-review-20261112\\reviewed-adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\namespace-review-20261112\\closure-cache-results\\case-0000.php"
+        ]
+      }
+    },
+    {
+      "id": "cache.arrow-instances",
+      "source_sha256": "70aadd1d0271127c925d7d132d1a3c4be7391f354e025e39a91f7f1cf52c874f",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\namespace-review-20261112\\closure-cache-results\\case-0001.php",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.20684300002176315,
+        "stdout_base64": "M3wz",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "3|3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\namespace-review-20261112\\closure-cache-results\\case-0001.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.4929119999869727,
+        "stdout_base64": "M3wz",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "3|3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\namespace-review-20261112\\reviewed-adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\namespace-review-20261112\\closure-cache-results\\case-0001.php"
+        ]
+      }
+    }
+  ]
+}

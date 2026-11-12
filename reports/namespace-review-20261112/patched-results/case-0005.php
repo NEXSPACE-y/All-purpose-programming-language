@@ -1,0 +1,1 @@
+<?php namespace A; function factory(){return strlen(...);} $a=factory(); if(true){function strlen($s){return 9;}} $b=factory(); echo $a('abc'),'|',$b('abc');

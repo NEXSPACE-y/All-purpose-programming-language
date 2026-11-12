@@ -1,0 +1,1 @@
+<?php namespace A; function install(){function inner(){return 13;}} install(); echo inner();

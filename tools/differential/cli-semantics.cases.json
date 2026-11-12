@@ -1,0 +1,16 @@
+[
+  {"id":"cli.warning-location-stream", "code":"<?php echo $missing;"},
+  {"id":"cli.uncaught-status-stream", "code":"<?php throw new Exception('example');"},
+  {"id":"cli.bare-exit", "code":"<?php echo 'before'; exit; echo 'after';"},
+  {"id":"cli.empty-exit", "code":"<?php echo 'before'; exit(); echo 'after';"},
+  {"id":"cli.integer-exit", "code":"<?php echo 'before'; exit(7); echo 'after';"},
+  {"id":"cli.string-exit", "code":"<?php echo 'before'; exit('message'); echo 'after';"},
+  {"id":"cli.die-alias", "code":"<?php die('bye'); echo 'after';"},
+  {"id":"cli.exit-without-parentheses", "code":"<?php exit 'message'; echo 'after';"},
+  {"id":"cli.exit-skips-finally", "code":"<?php try { exit('before'); } finally { echo 'finally'; }"},
+  {"id":"cli.exit-is-not-catchable", "code":"<?php try { exit(9); } catch(Throwable $e) { echo 'caught'; } echo 'after';"},
+  {"id":"cli.exit-negative", "code":"<?php exit(-1);"},
+  {"id":"cli.exit-large", "code":"<?php exit(257);"},
+  {"id":"cli.exit-array-error", "code":"<?php try { exit([]); } catch(TypeError $e) { echo $e->getMessage(); }"},
+  {"id":"cli.exit-bool", "code":"<?php exit(true);"}
+]

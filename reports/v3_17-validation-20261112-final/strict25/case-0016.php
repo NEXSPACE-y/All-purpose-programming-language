@@ -1,0 +1,1 @@
+<?php namespace X { const VALUE='import'; } namespace A { use const X\VALUE; define('A\VALUE','local'); echo VALUE; }

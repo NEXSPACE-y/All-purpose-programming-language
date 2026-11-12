@@ -1,0 +1,109 @@
+{
+  "status": "NOT_COMPLETE",
+  "adapterSha256": "f9a5efbbb7ead6b3b8a81aef9a8f21138d647ffe0b3154955f3db46c6043ae36",
+  "sourceCommit": "9d8171712828a0b57555b8eb1e1ca5c475391244",
+  "fullValidation": {
+    "requested": 965,
+    "completedPassed": 940,
+    "new25Started": false,
+    "exitCode": 1,
+    "durationSeconds": 208.622,
+    "processDurationSeconds": 217.108,
+    "packageUnchanged": true,
+    "powerShellSyntaxScripts": 96,
+    "manifestFiles": 209,
+    "compiledCSharpHelpers": 2,
+    "failure": "Expected 25 runtime namespace oracle cases\r\n発生場所 C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_17_namespace_test.ps1:8 文字:31\r\n+ ... .Count -ne 25) { throw 'Expected 25 runtime namespace oracle cases' }\r\n+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (Expected 25 run...ce oracle cases:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : Expected 25 runtime namespace oracle cases\r\n \r\n",
+    "passedLines": 940,
+    "failedCaseLines": 0
+  },
+  "strict14": {
+    "total": 14,
+    "passed": 6,
+    "different": 8,
+    "processExitCode": 1,
+    "inputsUnchanged": true,
+    "report": "reports/strict-differential-20261112-v3_17/report.json",
+    "differences": [
+      {
+        "id": "namespace.duplicate-alias",
+        "differences": [
+          "exit_code",
+          "stdout_base64",
+          "stderr_base64"
+        ]
+      },
+      {
+        "id": "diagnostics.undefined-variable",
+        "differences": [
+          "stdout_base64",
+          "stderr_base64"
+        ]
+      },
+      {
+        "id": "diagnostics.uncaught-exception",
+        "differences": [
+          "exit_code",
+          "stdout_base64",
+          "stderr_base64"
+        ]
+      },
+      {
+        "id": "execution.exit-code",
+        "differences": [
+          "exit_code",
+          "stdout_base64"
+        ]
+      },
+      {
+        "id": "generator.iteration",
+        "differences": [
+          "exit_code",
+          "stdout_base64",
+          "stderr_base64"
+        ]
+      },
+      {
+        "id": "syntax.heredoc",
+        "differences": [
+          "exit_code",
+          "stdout_base64",
+          "stderr_base64"
+        ]
+      },
+      {
+        "id": "syntax.unicode-escape",
+        "differences": [
+          "exit_code",
+          "stdout_base64",
+          "stderr_base64"
+        ]
+      },
+      {
+        "id": "reflection.attribute",
+        "differences": [
+          "stdout_base64"
+        ]
+      }
+    ]
+  },
+  "strict25": {
+    "total": 25,
+    "passed": 25,
+    "different": 0,
+    "processExitCode": 0,
+    "inputsUnchanged": true,
+    "report": "reports/v3_17-validation-20261112/strict25/report.json"
+  },
+  "unitTests": {
+    "comparator": 7,
+    "comparatorExitCode": 0,
+    "completionGate": 7,
+    "completionGateExitCode": 0
+  },
+  "notes": [
+    "Windows PowerShell5.1 namespace fixture loader returned singleton nested array; new25 test guard stopped before execution",
+    "Strict25 sources were compared without expected outputs or normalization and all25 matched",
+    "Root will patch prelude namespace metadata isolation and fixture loader; this report validates only the recorded hash"
+  ]
+}
