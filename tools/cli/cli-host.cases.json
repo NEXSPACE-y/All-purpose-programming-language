@@ -1,0 +1,145 @@
+[
+  {
+    "id": "host.body.echo",
+    "mode": "body",
+    "code": "echo \"hello\";"
+  },
+  {
+    "id": "host.body.empty",
+    "mode": "body",
+    "code": ""
+  },
+  {
+    "id": "host.body.exit",
+    "mode": "body",
+    "code": "echo \"before\"; exit(7); echo \"after\";"
+  },
+  {
+    "id": "host.body.warning",
+    "mode": "body",
+    "code": "echo $missing;"
+  },
+  {
+    "id": "host.body.args",
+    "mode": "body",
+    "code": "var_dump($argc,$argv);",
+    "tail": [
+      "--",
+      "plain",
+      "two words",
+      "'quote'",
+      "\"quote\"",
+      "$HOME",
+      "x\\y"
+    ]
+  },
+  {
+    "id": "host.body.unicodeargs",
+    "mode": "body",
+    "code": "echo $argv[1].\"|\".$argv[2];",
+    "tail": [
+      "--",
+      "日本語",
+      "😀"
+    ]
+  },
+  {
+    "id": "host.body.leading-lines",
+    "mode": "body",
+    "code": "\n\nthrow new Exception(\"x\");"
+  },
+  {
+    "id": "host.body.globalargs",
+    "mode": "body",
+    "code": "function f(){global $argv,$argc;return $argv[1].$argc;} echo f();",
+    "tail": [
+      "--",
+      "hello"
+    ]
+  },
+  {
+    "id": "host.body.serverargs",
+    "mode": "body",
+    "code": "function f(){return $_SERVER[\"argv\"][1];} echo f();",
+    "tail": [
+      "--",
+      "hello"
+    ]
+  },
+  {
+    "id": "host.file.absolute",
+    "mode": "file",
+    "code": "<?php echo \"file\";",
+    "filename": "日本語 script.php"
+  },
+  {
+    "id": "host.file.relative",
+    "mode": "file",
+    "code": "<?php var_dump($argc,$argv);",
+    "relative": true,
+    "filename": "space script.php",
+    "tail": [
+      "arg"
+    ]
+  },
+  {
+    "id": "host.file.explicit-f",
+    "mode": "file",
+    "code": "<?php echo $argv[1];",
+    "relative": true,
+    "explicit_f": true,
+    "tail": [
+      "--",
+      "argument"
+    ]
+  },
+  {
+    "id": "host.file.dash-args",
+    "mode": "file",
+    "code": "<?php var_dump($argv);",
+    "relative": true,
+    "tail": [
+      "-r",
+      "echo 1;",
+      "--",
+      "-n"
+    ]
+  },
+  {
+    "id": "host.body.no-dashdash",
+    "mode": "body",
+    "code": "var_dump($argv);",
+    "tail": [
+      "positional",
+      "-x"
+    ]
+  },
+  {
+    "id": "host.stdin.echo",
+    "mode": "stdin",
+    "code": "<?php echo \"stdin\";"
+  },
+  {
+    "id": "host.stdin.argv",
+    "mode": "stdin",
+    "code": "<?php var_dump($argc,$argv);"
+  },
+  {
+    "id": "host.missing",
+    "mode": "missing",
+    "filename": "missing script.php"
+  },
+  {
+    "id": "host.file.dashdash",
+    "mode": "file",
+    "code": "<?php echo $argv[0];",
+    "filename": "-script.php",
+    "relative": true,
+    "dashdash_before_file": true
+  },
+  {
+    "id": "host.body.ini",
+    "mode": "body",
+    "code": "var_dump(ini_get(\"display_errors\"),ini_get(\"error_reporting\"),ini_get(\"date.timezone\"));"
+  }
+]
