@@ -1,0 +1,6491 @@
+[
+  {
+    "index": 0,
+    "name": "abs",
+    "name_base64": "YWJz",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 1,
+    "name": "acos",
+    "name_base64": "YWNvcw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 2,
+    "name": "acosh",
+    "name_base64": "YWNvc2g=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 3,
+    "name": "addcslashes",
+    "name_base64": "YWRkY3NsYXNoZXM=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 4,
+    "name": "addslashes",
+    "name_base64": "YWRkc2xhc2hlcw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 5,
+    "name": "array_all",
+    "name_base64": "YXJyYXlfYWxs",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 6,
+    "name": "array_any",
+    "name_base64": "YXJyYXlfYW55",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 7,
+    "name": "array_change_key_case",
+    "name_base64": "YXJyYXlfY2hhbmdlX2tleV9jYXNl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 8,
+    "name": "array_chunk",
+    "name_base64": "YXJyYXlfY2h1bms=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 9,
+    "name": "array_column",
+    "name_base64": "YXJyYXlfY29sdW1u",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 10,
+    "name": "array_combine",
+    "name_base64": "YXJyYXlfY29tYmluZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 11,
+    "name": "array_count_values",
+    "name_base64": "YXJyYXlfY291bnRfdmFsdWVz",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 12,
+    "name": "array_diff",
+    "name_base64": "YXJyYXlfZGlmZg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 13,
+    "name": "array_diff_assoc",
+    "name_base64": "YXJyYXlfZGlmZl9hc3NvYw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 14,
+    "name": "array_diff_key",
+    "name_base64": "YXJyYXlfZGlmZl9rZXk=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 15,
+    "name": "array_diff_uassoc",
+    "name_base64": "YXJyYXlfZGlmZl91YXNzb2M=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 16,
+    "name": "array_diff_ukey",
+    "name_base64": "YXJyYXlfZGlmZl91a2V5",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 17,
+    "name": "array_fill",
+    "name_base64": "YXJyYXlfZmlsbA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 18,
+    "name": "array_fill_keys",
+    "name_base64": "YXJyYXlfZmlsbF9rZXlz",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 19,
+    "name": "array_filter",
+    "name_base64": "YXJyYXlfZmlsdGVy",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 20,
+    "name": "array_find",
+    "name_base64": "YXJyYXlfZmluZA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 21,
+    "name": "array_find_key",
+    "name_base64": "YXJyYXlfZmluZF9rZXk=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 22,
+    "name": "array_first",
+    "name_base64": "YXJyYXlfZmlyc3Q=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 23,
+    "name": "array_flip",
+    "name_base64": "YXJyYXlfZmxpcA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 24,
+    "name": "array_intersect",
+    "name_base64": "YXJyYXlfaW50ZXJzZWN0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 25,
+    "name": "array_intersect_assoc",
+    "name_base64": "YXJyYXlfaW50ZXJzZWN0X2Fzc29j",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 26,
+    "name": "array_intersect_key",
+    "name_base64": "YXJyYXlfaW50ZXJzZWN0X2tleQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 27,
+    "name": "array_intersect_uassoc",
+    "name_base64": "YXJyYXlfaW50ZXJzZWN0X3Vhc3NvYw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 28,
+    "name": "array_intersect_ukey",
+    "name_base64": "YXJyYXlfaW50ZXJzZWN0X3VrZXk=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 29,
+    "name": "array_is_list",
+    "name_base64": "YXJyYXlfaXNfbGlzdA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 30,
+    "name": "array_key_exists",
+    "name_base64": "YXJyYXlfa2V5X2V4aXN0cw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 31,
+    "name": "array_key_first",
+    "name_base64": "YXJyYXlfa2V5X2ZpcnN0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 32,
+    "name": "array_key_last",
+    "name_base64": "YXJyYXlfa2V5X2xhc3Q=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 33,
+    "name": "array_keys",
+    "name_base64": "YXJyYXlfa2V5cw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 34,
+    "name": "array_last",
+    "name_base64": "YXJyYXlfbGFzdA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 35,
+    "name": "array_map",
+    "name_base64": "YXJyYXlfbWFw",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 36,
+    "name": "array_merge",
+    "name_base64": "YXJyYXlfbWVyZ2U=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 37,
+    "name": "array_merge_recursive",
+    "name_base64": "YXJyYXlfbWVyZ2VfcmVjdXJzaXZl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 38,
+    "name": "array_multisort",
+    "name_base64": "YXJyYXlfbXVsdGlzb3J0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 39,
+    "name": "array_pad",
+    "name_base64": "YXJyYXlfcGFk",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 40,
+    "name": "array_pop",
+    "name_base64": "YXJyYXlfcG9w",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 41,
+    "name": "array_product",
+    "name_base64": "YXJyYXlfcHJvZHVjdA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 42,
+    "name": "array_push",
+    "name_base64": "YXJyYXlfcHVzaA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 43,
+    "name": "array_rand",
+    "name_base64": "YXJyYXlfcmFuZA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 44,
+    "name": "array_reduce",
+    "name_base64": "YXJyYXlfcmVkdWNl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 45,
+    "name": "array_replace",
+    "name_base64": "YXJyYXlfcmVwbGFjZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 46,
+    "name": "array_replace_recursive",
+    "name_base64": "YXJyYXlfcmVwbGFjZV9yZWN1cnNpdmU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 47,
+    "name": "array_reverse",
+    "name_base64": "YXJyYXlfcmV2ZXJzZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 48,
+    "name": "array_search",
+    "name_base64": "YXJyYXlfc2VhcmNo",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 49,
+    "name": "array_shift",
+    "name_base64": "YXJyYXlfc2hpZnQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 50,
+    "name": "array_slice",
+    "name_base64": "YXJyYXlfc2xpY2U=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 51,
+    "name": "array_splice",
+    "name_base64": "YXJyYXlfc3BsaWNl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 52,
+    "name": "array_sum",
+    "name_base64": "YXJyYXlfc3Vt",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 53,
+    "name": "array_udiff",
+    "name_base64": "YXJyYXlfdWRpZmY=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 54,
+    "name": "array_udiff_assoc",
+    "name_base64": "YXJyYXlfdWRpZmZfYXNzb2M=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 55,
+    "name": "array_udiff_uassoc",
+    "name_base64": "YXJyYXlfdWRpZmZfdWFzc29j",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 56,
+    "name": "array_uintersect",
+    "name_base64": "YXJyYXlfdWludGVyc2VjdA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 57,
+    "name": "array_uintersect_assoc",
+    "name_base64": "YXJyYXlfdWludGVyc2VjdF9hc3NvYw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 58,
+    "name": "array_uintersect_uassoc",
+    "name_base64": "YXJyYXlfdWludGVyc2VjdF91YXNzb2M=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 59,
+    "name": "array_unique",
+    "name_base64": "YXJyYXlfdW5pcXVl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 60,
+    "name": "array_unshift",
+    "name_base64": "YXJyYXlfdW5zaGlmdA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 61,
+    "name": "array_values",
+    "name_base64": "YXJyYXlfdmFsdWVz",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 62,
+    "name": "array_walk",
+    "name_base64": "YXJyYXlfd2Fsaw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 63,
+    "name": "array_walk_recursive",
+    "name_base64": "YXJyYXlfd2Fsa19yZWN1cnNpdmU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 64,
+    "name": "arsort",
+    "name_base64": "YXJzb3J0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 65,
+    "name": "asin",
+    "name_base64": "YXNpbg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 66,
+    "name": "asinh",
+    "name_base64": "YXNpbmg=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 67,
+    "name": "asort",
+    "name_base64": "YXNvcnQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 68,
+    "name": "assert",
+    "name_base64": "YXNzZXJ0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 69,
+    "name": "assert_options",
+    "name_base64": "YXNzZXJ0X29wdGlvbnM=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 70,
+    "name": "atan",
+    "name_base64": "YXRhbg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 71,
+    "name": "atan2",
+    "name_base64": "YXRhbjI=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 72,
+    "name": "atanh",
+    "name_base64": "YXRhbmg=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 73,
+    "name": "base64_decode",
+    "name_base64": "YmFzZTY0X2RlY29kZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 74,
+    "name": "base64_encode",
+    "name_base64": "YmFzZTY0X2VuY29kZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 75,
+    "name": "base_convert",
+    "name_base64": "YmFzZV9jb252ZXJ0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 76,
+    "name": "basename",
+    "name_base64": "YmFzZW5hbWU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 77,
+    "name": "bcadd",
+    "name_base64": "YmNhZGQ=",
+    "origin": "base_internal_registration",
+    "extension": "bcmath"
+  },
+  {
+    "index": 78,
+    "name": "bcceil",
+    "name_base64": "YmNjZWls",
+    "origin": "base_internal_registration",
+    "extension": "bcmath"
+  },
+  {
+    "index": 79,
+    "name": "bccomp",
+    "name_base64": "YmNjb21w",
+    "origin": "base_internal_registration",
+    "extension": "bcmath"
+  },
+  {
+    "index": 80,
+    "name": "bcdiv",
+    "name_base64": "YmNkaXY=",
+    "origin": "base_internal_registration",
+    "extension": "bcmath"
+  },
+  {
+    "index": 81,
+    "name": "bcdivmod",
+    "name_base64": "YmNkaXZtb2Q=",
+    "origin": "base_internal_registration",
+    "extension": "bcmath"
+  },
+  {
+    "index": 82,
+    "name": "bcfloor",
+    "name_base64": "YmNmbG9vcg==",
+    "origin": "base_internal_registration",
+    "extension": "bcmath"
+  },
+  {
+    "index": 83,
+    "name": "bcmod",
+    "name_base64": "YmNtb2Q=",
+    "origin": "base_internal_registration",
+    "extension": "bcmath"
+  },
+  {
+    "index": 84,
+    "name": "bcmul",
+    "name_base64": "YmNtdWw=",
+    "origin": "base_internal_registration",
+    "extension": "bcmath"
+  },
+  {
+    "index": 85,
+    "name": "bcpow",
+    "name_base64": "YmNwb3c=",
+    "origin": "base_internal_registration",
+    "extension": "bcmath"
+  },
+  {
+    "index": 86,
+    "name": "bcpowmod",
+    "name_base64": "YmNwb3dtb2Q=",
+    "origin": "base_internal_registration",
+    "extension": "bcmath"
+  },
+  {
+    "index": 87,
+    "name": "bcround",
+    "name_base64": "YmNyb3VuZA==",
+    "origin": "base_internal_registration",
+    "extension": "bcmath"
+  },
+  {
+    "index": 88,
+    "name": "bcscale",
+    "name_base64": "YmNzY2FsZQ==",
+    "origin": "base_internal_registration",
+    "extension": "bcmath"
+  },
+  {
+    "index": 89,
+    "name": "bcsqrt",
+    "name_base64": "YmNzcXJ0",
+    "origin": "base_internal_registration",
+    "extension": "bcmath"
+  },
+  {
+    "index": 90,
+    "name": "bcsub",
+    "name_base64": "YmNzdWI=",
+    "origin": "base_internal_registration",
+    "extension": "bcmath"
+  },
+  {
+    "index": 91,
+    "name": "bin2hex",
+    "name_base64": "YmluMmhleA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 92,
+    "name": "bindec",
+    "name_base64": "YmluZGVj",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 93,
+    "name": "boolval",
+    "name_base64": "Ym9vbHZhbA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 94,
+    "name": "cal_days_in_month",
+    "name_base64": "Y2FsX2RheXNfaW5fbW9udGg=",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 95,
+    "name": "cal_from_jd",
+    "name_base64": "Y2FsX2Zyb21famQ=",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 96,
+    "name": "cal_info",
+    "name_base64": "Y2FsX2luZm8=",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 97,
+    "name": "cal_to_jd",
+    "name_base64": "Y2FsX3RvX2pk",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 98,
+    "name": "call_user_func",
+    "name_base64": "Y2FsbF91c2VyX2Z1bmM=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 99,
+    "name": "call_user_func_array",
+    "name_base64": "Y2FsbF91c2VyX2Z1bmNfYXJyYXk=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 100,
+    "name": "ceil",
+    "name_base64": "Y2VpbA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 101,
+    "name": "chdir",
+    "name_base64": "Y2hkaXI=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 102,
+    "name": "checkdate",
+    "name_base64": "Y2hlY2tkYXRl",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 103,
+    "name": "checkdnsrr",
+    "name_base64": "Y2hlY2tkbnNycg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 104,
+    "name": "chgrp",
+    "name_base64": "Y2hncnA=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 105,
+    "name": "chmod",
+    "name_base64": "Y2htb2Q=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 106,
+    "name": "chop",
+    "name_base64": "Y2hvcA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 107,
+    "name": "chown",
+    "name_base64": "Y2hvd24=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 108,
+    "name": "chr",
+    "name_base64": "Y2hy",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 109,
+    "name": "chunk_split",
+    "name_base64": "Y2h1bmtfc3BsaXQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 110,
+    "name": "class_alias",
+    "name_base64": "Y2xhc3NfYWxpYXM=",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 111,
+    "name": "class_exists",
+    "name_base64": "Y2xhc3NfZXhpc3Rz",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 112,
+    "name": "class_implements",
+    "name_base64": "Y2xhc3NfaW1wbGVtZW50cw==",
+    "origin": "base_internal_registration",
+    "extension": "SPL"
+  },
+  {
+    "index": 113,
+    "name": "class_parents",
+    "name_base64": "Y2xhc3NfcGFyZW50cw==",
+    "origin": "base_internal_registration",
+    "extension": "SPL"
+  },
+  {
+    "index": 114,
+    "name": "class_uses",
+    "name_base64": "Y2xhc3NfdXNlcw==",
+    "origin": "base_internal_registration",
+    "extension": "SPL"
+  },
+  {
+    "index": 115,
+    "name": "clearstatcache",
+    "name_base64": "Y2xlYXJzdGF0Y2FjaGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 116,
+    "name": "cli_get_process_title",
+    "name_base64": "Y2xpX2dldF9wcm9jZXNzX3RpdGxl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 117,
+    "name": "cli_set_process_title",
+    "name_base64": "Y2xpX3NldF9wcm9jZXNzX3RpdGxl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 118,
+    "name": "clone",
+    "name_base64": "Y2xvbmU=",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 119,
+    "name": "closedir",
+    "name_base64": "Y2xvc2VkaXI=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 120,
+    "name": "closelog",
+    "name_base64": "Y2xvc2Vsb2c=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 121,
+    "name": "compact",
+    "name_base64": "Y29tcGFjdA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 122,
+    "name": "connection_aborted",
+    "name_base64": "Y29ubmVjdGlvbl9hYm9ydGVk",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 123,
+    "name": "connection_status",
+    "name_base64": "Y29ubmVjdGlvbl9zdGF0dXM=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 124,
+    "name": "constant",
+    "name_base64": "Y29uc3RhbnQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 125,
+    "name": "convert_uudecode",
+    "name_base64": "Y29udmVydF91dWRlY29kZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 126,
+    "name": "convert_uuencode",
+    "name_base64": "Y29udmVydF91dWVuY29kZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 127,
+    "name": "copy",
+    "name_base64": "Y29weQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 128,
+    "name": "cos",
+    "name_base64": "Y29z",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 129,
+    "name": "cosh",
+    "name_base64": "Y29zaA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 130,
+    "name": "count",
+    "name_base64": "Y291bnQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 131,
+    "name": "count_chars",
+    "name_base64": "Y291bnRfY2hhcnM=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 132,
+    "name": "crc32",
+    "name_base64": "Y3JjMzI=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 133,
+    "name": "crypt",
+    "name_base64": "Y3J5cHQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 134,
+    "name": "ctype_alnum",
+    "name_base64": "Y3R5cGVfYWxudW0=",
+    "origin": "base_internal_registration",
+    "extension": "ctype"
+  },
+  {
+    "index": 135,
+    "name": "ctype_alpha",
+    "name_base64": "Y3R5cGVfYWxwaGE=",
+    "origin": "base_internal_registration",
+    "extension": "ctype"
+  },
+  {
+    "index": 136,
+    "name": "ctype_cntrl",
+    "name_base64": "Y3R5cGVfY250cmw=",
+    "origin": "base_internal_registration",
+    "extension": "ctype"
+  },
+  {
+    "index": 137,
+    "name": "ctype_digit",
+    "name_base64": "Y3R5cGVfZGlnaXQ=",
+    "origin": "base_internal_registration",
+    "extension": "ctype"
+  },
+  {
+    "index": 138,
+    "name": "ctype_graph",
+    "name_base64": "Y3R5cGVfZ3JhcGg=",
+    "origin": "base_internal_registration",
+    "extension": "ctype"
+  },
+  {
+    "index": 139,
+    "name": "ctype_lower",
+    "name_base64": "Y3R5cGVfbG93ZXI=",
+    "origin": "base_internal_registration",
+    "extension": "ctype"
+  },
+  {
+    "index": 140,
+    "name": "ctype_print",
+    "name_base64": "Y3R5cGVfcHJpbnQ=",
+    "origin": "base_internal_registration",
+    "extension": "ctype"
+  },
+  {
+    "index": 141,
+    "name": "ctype_punct",
+    "name_base64": "Y3R5cGVfcHVuY3Q=",
+    "origin": "base_internal_registration",
+    "extension": "ctype"
+  },
+  {
+    "index": 142,
+    "name": "ctype_space",
+    "name_base64": "Y3R5cGVfc3BhY2U=",
+    "origin": "base_internal_registration",
+    "extension": "ctype"
+  },
+  {
+    "index": 143,
+    "name": "ctype_upper",
+    "name_base64": "Y3R5cGVfdXBwZXI=",
+    "origin": "base_internal_registration",
+    "extension": "ctype"
+  },
+  {
+    "index": 144,
+    "name": "ctype_xdigit",
+    "name_base64": "Y3R5cGVfeGRpZ2l0",
+    "origin": "base_internal_registration",
+    "extension": "ctype"
+  },
+  {
+    "index": 145,
+    "name": "current",
+    "name_base64": "Y3VycmVudA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 146,
+    "name": "date",
+    "name_base64": "ZGF0ZQ==",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 147,
+    "name": "date_add",
+    "name_base64": "ZGF0ZV9hZGQ=",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 148,
+    "name": "date_create",
+    "name_base64": "ZGF0ZV9jcmVhdGU=",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 149,
+    "name": "date_create_from_format",
+    "name_base64": "ZGF0ZV9jcmVhdGVfZnJvbV9mb3JtYXQ=",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 150,
+    "name": "date_create_immutable",
+    "name_base64": "ZGF0ZV9jcmVhdGVfaW1tdXRhYmxl",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 151,
+    "name": "date_create_immutable_from_format",
+    "name_base64": "ZGF0ZV9jcmVhdGVfaW1tdXRhYmxlX2Zyb21fZm9ybWF0",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 152,
+    "name": "date_date_set",
+    "name_base64": "ZGF0ZV9kYXRlX3NldA==",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 153,
+    "name": "date_default_timezone_get",
+    "name_base64": "ZGF0ZV9kZWZhdWx0X3RpbWV6b25lX2dldA==",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 154,
+    "name": "date_default_timezone_set",
+    "name_base64": "ZGF0ZV9kZWZhdWx0X3RpbWV6b25lX3NldA==",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 155,
+    "name": "date_diff",
+    "name_base64": "ZGF0ZV9kaWZm",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 156,
+    "name": "date_format",
+    "name_base64": "ZGF0ZV9mb3JtYXQ=",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 157,
+    "name": "date_get_last_errors",
+    "name_base64": "ZGF0ZV9nZXRfbGFzdF9lcnJvcnM=",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 158,
+    "name": "date_interval_create_from_date_string",
+    "name_base64": "ZGF0ZV9pbnRlcnZhbF9jcmVhdGVfZnJvbV9kYXRlX3N0cmluZw==",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 159,
+    "name": "date_interval_format",
+    "name_base64": "ZGF0ZV9pbnRlcnZhbF9mb3JtYXQ=",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 160,
+    "name": "date_isodate_set",
+    "name_base64": "ZGF0ZV9pc29kYXRlX3NldA==",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 161,
+    "name": "date_modify",
+    "name_base64": "ZGF0ZV9tb2RpZnk=",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 162,
+    "name": "date_offset_get",
+    "name_base64": "ZGF0ZV9vZmZzZXRfZ2V0",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 163,
+    "name": "date_parse",
+    "name_base64": "ZGF0ZV9wYXJzZQ==",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 164,
+    "name": "date_parse_from_format",
+    "name_base64": "ZGF0ZV9wYXJzZV9mcm9tX2Zvcm1hdA==",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 165,
+    "name": "date_sub",
+    "name_base64": "ZGF0ZV9zdWI=",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 166,
+    "name": "date_sun_info",
+    "name_base64": "ZGF0ZV9zdW5faW5mbw==",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 167,
+    "name": "date_sunrise",
+    "name_base64": "ZGF0ZV9zdW5yaXNl",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 168,
+    "name": "date_sunset",
+    "name_base64": "ZGF0ZV9zdW5zZXQ=",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 169,
+    "name": "date_time_set",
+    "name_base64": "ZGF0ZV90aW1lX3NldA==",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 170,
+    "name": "date_timestamp_get",
+    "name_base64": "ZGF0ZV90aW1lc3RhbXBfZ2V0",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 171,
+    "name": "date_timestamp_set",
+    "name_base64": "ZGF0ZV90aW1lc3RhbXBfc2V0",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 172,
+    "name": "date_timezone_get",
+    "name_base64": "ZGF0ZV90aW1lem9uZV9nZXQ=",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 173,
+    "name": "date_timezone_set",
+    "name_base64": "ZGF0ZV90aW1lem9uZV9zZXQ=",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 174,
+    "name": "debug_backtrace",
+    "name_base64": "ZGVidWdfYmFja3RyYWNl",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 175,
+    "name": "debug_print_backtrace",
+    "name_base64": "ZGVidWdfcHJpbnRfYmFja3RyYWNl",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 176,
+    "name": "debug_zval_dump",
+    "name_base64": "ZGVidWdfenZhbF9kdW1w",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 177,
+    "name": "decbin",
+    "name_base64": "ZGVjYmlu",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 178,
+    "name": "dechex",
+    "name_base64": "ZGVjaGV4",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 179,
+    "name": "decoct",
+    "name_base64": "ZGVjb2N0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 180,
+    "name": "define",
+    "name_base64": "ZGVmaW5l",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 181,
+    "name": "defined",
+    "name_base64": "ZGVmaW5lZA==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 182,
+    "name": "deflate_add",
+    "name_base64": "ZGVmbGF0ZV9hZGQ=",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 183,
+    "name": "deflate_init",
+    "name_base64": "ZGVmbGF0ZV9pbml0",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 184,
+    "name": "deg2rad",
+    "name_base64": "ZGVnMnJhZA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 185,
+    "name": "die",
+    "name_base64": "ZGll",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 186,
+    "name": "dir",
+    "name_base64": "ZGly",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 187,
+    "name": "dirname",
+    "name_base64": "ZGlybmFtZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 188,
+    "name": "disk_free_space",
+    "name_base64": "ZGlza19mcmVlX3NwYWNl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 189,
+    "name": "disk_total_space",
+    "name_base64": "ZGlza190b3RhbF9zcGFjZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 190,
+    "name": "diskfreespace",
+    "name_base64": "ZGlza2ZyZWVzcGFjZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 191,
+    "name": "dl",
+    "name_base64": "ZGw=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 192,
+    "name": "dns_check_record",
+    "name_base64": "ZG5zX2NoZWNrX3JlY29yZA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 193,
+    "name": "dns_get_mx",
+    "name_base64": "ZG5zX2dldF9teA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 194,
+    "name": "dns_get_record",
+    "name_base64": "ZG5zX2dldF9yZWNvcmQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 195,
+    "name": "Dom\\import_simplexml",
+    "name_base64": "RG9tXGltcG9ydF9zaW1wbGV4bWw=",
+    "origin": "base_internal_registration",
+    "extension": "dom"
+  },
+  {
+    "index": 196,
+    "name": "dom_import_simplexml",
+    "name_base64": "ZG9tX2ltcG9ydF9zaW1wbGV4bWw=",
+    "origin": "base_internal_registration",
+    "extension": "dom"
+  },
+  {
+    "index": 197,
+    "name": "doubleval",
+    "name_base64": "ZG91YmxldmFs",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 198,
+    "name": "easter_date",
+    "name_base64": "ZWFzdGVyX2RhdGU=",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 199,
+    "name": "easter_days",
+    "name_base64": "ZWFzdGVyX2RheXM=",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 200,
+    "name": "end",
+    "name_base64": "ZW5k",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 201,
+    "name": "enum_exists",
+    "name_base64": "ZW51bV9leGlzdHM=",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 202,
+    "name": "error_clear_last",
+    "name_base64": "ZXJyb3JfY2xlYXJfbGFzdA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 203,
+    "name": "error_get_last",
+    "name_base64": "ZXJyb3JfZ2V0X2xhc3Q=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 204,
+    "name": "error_log",
+    "name_base64": "ZXJyb3JfbG9n",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 205,
+    "name": "error_reporting",
+    "name_base64": "ZXJyb3JfcmVwb3J0aW5n",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 206,
+    "name": "escapeshellarg",
+    "name_base64": "ZXNjYXBlc2hlbGxhcmc=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 207,
+    "name": "escapeshellcmd",
+    "name_base64": "ZXNjYXBlc2hlbGxjbWQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 208,
+    "name": "exec",
+    "name_base64": "ZXhlYw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 209,
+    "name": "exit",
+    "name_base64": "ZXhpdA==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 210,
+    "name": "exp",
+    "name_base64": "ZXhw",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 211,
+    "name": "explode",
+    "name_base64": "ZXhwbG9kZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 212,
+    "name": "expm1",
+    "name_base64": "ZXhwbTE=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 213,
+    "name": "extension_loaded",
+    "name_base64": "ZXh0ZW5zaW9uX2xvYWRlZA==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 214,
+    "name": "extract",
+    "name_base64": "ZXh0cmFjdA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 215,
+    "name": "fclose",
+    "name_base64": "ZmNsb3Nl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 216,
+    "name": "fdatasync",
+    "name_base64": "ZmRhdGFzeW5j",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 217,
+    "name": "fdiv",
+    "name_base64": "ZmRpdg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 218,
+    "name": "feof",
+    "name_base64": "ZmVvZg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 219,
+    "name": "fflush",
+    "name_base64": "ZmZsdXNo",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 220,
+    "name": "fgetc",
+    "name_base64": "ZmdldGM=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 221,
+    "name": "fgetcsv",
+    "name_base64": "ZmdldGNzdg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 222,
+    "name": "fgets",
+    "name_base64": "ZmdldHM=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 223,
+    "name": "file",
+    "name_base64": "ZmlsZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 224,
+    "name": "file_exists",
+    "name_base64": "ZmlsZV9leGlzdHM=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 225,
+    "name": "file_get_contents",
+    "name_base64": "ZmlsZV9nZXRfY29udGVudHM=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 226,
+    "name": "file_put_contents",
+    "name_base64": "ZmlsZV9wdXRfY29udGVudHM=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 227,
+    "name": "fileatime",
+    "name_base64": "ZmlsZWF0aW1l",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 228,
+    "name": "filectime",
+    "name_base64": "ZmlsZWN0aW1l",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 229,
+    "name": "filegroup",
+    "name_base64": "ZmlsZWdyb3Vw",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 230,
+    "name": "fileinode",
+    "name_base64": "ZmlsZWlub2Rl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 231,
+    "name": "filemtime",
+    "name_base64": "ZmlsZW10aW1l",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 232,
+    "name": "fileowner",
+    "name_base64": "ZmlsZW93bmVy",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 233,
+    "name": "fileperms",
+    "name_base64": "ZmlsZXBlcm1z",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 234,
+    "name": "filesize",
+    "name_base64": "ZmlsZXNpemU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 235,
+    "name": "filetype",
+    "name_base64": "ZmlsZXR5cGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 236,
+    "name": "filter_has_var",
+    "name_base64": "ZmlsdGVyX2hhc192YXI=",
+    "origin": "base_internal_registration",
+    "extension": "filter"
+  },
+  {
+    "index": 237,
+    "name": "filter_id",
+    "name_base64": "ZmlsdGVyX2lk",
+    "origin": "base_internal_registration",
+    "extension": "filter"
+  },
+  {
+    "index": 238,
+    "name": "filter_input",
+    "name_base64": "ZmlsdGVyX2lucHV0",
+    "origin": "base_internal_registration",
+    "extension": "filter"
+  },
+  {
+    "index": 239,
+    "name": "filter_input_array",
+    "name_base64": "ZmlsdGVyX2lucHV0X2FycmF5",
+    "origin": "base_internal_registration",
+    "extension": "filter"
+  },
+  {
+    "index": 240,
+    "name": "filter_list",
+    "name_base64": "ZmlsdGVyX2xpc3Q=",
+    "origin": "base_internal_registration",
+    "extension": "filter"
+  },
+  {
+    "index": 241,
+    "name": "filter_var",
+    "name_base64": "ZmlsdGVyX3Zhcg==",
+    "origin": "base_internal_registration",
+    "extension": "filter"
+  },
+  {
+    "index": 242,
+    "name": "filter_var_array",
+    "name_base64": "ZmlsdGVyX3Zhcl9hcnJheQ==",
+    "origin": "base_internal_registration",
+    "extension": "filter"
+  },
+  {
+    "index": 243,
+    "name": "floatval",
+    "name_base64": "ZmxvYXR2YWw=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 244,
+    "name": "flock",
+    "name_base64": "ZmxvY2s=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 245,
+    "name": "floor",
+    "name_base64": "Zmxvb3I=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 246,
+    "name": "flush",
+    "name_base64": "Zmx1c2g=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 247,
+    "name": "fmod",
+    "name_base64": "Zm1vZA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 248,
+    "name": "fnmatch",
+    "name_base64": "Zm5tYXRjaA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 249,
+    "name": "fopen",
+    "name_base64": "Zm9wZW4=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 250,
+    "name": "forward_static_call",
+    "name_base64": "Zm9yd2FyZF9zdGF0aWNfY2FsbA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 251,
+    "name": "forward_static_call_array",
+    "name_base64": "Zm9yd2FyZF9zdGF0aWNfY2FsbF9hcnJheQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 252,
+    "name": "fpassthru",
+    "name_base64": "ZnBhc3N0aHJ1",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 253,
+    "name": "fpow",
+    "name_base64": "ZnBvdw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 254,
+    "name": "fprintf",
+    "name_base64": "ZnByaW50Zg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 255,
+    "name": "fputcsv",
+    "name_base64": "ZnB1dGNzdg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 256,
+    "name": "fputs",
+    "name_base64": "ZnB1dHM=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 257,
+    "name": "fread",
+    "name_base64": "ZnJlYWQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 258,
+    "name": "frenchtojd",
+    "name_base64": "ZnJlbmNodG9qZA==",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 259,
+    "name": "fscanf",
+    "name_base64": "ZnNjYW5m",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 260,
+    "name": "fseek",
+    "name_base64": "ZnNlZWs=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 261,
+    "name": "fsockopen",
+    "name_base64": "ZnNvY2tvcGVu",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 262,
+    "name": "fstat",
+    "name_base64": "ZnN0YXQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 263,
+    "name": "fsync",
+    "name_base64": "ZnN5bmM=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 264,
+    "name": "ftell",
+    "name_base64": "ZnRlbGw=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 265,
+    "name": "ftok",
+    "name_base64": "ZnRvaw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 266,
+    "name": "ftruncate",
+    "name_base64": "ZnRydW5jYXRl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 267,
+    "name": "func_get_arg",
+    "name_base64": "ZnVuY19nZXRfYXJn",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 268,
+    "name": "func_get_args",
+    "name_base64": "ZnVuY19nZXRfYXJncw==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 269,
+    "name": "func_num_args",
+    "name_base64": "ZnVuY19udW1fYXJncw==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 270,
+    "name": "function_exists",
+    "name_base64": "ZnVuY3Rpb25fZXhpc3Rz",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 271,
+    "name": "fwrite",
+    "name_base64": "ZndyaXRl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 272,
+    "name": "gc_collect_cycles",
+    "name_base64": "Z2NfY29sbGVjdF9jeWNsZXM=",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 273,
+    "name": "gc_disable",
+    "name_base64": "Z2NfZGlzYWJsZQ==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 274,
+    "name": "gc_enable",
+    "name_base64": "Z2NfZW5hYmxl",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 275,
+    "name": "gc_enabled",
+    "name_base64": "Z2NfZW5hYmxlZA==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 276,
+    "name": "gc_mem_caches",
+    "name_base64": "Z2NfbWVtX2NhY2hlcw==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 277,
+    "name": "gc_status",
+    "name_base64": "Z2Nfc3RhdHVz",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 278,
+    "name": "get_browser",
+    "name_base64": "Z2V0X2Jyb3dzZXI=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 279,
+    "name": "get_called_class",
+    "name_base64": "Z2V0X2NhbGxlZF9jbGFzcw==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 280,
+    "name": "get_cfg_var",
+    "name_base64": "Z2V0X2NmZ192YXI=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 281,
+    "name": "get_class",
+    "name_base64": "Z2V0X2NsYXNz",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 282,
+    "name": "get_class_methods",
+    "name_base64": "Z2V0X2NsYXNzX21ldGhvZHM=",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 283,
+    "name": "get_class_vars",
+    "name_base64": "Z2V0X2NsYXNzX3ZhcnM=",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 284,
+    "name": "get_current_user",
+    "name_base64": "Z2V0X2N1cnJlbnRfdXNlcg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 285,
+    "name": "get_debug_type",
+    "name_base64": "Z2V0X2RlYnVnX3R5cGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 286,
+    "name": "get_declared_classes",
+    "name_base64": "Z2V0X2RlY2xhcmVkX2NsYXNzZXM=",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 287,
+    "name": "get_declared_interfaces",
+    "name_base64": "Z2V0X2RlY2xhcmVkX2ludGVyZmFjZXM=",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 288,
+    "name": "get_declared_traits",
+    "name_base64": "Z2V0X2RlY2xhcmVkX3RyYWl0cw==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 289,
+    "name": "get_defined_constants",
+    "name_base64": "Z2V0X2RlZmluZWRfY29uc3RhbnRz",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 290,
+    "name": "get_defined_functions",
+    "name_base64": "Z2V0X2RlZmluZWRfZnVuY3Rpb25z",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 291,
+    "name": "get_defined_vars",
+    "name_base64": "Z2V0X2RlZmluZWRfdmFycw==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 292,
+    "name": "get_error_handler",
+    "name_base64": "Z2V0X2Vycm9yX2hhbmRsZXI=",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 293,
+    "name": "get_exception_handler",
+    "name_base64": "Z2V0X2V4Y2VwdGlvbl9oYW5kbGVy",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 294,
+    "name": "get_extension_funcs",
+    "name_base64": "Z2V0X2V4dGVuc2lvbl9mdW5jcw==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 295,
+    "name": "get_headers",
+    "name_base64": "Z2V0X2hlYWRlcnM=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 296,
+    "name": "get_html_translation_table",
+    "name_base64": "Z2V0X2h0bWxfdHJhbnNsYXRpb25fdGFibGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 297,
+    "name": "get_include_path",
+    "name_base64": "Z2V0X2luY2x1ZGVfcGF0aA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 298,
+    "name": "get_included_files",
+    "name_base64": "Z2V0X2luY2x1ZGVkX2ZpbGVz",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 299,
+    "name": "get_loaded_extensions",
+    "name_base64": "Z2V0X2xvYWRlZF9leHRlbnNpb25z",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 300,
+    "name": "get_mangled_object_vars",
+    "name_base64": "Z2V0X21hbmdsZWRfb2JqZWN0X3ZhcnM=",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 301,
+    "name": "get_meta_tags",
+    "name_base64": "Z2V0X21ldGFfdGFncw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 302,
+    "name": "get_object_vars",
+    "name_base64": "Z2V0X29iamVjdF92YXJz",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 303,
+    "name": "get_parent_class",
+    "name_base64": "Z2V0X3BhcmVudF9jbGFzcw==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 304,
+    "name": "get_required_files",
+    "name_base64": "Z2V0X3JlcXVpcmVkX2ZpbGVz",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 305,
+    "name": "get_resource_id",
+    "name_base64": "Z2V0X3Jlc291cmNlX2lk",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 306,
+    "name": "get_resource_type",
+    "name_base64": "Z2V0X3Jlc291cmNlX3R5cGU=",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 307,
+    "name": "get_resources",
+    "name_base64": "Z2V0X3Jlc291cmNlcw==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 308,
+    "name": "getcwd",
+    "name_base64": "Z2V0Y3dk",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 309,
+    "name": "getdate",
+    "name_base64": "Z2V0ZGF0ZQ==",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 310,
+    "name": "getenv",
+    "name_base64": "Z2V0ZW52",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 311,
+    "name": "gethostbyaddr",
+    "name_base64": "Z2V0aG9zdGJ5YWRkcg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 312,
+    "name": "gethostbyname",
+    "name_base64": "Z2V0aG9zdGJ5bmFtZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 313,
+    "name": "gethostbynamel",
+    "name_base64": "Z2V0aG9zdGJ5bmFtZWw=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 314,
+    "name": "gethostname",
+    "name_base64": "Z2V0aG9zdG5hbWU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 315,
+    "name": "getimagesize",
+    "name_base64": "Z2V0aW1hZ2VzaXpl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 316,
+    "name": "getimagesizefromstring",
+    "name_base64": "Z2V0aW1hZ2VzaXplZnJvbXN0cmluZw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 317,
+    "name": "getlastmod",
+    "name_base64": "Z2V0bGFzdG1vZA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 318,
+    "name": "getmxrr",
+    "name_base64": "Z2V0bXhycg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 319,
+    "name": "getmygid",
+    "name_base64": "Z2V0bXlnaWQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 320,
+    "name": "getmyinode",
+    "name_base64": "Z2V0bXlpbm9kZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 321,
+    "name": "getmypid",
+    "name_base64": "Z2V0bXlwaWQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 322,
+    "name": "getmyuid",
+    "name_base64": "Z2V0bXl1aWQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 323,
+    "name": "getopt",
+    "name_base64": "Z2V0b3B0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 324,
+    "name": "getprotobyname",
+    "name_base64": "Z2V0cHJvdG9ieW5hbWU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 325,
+    "name": "getprotobynumber",
+    "name_base64": "Z2V0cHJvdG9ieW51bWJlcg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 326,
+    "name": "getrandmax",
+    "name_base64": "Z2V0cmFuZG1heA==",
+    "origin": "base_internal_registration",
+    "extension": "random"
+  },
+  {
+    "index": 327,
+    "name": "getrusage",
+    "name_base64": "Z2V0cnVzYWdl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 328,
+    "name": "getservbyname",
+    "name_base64": "Z2V0c2VydmJ5bmFtZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 329,
+    "name": "getservbyport",
+    "name_base64": "Z2V0c2VydmJ5cG9ydA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 330,
+    "name": "gettimeofday",
+    "name_base64": "Z2V0dGltZW9mZGF5",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 331,
+    "name": "gettype",
+    "name_base64": "Z2V0dHlwZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 332,
+    "name": "glob",
+    "name_base64": "Z2xvYg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 333,
+    "name": "gmdate",
+    "name_base64": "Z21kYXRl",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 334,
+    "name": "gmmktime",
+    "name_base64": "Z21ta3RpbWU=",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 335,
+    "name": "gmstrftime",
+    "name_base64": "Z21zdHJmdGltZQ==",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 336,
+    "name": "gregoriantojd",
+    "name_base64": "Z3JlZ29yaWFudG9qZA==",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 337,
+    "name": "gzclose",
+    "name_base64": "Z3pjbG9zZQ==",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 338,
+    "name": "gzcompress",
+    "name_base64": "Z3pjb21wcmVzcw==",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 339,
+    "name": "gzdecode",
+    "name_base64": "Z3pkZWNvZGU=",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 340,
+    "name": "gzdeflate",
+    "name_base64": "Z3pkZWZsYXRl",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 341,
+    "name": "gzencode",
+    "name_base64": "Z3plbmNvZGU=",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 342,
+    "name": "gzeof",
+    "name_base64": "Z3plb2Y=",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 343,
+    "name": "gzfile",
+    "name_base64": "Z3pmaWxl",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 344,
+    "name": "gzgetc",
+    "name_base64": "Z3pnZXRj",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 345,
+    "name": "gzgets",
+    "name_base64": "Z3pnZXRz",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 346,
+    "name": "gzinflate",
+    "name_base64": "Z3ppbmZsYXRl",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 347,
+    "name": "gzopen",
+    "name_base64": "Z3pvcGVu",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 348,
+    "name": "gzpassthru",
+    "name_base64": "Z3pwYXNzdGhydQ==",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 349,
+    "name": "gzputs",
+    "name_base64": "Z3pwdXRz",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 350,
+    "name": "gzread",
+    "name_base64": "Z3pyZWFk",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 351,
+    "name": "gzrewind",
+    "name_base64": "Z3pyZXdpbmQ=",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 352,
+    "name": "gzseek",
+    "name_base64": "Z3pzZWVr",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 353,
+    "name": "gztell",
+    "name_base64": "Z3p0ZWxs",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 354,
+    "name": "gzuncompress",
+    "name_base64": "Z3p1bmNvbXByZXNz",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 355,
+    "name": "gzwrite",
+    "name_base64": "Z3p3cml0ZQ==",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 356,
+    "name": "hash",
+    "name_base64": "aGFzaA==",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 357,
+    "name": "hash_algos",
+    "name_base64": "aGFzaF9hbGdvcw==",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 358,
+    "name": "hash_copy",
+    "name_base64": "aGFzaF9jb3B5",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 359,
+    "name": "hash_equals",
+    "name_base64": "aGFzaF9lcXVhbHM=",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 360,
+    "name": "hash_file",
+    "name_base64": "aGFzaF9maWxl",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 361,
+    "name": "hash_final",
+    "name_base64": "aGFzaF9maW5hbA==",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 362,
+    "name": "hash_hkdf",
+    "name_base64": "aGFzaF9oa2Rm",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 363,
+    "name": "hash_hmac",
+    "name_base64": "aGFzaF9obWFj",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 364,
+    "name": "hash_hmac_algos",
+    "name_base64": "aGFzaF9obWFjX2FsZ29z",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 365,
+    "name": "hash_hmac_file",
+    "name_base64": "aGFzaF9obWFjX2ZpbGU=",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 366,
+    "name": "hash_init",
+    "name_base64": "aGFzaF9pbml0",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 367,
+    "name": "hash_pbkdf2",
+    "name_base64": "aGFzaF9wYmtkZjI=",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 368,
+    "name": "hash_update",
+    "name_base64": "aGFzaF91cGRhdGU=",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 369,
+    "name": "hash_update_file",
+    "name_base64": "aGFzaF91cGRhdGVfZmlsZQ==",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 370,
+    "name": "hash_update_stream",
+    "name_base64": "aGFzaF91cGRhdGVfc3RyZWFt",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 371,
+    "name": "header",
+    "name_base64": "aGVhZGVy",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 372,
+    "name": "header_register_callback",
+    "name_base64": "aGVhZGVyX3JlZ2lzdGVyX2NhbGxiYWNr",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 373,
+    "name": "header_remove",
+    "name_base64": "aGVhZGVyX3JlbW92ZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 374,
+    "name": "headers_list",
+    "name_base64": "aGVhZGVyc19saXN0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 375,
+    "name": "headers_sent",
+    "name_base64": "aGVhZGVyc19zZW50",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 376,
+    "name": "hebrev",
+    "name_base64": "aGVicmV2",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 377,
+    "name": "hex2bin",
+    "name_base64": "aGV4MmJpbg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 378,
+    "name": "hexdec",
+    "name_base64": "aGV4ZGVj",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 379,
+    "name": "highlight_file",
+    "name_base64": "aGlnaGxpZ2h0X2ZpbGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 380,
+    "name": "highlight_string",
+    "name_base64": "aGlnaGxpZ2h0X3N0cmluZw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 381,
+    "name": "hrtime",
+    "name_base64": "aHJ0aW1l",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 382,
+    "name": "html_entity_decode",
+    "name_base64": "aHRtbF9lbnRpdHlfZGVjb2Rl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 383,
+    "name": "htmlentities",
+    "name_base64": "aHRtbGVudGl0aWVz",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 384,
+    "name": "htmlspecialchars",
+    "name_base64": "aHRtbHNwZWNpYWxjaGFycw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 385,
+    "name": "htmlspecialchars_decode",
+    "name_base64": "aHRtbHNwZWNpYWxjaGFyc19kZWNvZGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 386,
+    "name": "http_build_query",
+    "name_base64": "aHR0cF9idWlsZF9xdWVyeQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 387,
+    "name": "http_clear_last_response_headers",
+    "name_base64": "aHR0cF9jbGVhcl9sYXN0X3Jlc3BvbnNlX2hlYWRlcnM=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 388,
+    "name": "http_get_last_response_headers",
+    "name_base64": "aHR0cF9nZXRfbGFzdF9yZXNwb25zZV9oZWFkZXJz",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 389,
+    "name": "http_response_code",
+    "name_base64": "aHR0cF9yZXNwb25zZV9jb2Rl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 390,
+    "name": "hypot",
+    "name_base64": "aHlwb3Q=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 391,
+    "name": "iconv",
+    "name_base64": "aWNvbnY=",
+    "origin": "base_internal_registration",
+    "extension": "iconv"
+  },
+  {
+    "index": 392,
+    "name": "iconv_get_encoding",
+    "name_base64": "aWNvbnZfZ2V0X2VuY29kaW5n",
+    "origin": "base_internal_registration",
+    "extension": "iconv"
+  },
+  {
+    "index": 393,
+    "name": "iconv_mime_decode",
+    "name_base64": "aWNvbnZfbWltZV9kZWNvZGU=",
+    "origin": "base_internal_registration",
+    "extension": "iconv"
+  },
+  {
+    "index": 394,
+    "name": "iconv_mime_decode_headers",
+    "name_base64": "aWNvbnZfbWltZV9kZWNvZGVfaGVhZGVycw==",
+    "origin": "base_internal_registration",
+    "extension": "iconv"
+  },
+  {
+    "index": 395,
+    "name": "iconv_mime_encode",
+    "name_base64": "aWNvbnZfbWltZV9lbmNvZGU=",
+    "origin": "base_internal_registration",
+    "extension": "iconv"
+  },
+  {
+    "index": 396,
+    "name": "iconv_set_encoding",
+    "name_base64": "aWNvbnZfc2V0X2VuY29kaW5n",
+    "origin": "base_internal_registration",
+    "extension": "iconv"
+  },
+  {
+    "index": 397,
+    "name": "iconv_strlen",
+    "name_base64": "aWNvbnZfc3RybGVu",
+    "origin": "base_internal_registration",
+    "extension": "iconv"
+  },
+  {
+    "index": 398,
+    "name": "iconv_strpos",
+    "name_base64": "aWNvbnZfc3RycG9z",
+    "origin": "base_internal_registration",
+    "extension": "iconv"
+  },
+  {
+    "index": 399,
+    "name": "iconv_strrpos",
+    "name_base64": "aWNvbnZfc3RycnBvcw==",
+    "origin": "base_internal_registration",
+    "extension": "iconv"
+  },
+  {
+    "index": 400,
+    "name": "iconv_substr",
+    "name_base64": "aWNvbnZfc3Vic3Ry",
+    "origin": "base_internal_registration",
+    "extension": "iconv"
+  },
+  {
+    "index": 401,
+    "name": "idate",
+    "name_base64": "aWRhdGU=",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 402,
+    "name": "ignore_user_abort",
+    "name_base64": "aWdub3JlX3VzZXJfYWJvcnQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 403,
+    "name": "image_type_to_extension",
+    "name_base64": "aW1hZ2VfdHlwZV90b19leHRlbnNpb24=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 404,
+    "name": "image_type_to_mime_type",
+    "name_base64": "aW1hZ2VfdHlwZV90b19taW1lX3R5cGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 405,
+    "name": "implode",
+    "name_base64": "aW1wbG9kZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 406,
+    "name": "in_array",
+    "name_base64": "aW5fYXJyYXk=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 407,
+    "name": "inet_ntop",
+    "name_base64": "aW5ldF9udG9w",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 408,
+    "name": "inet_pton",
+    "name_base64": "aW5ldF9wdG9u",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 409,
+    "name": "inflate_add",
+    "name_base64": "aW5mbGF0ZV9hZGQ=",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 410,
+    "name": "inflate_get_read_len",
+    "name_base64": "aW5mbGF0ZV9nZXRfcmVhZF9sZW4=",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 411,
+    "name": "inflate_get_status",
+    "name_base64": "aW5mbGF0ZV9nZXRfc3RhdHVz",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 412,
+    "name": "inflate_init",
+    "name_base64": "aW5mbGF0ZV9pbml0",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 413,
+    "name": "ini_alter",
+    "name_base64": "aW5pX2FsdGVy",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 414,
+    "name": "ini_get",
+    "name_base64": "aW5pX2dldA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 415,
+    "name": "ini_get_all",
+    "name_base64": "aW5pX2dldF9hbGw=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 416,
+    "name": "ini_parse_quantity",
+    "name_base64": "aW5pX3BhcnNlX3F1YW50aXR5",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 417,
+    "name": "ini_restore",
+    "name_base64": "aW5pX3Jlc3RvcmU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 418,
+    "name": "ini_set",
+    "name_base64": "aW5pX3NldA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 419,
+    "name": "intdiv",
+    "name_base64": "aW50ZGl2",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 420,
+    "name": "interface_exists",
+    "name_base64": "aW50ZXJmYWNlX2V4aXN0cw==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 421,
+    "name": "intval",
+    "name_base64": "aW50dmFs",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 422,
+    "name": "ip2long",
+    "name_base64": "aXAybG9uZw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 423,
+    "name": "iptcembed",
+    "name_base64": "aXB0Y2VtYmVk",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 424,
+    "name": "iptcparse",
+    "name_base64": "aXB0Y3BhcnNl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 425,
+    "name": "is_a",
+    "name_base64": "aXNfYQ==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 426,
+    "name": "is_array",
+    "name_base64": "aXNfYXJyYXk=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 427,
+    "name": "is_bool",
+    "name_base64": "aXNfYm9vbA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 428,
+    "name": "is_callable",
+    "name_base64": "aXNfY2FsbGFibGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 429,
+    "name": "is_countable",
+    "name_base64": "aXNfY291bnRhYmxl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 430,
+    "name": "is_dir",
+    "name_base64": "aXNfZGly",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 431,
+    "name": "is_double",
+    "name_base64": "aXNfZG91Ymxl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 432,
+    "name": "is_executable",
+    "name_base64": "aXNfZXhlY3V0YWJsZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 433,
+    "name": "is_file",
+    "name_base64": "aXNfZmlsZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 434,
+    "name": "is_finite",
+    "name_base64": "aXNfZmluaXRl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 435,
+    "name": "is_float",
+    "name_base64": "aXNfZmxvYXQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 436,
+    "name": "is_infinite",
+    "name_base64": "aXNfaW5maW5pdGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 437,
+    "name": "is_int",
+    "name_base64": "aXNfaW50",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 438,
+    "name": "is_integer",
+    "name_base64": "aXNfaW50ZWdlcg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 439,
+    "name": "is_iterable",
+    "name_base64": "aXNfaXRlcmFibGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 440,
+    "name": "is_link",
+    "name_base64": "aXNfbGluaw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 441,
+    "name": "is_long",
+    "name_base64": "aXNfbG9uZw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 442,
+    "name": "is_nan",
+    "name_base64": "aXNfbmFu",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 443,
+    "name": "is_null",
+    "name_base64": "aXNfbnVsbA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 444,
+    "name": "is_numeric",
+    "name_base64": "aXNfbnVtZXJpYw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 445,
+    "name": "is_object",
+    "name_base64": "aXNfb2JqZWN0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 446,
+    "name": "is_readable",
+    "name_base64": "aXNfcmVhZGFibGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 447,
+    "name": "is_resource",
+    "name_base64": "aXNfcmVzb3VyY2U=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 448,
+    "name": "is_scalar",
+    "name_base64": "aXNfc2NhbGFy",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 449,
+    "name": "is_string",
+    "name_base64": "aXNfc3RyaW5n",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 450,
+    "name": "is_subclass_of",
+    "name_base64": "aXNfc3ViY2xhc3Nfb2Y=",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 451,
+    "name": "is_uploaded_file",
+    "name_base64": "aXNfdXBsb2FkZWRfZmlsZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 452,
+    "name": "is_writable",
+    "name_base64": "aXNfd3JpdGFibGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 453,
+    "name": "is_writeable",
+    "name_base64": "aXNfd3JpdGVhYmxl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 454,
+    "name": "iterator_apply",
+    "name_base64": "aXRlcmF0b3JfYXBwbHk=",
+    "origin": "base_internal_registration",
+    "extension": "SPL"
+  },
+  {
+    "index": 455,
+    "name": "iterator_count",
+    "name_base64": "aXRlcmF0b3JfY291bnQ=",
+    "origin": "base_internal_registration",
+    "extension": "SPL"
+  },
+  {
+    "index": 456,
+    "name": "iterator_to_array",
+    "name_base64": "aXRlcmF0b3JfdG9fYXJyYXk=",
+    "origin": "base_internal_registration",
+    "extension": "SPL"
+  },
+  {
+    "index": 457,
+    "name": "jddayofweek",
+    "name_base64": "amRkYXlvZndlZWs=",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 458,
+    "name": "jdmonthname",
+    "name_base64": "amRtb250aG5hbWU=",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 459,
+    "name": "jdtofrench",
+    "name_base64": "amR0b2ZyZW5jaA==",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 460,
+    "name": "jdtogregorian",
+    "name_base64": "amR0b2dyZWdvcmlhbg==",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 461,
+    "name": "jdtojewish",
+    "name_base64": "amR0b2pld2lzaA==",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 462,
+    "name": "jdtojulian",
+    "name_base64": "amR0b2p1bGlhbg==",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 463,
+    "name": "jdtounix",
+    "name_base64": "amR0b3VuaXg=",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 464,
+    "name": "jewishtojd",
+    "name_base64": "amV3aXNodG9qZA==",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 465,
+    "name": "join",
+    "name_base64": "am9pbg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 466,
+    "name": "json_decode",
+    "name_base64": "anNvbl9kZWNvZGU=",
+    "origin": "base_internal_registration",
+    "extension": "json"
+  },
+  {
+    "index": 467,
+    "name": "json_encode",
+    "name_base64": "anNvbl9lbmNvZGU=",
+    "origin": "base_internal_registration",
+    "extension": "json"
+  },
+  {
+    "index": 468,
+    "name": "json_last_error",
+    "name_base64": "anNvbl9sYXN0X2Vycm9y",
+    "origin": "base_internal_registration",
+    "extension": "json"
+  },
+  {
+    "index": 469,
+    "name": "json_last_error_msg",
+    "name_base64": "anNvbl9sYXN0X2Vycm9yX21zZw==",
+    "origin": "base_internal_registration",
+    "extension": "json"
+  },
+  {
+    "index": 470,
+    "name": "json_validate",
+    "name_base64": "anNvbl92YWxpZGF0ZQ==",
+    "origin": "base_internal_registration",
+    "extension": "json"
+  },
+  {
+    "index": 471,
+    "name": "juliantojd",
+    "name_base64": "anVsaWFudG9qZA==",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 472,
+    "name": "key",
+    "name_base64": "a2V5",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 473,
+    "name": "key_exists",
+    "name_base64": "a2V5X2V4aXN0cw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 474,
+    "name": "krsort",
+    "name_base64": "a3Jzb3J0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 475,
+    "name": "ksort",
+    "name_base64": "a3NvcnQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 476,
+    "name": "lcfirst",
+    "name_base64": "bGNmaXJzdA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 477,
+    "name": "lcg_value",
+    "name_base64": "bGNnX3ZhbHVl",
+    "origin": "base_internal_registration",
+    "extension": "random"
+  },
+  {
+    "index": 478,
+    "name": "levenshtein",
+    "name_base64": "bGV2ZW5zaHRlaW4=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 479,
+    "name": "libxml_clear_errors",
+    "name_base64": "bGlieG1sX2NsZWFyX2Vycm9ycw==",
+    "origin": "base_internal_registration",
+    "extension": "libxml"
+  },
+  {
+    "index": 480,
+    "name": "libxml_disable_entity_loader",
+    "name_base64": "bGlieG1sX2Rpc2FibGVfZW50aXR5X2xvYWRlcg==",
+    "origin": "base_internal_registration",
+    "extension": "libxml"
+  },
+  {
+    "index": 481,
+    "name": "libxml_get_errors",
+    "name_base64": "bGlieG1sX2dldF9lcnJvcnM=",
+    "origin": "base_internal_registration",
+    "extension": "libxml"
+  },
+  {
+    "index": 482,
+    "name": "libxml_get_external_entity_loader",
+    "name_base64": "bGlieG1sX2dldF9leHRlcm5hbF9lbnRpdHlfbG9hZGVy",
+    "origin": "base_internal_registration",
+    "extension": "libxml"
+  },
+  {
+    "index": 483,
+    "name": "libxml_get_last_error",
+    "name_base64": "bGlieG1sX2dldF9sYXN0X2Vycm9y",
+    "origin": "base_internal_registration",
+    "extension": "libxml"
+  },
+  {
+    "index": 484,
+    "name": "libxml_set_external_entity_loader",
+    "name_base64": "bGlieG1sX3NldF9leHRlcm5hbF9lbnRpdHlfbG9hZGVy",
+    "origin": "base_internal_registration",
+    "extension": "libxml"
+  },
+  {
+    "index": 485,
+    "name": "libxml_set_streams_context",
+    "name_base64": "bGlieG1sX3NldF9zdHJlYW1zX2NvbnRleHQ=",
+    "origin": "base_internal_registration",
+    "extension": "libxml"
+  },
+  {
+    "index": 486,
+    "name": "libxml_use_internal_errors",
+    "name_base64": "bGlieG1sX3VzZV9pbnRlcm5hbF9lcnJvcnM=",
+    "origin": "base_internal_registration",
+    "extension": "libxml"
+  },
+  {
+    "index": 487,
+    "name": "link",
+    "name_base64": "bGluaw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 488,
+    "name": "linkinfo",
+    "name_base64": "bGlua2luZm8=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 489,
+    "name": "localeconv",
+    "name_base64": "bG9jYWxlY29udg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 490,
+    "name": "localtime",
+    "name_base64": "bG9jYWx0aW1l",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 491,
+    "name": "log",
+    "name_base64": "bG9n",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 492,
+    "name": "log10",
+    "name_base64": "bG9nMTA=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 493,
+    "name": "log1p",
+    "name_base64": "bG9nMXA=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 494,
+    "name": "long2ip",
+    "name_base64": "bG9uZzJpcA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 495,
+    "name": "lstat",
+    "name_base64": "bHN0YXQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 496,
+    "name": "ltrim",
+    "name_base64": "bHRyaW0=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 497,
+    "name": "mail",
+    "name_base64": "bWFpbA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 498,
+    "name": "max",
+    "name_base64": "bWF4",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 499,
+    "name": "md5",
+    "name_base64": "bWQ1",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 500,
+    "name": "md5_file",
+    "name_base64": "bWQ1X2ZpbGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 501,
+    "name": "memory_get_peak_usage",
+    "name_base64": "bWVtb3J5X2dldF9wZWFrX3VzYWdl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 502,
+    "name": "memory_get_usage",
+    "name_base64": "bWVtb3J5X2dldF91c2FnZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 503,
+    "name": "memory_reset_peak_usage",
+    "name_base64": "bWVtb3J5X3Jlc2V0X3BlYWtfdXNhZ2U=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 504,
+    "name": "metaphone",
+    "name_base64": "bWV0YXBob25l",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 505,
+    "name": "method_exists",
+    "name_base64": "bWV0aG9kX2V4aXN0cw==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 506,
+    "name": "mhash",
+    "name_base64": "bWhhc2g=",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 507,
+    "name": "mhash_count",
+    "name_base64": "bWhhc2hfY291bnQ=",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 508,
+    "name": "mhash_get_block_size",
+    "name_base64": "bWhhc2hfZ2V0X2Jsb2NrX3NpemU=",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 509,
+    "name": "mhash_get_hash_name",
+    "name_base64": "bWhhc2hfZ2V0X2hhc2hfbmFtZQ==",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 510,
+    "name": "mhash_keygen_s2k",
+    "name_base64": "bWhhc2hfa2V5Z2VuX3Myaw==",
+    "origin": "base_internal_registration",
+    "extension": "hash"
+  },
+  {
+    "index": 511,
+    "name": "microtime",
+    "name_base64": "bWljcm90aW1l",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 512,
+    "name": "min",
+    "name_base64": "bWlu",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 513,
+    "name": "mkdir",
+    "name_base64": "bWtkaXI=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 514,
+    "name": "mktime",
+    "name_base64": "bWt0aW1l",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 515,
+    "name": "move_uploaded_file",
+    "name_base64": "bW92ZV91cGxvYWRlZF9maWxl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 516,
+    "name": "mt_getrandmax",
+    "name_base64": "bXRfZ2V0cmFuZG1heA==",
+    "origin": "base_internal_registration",
+    "extension": "random"
+  },
+  {
+    "index": 517,
+    "name": "mt_rand",
+    "name_base64": "bXRfcmFuZA==",
+    "origin": "base_internal_registration",
+    "extension": "random"
+  },
+  {
+    "index": 518,
+    "name": "mt_srand",
+    "name_base64": "bXRfc3JhbmQ=",
+    "origin": "base_internal_registration",
+    "extension": "random"
+  },
+  {
+    "index": 519,
+    "name": "natcasesort",
+    "name_base64": "bmF0Y2FzZXNvcnQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 520,
+    "name": "natsort",
+    "name_base64": "bmF0c29ydA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 521,
+    "name": "net_get_interfaces",
+    "name_base64": "bmV0X2dldF9pbnRlcmZhY2Vz",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 522,
+    "name": "next",
+    "name_base64": "bmV4dA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 523,
+    "name": "nl2br",
+    "name_base64": "bmwyYnI=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 524,
+    "name": "number_format",
+    "name_base64": "bnVtYmVyX2Zvcm1hdA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 525,
+    "name": "ob_clean",
+    "name_base64": "b2JfY2xlYW4=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 526,
+    "name": "ob_end_clean",
+    "name_base64": "b2JfZW5kX2NsZWFu",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 527,
+    "name": "ob_end_flush",
+    "name_base64": "b2JfZW5kX2ZsdXNo",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 528,
+    "name": "ob_flush",
+    "name_base64": "b2JfZmx1c2g=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 529,
+    "name": "ob_get_clean",
+    "name_base64": "b2JfZ2V0X2NsZWFu",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 530,
+    "name": "ob_get_contents",
+    "name_base64": "b2JfZ2V0X2NvbnRlbnRz",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 531,
+    "name": "ob_get_flush",
+    "name_base64": "b2JfZ2V0X2ZsdXNo",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 532,
+    "name": "ob_get_length",
+    "name_base64": "b2JfZ2V0X2xlbmd0aA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 533,
+    "name": "ob_get_level",
+    "name_base64": "b2JfZ2V0X2xldmVs",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 534,
+    "name": "ob_get_status",
+    "name_base64": "b2JfZ2V0X3N0YXR1cw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 535,
+    "name": "ob_gzhandler",
+    "name_base64": "b2JfZ3poYW5kbGVy",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 536,
+    "name": "ob_implicit_flush",
+    "name_base64": "b2JfaW1wbGljaXRfZmx1c2g=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 537,
+    "name": "ob_list_handlers",
+    "name_base64": "b2JfbGlzdF9oYW5kbGVycw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 538,
+    "name": "ob_start",
+    "name_base64": "b2Jfc3RhcnQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 539,
+    "name": "octdec",
+    "name_base64": "b2N0ZGVj",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 540,
+    "name": "opcache_compile_file",
+    "name_base64": "b3BjYWNoZV9jb21waWxlX2ZpbGU=",
+    "origin": "base_internal_registration",
+    "extension": "Zend OPcache"
+  },
+  {
+    "index": 541,
+    "name": "opcache_get_configuration",
+    "name_base64": "b3BjYWNoZV9nZXRfY29uZmlndXJhdGlvbg==",
+    "origin": "base_internal_registration",
+    "extension": "Zend OPcache"
+  },
+  {
+    "index": 542,
+    "name": "opcache_get_status",
+    "name_base64": "b3BjYWNoZV9nZXRfc3RhdHVz",
+    "origin": "base_internal_registration",
+    "extension": "Zend OPcache"
+  },
+  {
+    "index": 543,
+    "name": "opcache_invalidate",
+    "name_base64": "b3BjYWNoZV9pbnZhbGlkYXRl",
+    "origin": "base_internal_registration",
+    "extension": "Zend OPcache"
+  },
+  {
+    "index": 544,
+    "name": "opcache_is_script_cached",
+    "name_base64": "b3BjYWNoZV9pc19zY3JpcHRfY2FjaGVk",
+    "origin": "base_internal_registration",
+    "extension": "Zend OPcache"
+  },
+  {
+    "index": 545,
+    "name": "opcache_is_script_cached_in_file_cache",
+    "name_base64": "b3BjYWNoZV9pc19zY3JpcHRfY2FjaGVkX2luX2ZpbGVfY2FjaGU=",
+    "origin": "base_internal_registration",
+    "extension": "Zend OPcache"
+  },
+  {
+    "index": 546,
+    "name": "opcache_jit_blacklist",
+    "name_base64": "b3BjYWNoZV9qaXRfYmxhY2tsaXN0",
+    "origin": "base_internal_registration",
+    "extension": "Zend OPcache"
+  },
+  {
+    "index": 547,
+    "name": "opcache_reset",
+    "name_base64": "b3BjYWNoZV9yZXNldA==",
+    "origin": "base_internal_registration",
+    "extension": "Zend OPcache"
+  },
+  {
+    "index": 548,
+    "name": "opendir",
+    "name_base64": "b3BlbmRpcg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 549,
+    "name": "openlog",
+    "name_base64": "b3BlbmxvZw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 550,
+    "name": "ord",
+    "name_base64": "b3Jk",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 551,
+    "name": "output_add_rewrite_var",
+    "name_base64": "b3V0cHV0X2FkZF9yZXdyaXRlX3Zhcg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 552,
+    "name": "output_reset_rewrite_vars",
+    "name_base64": "b3V0cHV0X3Jlc2V0X3Jld3JpdGVfdmFycw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 553,
+    "name": "pack",
+    "name_base64": "cGFjaw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 554,
+    "name": "parse_ini_file",
+    "name_base64": "cGFyc2VfaW5pX2ZpbGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 555,
+    "name": "parse_ini_string",
+    "name_base64": "cGFyc2VfaW5pX3N0cmluZw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 556,
+    "name": "parse_str",
+    "name_base64": "cGFyc2Vfc3Ry",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 557,
+    "name": "parse_url",
+    "name_base64": "cGFyc2VfdXJs",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 558,
+    "name": "passthru",
+    "name_base64": "cGFzc3RocnU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 559,
+    "name": "password_algos",
+    "name_base64": "cGFzc3dvcmRfYWxnb3M=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 560,
+    "name": "password_get_info",
+    "name_base64": "cGFzc3dvcmRfZ2V0X2luZm8=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 561,
+    "name": "password_hash",
+    "name_base64": "cGFzc3dvcmRfaGFzaA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 562,
+    "name": "password_needs_rehash",
+    "name_base64": "cGFzc3dvcmRfbmVlZHNfcmVoYXNo",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 563,
+    "name": "password_verify",
+    "name_base64": "cGFzc3dvcmRfdmVyaWZ5",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 564,
+    "name": "pathinfo",
+    "name_base64": "cGF0aGluZm8=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 565,
+    "name": "pclose",
+    "name_base64": "cGNsb3Nl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 566,
+    "name": "pdo_drivers",
+    "name_base64": "cGRvX2RyaXZlcnM=",
+    "origin": "base_internal_registration",
+    "extension": "PDO"
+  },
+  {
+    "index": 567,
+    "name": "pfsockopen",
+    "name_base64": "cGZzb2Nrb3Blbg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 568,
+    "name": "php_ini_loaded_file",
+    "name_base64": "cGhwX2luaV9sb2FkZWRfZmlsZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 569,
+    "name": "php_ini_scanned_files",
+    "name_base64": "cGhwX2luaV9zY2FubmVkX2ZpbGVz",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 570,
+    "name": "php_sapi_name",
+    "name_base64": "cGhwX3NhcGlfbmFtZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 571,
+    "name": "php_strip_whitespace",
+    "name_base64": "cGhwX3N0cmlwX3doaXRlc3BhY2U=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 572,
+    "name": "php_uname",
+    "name_base64": "cGhwX3VuYW1l",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 573,
+    "name": "phpcredits",
+    "name_base64": "cGhwY3JlZGl0cw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 574,
+    "name": "phpinfo",
+    "name_base64": "cGhwaW5mbw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 575,
+    "name": "phpversion",
+    "name_base64": "cGhwdmVyc2lvbg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 576,
+    "name": "pi",
+    "name_base64": "cGk=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 577,
+    "name": "popen",
+    "name_base64": "cG9wZW4=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 578,
+    "name": "pos",
+    "name_base64": "cG9z",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 579,
+    "name": "pow",
+    "name_base64": "cG93",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 580,
+    "name": "preg_filter",
+    "name_base64": "cHJlZ19maWx0ZXI=",
+    "origin": "base_internal_registration",
+    "extension": "pcre"
+  },
+  {
+    "index": 581,
+    "name": "preg_grep",
+    "name_base64": "cHJlZ19ncmVw",
+    "origin": "base_internal_registration",
+    "extension": "pcre"
+  },
+  {
+    "index": 582,
+    "name": "preg_last_error",
+    "name_base64": "cHJlZ19sYXN0X2Vycm9y",
+    "origin": "base_internal_registration",
+    "extension": "pcre"
+  },
+  {
+    "index": 583,
+    "name": "preg_last_error_msg",
+    "name_base64": "cHJlZ19sYXN0X2Vycm9yX21zZw==",
+    "origin": "base_internal_registration",
+    "extension": "pcre"
+  },
+  {
+    "index": 584,
+    "name": "preg_match",
+    "name_base64": "cHJlZ19tYXRjaA==",
+    "origin": "base_internal_registration",
+    "extension": "pcre"
+  },
+  {
+    "index": 585,
+    "name": "preg_match_all",
+    "name_base64": "cHJlZ19tYXRjaF9hbGw=",
+    "origin": "base_internal_registration",
+    "extension": "pcre"
+  },
+  {
+    "index": 586,
+    "name": "preg_quote",
+    "name_base64": "cHJlZ19xdW90ZQ==",
+    "origin": "base_internal_registration",
+    "extension": "pcre"
+  },
+  {
+    "index": 587,
+    "name": "preg_replace",
+    "name_base64": "cHJlZ19yZXBsYWNl",
+    "origin": "base_internal_registration",
+    "extension": "pcre"
+  },
+  {
+    "index": 588,
+    "name": "preg_replace_callback",
+    "name_base64": "cHJlZ19yZXBsYWNlX2NhbGxiYWNr",
+    "origin": "base_internal_registration",
+    "extension": "pcre"
+  },
+  {
+    "index": 589,
+    "name": "preg_replace_callback_array",
+    "name_base64": "cHJlZ19yZXBsYWNlX2NhbGxiYWNrX2FycmF5",
+    "origin": "base_internal_registration",
+    "extension": "pcre"
+  },
+  {
+    "index": 590,
+    "name": "preg_split",
+    "name_base64": "cHJlZ19zcGxpdA==",
+    "origin": "base_internal_registration",
+    "extension": "pcre"
+  },
+  {
+    "index": 591,
+    "name": "prev",
+    "name_base64": "cHJldg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 592,
+    "name": "print_r",
+    "name_base64": "cHJpbnRfcg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 593,
+    "name": "printf",
+    "name_base64": "cHJpbnRm",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 594,
+    "name": "proc_close",
+    "name_base64": "cHJvY19jbG9zZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 595,
+    "name": "proc_get_status",
+    "name_base64": "cHJvY19nZXRfc3RhdHVz",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 596,
+    "name": "proc_nice",
+    "name_base64": "cHJvY19uaWNl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 597,
+    "name": "proc_open",
+    "name_base64": "cHJvY19vcGVu",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 598,
+    "name": "proc_terminate",
+    "name_base64": "cHJvY190ZXJtaW5hdGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 599,
+    "name": "property_exists",
+    "name_base64": "cHJvcGVydHlfZXhpc3Rz",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 600,
+    "name": "putenv",
+    "name_base64": "cHV0ZW52",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 601,
+    "name": "quoted_printable_decode",
+    "name_base64": "cXVvdGVkX3ByaW50YWJsZV9kZWNvZGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 602,
+    "name": "quoted_printable_encode",
+    "name_base64": "cXVvdGVkX3ByaW50YWJsZV9lbmNvZGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 603,
+    "name": "quotemeta",
+    "name_base64": "cXVvdGVtZXRh",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 604,
+    "name": "rad2deg",
+    "name_base64": "cmFkMmRlZw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 605,
+    "name": "rand",
+    "name_base64": "cmFuZA==",
+    "origin": "base_internal_registration",
+    "extension": "random"
+  },
+  {
+    "index": 606,
+    "name": "random_bytes",
+    "name_base64": "cmFuZG9tX2J5dGVz",
+    "origin": "base_internal_registration",
+    "extension": "random"
+  },
+  {
+    "index": 607,
+    "name": "random_int",
+    "name_base64": "cmFuZG9tX2ludA==",
+    "origin": "base_internal_registration",
+    "extension": "random"
+  },
+  {
+    "index": 608,
+    "name": "range",
+    "name_base64": "cmFuZ2U=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 609,
+    "name": "rawurldecode",
+    "name_base64": "cmF3dXJsZGVjb2Rl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 610,
+    "name": "rawurlencode",
+    "name_base64": "cmF3dXJsZW5jb2Rl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 611,
+    "name": "readdir",
+    "name_base64": "cmVhZGRpcg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 612,
+    "name": "readfile",
+    "name_base64": "cmVhZGZpbGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 613,
+    "name": "readgzfile",
+    "name_base64": "cmVhZGd6ZmlsZQ==",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 614,
+    "name": "readline",
+    "name_base64": "cmVhZGxpbmU=",
+    "origin": "base_internal_registration",
+    "extension": "readline"
+  },
+  {
+    "index": 615,
+    "name": "readline_add_history",
+    "name_base64": "cmVhZGxpbmVfYWRkX2hpc3Rvcnk=",
+    "origin": "base_internal_registration",
+    "extension": "readline"
+  },
+  {
+    "index": 616,
+    "name": "readline_clear_history",
+    "name_base64": "cmVhZGxpbmVfY2xlYXJfaGlzdG9yeQ==",
+    "origin": "base_internal_registration",
+    "extension": "readline"
+  },
+  {
+    "index": 617,
+    "name": "readline_completion_function",
+    "name_base64": "cmVhZGxpbmVfY29tcGxldGlvbl9mdW5jdGlvbg==",
+    "origin": "base_internal_registration",
+    "extension": "readline"
+  },
+  {
+    "index": 618,
+    "name": "readline_info",
+    "name_base64": "cmVhZGxpbmVfaW5mbw==",
+    "origin": "base_internal_registration",
+    "extension": "readline"
+  },
+  {
+    "index": 619,
+    "name": "readline_list_history",
+    "name_base64": "cmVhZGxpbmVfbGlzdF9oaXN0b3J5",
+    "origin": "base_internal_registration",
+    "extension": "readline"
+  },
+  {
+    "index": 620,
+    "name": "readline_read_history",
+    "name_base64": "cmVhZGxpbmVfcmVhZF9oaXN0b3J5",
+    "origin": "base_internal_registration",
+    "extension": "readline"
+  },
+  {
+    "index": 621,
+    "name": "readline_write_history",
+    "name_base64": "cmVhZGxpbmVfd3JpdGVfaGlzdG9yeQ==",
+    "origin": "base_internal_registration",
+    "extension": "readline"
+  },
+  {
+    "index": 622,
+    "name": "readlink",
+    "name_base64": "cmVhZGxpbms=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 623,
+    "name": "realpath",
+    "name_base64": "cmVhbHBhdGg=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 624,
+    "name": "realpath_cache_get",
+    "name_base64": "cmVhbHBhdGhfY2FjaGVfZ2V0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 625,
+    "name": "realpath_cache_size",
+    "name_base64": "cmVhbHBhdGhfY2FjaGVfc2l6ZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 626,
+    "name": "register_shutdown_function",
+    "name_base64": "cmVnaXN0ZXJfc2h1dGRvd25fZnVuY3Rpb24=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 627,
+    "name": "register_tick_function",
+    "name_base64": "cmVnaXN0ZXJfdGlja19mdW5jdGlvbg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 628,
+    "name": "rename",
+    "name_base64": "cmVuYW1l",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 629,
+    "name": "request_parse_body",
+    "name_base64": "cmVxdWVzdF9wYXJzZV9ib2R5",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 630,
+    "name": "reset",
+    "name_base64": "cmVzZXQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 631,
+    "name": "restore_error_handler",
+    "name_base64": "cmVzdG9yZV9lcnJvcl9oYW5kbGVy",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 632,
+    "name": "restore_exception_handler",
+    "name_base64": "cmVzdG9yZV9leGNlcHRpb25faGFuZGxlcg==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 633,
+    "name": "rewind",
+    "name_base64": "cmV3aW5k",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 634,
+    "name": "rewinddir",
+    "name_base64": "cmV3aW5kZGly",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 635,
+    "name": "rmdir",
+    "name_base64": "cm1kaXI=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 636,
+    "name": "round",
+    "name_base64": "cm91bmQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 637,
+    "name": "rsort",
+    "name_base64": "cnNvcnQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 638,
+    "name": "rtrim",
+    "name_base64": "cnRyaW0=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 639,
+    "name": "sapi_windows_cp_conv",
+    "name_base64": "c2FwaV93aW5kb3dzX2NwX2NvbnY=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 640,
+    "name": "sapi_windows_cp_get",
+    "name_base64": "c2FwaV93aW5kb3dzX2NwX2dldA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 641,
+    "name": "sapi_windows_cp_is_utf8",
+    "name_base64": "c2FwaV93aW5kb3dzX2NwX2lzX3V0Zjg=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 642,
+    "name": "sapi_windows_cp_set",
+    "name_base64": "c2FwaV93aW5kb3dzX2NwX3NldA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 643,
+    "name": "sapi_windows_generate_ctrl_event",
+    "name_base64": "c2FwaV93aW5kb3dzX2dlbmVyYXRlX2N0cmxfZXZlbnQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 644,
+    "name": "sapi_windows_set_ctrl_handler",
+    "name_base64": "c2FwaV93aW5kb3dzX3NldF9jdHJsX2hhbmRsZXI=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 645,
+    "name": "sapi_windows_vt100_support",
+    "name_base64": "c2FwaV93aW5kb3dzX3Z0MTAwX3N1cHBvcnQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 646,
+    "name": "scandir",
+    "name_base64": "c2NhbmRpcg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 647,
+    "name": "serialize",
+    "name_base64": "c2VyaWFsaXpl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 648,
+    "name": "session_abort",
+    "name_base64": "c2Vzc2lvbl9hYm9ydA==",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 649,
+    "name": "session_cache_expire",
+    "name_base64": "c2Vzc2lvbl9jYWNoZV9leHBpcmU=",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 650,
+    "name": "session_cache_limiter",
+    "name_base64": "c2Vzc2lvbl9jYWNoZV9saW1pdGVy",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 651,
+    "name": "session_commit",
+    "name_base64": "c2Vzc2lvbl9jb21taXQ=",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 652,
+    "name": "session_create_id",
+    "name_base64": "c2Vzc2lvbl9jcmVhdGVfaWQ=",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 653,
+    "name": "session_decode",
+    "name_base64": "c2Vzc2lvbl9kZWNvZGU=",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 654,
+    "name": "session_destroy",
+    "name_base64": "c2Vzc2lvbl9kZXN0cm95",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 655,
+    "name": "session_encode",
+    "name_base64": "c2Vzc2lvbl9lbmNvZGU=",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 656,
+    "name": "session_gc",
+    "name_base64": "c2Vzc2lvbl9nYw==",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 657,
+    "name": "session_get_cookie_params",
+    "name_base64": "c2Vzc2lvbl9nZXRfY29va2llX3BhcmFtcw==",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 658,
+    "name": "session_id",
+    "name_base64": "c2Vzc2lvbl9pZA==",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 659,
+    "name": "session_module_name",
+    "name_base64": "c2Vzc2lvbl9tb2R1bGVfbmFtZQ==",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 660,
+    "name": "session_name",
+    "name_base64": "c2Vzc2lvbl9uYW1l",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 661,
+    "name": "session_regenerate_id",
+    "name_base64": "c2Vzc2lvbl9yZWdlbmVyYXRlX2lk",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 662,
+    "name": "session_register_shutdown",
+    "name_base64": "c2Vzc2lvbl9yZWdpc3Rlcl9zaHV0ZG93bg==",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 663,
+    "name": "session_reset",
+    "name_base64": "c2Vzc2lvbl9yZXNldA==",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 664,
+    "name": "session_save_path",
+    "name_base64": "c2Vzc2lvbl9zYXZlX3BhdGg=",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 665,
+    "name": "session_set_cookie_params",
+    "name_base64": "c2Vzc2lvbl9zZXRfY29va2llX3BhcmFtcw==",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 666,
+    "name": "session_set_save_handler",
+    "name_base64": "c2Vzc2lvbl9zZXRfc2F2ZV9oYW5kbGVy",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 667,
+    "name": "session_start",
+    "name_base64": "c2Vzc2lvbl9zdGFydA==",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 668,
+    "name": "session_status",
+    "name_base64": "c2Vzc2lvbl9zdGF0dXM=",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 669,
+    "name": "session_unset",
+    "name_base64": "c2Vzc2lvbl91bnNldA==",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 670,
+    "name": "session_write_close",
+    "name_base64": "c2Vzc2lvbl93cml0ZV9jbG9zZQ==",
+    "origin": "base_internal_registration",
+    "extension": "session"
+  },
+  {
+    "index": 671,
+    "name": "set_error_handler",
+    "name_base64": "c2V0X2Vycm9yX2hhbmRsZXI=",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 672,
+    "name": "set_exception_handler",
+    "name_base64": "c2V0X2V4Y2VwdGlvbl9oYW5kbGVy",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 673,
+    "name": "set_file_buffer",
+    "name_base64": "c2V0X2ZpbGVfYnVmZmVy",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 674,
+    "name": "set_include_path",
+    "name_base64": "c2V0X2luY2x1ZGVfcGF0aA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 675,
+    "name": "set_time_limit",
+    "name_base64": "c2V0X3RpbWVfbGltaXQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 676,
+    "name": "setcookie",
+    "name_base64": "c2V0Y29va2ll",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 677,
+    "name": "setlocale",
+    "name_base64": "c2V0bG9jYWxl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 678,
+    "name": "setrawcookie",
+    "name_base64": "c2V0cmF3Y29va2ll",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 679,
+    "name": "settype",
+    "name_base64": "c2V0dHlwZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 680,
+    "name": "sha1",
+    "name_base64": "c2hhMQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 681,
+    "name": "sha1_file",
+    "name_base64": "c2hhMV9maWxl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 682,
+    "name": "shell_exec",
+    "name_base64": "c2hlbGxfZXhlYw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 683,
+    "name": "show_source",
+    "name_base64": "c2hvd19zb3VyY2U=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 684,
+    "name": "shuffle",
+    "name_base64": "c2h1ZmZsZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 685,
+    "name": "similar_text",
+    "name_base64": "c2ltaWxhcl90ZXh0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 686,
+    "name": "simplexml_import_dom",
+    "name_base64": "c2ltcGxleG1sX2ltcG9ydF9kb20=",
+    "origin": "base_internal_registration",
+    "extension": "SimpleXML"
+  },
+  {
+    "index": 687,
+    "name": "simplexml_load_file",
+    "name_base64": "c2ltcGxleG1sX2xvYWRfZmlsZQ==",
+    "origin": "base_internal_registration",
+    "extension": "SimpleXML"
+  },
+  {
+    "index": 688,
+    "name": "simplexml_load_string",
+    "name_base64": "c2ltcGxleG1sX2xvYWRfc3RyaW5n",
+    "origin": "base_internal_registration",
+    "extension": "SimpleXML"
+  },
+  {
+    "index": 689,
+    "name": "sin",
+    "name_base64": "c2lu",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 690,
+    "name": "sinh",
+    "name_base64": "c2luaA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 691,
+    "name": "sizeof",
+    "name_base64": "c2l6ZW9m",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 692,
+    "name": "sleep",
+    "name_base64": "c2xlZXA=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 693,
+    "name": "socket_get_status",
+    "name_base64": "c29ja2V0X2dldF9zdGF0dXM=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 694,
+    "name": "socket_set_blocking",
+    "name_base64": "c29ja2V0X3NldF9ibG9ja2luZw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 695,
+    "name": "socket_set_timeout",
+    "name_base64": "c29ja2V0X3NldF90aW1lb3V0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 696,
+    "name": "sort",
+    "name_base64": "c29ydA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 697,
+    "name": "soundex",
+    "name_base64": "c291bmRleA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 698,
+    "name": "spl_autoload",
+    "name_base64": "c3BsX2F1dG9sb2Fk",
+    "origin": "base_internal_registration",
+    "extension": "SPL"
+  },
+  {
+    "index": 699,
+    "name": "spl_autoload_call",
+    "name_base64": "c3BsX2F1dG9sb2FkX2NhbGw=",
+    "origin": "base_internal_registration",
+    "extension": "SPL"
+  },
+  {
+    "index": 700,
+    "name": "spl_autoload_extensions",
+    "name_base64": "c3BsX2F1dG9sb2FkX2V4dGVuc2lvbnM=",
+    "origin": "base_internal_registration",
+    "extension": "SPL"
+  },
+  {
+    "index": 701,
+    "name": "spl_autoload_functions",
+    "name_base64": "c3BsX2F1dG9sb2FkX2Z1bmN0aW9ucw==",
+    "origin": "base_internal_registration",
+    "extension": "SPL"
+  },
+  {
+    "index": 702,
+    "name": "spl_autoload_register",
+    "name_base64": "c3BsX2F1dG9sb2FkX3JlZ2lzdGVy",
+    "origin": "base_internal_registration",
+    "extension": "SPL"
+  },
+  {
+    "index": 703,
+    "name": "spl_autoload_unregister",
+    "name_base64": "c3BsX2F1dG9sb2FkX3VucmVnaXN0ZXI=",
+    "origin": "base_internal_registration",
+    "extension": "SPL"
+  },
+  {
+    "index": 704,
+    "name": "spl_classes",
+    "name_base64": "c3BsX2NsYXNzZXM=",
+    "origin": "base_internal_registration",
+    "extension": "SPL"
+  },
+  {
+    "index": 705,
+    "name": "spl_object_hash",
+    "name_base64": "c3BsX29iamVjdF9oYXNo",
+    "origin": "base_internal_registration",
+    "extension": "SPL"
+  },
+  {
+    "index": 706,
+    "name": "spl_object_id",
+    "name_base64": "c3BsX29iamVjdF9pZA==",
+    "origin": "base_internal_registration",
+    "extension": "SPL"
+  },
+  {
+    "index": 707,
+    "name": "sprintf",
+    "name_base64": "c3ByaW50Zg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 708,
+    "name": "sqrt",
+    "name_base64": "c3FydA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 709,
+    "name": "srand",
+    "name_base64": "c3JhbmQ=",
+    "origin": "base_internal_registration",
+    "extension": "random"
+  },
+  {
+    "index": 710,
+    "name": "sscanf",
+    "name_base64": "c3NjYW5m",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 711,
+    "name": "stat",
+    "name_base64": "c3RhdA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 712,
+    "name": "str_contains",
+    "name_base64": "c3RyX2NvbnRhaW5z",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 713,
+    "name": "str_decrement",
+    "name_base64": "c3RyX2RlY3JlbWVudA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 714,
+    "name": "str_ends_with",
+    "name_base64": "c3RyX2VuZHNfd2l0aA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 715,
+    "name": "str_getcsv",
+    "name_base64": "c3RyX2dldGNzdg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 716,
+    "name": "str_increment",
+    "name_base64": "c3RyX2luY3JlbWVudA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 717,
+    "name": "str_ireplace",
+    "name_base64": "c3RyX2lyZXBsYWNl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 718,
+    "name": "str_pad",
+    "name_base64": "c3RyX3BhZA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 719,
+    "name": "str_repeat",
+    "name_base64": "c3RyX3JlcGVhdA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 720,
+    "name": "str_replace",
+    "name_base64": "c3RyX3JlcGxhY2U=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 721,
+    "name": "str_rot13",
+    "name_base64": "c3RyX3JvdDEz",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 722,
+    "name": "str_shuffle",
+    "name_base64": "c3RyX3NodWZmbGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 723,
+    "name": "str_split",
+    "name_base64": "c3RyX3NwbGl0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 724,
+    "name": "str_starts_with",
+    "name_base64": "c3RyX3N0YXJ0c193aXRo",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 725,
+    "name": "str_word_count",
+    "name_base64": "c3RyX3dvcmRfY291bnQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 726,
+    "name": "strcasecmp",
+    "name_base64": "c3RyY2FzZWNtcA==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 727,
+    "name": "strchr",
+    "name_base64": "c3RyY2hy",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 728,
+    "name": "strcmp",
+    "name_base64": "c3RyY21w",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 729,
+    "name": "strcoll",
+    "name_base64": "c3RyY29sbA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 730,
+    "name": "strcspn",
+    "name_base64": "c3RyY3Nwbg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 731,
+    "name": "stream_bucket_append",
+    "name_base64": "c3RyZWFtX2J1Y2tldF9hcHBlbmQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 732,
+    "name": "stream_bucket_make_writeable",
+    "name_base64": "c3RyZWFtX2J1Y2tldF9tYWtlX3dyaXRlYWJsZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 733,
+    "name": "stream_bucket_new",
+    "name_base64": "c3RyZWFtX2J1Y2tldF9uZXc=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 734,
+    "name": "stream_bucket_prepend",
+    "name_base64": "c3RyZWFtX2J1Y2tldF9wcmVwZW5k",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 735,
+    "name": "stream_context_create",
+    "name_base64": "c3RyZWFtX2NvbnRleHRfY3JlYXRl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 736,
+    "name": "stream_context_get_default",
+    "name_base64": "c3RyZWFtX2NvbnRleHRfZ2V0X2RlZmF1bHQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 737,
+    "name": "stream_context_get_options",
+    "name_base64": "c3RyZWFtX2NvbnRleHRfZ2V0X29wdGlvbnM=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 738,
+    "name": "stream_context_get_params",
+    "name_base64": "c3RyZWFtX2NvbnRleHRfZ2V0X3BhcmFtcw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 739,
+    "name": "stream_context_set_default",
+    "name_base64": "c3RyZWFtX2NvbnRleHRfc2V0X2RlZmF1bHQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 740,
+    "name": "stream_context_set_option",
+    "name_base64": "c3RyZWFtX2NvbnRleHRfc2V0X29wdGlvbg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 741,
+    "name": "stream_context_set_options",
+    "name_base64": "c3RyZWFtX2NvbnRleHRfc2V0X29wdGlvbnM=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 742,
+    "name": "stream_context_set_params",
+    "name_base64": "c3RyZWFtX2NvbnRleHRfc2V0X3BhcmFtcw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 743,
+    "name": "stream_copy_to_stream",
+    "name_base64": "c3RyZWFtX2NvcHlfdG9fc3RyZWFt",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 744,
+    "name": "stream_filter_append",
+    "name_base64": "c3RyZWFtX2ZpbHRlcl9hcHBlbmQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 745,
+    "name": "stream_filter_prepend",
+    "name_base64": "c3RyZWFtX2ZpbHRlcl9wcmVwZW5k",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 746,
+    "name": "stream_filter_register",
+    "name_base64": "c3RyZWFtX2ZpbHRlcl9yZWdpc3Rlcg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 747,
+    "name": "stream_filter_remove",
+    "name_base64": "c3RyZWFtX2ZpbHRlcl9yZW1vdmU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 748,
+    "name": "stream_get_contents",
+    "name_base64": "c3RyZWFtX2dldF9jb250ZW50cw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 749,
+    "name": "stream_get_filters",
+    "name_base64": "c3RyZWFtX2dldF9maWx0ZXJz",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 750,
+    "name": "stream_get_line",
+    "name_base64": "c3RyZWFtX2dldF9saW5l",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 751,
+    "name": "stream_get_meta_data",
+    "name_base64": "c3RyZWFtX2dldF9tZXRhX2RhdGE=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 752,
+    "name": "stream_get_transports",
+    "name_base64": "c3RyZWFtX2dldF90cmFuc3BvcnRz",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 753,
+    "name": "stream_get_wrappers",
+    "name_base64": "c3RyZWFtX2dldF93cmFwcGVycw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 754,
+    "name": "stream_is_local",
+    "name_base64": "c3RyZWFtX2lzX2xvY2Fs",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 755,
+    "name": "stream_isatty",
+    "name_base64": "c3RyZWFtX2lzYXR0eQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 756,
+    "name": "stream_register_wrapper",
+    "name_base64": "c3RyZWFtX3JlZ2lzdGVyX3dyYXBwZXI=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 757,
+    "name": "stream_resolve_include_path",
+    "name_base64": "c3RyZWFtX3Jlc29sdmVfaW5jbHVkZV9wYXRo",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 758,
+    "name": "stream_select",
+    "name_base64": "c3RyZWFtX3NlbGVjdA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 759,
+    "name": "stream_set_blocking",
+    "name_base64": "c3RyZWFtX3NldF9ibG9ja2luZw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 760,
+    "name": "stream_set_chunk_size",
+    "name_base64": "c3RyZWFtX3NldF9jaHVua19zaXpl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 761,
+    "name": "stream_set_read_buffer",
+    "name_base64": "c3RyZWFtX3NldF9yZWFkX2J1ZmZlcg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 762,
+    "name": "stream_set_timeout",
+    "name_base64": "c3RyZWFtX3NldF90aW1lb3V0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 763,
+    "name": "stream_set_write_buffer",
+    "name_base64": "c3RyZWFtX3NldF93cml0ZV9idWZmZXI=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 764,
+    "name": "stream_socket_accept",
+    "name_base64": "c3RyZWFtX3NvY2tldF9hY2NlcHQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 765,
+    "name": "stream_socket_client",
+    "name_base64": "c3RyZWFtX3NvY2tldF9jbGllbnQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 766,
+    "name": "stream_socket_enable_crypto",
+    "name_base64": "c3RyZWFtX3NvY2tldF9lbmFibGVfY3J5cHRv",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 767,
+    "name": "stream_socket_get_name",
+    "name_base64": "c3RyZWFtX3NvY2tldF9nZXRfbmFtZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 768,
+    "name": "stream_socket_pair",
+    "name_base64": "c3RyZWFtX3NvY2tldF9wYWly",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 769,
+    "name": "stream_socket_recvfrom",
+    "name_base64": "c3RyZWFtX3NvY2tldF9yZWN2ZnJvbQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 770,
+    "name": "stream_socket_sendto",
+    "name_base64": "c3RyZWFtX3NvY2tldF9zZW5kdG8=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 771,
+    "name": "stream_socket_server",
+    "name_base64": "c3RyZWFtX3NvY2tldF9zZXJ2ZXI=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 772,
+    "name": "stream_socket_shutdown",
+    "name_base64": "c3RyZWFtX3NvY2tldF9zaHV0ZG93bg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 773,
+    "name": "stream_supports_lock",
+    "name_base64": "c3RyZWFtX3N1cHBvcnRzX2xvY2s=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 774,
+    "name": "stream_wrapper_register",
+    "name_base64": "c3RyZWFtX3dyYXBwZXJfcmVnaXN0ZXI=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 775,
+    "name": "stream_wrapper_restore",
+    "name_base64": "c3RyZWFtX3dyYXBwZXJfcmVzdG9yZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 776,
+    "name": "stream_wrapper_unregister",
+    "name_base64": "c3RyZWFtX3dyYXBwZXJfdW5yZWdpc3Rlcg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 777,
+    "name": "strftime",
+    "name_base64": "c3RyZnRpbWU=",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 778,
+    "name": "strip_tags",
+    "name_base64": "c3RyaXBfdGFncw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 779,
+    "name": "stripcslashes",
+    "name_base64": "c3RyaXBjc2xhc2hlcw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 780,
+    "name": "stripos",
+    "name_base64": "c3RyaXBvcw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 781,
+    "name": "stripslashes",
+    "name_base64": "c3RyaXBzbGFzaGVz",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 782,
+    "name": "stristr",
+    "name_base64": "c3RyaXN0cg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 783,
+    "name": "strlen",
+    "name_base64": "c3RybGVu",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 784,
+    "name": "strnatcasecmp",
+    "name_base64": "c3RybmF0Y2FzZWNtcA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 785,
+    "name": "strnatcmp",
+    "name_base64": "c3RybmF0Y21w",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 786,
+    "name": "strncasecmp",
+    "name_base64": "c3RybmNhc2VjbXA=",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 787,
+    "name": "strncmp",
+    "name_base64": "c3RybmNtcA==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 788,
+    "name": "strpbrk",
+    "name_base64": "c3RycGJyaw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 789,
+    "name": "strpos",
+    "name_base64": "c3RycG9z",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 790,
+    "name": "strrchr",
+    "name_base64": "c3RycmNocg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 791,
+    "name": "strrev",
+    "name_base64": "c3RycmV2",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 792,
+    "name": "strripos",
+    "name_base64": "c3Rycmlwb3M=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 793,
+    "name": "strrpos",
+    "name_base64": "c3RycnBvcw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 794,
+    "name": "strspn",
+    "name_base64": "c3Ryc3Bu",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 795,
+    "name": "strstr",
+    "name_base64": "c3Ryc3Ry",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 796,
+    "name": "strtok",
+    "name_base64": "c3RydG9r",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 797,
+    "name": "strtolower",
+    "name_base64": "c3RydG9sb3dlcg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 798,
+    "name": "strtotime",
+    "name_base64": "c3RydG90aW1l",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 799,
+    "name": "strtoupper",
+    "name_base64": "c3RydG91cHBlcg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 800,
+    "name": "strtr",
+    "name_base64": "c3RydHI=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 801,
+    "name": "strval",
+    "name_base64": "c3RydmFs",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 802,
+    "name": "substr",
+    "name_base64": "c3Vic3Ry",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 803,
+    "name": "substr_compare",
+    "name_base64": "c3Vic3RyX2NvbXBhcmU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 804,
+    "name": "substr_count",
+    "name_base64": "c3Vic3RyX2NvdW50",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 805,
+    "name": "substr_replace",
+    "name_base64": "c3Vic3RyX3JlcGxhY2U=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 806,
+    "name": "symlink",
+    "name_base64": "c3ltbGluaw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 807,
+    "name": "sys_get_temp_dir",
+    "name_base64": "c3lzX2dldF90ZW1wX2Rpcg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 808,
+    "name": "syslog",
+    "name_base64": "c3lzbG9n",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 809,
+    "name": "system",
+    "name_base64": "c3lzdGVt",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 810,
+    "name": "tan",
+    "name_base64": "dGFu",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 811,
+    "name": "tanh",
+    "name_base64": "dGFuaA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 812,
+    "name": "tempnam",
+    "name_base64": "dGVtcG5hbQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 813,
+    "name": "time",
+    "name_base64": "dGltZQ==",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 814,
+    "name": "time_nanosleep",
+    "name_base64": "dGltZV9uYW5vc2xlZXA=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 815,
+    "name": "time_sleep_until",
+    "name_base64": "dGltZV9zbGVlcF91bnRpbA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 816,
+    "name": "timezone_abbreviations_list",
+    "name_base64": "dGltZXpvbmVfYWJicmV2aWF0aW9uc19saXN0",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 817,
+    "name": "timezone_identifiers_list",
+    "name_base64": "dGltZXpvbmVfaWRlbnRpZmllcnNfbGlzdA==",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 818,
+    "name": "timezone_location_get",
+    "name_base64": "dGltZXpvbmVfbG9jYXRpb25fZ2V0",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 819,
+    "name": "timezone_name_from_abbr",
+    "name_base64": "dGltZXpvbmVfbmFtZV9mcm9tX2FiYnI=",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 820,
+    "name": "timezone_name_get",
+    "name_base64": "dGltZXpvbmVfbmFtZV9nZXQ=",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 821,
+    "name": "timezone_offset_get",
+    "name_base64": "dGltZXpvbmVfb2Zmc2V0X2dldA==",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 822,
+    "name": "timezone_open",
+    "name_base64": "dGltZXpvbmVfb3Blbg==",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 823,
+    "name": "timezone_transitions_get",
+    "name_base64": "dGltZXpvbmVfdHJhbnNpdGlvbnNfZ2V0",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 824,
+    "name": "timezone_version_get",
+    "name_base64": "dGltZXpvbmVfdmVyc2lvbl9nZXQ=",
+    "origin": "base_internal_registration",
+    "extension": "date"
+  },
+  {
+    "index": 825,
+    "name": "tmpfile",
+    "name_base64": "dG1wZmlsZQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 826,
+    "name": "token_get_all",
+    "name_base64": "dG9rZW5fZ2V0X2FsbA==",
+    "origin": "base_internal_registration",
+    "extension": "tokenizer"
+  },
+  {
+    "index": 827,
+    "name": "token_name",
+    "name_base64": "dG9rZW5fbmFtZQ==",
+    "origin": "base_internal_registration",
+    "extension": "tokenizer"
+  },
+  {
+    "index": 828,
+    "name": "touch",
+    "name_base64": "dG91Y2g=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 829,
+    "name": "trait_exists",
+    "name_base64": "dHJhaXRfZXhpc3Rz",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 830,
+    "name": "trigger_error",
+    "name_base64": "dHJpZ2dlcl9lcnJvcg==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 831,
+    "name": "trim",
+    "name_base64": "dHJpbQ==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 832,
+    "name": "uasort",
+    "name_base64": "dWFzb3J0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 833,
+    "name": "ucfirst",
+    "name_base64": "dWNmaXJzdA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 834,
+    "name": "ucwords",
+    "name_base64": "dWN3b3Jkcw==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 835,
+    "name": "uksort",
+    "name_base64": "dWtzb3J0",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 836,
+    "name": "umask",
+    "name_base64": "dW1hc2s=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 837,
+    "name": "uniqid",
+    "name_base64": "dW5pcWlk",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 838,
+    "name": "unixtojd",
+    "name_base64": "dW5peHRvamQ=",
+    "origin": "base_internal_registration",
+    "extension": "calendar"
+  },
+  {
+    "index": 839,
+    "name": "unlink",
+    "name_base64": "dW5saW5r",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 840,
+    "name": "unpack",
+    "name_base64": "dW5wYWNr",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 841,
+    "name": "unregister_tick_function",
+    "name_base64": "dW5yZWdpc3Rlcl90aWNrX2Z1bmN0aW9u",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 842,
+    "name": "unserialize",
+    "name_base64": "dW5zZXJpYWxpemU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 843,
+    "name": "urldecode",
+    "name_base64": "dXJsZGVjb2Rl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 844,
+    "name": "urlencode",
+    "name_base64": "dXJsZW5jb2Rl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 845,
+    "name": "user_error",
+    "name_base64": "dXNlcl9lcnJvcg==",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 846,
+    "name": "usleep",
+    "name_base64": "dXNsZWVw",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 847,
+    "name": "usort",
+    "name_base64": "dXNvcnQ=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 848,
+    "name": "utf8_decode",
+    "name_base64": "dXRmOF9kZWNvZGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 849,
+    "name": "utf8_encode",
+    "name_base64": "dXRmOF9lbmNvZGU=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 850,
+    "name": "var_dump",
+    "name_base64": "dmFyX2R1bXA=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 851,
+    "name": "var_export",
+    "name_base64": "dmFyX2V4cG9ydA==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 852,
+    "name": "version_compare",
+    "name_base64": "dmVyc2lvbl9jb21wYXJl",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 853,
+    "name": "vfprintf",
+    "name_base64": "dmZwcmludGY=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 854,
+    "name": "vprintf",
+    "name_base64": "dnByaW50Zg==",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 855,
+    "name": "vsprintf",
+    "name_base64": "dnNwcmludGY=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 856,
+    "name": "wordwrap",
+    "name_base64": "d29yZHdyYXA=",
+    "origin": "base_internal_registration",
+    "extension": "standard"
+  },
+  {
+    "index": 857,
+    "name": "xml_error_string",
+    "name_base64": "eG1sX2Vycm9yX3N0cmluZw==",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 858,
+    "name": "xml_get_current_byte_index",
+    "name_base64": "eG1sX2dldF9jdXJyZW50X2J5dGVfaW5kZXg=",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 859,
+    "name": "xml_get_current_column_number",
+    "name_base64": "eG1sX2dldF9jdXJyZW50X2NvbHVtbl9udW1iZXI=",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 860,
+    "name": "xml_get_current_line_number",
+    "name_base64": "eG1sX2dldF9jdXJyZW50X2xpbmVfbnVtYmVy",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 861,
+    "name": "xml_get_error_code",
+    "name_base64": "eG1sX2dldF9lcnJvcl9jb2Rl",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 862,
+    "name": "xml_parse",
+    "name_base64": "eG1sX3BhcnNl",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 863,
+    "name": "xml_parse_into_struct",
+    "name_base64": "eG1sX3BhcnNlX2ludG9fc3RydWN0",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 864,
+    "name": "xml_parser_create",
+    "name_base64": "eG1sX3BhcnNlcl9jcmVhdGU=",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 865,
+    "name": "xml_parser_create_ns",
+    "name_base64": "eG1sX3BhcnNlcl9jcmVhdGVfbnM=",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 866,
+    "name": "xml_parser_free",
+    "name_base64": "eG1sX3BhcnNlcl9mcmVl",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 867,
+    "name": "xml_parser_get_option",
+    "name_base64": "eG1sX3BhcnNlcl9nZXRfb3B0aW9u",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 868,
+    "name": "xml_parser_set_option",
+    "name_base64": "eG1sX3BhcnNlcl9zZXRfb3B0aW9u",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 869,
+    "name": "xml_set_character_data_handler",
+    "name_base64": "eG1sX3NldF9jaGFyYWN0ZXJfZGF0YV9oYW5kbGVy",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 870,
+    "name": "xml_set_default_handler",
+    "name_base64": "eG1sX3NldF9kZWZhdWx0X2hhbmRsZXI=",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 871,
+    "name": "xml_set_element_handler",
+    "name_base64": "eG1sX3NldF9lbGVtZW50X2hhbmRsZXI=",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 872,
+    "name": "xml_set_end_namespace_decl_handler",
+    "name_base64": "eG1sX3NldF9lbmRfbmFtZXNwYWNlX2RlY2xfaGFuZGxlcg==",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 873,
+    "name": "xml_set_external_entity_ref_handler",
+    "name_base64": "eG1sX3NldF9leHRlcm5hbF9lbnRpdHlfcmVmX2hhbmRsZXI=",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 874,
+    "name": "xml_set_notation_decl_handler",
+    "name_base64": "eG1sX3NldF9ub3RhdGlvbl9kZWNsX2hhbmRsZXI=",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 875,
+    "name": "xml_set_object",
+    "name_base64": "eG1sX3NldF9vYmplY3Q=",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 876,
+    "name": "xml_set_processing_instruction_handler",
+    "name_base64": "eG1sX3NldF9wcm9jZXNzaW5nX2luc3RydWN0aW9uX2hhbmRsZXI=",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 877,
+    "name": "xml_set_start_namespace_decl_handler",
+    "name_base64": "eG1sX3NldF9zdGFydF9uYW1lc3BhY2VfZGVjbF9oYW5kbGVy",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 878,
+    "name": "xml_set_unparsed_entity_decl_handler",
+    "name_base64": "eG1sX3NldF91bnBhcnNlZF9lbnRpdHlfZGVjbF9oYW5kbGVy",
+    "origin": "base_internal_registration",
+    "extension": "xml"
+  },
+  {
+    "index": 879,
+    "name": "xmlwriter_end_attribute",
+    "name_base64": "eG1sd3JpdGVyX2VuZF9hdHRyaWJ1dGU=",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 880,
+    "name": "xmlwriter_end_cdata",
+    "name_base64": "eG1sd3JpdGVyX2VuZF9jZGF0YQ==",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 881,
+    "name": "xmlwriter_end_comment",
+    "name_base64": "eG1sd3JpdGVyX2VuZF9jb21tZW50",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 882,
+    "name": "xmlwriter_end_document",
+    "name_base64": "eG1sd3JpdGVyX2VuZF9kb2N1bWVudA==",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 883,
+    "name": "xmlwriter_end_dtd",
+    "name_base64": "eG1sd3JpdGVyX2VuZF9kdGQ=",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 884,
+    "name": "xmlwriter_end_dtd_attlist",
+    "name_base64": "eG1sd3JpdGVyX2VuZF9kdGRfYXR0bGlzdA==",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 885,
+    "name": "xmlwriter_end_dtd_element",
+    "name_base64": "eG1sd3JpdGVyX2VuZF9kdGRfZWxlbWVudA==",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 886,
+    "name": "xmlwriter_end_dtd_entity",
+    "name_base64": "eG1sd3JpdGVyX2VuZF9kdGRfZW50aXR5",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 887,
+    "name": "xmlwriter_end_element",
+    "name_base64": "eG1sd3JpdGVyX2VuZF9lbGVtZW50",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 888,
+    "name": "xmlwriter_end_pi",
+    "name_base64": "eG1sd3JpdGVyX2VuZF9waQ==",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 889,
+    "name": "xmlwriter_flush",
+    "name_base64": "eG1sd3JpdGVyX2ZsdXNo",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 890,
+    "name": "xmlwriter_full_end_element",
+    "name_base64": "eG1sd3JpdGVyX2Z1bGxfZW5kX2VsZW1lbnQ=",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 891,
+    "name": "xmlwriter_open_memory",
+    "name_base64": "eG1sd3JpdGVyX29wZW5fbWVtb3J5",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 892,
+    "name": "xmlwriter_open_uri",
+    "name_base64": "eG1sd3JpdGVyX29wZW5fdXJp",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 893,
+    "name": "xmlwriter_output_memory",
+    "name_base64": "eG1sd3JpdGVyX291dHB1dF9tZW1vcnk=",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 894,
+    "name": "xmlwriter_set_indent",
+    "name_base64": "eG1sd3JpdGVyX3NldF9pbmRlbnQ=",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 895,
+    "name": "xmlwriter_set_indent_string",
+    "name_base64": "eG1sd3JpdGVyX3NldF9pbmRlbnRfc3RyaW5n",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 896,
+    "name": "xmlwriter_start_attribute",
+    "name_base64": "eG1sd3JpdGVyX3N0YXJ0X2F0dHJpYnV0ZQ==",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 897,
+    "name": "xmlwriter_start_attribute_ns",
+    "name_base64": "eG1sd3JpdGVyX3N0YXJ0X2F0dHJpYnV0ZV9ucw==",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 898,
+    "name": "xmlwriter_start_cdata",
+    "name_base64": "eG1sd3JpdGVyX3N0YXJ0X2NkYXRh",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 899,
+    "name": "xmlwriter_start_comment",
+    "name_base64": "eG1sd3JpdGVyX3N0YXJ0X2NvbW1lbnQ=",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 900,
+    "name": "xmlwriter_start_document",
+    "name_base64": "eG1sd3JpdGVyX3N0YXJ0X2RvY3VtZW50",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 901,
+    "name": "xmlwriter_start_dtd",
+    "name_base64": "eG1sd3JpdGVyX3N0YXJ0X2R0ZA==",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 902,
+    "name": "xmlwriter_start_dtd_attlist",
+    "name_base64": "eG1sd3JpdGVyX3N0YXJ0X2R0ZF9hdHRsaXN0",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 903,
+    "name": "xmlwriter_start_dtd_element",
+    "name_base64": "eG1sd3JpdGVyX3N0YXJ0X2R0ZF9lbGVtZW50",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 904,
+    "name": "xmlwriter_start_dtd_entity",
+    "name_base64": "eG1sd3JpdGVyX3N0YXJ0X2R0ZF9lbnRpdHk=",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 905,
+    "name": "xmlwriter_start_element",
+    "name_base64": "eG1sd3JpdGVyX3N0YXJ0X2VsZW1lbnQ=",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 906,
+    "name": "xmlwriter_start_element_ns",
+    "name_base64": "eG1sd3JpdGVyX3N0YXJ0X2VsZW1lbnRfbnM=",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 907,
+    "name": "xmlwriter_start_pi",
+    "name_base64": "eG1sd3JpdGVyX3N0YXJ0X3Bp",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 908,
+    "name": "xmlwriter_text",
+    "name_base64": "eG1sd3JpdGVyX3RleHQ=",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 909,
+    "name": "xmlwriter_write_attribute",
+    "name_base64": "eG1sd3JpdGVyX3dyaXRlX2F0dHJpYnV0ZQ==",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 910,
+    "name": "xmlwriter_write_attribute_ns",
+    "name_base64": "eG1sd3JpdGVyX3dyaXRlX2F0dHJpYnV0ZV9ucw==",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 911,
+    "name": "xmlwriter_write_cdata",
+    "name_base64": "eG1sd3JpdGVyX3dyaXRlX2NkYXRh",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 912,
+    "name": "xmlwriter_write_comment",
+    "name_base64": "eG1sd3JpdGVyX3dyaXRlX2NvbW1lbnQ=",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 913,
+    "name": "xmlwriter_write_dtd",
+    "name_base64": "eG1sd3JpdGVyX3dyaXRlX2R0ZA==",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 914,
+    "name": "xmlwriter_write_dtd_attlist",
+    "name_base64": "eG1sd3JpdGVyX3dyaXRlX2R0ZF9hdHRsaXN0",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 915,
+    "name": "xmlwriter_write_dtd_element",
+    "name_base64": "eG1sd3JpdGVyX3dyaXRlX2R0ZF9lbGVtZW50",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 916,
+    "name": "xmlwriter_write_dtd_entity",
+    "name_base64": "eG1sd3JpdGVyX3dyaXRlX2R0ZF9lbnRpdHk=",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 917,
+    "name": "xmlwriter_write_element",
+    "name_base64": "eG1sd3JpdGVyX3dyaXRlX2VsZW1lbnQ=",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 918,
+    "name": "xmlwriter_write_element_ns",
+    "name_base64": "eG1sd3JpdGVyX3dyaXRlX2VsZW1lbnRfbnM=",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 919,
+    "name": "xmlwriter_write_pi",
+    "name_base64": "eG1sd3JpdGVyX3dyaXRlX3Bp",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 920,
+    "name": "xmlwriter_write_raw",
+    "name_base64": "eG1sd3JpdGVyX3dyaXRlX3Jhdw==",
+    "origin": "base_internal_registration",
+    "extension": "xmlwriter"
+  },
+  {
+    "index": 921,
+    "name": "zend_version",
+    "name_base64": "emVuZF92ZXJzaW9u",
+    "origin": "base_internal_registration",
+    "extension": "Core"
+  },
+  {
+    "index": 922,
+    "name": "zlib_decode",
+    "name_base64": "emxpYl9kZWNvZGU=",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 923,
+    "name": "zlib_encode",
+    "name_base64": "emxpYl9lbmNvZGU=",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 924,
+    "name": "zlib_get_coding_type",
+    "name_base64": "emxpYl9nZXRfY29kaW5nX3R5cGU=",
+    "origin": "base_internal_registration",
+    "extension": "zlib"
+  },
+  {
+    "index": 925,
+    "name": "__all_throwable_string",
+    "name_base64": "X19hbGxfdGhyb3dhYmxlX3N0cmluZw==",
+    "origin": "internal_helper_extra",
+    "extension": null
+  },
+  {
+    "index": 926,
+    "name": "__all_unregistered_probe_33b822d0ad53ccacc1c0ee93acbfb2c9",
+    "name_base64": "X19hbGxfdW5yZWdpc3RlcmVkX3Byb2JlXzMzYjgyMmQwYWQ1M2NjYWNjMWMwZWU5M2FjYmZiMmM5",
+    "origin": "unregistered_random_literal",
+    "extension": null
+  }
+]

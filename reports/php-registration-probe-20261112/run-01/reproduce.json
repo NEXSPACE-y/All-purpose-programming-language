@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "C:\\Users\\rinpa\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\oracle\\api\\probe_registration.py",
+    "--inventory",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-api-inventory-20261112\\run-01",
+    "--output",
+    "NEW_OUTPUT_DIRECTORY",
+    "--adapter",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+    "--php",
+    "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+    "--powershell",
+    "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "--max-source-chars",
+    "100000",
+    "--names-per-process",
+    "100",
+    "--timeout",
+    "120",
+    "--sentinel",
+    "__all_unregistered_probe_33b822d0ad53ccacc1c0ee93acbfb2c9"
+  ]
+}

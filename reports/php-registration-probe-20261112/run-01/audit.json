@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "checks": [
+    "all925originalname_base64entriespreservedinorder",
+    "all927indicesuniqueandbothobserved",
+    "sourcebytesexactlyregeneratedwithoutreflectedfunctioninvocation",
+    "everychunkunder100000chars",
+    "allrawrowsparsewithoutnormalization",
+    "allprocessstatus0andstderrempty",
+    "allinputsunchanged",
+    "bothextrasobservedfalseonboth"
+  ],
+  "registration_observation_only": true,
+  "function_implementation_verified": false,
+  "query_primitive_executed": "function_exists",
+  "target_functions_dynamically_invoked_from_reflection_names": false
+}

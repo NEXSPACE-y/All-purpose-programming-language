@@ -1,0 +1,2 @@
+Deprecated: Constant SUNFUNCS_RET_STRING is deprecated since 8.4, as date_sunrise() and date_sunset() were deprecated in 8.1 in C:\Users\rinpa\ALL-php-compat-20261112\tools\oracle\api\reflect.php on line 80
+Deprecated: Constant SUNFUNCS_RET_STRING is deprecated since 8.4, as date_sunrise() and date_sunset() were deprecated in 8.1 in C:\Users\rinpa\ALL-php-compat-20261112\tools\oracle\api\reflect.php on line 80
