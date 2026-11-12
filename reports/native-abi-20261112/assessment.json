@@ -1,0 +1,175 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-11-12T11:33:37.741326+00:00",
+  "status": "NATIVE_ABI_NOT_IMPLEMENTED",
+  "base_commit": "9d8171712828a0b57555b8eb1e1ca5c475391244",
+  "inspected_adapter_sha256": "2f462dee734635968d540d1f8bf68fd30e0eebec662081c4ccb409bde57fc934",
+  "evidence_checks": {
+    "dumpbin_core_export_count_matches": true,
+    "dumpbin_dl_test_symbols_match": true,
+    "compiled_module_size_matches_static_entries": true,
+    "compiled_module_api_matches_static_entries": true,
+    "compiled_build_id_matches_static_entries": true,
+    "all_modules_amd64": true,
+    "no_php_import_in_layout_exe": true,
+    "all_imported_core_symbols_present_in_oracle_exports": true,
+    "source_zip_hash_matches_target": true,
+    "devel_zip_hash_matches_target": true
+  },
+  "measured_summary": {
+    "extension_dll_count": 36,
+    "core_named_exports": 6158,
+    "extension_unique_php8ts_imports": 985,
+    "imported_core_data_symbols": 59,
+    "unmatched_named_core_imports": [],
+    "decoded_module_count": 36,
+    "module_api_values": [
+      20250925
+    ],
+    "module_entry_sizes": [
+      168
+    ],
+    "module_build_ids": [
+      "API20250925,TS,VS17"
+    ],
+    "module_zts_values": [
+      1
+    ],
+    "module_debug_values": [
+      0
+    ],
+    "dependency_dlls": [
+      "advapi32.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-multibyte-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-utility-l1-1-0.dll",
+      "bcrypt.dll",
+      "brotlidec.dll",
+      "crypt32.dll",
+      "fbclient.dll",
+      "gdi32.dll",
+      "icuin77.dll",
+      "icuio77.dll",
+      "icuuc77.dll",
+      "iphlpapi.dll",
+      "kernel32.dll",
+      "libcrypto-3-x64.dll",
+      "libenchant2.dll",
+      "libpq.dll",
+      "libsasl.dll",
+      "libsodium.dll",
+      "libsqlite3.dll",
+      "libssh2.dll",
+      "libssl-3-x64.dll",
+      "msvcp140.dll",
+      "nghttp2.dll",
+      "normaliz.dll",
+      "ntdll.dll",
+      "odbc32.dll",
+      "ole32.dll",
+      "oleaut32.dll",
+      "php8ts.dll",
+      "secur32.dll",
+      "user32.dll",
+      "vcruntime140.dll",
+      "vcruntime140_1.dll",
+      "wldap32.dll",
+      "ws2_32.dll"
+    ]
+  },
+  "dl_test_symbol_count": 29,
+  "native_layout_constant_program_executed": true,
+  "php_or_extension_code_loaded_or_executed": false,
+  "acceptance": {
+    "native_binary_load_verified": false,
+    "native_function_semantics_verified": false,
+    "native_request_lifecycle_verified": false,
+    "third_party_extensions_verified": false,
+    "web_sapi_verified": false,
+    "PHP_FULL_COMPATIBLE": false
+  },
+  "approval_needed": "Adopt independent native ABI runtime/state and reviewed value/call-boundary integration (design option A)",
+  "artifacts": [
+    {
+      "path": "docs/design/PHP_NATIVE_ABI_DESIGN.md",
+      "size_bytes": 21109,
+      "sha256": "223279966952b13f82f2e4f4a4067988a8f54baecf34850944c522444d9b8d91"
+    },
+    {
+      "path": "reports/native-abi-20261112/dumpbin-php8ts-exports.log",
+      "size_bytes": 325209,
+      "sha256": "1d86a0cda95c126b18c6cced75013b340b85eef299b15838d60cb68a78a10382"
+    },
+    {
+      "path": "reports/native-abi-20261112/dumpbin-php_dl_test-imports.log",
+      "size_bytes": 5042,
+      "sha256": "dc7c6b4ac2bc408db7e7f05bc27b15ec6cd2742501840c8bc7420781849cb7d4"
+    },
+    {
+      "path": "reports/native-abi-20261112/header-layout-build.log",
+      "size_bytes": 14,
+      "sha256": "71c51e3bbb9b5e8ebf0895685222d60f93d7d6d5bf5e2b8204f667267f7e3952"
+    },
+    {
+      "path": "reports/native-abi-20261112/header-layout-exe-imports.log",
+      "size_bytes": 4046,
+      "sha256": "0906400b0cbcdfd08efb4d5cf1a34163563c4735f8c037ef91348bde857dd10e"
+    },
+    {
+      "path": "reports/native-abi-20261112/header-layout.json",
+      "size_bytes": 2562,
+      "sha256": "b6e4a9a8bb079a4534cad349669be278ecda440c05d4671003c300a0875b1aa8"
+    },
+    {
+      "path": "reports/native-abi-20261112/pe-inventory.json",
+      "size_bytes": 2245765,
+      "sha256": "4570648a8c150e73621b2d266a0796bc8ecd9eaadadcddf31b0ef4bd94ddd5e5"
+    },
+    {
+      "path": "tools/abi/Abi-Layout.c",
+      "size_bytes": 2096,
+      "sha256": "f073aeef42c972637bc7c0c569e7fe5ea07d940571b969dc56d06106eac706df"
+    },
+    {
+      "path": "tools/abi/Inspect-NativeAbi.py",
+      "size_bytes": 11903,
+      "sha256": "646df331851d80496b2802900e4c3b63b2284fffeeff8eadcbf7fea51d6943cb"
+    },
+    {
+      "path": "tools/abi/Measure-HeaderLayout.ps1",
+      "size_bytes": 4091,
+      "sha256": "db4263be574220840eaf3d5d552b6402193ddb22a9ec7ea07fe009c6118363d0"
+    }
+  ],
+  "owner_approval_overlay": {
+    "date_jst": "2026-11-12",
+    "option_A": "APPROVED",
+    "option_B": "NOT_APPROVED",
+    "os_architecture": [
+      "Windows 11 x64",
+      "Linux x64"
+    ],
+    "web_sapi": [
+      "built-in development server",
+      "CGI",
+      "FastCGI",
+      "Apache",
+      "FPM on Linux"
+    ],
+    "implementation_status": "FIRST_MODULE_SELECTED_ACCEPTANCE_PASS",
+    "implementation_report": "reports/native-abi-implementation-20261112/README.md",
+    "original_static_assessment_is_historical": true,
+    "PHP_FULL_COMPATIBLE": false,
+    "measured_scope": "37 unique call cases in two modes, 74 exact comparisons; 24 scalar bridge checks; not full module/PHP compatibility",
+    "implementation_acceptance": "reports/native-abi-implementation-20261112/acceptance.json"
+  }
+}

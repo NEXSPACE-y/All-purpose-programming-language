@@ -1,0 +1,453 @@
+[
+  {
+    "id": "output_none",
+    "function": "dl_test_test1",
+    "args": [],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "output_wrong_count",
+    "function": "dl_test_test1",
+    "args": [
+      {
+        "type": 4,
+        "integer": 1
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "string_default",
+    "function": "dl_test_test2",
+    "args": [],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "string_ascii",
+    "function": "dl_test_test2",
+    "args": [
+      {
+        "type": 6,
+        "base64": "QUxM"
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "string_empty",
+    "function": "dl_test_test2",
+    "args": [
+      {
+        "type": 6,
+        "base64": ""
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "string_unicode",
+    "function": "dl_test_test2",
+    "args": [
+      {
+        "type": 6,
+        "base64": "5pel5pys6Kqe"
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "string_nul",
+    "function": "dl_test_test2",
+    "args": [
+      {
+        "type": 6,
+        "base64": "QQBC"
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "string_weak_int",
+    "function": "dl_test_test2",
+    "args": [
+      {
+        "type": 4,
+        "integer": 123
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "string_weak_bool",
+    "function": "dl_test_test2",
+    "args": [
+      {
+        "type": 3
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "string_bad_array",
+    "function": "dl_test_test2",
+    "args": [
+      {
+        "type": 7
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "string_weak_null",
+    "function": "dl_test_test2",
+    "args": [
+      {
+        "type": 1
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "string_weak_float",
+    "function": "dl_test_test2",
+    "args": [
+      {
+        "type": 5,
+        "real": 2.5
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "string_many",
+    "function": "dl_test_test2",
+    "args": [
+      {
+        "type": 6,
+        "base64": "QQ=="
+      },
+      {
+        "type": 6,
+        "base64": "Qg=="
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "string_strict_int",
+    "function": "dl_test_test2",
+    "args": [
+      {
+        "type": 4,
+        "integer": 12
+      }
+    ],
+    "scope": "",
+    "strict": true,
+    "frameless": false
+  },
+  {
+    "id": "integer_long",
+    "function": "dl_test_frameless",
+    "args": [
+      {
+        "type": 4,
+        "integer": 42
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "integer_minimum",
+    "function": "dl_test_frameless",
+    "args": [
+      {
+        "type": 4,
+        "integer": -9223372036854775808
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "integer_maximum",
+    "function": "dl_test_frameless",
+    "args": [
+      {
+        "type": 4,
+        "integer": 9223372036854775807
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "integer_numeric_string",
+    "function": "dl_test_frameless",
+    "args": [
+      {
+        "type": 6,
+        "base64": "MTk="
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "integer_decimal_string",
+    "function": "dl_test_frameless",
+    "args": [
+      {
+        "type": 6,
+        "base64": "MTkuMA=="
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "integer_bool",
+    "function": "dl_test_frameless",
+    "args": [
+      {
+        "type": 3
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "integer_float",
+    "function": "dl_test_frameless",
+    "args": [
+      {
+        "type": 5,
+        "real": 2.0
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "integer_fraction",
+    "function": "dl_test_frameless",
+    "args": [
+      {
+        "type": 5,
+        "real": 2.75
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "integer_bad_array",
+    "function": "dl_test_frameless",
+    "args": [
+      {
+        "type": 7
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "integer_null",
+    "function": "dl_test_frameless",
+    "args": [
+      {
+        "type": 1
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "integer_missing",
+    "function": "dl_test_frameless",
+    "args": [],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "integer_many",
+    "function": "dl_test_frameless",
+    "args": [
+      {
+        "type": 4,
+        "integer": 1
+      },
+      {
+        "type": 4,
+        "integer": 2
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "integer_strict_string",
+    "function": "dl_test_frameless",
+    "args": [
+      {
+        "type": 6,
+        "base64": "MTk="
+      }
+    ],
+    "scope": "",
+    "strict": true,
+    "frameless": false
+  },
+  {
+    "id": "frameless_long",
+    "function": "dl_test_frameless",
+    "args": [
+      {
+        "type": 4,
+        "integer": 71
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": true
+  },
+  {
+    "id": "frameless_string",
+    "function": "dl_test_frameless",
+    "args": [
+      {
+        "type": 6,
+        "base64": "NzI="
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": true
+  },
+  {
+    "id": "frameless_strict_string",
+    "function": "dl_test_frameless",
+    "args": [
+      {
+        "type": 6,
+        "base64": "NzI="
+      }
+    ],
+    "scope": "",
+    "strict": true,
+    "frameless": true
+  },
+  {
+    "id": "frameless_bad_array",
+    "function": "dl_test_frameless",
+    "args": [
+      {
+        "type": 7
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": true
+  },
+  {
+    "id": "method_default",
+    "function": "test",
+    "args": [],
+    "scope": "DlTest",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "method_string",
+    "function": "test",
+    "args": [
+      {
+        "type": 6,
+        "base64": "QUxM"
+      }
+    ],
+    "scope": "DlTest",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "method_type_error",
+    "function": "test",
+    "args": [
+      {
+        "type": 7
+      }
+    ],
+    "scope": "DlTest",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "superclass_null",
+    "function": "test",
+    "args": [],
+    "scope": "DlTestSuperClass",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "inherited_method",
+    "function": "test",
+    "args": [],
+    "scope": "DlTestSubClass",
+    "strict": false,
+    "frameless": false
+  },
+  {
+    "id": "string_arbitrary_invalid_UTF8_bytes",
+    "function": "dl_test_test2",
+    "args": [
+      {
+        "type": 6,
+        "base64": "//5B"
+      }
+    ],
+    "scope": "",
+    "strict": false,
+    "frameless": false
+  }
+]

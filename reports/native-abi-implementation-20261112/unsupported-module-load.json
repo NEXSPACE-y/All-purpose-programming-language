@@ -1,0 +1,9 @@
+{
+    "extension":  "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_shmop.dll",
+    "status":  "LOAD_REJECTED",
+    "error":  "Exception calling \"LoadExtension\" with \"1\" argument(s): \"Error: Extension load failed, Win32 error 127\"",
+    "core_path":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi\\out\\windows-x64-ts\\php8ts.dll",
+    "loaded_php_modules":  [
+                               "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi\\out\\windows-x64-ts\\php8ts.dll"
+                           ]
+}
