@@ -1,0 +1,26 @@
+{
+    "pid":  17280,
+    "startedUtc":  "2026-11-12T13:04:28.7259674Z",
+    "finishedUtc":  "2026-11-12T13:10:10.7399968Z",
+    "durationSeconds":  340.86,
+    "validator":  "package/ALL_PHP_v3_19_validate.ps1",
+    "arguments":  [
+                      "-CompileCSharp"
+                  ],
+    "installedMode":  false,
+    "exitCode":  0,
+    "failure":  null,
+    "packageUnchanged":  true,
+    "helperAssemblies":  [
+                             {
+                                 "fullName":  "kbvpwv1z, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+                                 "location":  "",
+                                 "fileExists":  false
+                             },
+                             {
+                                 "fullName":  "w3y1b5ud, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+                                 "location":  "",
+                                 "fileExists":  false
+                             }
+                         ]
+}

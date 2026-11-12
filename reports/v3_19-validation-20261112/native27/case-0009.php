@@ -1,0 +1,1 @@
+<?php $f='dl_test_test2'; echo $f('ALL');

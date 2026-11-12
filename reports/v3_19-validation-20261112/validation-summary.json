@@ -1,0 +1,64 @@
+{
+  "status": "NOT_COMPLETE",
+  "defaultApiRegressionStatus": "PASS",
+  "scope": "Only actual PS5.1 default API965 regression and package preflight; other strict/native/private/alias runs are separate",
+  "adapterSha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+  "powerShellVersion": "5.1.26100.9818",
+  "defaultApiValidation": {
+    "total": 965,
+    "passed": 965,
+    "failed": 0,
+    "original940Passed": 940,
+    "runtimeNamespace25Passed": 25,
+    "actualProcessExitCode": 0,
+    "validator": "package/ALL_PHP_v3_19_validate.ps1",
+    "arguments": [
+      "-CompileCSharp"
+    ],
+    "durationSeconds": 340.86,
+    "processDurationSeconds": 346.286,
+    "powerShellSyntaxScripts": 100,
+    "manifestFiles": 215,
+    "compiledCSharpHelpers": 2,
+    "packageSnapshotFilesBefore": 216,
+    "packageSnapshotFilesAfter": 216,
+    "packageUnchanged": true,
+    "adapterBefore": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+    "adapterAfter": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+    "stderrBytes": 0,
+    "passLines": 965,
+    "failLines": 0,
+    "summary": "ALL PHP v3.19 default API regression: 965/965 passed; 0 failed",
+    "helperAssemblies": [
+      {
+        "fullName": "kbvpwv1z, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "location": "",
+        "fileExists": false
+      },
+      {
+        "fullName": "w3y1b5ud, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "location": "",
+        "fileExists": false
+      }
+    ]
+  },
+  "old940": {
+    "against": "9d8171712828a0b57555b8eb1e1ca5c475391244",
+    "trackedFiles": 34,
+    "fixtureCollections": 32,
+    "beforeDiffExitCode": 0,
+    "afterDiffExitCode": 0,
+    "afterDiffOutput": []
+  },
+  "source_provenance": "source-provenance.json",
+  "unitTestsRepeated": false,
+  "otherComparisonsRepeatedByThisTask": false,
+  "nativeConformanceClaimed": false,
+  "referenceApiInventoryUsedAsCandidateEvidence": false,
+  "limitations": [
+    "965 regression fixtures do not establish full PHP conformance or feature coverage",
+    "CLI/private/native/alias/cached measurements are separate and are not counted here",
+    "C# helpers were compiled, not a general database/HTTP runtime acceptance",
+    "Installed C:\\Users\\rinpa\\ALL was not executed"
+  ]
+}

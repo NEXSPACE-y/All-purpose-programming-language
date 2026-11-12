@@ -64,25 +64,38 @@
       "default_regression": "965/965 PASS; original 940 definitions/expectations unchanged",
       "strict_examples": "CLI14/14 and exit23/23 exact stdout/stderr bytes and actual exit status",
       "source_sha256": "6cfde5e729ff594741b6bb3a254a5bcbd25c2a1ef62f2ad4c9f2b9642b1efb8a"
+    },
+    {
+      "component": "PHP v3.19 independent native evaluator integration and core fixes",
+      "source_sha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+      "default_regression": "965/965 PASS; original940 definitions/expectations unchanged",
+      "strict_examples": "CLI37/import23/registered-name19 match; cached10 match (8package+2baseline)",
+      "native_selected": "Latest full repetition23/23 match;4 unsupported guards rejected before native invocation, not conformance passes",
+      "native_initial_failure": "One process TIMEOUT retained (22/23); singleton and full repetition match; cause not established",
+      "private_examples": "12/14 match;2 known undefined dynamic function Error classification differences remain",
+      "package_hashes": "216 unchanged files before/after default regression and after strict comparisons",
+      "installed_runtime": "45 files unchanged by file list/length/SHA256",
+      "report": "reports/v3_19-validation-20261112/INTEGRATION_REVIEW.md"
     }
   ],
   "in_progress": [
     {
-      "component": "Optional NativeContext integration with the actual PHP evaluator",
-      "path": "tools/candidates/php-native/",
-      "state": "Isolated candidate: selected 23 exact comparisons, 4 explicit pre-invocation rejections, default73/73; independent review pending before adoption",
-      "base_sha256": "6cfde5e729ff594741b6bb3a254a5bcbd25c2a1ef62f2ad4c9f2b9642b1efb8a"
+      "component": "Synchronous native diagnostic callback",
+      "path": "native/php85abi-callback/",
+      "state": "Separate prototype only; final15 same-source comparisons and synthetic27 contract checks passed; documentation being fixed; not part of package or accepted frozen core"
+    },
+    {
+      "component": "PHP language/standard library and general native ABI",
+      "state": "Incomplete: undefined dynamic callable Error classification, byte strings, generators/fibers/attributes/Reflection, full library, general native values/identity/callback/lifecycle and extension binaries remain"
+    },
+    {
+      "component": "Windows Web SAPIs and Linux x64",
+      "state": "Unimplemented/unverified; Linux environment decision pending"
     },
     {
       "component": "Reference-only PHP API inventory",
       "path": "reports/php-api-inventory-20261112/",
-      "observation": "37 profiles; 35/36 DLLs loaded; php_pdo_firebird startup failure retained; 13934 exposure candidates are UNVERIFIED/NOT_ASSESSED",
-      "candidate_function_implementation_verified_by_inventory": false
-    },
-    {
-      "component": "Private Throwable formatting binding",
-      "path": "tools/candidates/php-private-throwable/",
-      "state": "Independent candidate based on frozen native integration; removes user-hijackable internal helper binding"
+      "observation": "13934 exposure candidates UNVERIFIED/NOT_ASSESSED. Base registration query925names:80true/845false in v3.18. Not implementation counts."
     }
   ],
   "pending_owner_input": [

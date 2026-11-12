@@ -1,0 +1,277 @@
+{
+  "schema_version": 1,
+  "status": "NOT_COMPLETE",
+  "isolated_candidate": true,
+  "measurement": "exact stdout bytes, stderr bytes and actual process status; no normalization",
+  "scope": "Listed examples only; not full CLI/SAPI/PHP conformance.",
+  "inputs_before": {
+    "cases": "f6a8eb8fca7288454b877844b872ed42c925fc613b06b54584c1ae0c07f45677",
+    "adapter": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "worker": "471bcb240f0a29ea256ef1a5fc8f6ecdeb0094a323f19a8811d3f84e883e62ac"
+  },
+  "inputs_after": {
+    "cases": "f6a8eb8fca7288454b877844b872ed42c925fc613b06b54584c1ae0c07f45677",
+    "adapter": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "worker": "471bcb240f0a29ea256ef1a5fc8f6ecdeb0094a323f19a8811d3f84e883e62ac"
+  },
+  "inputs_unchanged": true,
+  "total": 5,
+  "passed": 5,
+  "different": 0,
+  "results": [
+    {
+      "id": "public-redeclare.conditional-false-valid",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\redeclare-positive5\\case-0000.php",
+      "source_sha256": "a5633e6e57380fea0a0314fa7fc0209e134f088b8e26bbdc4c5a3c00ac34c6bb",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.36972059996332973,
+        "stdout_base64": "Mw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\redeclare-positive5\\case-0000.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 6.195108699961565,
+        "stdout_base64": "Mw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\redeclare-positive5\\case-0000.php"
+        ]
+      }
+    },
+    {
+      "id": "public-redeclare.namespace-valid",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\redeclare-positive5\\case-0001.php",
+      "source_sha256": "c3d40a7aba849e0fcb1ec7ef3ad11d7d49466af42f131ec531a8eb0f1408a2b9",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.18926249991636723,
+        "stdout_base64": "OQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "9",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\redeclare-positive5\\case-0001.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 5.692257699905895,
+        "stdout_base64": "OQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "9",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\redeclare-positive5\\case-0001.php"
+        ]
+      }
+    },
+    {
+      "id": "public-redeclare.same-method-valid",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\redeclare-positive5\\case-0002.php",
+      "source_sha256": "0a2d00e2341fb6087a29d9ac42d4ebeec95bb8a65227aefd33bb214a9dbce11a",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.14975099998991936,
+        "stdout_base64": "OXwz",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "9|3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\redeclare-positive5\\case-0002.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 5.358704299898818,
+        "stdout_base64": "OXwz",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "9|3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\redeclare-positive5\\case-0002.php"
+        ]
+      }
+    },
+    {
+      "id": "public-redeclare.private-helper-user-legal",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\redeclare-positive5\\case-0003.php",
+      "source_sha256": "14f5404690f3f511b6767328222158f7ae4f99e75f793593c8b0ff9f94ac27e2",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.24977440002840012,
+        "stdout_base64": "dXNlcg==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "user",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\redeclare-positive5\\case-0003.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 4.46850610000547,
+        "stdout_base64": "dXNlcg==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "user",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\redeclare-positive5\\case-0003.php"
+        ]
+      }
+    },
+    {
+      "id": "public-redeclare.case-insensitive-fatal",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\redeclare-positive5\\case-0004.php",
+      "source_sha256": "7952b729b69c8adb453e51d1636f82e4554e6c5001f752e08d98deea03227a03",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.17204929993022233,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IENhbm5vdCByZWRlY2xhcmUgZnVuY3Rpb24gU1RSTEVOKCkgaW4gQzpcVXNlcnNccmlucGFcQUxMLXBocC1jb21wYXQtMjAyNjExMTJccmVwb3J0c1x2M18xOS12YWxpZGF0aW9uLTIwMjYxMTEyXHJlZGVjbGFyZS1wb3NpdGl2ZTVcY2FzZS0wMDA0LnBocCBvbiBsaW5lIDEKU3RhY2sgdHJhY2U6CiMwIHttYWlufQo=",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Cannot redeclare function STRLEN() in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\redeclare-positive5\\case-0004.php on line 1\nStack trace:\n#0 {main}\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\redeclare-positive5\\case-0004.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 4.17233239999041,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IENhbm5vdCByZWRlY2xhcmUgZnVuY3Rpb24gU1RSTEVOKCkgaW4gQzpcVXNlcnNccmlucGFcQUxMLXBocC1jb21wYXQtMjAyNjExMTJccmVwb3J0c1x2M18xOS12YWxpZGF0aW9uLTIwMjYxMTEyXHJlZGVjbGFyZS1wb3NpdGl2ZTVcY2FzZS0wMDA0LnBocCBvbiBsaW5lIDEKU3RhY2sgdHJhY2U6CiMwIHttYWlufQo=",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Cannot redeclare function STRLEN() in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\redeclare-positive5\\case-0004.php on line 1\nStack trace:\n#0 {main}\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\redeclare-positive5\\case-0004.php"
+        ]
+      }
+    }
+  ]
+}

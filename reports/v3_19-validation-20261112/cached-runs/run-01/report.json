@@ -1,0 +1,498 @@
+{
+  "status": "NOT_COMPLETE",
+  "scope": "Original cached10 replay:2old-adapter warmups+8actual-package Runs. Captured Console text encodedUTF8 compared with independent official-process bytes; per-Run context status is not labelled a candidate process exit.",
+  "actual_package_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+  "actual_package_sha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+  "inputs_before": {
+    "actual_package": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+    "base_cache_warmup_adapter": "47c8edb9e39bffe3ed5475f2aeed7e36673a798d2f72baf0cb60abc39695322d",
+    "worker": "b9a9c3dbf01766273c6474c8b746243b334f12f9ec4600ca4af60fae5c9e0f2b",
+    "oracle_php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "original_report": "a5632702252b0cad21b544e7c73780f82d689d1fa75986307bba96d31685ef55",
+    "driver": "6e44e9365771b7ccadb8ba968ad1f9d838786cf1a03405d3e72778350b5438cb"
+  },
+  "inputs_after": {
+    "actual_package": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+    "base_cache_warmup_adapter": "47c8edb9e39bffe3ed5475f2aeed7e36673a798d2f72baf0cb60abc39695322d",
+    "worker": "b9a9c3dbf01766273c6474c8b746243b334f12f9ec4600ca4af60fae5c9e0f2b",
+    "oracle_php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "original_report": "a5632702252b0cad21b544e7c73780f82d689d1fa75986307bba96d31685ef55",
+    "driver": "6e44e9365771b7ccadb8ba968ad1f9d838786cf1a03405d3e72778350b5438cb"
+  },
+  "inputs_unchanged": true,
+  "original_sources_unchanged": true,
+  "cache_reset_performed": false,
+  "total": 10,
+  "matched": 10,
+  "actual_package_runs": 8,
+  "host_processes": [
+    {
+      "state": "EXITED",
+      "exit_code": 0,
+      "elapsed_seconds": 57.12900219997391,
+      "stdout_base64": "",
+      "stderr_base64": "",
+      "stdout_utf8_preview": "",
+      "stderr_utf8_preview": "",
+      "command": [
+        "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-private-throwable\\Observe-CachedRuns.ps1",
+        "-BaseAdapterPath",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+        "-AdapterPath",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+        "-SequencePath",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\sequence.json",
+        "-ReportPath",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\observed.json"
+      ]
+    },
+    {
+      "state": "EXITED",
+      "exit_code": 0,
+      "elapsed_seconds": 45.08414759999141,
+      "stdout_base64": "",
+      "stderr_base64": "",
+      "stdout_utf8_preview": "",
+      "stderr_utf8_preview": "",
+      "command": [
+        "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-private-throwable\\Observe-CachedRuns.ps1",
+        "-BaseAdapterPath",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+        "-AdapterPath",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+        "-SequencePath",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\sequence.json",
+        "-ReportPath",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\observed.json"
+      ]
+    }
+  ],
+  "results": [
+    {
+      "parity": 0,
+      "actual_adapter_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+      "role": "base_cache_warmup",
+      "original_source_bytes_preserved": true,
+      "source_sha256": "f6e26f42bc3a7eb6733f062a95b1c8300356050d4edec007afa68824dd156154",
+      "candidate_run": {
+        "id": "old-cache-warmup",
+        "adapter": "base",
+        "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\case-00.php",
+        "stdout": "Exception: warm in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\case-00.php:1\nStack trace:\n#0 {main}",
+        "stderr": "",
+        "error": null,
+        "pipeline_count": 0,
+        "context_exit_code": 0,
+        "context_terminated": false
+      },
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.4245766999665648,
+        "stdout_base64": "RXhjZXB0aW9uOiB3YXJtIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNcdjNfMTktdmFsaWRhdGlvbi0yMDI2MTExMlxjYWNoZWQtcnVuc1xydW4tMDFccGFyaXR5LTBcY2FzZS0wMC5waHA6MQpTdGFjayB0cmFjZToKIzAge21haW59",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Exception: warm in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\case-00.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\case-00.php"
+        ]
+      },
+      "differences": [],
+      "matched": true,
+      "observer_process_id": 2100
+    },
+    {
+      "parity": 0,
+      "actual_adapter_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+      "role": "actual_package_run",
+      "original_source_bytes_preserved": true,
+      "source_sha256": "61bdd74840e75876b6cfe43d1a85cf65fe644d7e74ca8fb96005d9555d1c24e9",
+      "candidate_run": {
+        "id": "private-cold-namespace",
+        "adapter": "private",
+        "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\case-01.php",
+        "stdout": "",
+        "stderr": "",
+        "error": null,
+        "pipeline_count": 0,
+        "context_exit_code": 0,
+        "context_terminated": false
+      },
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.42249529995024204,
+        "stdout_base64": "",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\case-01.php"
+        ]
+      },
+      "differences": [],
+      "matched": true,
+      "observer_process_id": 2100
+    },
+    {
+      "parity": 0,
+      "actual_adapter_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+      "role": "actual_package_run",
+      "original_source_bytes_preserved": true,
+      "source_sha256": "e69f41c38eb527a4acceeac52b3fe5ece2b256d206db397e8fc5c18292e8b360",
+      "candidate_run": {
+        "id": "cached-user-hijack",
+        "adapter": "private",
+        "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\case-02.php",
+        "stdout": "Exception: x in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\case-02.php:1\nStack trace:\n#0 {main}",
+        "stderr": "",
+        "error": null,
+        "pipeline_count": 0,
+        "context_exit_code": 0,
+        "context_terminated": false
+      },
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.3356165000004694,
+        "stdout_base64": "RXhjZXB0aW9uOiB4IGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNcdjNfMTktdmFsaWRhdGlvbi0yMDI2MTExMlxjYWNoZWQtcnVuc1xydW4tMDFccGFyaXR5LTBcY2FzZS0wMi5waHA6MQpTdGFjayB0cmFjZToKIzAge21haW59",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Exception: x in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\case-02.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\case-02.php"
+        ]
+      },
+      "differences": [],
+      "matched": true,
+      "observer_process_id": 2100
+    },
+    {
+      "parity": 0,
+      "actual_adapter_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+      "role": "actual_package_run",
+      "original_source_bytes_preserved": true,
+      "source_sha256": "db7942134587d574dd8246e02e49d29eb37b6ac7f5b8a63b9c1d878c264fe5e2",
+      "candidate_run": {
+        "id": "ordinary-user-call",
+        "adapter": "private",
+        "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\case-03.php",
+        "stdout": "user",
+        "stderr": "",
+        "error": null,
+        "pipeline_count": 0,
+        "context_exit_code": 0,
+        "context_terminated": false
+      },
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.34061359998304397,
+        "stdout_base64": "dXNlcg==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "user",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\case-03.php"
+        ]
+      },
+      "differences": [],
+      "matched": true,
+      "observer_process_id": 2100
+    },
+    {
+      "parity": 0,
+      "actual_adapter_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+      "role": "actual_package_run",
+      "original_source_bytes_preserved": true,
+      "source_sha256": "6ff4b0cfab96136e052c211db3b5ccbe808bb626d550820fc35eb4ec68a26dac",
+      "candidate_run": {
+        "id": "later-clean-run",
+        "adapter": "private",
+        "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\case-04.php",
+        "stdout": "bool(false)\nException: later in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\case-04.php:1\nStack trace:\n#0 {main}",
+        "stderr": "",
+        "error": null,
+        "pipeline_count": 0,
+        "context_exit_code": 0,
+        "context_terminated": false
+      },
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.3067938999738544,
+        "stdout_base64": "Ym9vbChmYWxzZSkKRXhjZXB0aW9uOiBsYXRlciBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHYzXzE5LXZhbGlkYXRpb24tMjAyNjExMTJcY2FjaGVkLXJ1bnNccnVuLTAxXHBhcml0eS0wXGNhc2UtMDQucGhwOjEKU3RhY2sgdHJhY2U6CiMwIHttYWlufQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "bool(false)\nException: later in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\case-04.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-0\\case-04.php"
+        ]
+      },
+      "differences": [],
+      "matched": true,
+      "observer_process_id": 2100
+    },
+    {
+      "parity": 1,
+      "actual_adapter_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+      "role": "base_cache_warmup",
+      "original_source_bytes_preserved": true,
+      "source_sha256": "f6e26f42bc3a7eb6733f062a95b1c8300356050d4edec007afa68824dd156154",
+      "candidate_run": {
+        "id": "old-cache-warmup",
+        "adapter": "base",
+        "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-00.php",
+        "stdout": "Exception: warm in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-00.php:1\nStack trace:\n#0 {main}",
+        "stderr": "",
+        "error": null,
+        "pipeline_count": 0,
+        "context_exit_code": 0,
+        "context_terminated": false
+      },
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5304120000218973,
+        "stdout_base64": "RXhjZXB0aW9uOiB3YXJtIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNcdjNfMTktdmFsaWRhdGlvbi0yMDI2MTExMlxjYWNoZWQtcnVuc1xydW4tMDFccGFyaXR5LTFcY2FzZS0wMC5waHA6MQpTdGFjayB0cmFjZToKIzAge21haW59",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Exception: warm in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-00.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-00.php"
+        ]
+      },
+      "differences": [],
+      "matched": true,
+      "observer_process_id": 8780
+    },
+    {
+      "parity": 1,
+      "actual_adapter_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+      "role": "actual_package_run",
+      "original_source_bytes_preserved": true,
+      "source_sha256": "6413ef37f393159eb8f3a894471f5e1cfad88053cb9cf96035837ebcb2f55cd7",
+      "candidate_run": {
+        "id": "private-cold-namespace",
+        "adapter": "private",
+        "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-01.php",
+        "stdout": "",
+        "stderr": "",
+        "error": null,
+        "pipeline_count": 0,
+        "context_exit_code": 0,
+        "context_terminated": false
+      },
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.4627690000925213,
+        "stdout_base64": "",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-01.php"
+        ]
+      },
+      "differences": [],
+      "matched": true,
+      "observer_process_id": 8780
+    },
+    {
+      "parity": 1,
+      "actual_adapter_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+      "role": "actual_package_run",
+      "original_source_bytes_preserved": true,
+      "source_sha256": "e69f41c38eb527a4acceeac52b3fe5ece2b256d206db397e8fc5c18292e8b360",
+      "candidate_run": {
+        "id": "cached-user-hijack",
+        "adapter": "private",
+        "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-02.php",
+        "stdout": "Exception: x in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-02.php:1\nStack trace:\n#0 {main}",
+        "stderr": "",
+        "error": null,
+        "pipeline_count": 0,
+        "context_exit_code": 0,
+        "context_terminated": false
+      },
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.4666970999678597,
+        "stdout_base64": "RXhjZXB0aW9uOiB4IGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNcdjNfMTktdmFsaWRhdGlvbi0yMDI2MTExMlxjYWNoZWQtcnVuc1xydW4tMDFccGFyaXR5LTFcY2FzZS0wMi5waHA6MQpTdGFjayB0cmFjZToKIzAge21haW59",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Exception: x in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-02.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-02.php"
+        ]
+      },
+      "differences": [],
+      "matched": true,
+      "observer_process_id": 8780
+    },
+    {
+      "parity": 1,
+      "actual_adapter_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+      "role": "actual_package_run",
+      "original_source_bytes_preserved": true,
+      "source_sha256": "db7942134587d574dd8246e02e49d29eb37b6ac7f5b8a63b9c1d878c264fe5e2",
+      "candidate_run": {
+        "id": "ordinary-user-call",
+        "adapter": "private",
+        "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-03.php",
+        "stdout": "user",
+        "stderr": "",
+        "error": null,
+        "pipeline_count": 0,
+        "context_exit_code": 0,
+        "context_terminated": false
+      },
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.3160049000289291,
+        "stdout_base64": "dXNlcg==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "user",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-03.php"
+        ]
+      },
+      "differences": [],
+      "matched": true,
+      "observer_process_id": 8780
+    },
+    {
+      "parity": 1,
+      "actual_adapter_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+      "role": "actual_package_run",
+      "original_source_bytes_preserved": true,
+      "source_sha256": "6ff4b0cfab96136e052c211db3b5ccbe808bb626d550820fc35eb4ec68a26dac",
+      "candidate_run": {
+        "id": "later-clean-run",
+        "adapter": "private",
+        "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-04.php",
+        "stdout": "bool(false)\nException: later in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-04.php:1\nStack trace:\n#0 {main}",
+        "stderr": "",
+        "error": null,
+        "pipeline_count": 0,
+        "context_exit_code": 0,
+        "context_terminated": false
+      },
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.3787906999932602,
+        "stdout_base64": "Ym9vbChmYWxzZSkKRXhjZXB0aW9uOiBsYXRlciBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHYzXzE5LXZhbGlkYXRpb24tMjAyNjExMTJcY2FjaGVkLXJ1bnNccnVuLTAxXHBhcml0eS0xXGNhc2UtMDQucGhwOjEKU3RhY2sgdHJhY2U6CiMwIHttYWlufQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "bool(false)\nException: later in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-04.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-04.php"
+        ]
+      },
+      "differences": [],
+      "matched": true,
+      "observer_process_id": 8780
+    }
+  ]
+}

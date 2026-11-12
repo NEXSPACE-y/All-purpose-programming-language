@@ -1,0 +1,1 @@
+<?php use B\C; use B\C;

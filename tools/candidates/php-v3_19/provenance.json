@@ -1,0 +1,148 @@
+{
+  "status": "ISOLATED_NOT_VERIFIED",
+  "base": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+  "base_sha256": "47c8edb9e39bffe3ed5475f2aeed7e36673a798d2f72baf0cb60abc39695322d",
+  "parts": [
+    {
+      "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-private-throwable\\ALL_PHP_private_throwable_candidate.ps1",
+      "sha256": "2527caddc86273163981883d996a8969f3190a0bc86edda180b05605c9dfd78b",
+      "edits": [
+        {
+          "kind": "insert",
+          "base_start": 82,
+          "base_end": 82,
+          "part_start": 82,
+          "part_end": 83
+        },
+        {
+          "kind": "replace",
+          "base_start": 207,
+          "base_end": 208,
+          "part_start": 208,
+          "part_end": 209
+        },
+        {
+          "kind": "insert",
+          "base_start": 954,
+          "base_end": 954,
+          "part_start": 955,
+          "part_end": 961
+        },
+        {
+          "kind": "replace",
+          "base_start": 2207,
+          "base_end": 2208,
+          "part_start": 2214,
+          "part_end": 2215
+        },
+        {
+          "kind": "insert",
+          "base_start": 2212,
+          "base_end": 2212,
+          "part_start": 2219,
+          "part_end": 2220
+        },
+        {
+          "kind": "insert",
+          "base_start": 2219,
+          "base_end": 2219,
+          "part_start": 2227,
+          "part_end": 2228
+        },
+        {
+          "kind": "replace",
+          "base_start": 2222,
+          "base_end": 2223,
+          "part_start": 2231,
+          "part_end": 2232
+        },
+        {
+          "kind": "insert",
+          "base_start": 2228,
+          "base_end": 2228,
+          "part_start": 2237,
+          "part_end": 2238
+        },
+        {
+          "kind": "replace",
+          "base_start": 2232,
+          "base_end": 2233,
+          "part_start": 2242,
+          "part_end": 2243
+        },
+        {
+          "kind": "delete",
+          "base_start": 4850,
+          "base_end": 4851,
+          "part_start": 4860,
+          "part_end": 4860
+        },
+        {
+          "kind": "insert",
+          "base_start": 5212,
+          "base_end": 5212,
+          "part_start": 5221,
+          "part_end": 5224
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-import-alias\\ALL_PHP_import_alias_candidate.ps1",
+      "sha256": "c6dcc044e58682100eaba867381eb04f415364218ab981d04240d7fe8cdc016c",
+      "edits": [
+        {
+          "kind": "insert",
+          "base_start": 363,
+          "base_end": 363,
+          "part_start": 363,
+          "part_end": 365
+        },
+        {
+          "kind": "replace",
+          "base_start": 381,
+          "base_end": 384,
+          "part_start": 383,
+          "part_end": 399
+        },
+        {
+          "kind": "replace",
+          "base_start": 505,
+          "base_end": 506,
+          "part_start": 520,
+          "part_end": 532
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-redeclare\\ALL_PHP_registered_function_candidate.ps1",
+      "sha256": "53e8d1ba28b8cc375e35b72aa5d1e74807d733b40f03feffeb571332fecc30b1",
+      "edits": [
+        {
+          "kind": "insert",
+          "base_start": 88,
+          "base_end": 88,
+          "part_start": 88,
+          "part_end": 111
+        },
+        {
+          "kind": "insert",
+          "base_start": 5930,
+          "base_end": 5930,
+          "part_start": 5953,
+          "part_end": 5956
+        },
+        {
+          "kind": "insert",
+          "base_start": 6478,
+          "base_end": 6478,
+          "part_start": 6504,
+          "part_end": 6514
+        }
+      ]
+    }
+  ],
+  "candidate": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-v3_19\\ALL_PHP_integrated_candidate.ps1",
+  "candidate_sha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+  "package_modified": false,
+  "merge": "Nonoverlapping line edits with input hash guards; no semantic compatibility inference"
+}

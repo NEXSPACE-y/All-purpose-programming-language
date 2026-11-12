@@ -1,0 +1,1 @@
+<?php var_dump(function_exists('__all_throwable_string')); $e=new Exception('later'); echo $e->__toString();

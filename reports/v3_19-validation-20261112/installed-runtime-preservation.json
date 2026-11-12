@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "method": "Read-only exact file set, length, SHA256 comparison; installed runtime was not executed",
+  "reference": "reports\\installed-runtime-observed-20261112.json",
+  "reference_sha256": "8d71dbe00d2de0b74d6da340b636538fb79bc86fb01817cb85ce72029da3f726",
+  "root": "C:\\Users\\rinpa\\ALL",
+  "before_count": 45,
+  "after_count": 45,
+  "changed_or_added": [],
+  "missing": [],
+  "observed_utc": "2026-11-12T13:12:26.674807+00:00"
+}

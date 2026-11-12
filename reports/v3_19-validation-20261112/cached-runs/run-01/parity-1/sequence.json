@@ -1,0 +1,27 @@
+[
+  {
+    "id": "old-cache-warmup",
+    "adapter": "base",
+    "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-00.php"
+  },
+  {
+    "id": "private-cold-namespace",
+    "adapter": "private",
+    "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-01.php"
+  },
+  {
+    "id": "cached-user-hijack",
+    "adapter": "private",
+    "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-02.php"
+  },
+  {
+    "id": "ordinary-user-call",
+    "adapter": "private",
+    "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-03.php"
+  },
+  {
+    "id": "later-clean-run",
+    "adapter": "private",
+    "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\parity-1\\case-04.php"
+  }
+]

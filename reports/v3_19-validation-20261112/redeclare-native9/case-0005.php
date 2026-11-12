@@ -1,0 +1,1 @@
+<?php function install(){function dl_test_test2($v){return 'user';}} echo 'before:'; install(); echo 'after';

@@ -30,6 +30,7 @@ def main():
     paths['worker']=ROOT/'tools/abi/Invoke-NativePhpWorker.ps1'
     paths['bridge']=ROOT/'tools/abi/AllNativeBridge.cs'
     paths['frozen_base']=ROOT/'tools/candidates/php-v3_18/ALL_PHP_v3_18_candidate.ps1'
+    paths['driver']=Path(__file__).resolve()
     before={key:strict.sha256(path) for key,path in paths.items()}
     cases=json.loads(paths['cases'].read_text(encoding='utf-8-sig'))
     if not cases or len({c['id'] for c in cases})!=len(cases):parser.error('Need unique, nonempty case IDs')
@@ -61,6 +62,7 @@ def main():
     after={key:strict.sha256(path) for key,path in paths.items()}
     normal=[r for r in rows if not r['native_guard_case']];guards=[r for r in rows if r['native_guard_case']]
     report={'schema_version':1,'status':'NOT_COMPLETE','measurement':'same PHP source; exact stdout bytes/stderr bytes/actual process exit; no normalization',
+            'driver_argv':[sys.executable,*sys.argv],'working_directory':str(Path.cwd()),'timeout_seconds':args.timeout,
             'profile':'preloaded unchanged native extension in the actual ALL evaluator; not ALL CLI extension flags',
             'scope':'selected valid-UTF8/NUL-literal/scalar/weak positional paths; callbacks/refs/objects/populated arrays/named native args remain unsupported',
             'inputs_before':before,'inputs_after':after,'inputs_unchanged':before==after,'base_frozen_sha256':before['frozen_base'],

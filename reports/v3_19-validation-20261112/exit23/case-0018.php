@@ -1,0 +1,1 @@
+<?php try {exit(1,2);} catch(ArgumentCountError $e){echo $e->getMessage();}

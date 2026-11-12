@@ -1,0 +1,1 @@
+<?php echo 'before:'; if(true){function strlen($v){return 9;}} echo strlen('ALL');

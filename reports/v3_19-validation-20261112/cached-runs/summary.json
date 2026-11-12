@@ -1,0 +1,14 @@
+{
+  "status": "NOT_COMPLETE",
+  "actual_package_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+  "actual_package_sha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+  "total": 10,
+  "matched": 10,
+  "actual_package_runs": 8,
+  "base_cache_warmups": 2,
+  "cache_reset_performed": false,
+  "inputs_unchanged": true,
+  "original_source_bytes_preserved": true,
+  "report_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_19-validation-20261112\\cached-runs\\run-01\\report.json",
+  "report_sha256": "1522890fd15b5b58ebd90f6f917662cc4c2263ec68eeb5925a0394ee635d5a6f"
+}

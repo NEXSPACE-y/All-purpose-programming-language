@@ -3,7 +3,7 @@
     Run = {
         # -PhpDiagnostics: report an uncaught PHP exception the way the PHP CLI does (text on the
         # output stream) instead of surfacing it as a PowerShell error. Default behaviour is unchanged.
-        param([string]$Code, [switch]$PhpDiagnostics, [System.Collections.IDictionary]$CliContext = $null)
+        param([string]$Code, [switch]$PhpDiagnostics, [System.Collections.IDictionary]$CliContext = $null, [object]$NativeContext = $null)
         $isCli = $null -ne $CliContext
         if ($isCli) {
             $CliContext['ExitCode'] = [long]0
@@ -80,9 +80,88 @@
                 ExceptionHandlerStack = [System.Collections.Generic.List[object]]::new()
                 Ini = @{}
                 NamespaceFallbacks = [System.Collections.Generic.Dictionary[int,string]]::new()
+                ParsingInternalPrelude = $false
         }
 
         $state.Globals = $state.Vars
+
+        # Optional, preloaded ALL-owned native ABI context. Its host owns Start/End.
+        # No stock PHP runtime is called, and no native failure is retried elsewhere.
+
+        function Test-PhpRegisteredPublicFunction([string]$name) {
+            # Same public boundary as function_exists: the old implementation helper is not
+            # a public builtin. The separate private-helper candidate removes its registry entry.
+            if ($name -ine '__all_throwable_string' -and $phpBuiltinNames.Contains($name)) { return $true }
+            return (Test-PhpNativeFunction $name)
+        }
+        function Throw-PhpRegisteredFunctionRedeclaration($declaration) {
+            $message = 'Cannot redeclare function ' + $declaration.Name + '()'
+            if (-not $isCli) { throw ('ALL PHP: ' + $message) }
+            $line = if ($null -ne $declaration.Line) { [long]$declaration.Line } else { [long]$state.Line }
+            [Console]::Error.Write('Fatal error: ' + $message + ' in ' + $state.ScriptName +
+                ' on line ' + $line + "`nStack trace:`n" + (Format-PhpStackTrace) + "`n")
+            $CliContext['ExitCode'] = [long]255
+            $CliContext['Terminated'] = $true
+            $CliContext['TerminationReason'] = 'function_redeclaration'
+            # This engine fatal is not a catchable PHP Throwable and skips PHP finally.
+            # The existing private control signal still runs host-side cleanup.
+            $signal = [System.Exception]::new('ALL PHP: private function redeclaration fatal')
+            $signal.Data['AllPhpCliExit'] = $cliExitToken
+            throw $signal
+        }
+
+        function Get-PhpNativeName([string]$name) {
+            if ($name.StartsWith([string][char]92)) { return $name.Substring(1) }
+            return $name
+        }
+        function Test-PhpNativeFunction([string]$name) {
+            if ($null -eq $NativeContext) { return $false }
+            return [bool]$NativeContext.HasFunction((Get-PhpNativeName $name))
+        }
+        function Throw-PhpNativeUnsupported([string]$reason) {
+            $signal = [System.InvalidOperationException]::new('ALL PHP Native Unsupported: ' + $reason)
+            $signal.Data['AllPhpNativeUnsupported'] = $true
+            throw $signal
+        }
+        function Invoke-PhpNativeFunction([string]$name, $values) {
+            # Deferred events cannot reproduce synchronous user-handler callbacks.
+            # Refuse before invoking native code while any user handler is installed.
+            if ($null -ne $state.ErrorHandler) {
+                Throw-PhpNativeUnsupported 'native calls with an installed PHP error handler require synchronous callbacks'
+            }
+            $nativeName = Get-PhpNativeName $name
+            foreach ($item in @($values)) {
+                if ($null -ne $item -and $item.PSObject.Properties['PhpType'] -and
+                    $item.PhpType -ceq 'named_argument') {
+                    Throw-PhpNativeUnsupported 'named native arguments are not implemented'
+                }
+            }
+            try {
+                # The frozen evaluator has no strict_types source implementation.
+                # This candidate's selected source execution is weak/positional only.
+                $nativeResult = $NativeContext.InvokeScalar($nativeName, [object[]]@($values), $false)
+            } catch {
+                Throw-PhpNativeUnsupported ('scalar boundary: ' + $_.Exception.Message)
+            }
+            # The native call has happened exactly once. Even an unsupported result
+            # or encoding failure must never cause a retry through another runtime.
+            if ($null -ne $nativeResult.Output -and $nativeResult.Output.Length -gt 0) {
+                $nativeStdout = [Console]::OpenStandardOutput()
+                $nativeStdout.Write($nativeResult.Output, 0, $nativeResult.Output.Length)
+                $nativeStdout.Flush()
+            }
+            foreach ($event in $nativeResult.DiagnosticEvents) {
+                Write-PhpDiagnostic ([long]$event.Level) ([string]$event.Message)
+            }
+            if (-not $nativeResult.Ok) {
+                if ($nativeResult.Status -lt 0 -or $nativeResult.ErrorClass -ceq 'ALLNativeUnsupported') {
+                    Throw-PhpNativeUnsupported ([string]$nativeResult.ErrorMessage)
+                }
+                Throw-PhpError ([string]$nativeResult.ErrorClass) ([string]$nativeResult.ErrorMessage)
+            }
+            return $nativeResult.Value
+        }
+
         if ($isCli -and ($CliContext.Keys -contains 'SourcePath') -and
             -not [string]::IsNullOrEmpty([string]$CliContext['SourcePath'])) {
             $state.ScriptName = [string]$CliContext['SourcePath']
@@ -150,7 +229,7 @@
             'array_reverse','array_merge','array_slice','array_keys','array_values',
             'array_key_first','array_key_last','array_first','array_last','in_array',
             'str_contains','str_starts_with','str_ends_with','strpos','substr','str_replace',
-            'explode','implode','__all_throwable_string','print_r','define','defined','constant',
+            'explode','implode','print_r','define','defined','constant',
             'error_reporting','ini_set','ini_get','set_error_handler','restore_error_handler',
             'set_exception_handler','restore_exception_handler','trigger_error','user_error',
             'str_repeat','function_exists','call_user_func','call_user_func_array','get_class',
@@ -306,6 +385,8 @@
                             $j = $i + 1
                             if ($tokens[$j] -ieq 'function') { $kind = 'function'; $j++ }
                             elseif ($tokens[$j] -ieq 'const') { $kind = 'const'; $j++ }
+                            # PHP attributes the entire import list to its first target token.
+                            $importLine = [long]$lines[$j]
                             $group = ''
                             while ($j -lt $total -and $tokens[$j] -cne ';') {
                                 $item = $tokens[$j]
@@ -324,9 +405,22 @@
                                 $alias = $target.Substring($target.LastIndexOf('\') + 1)
                                 $j++
                                 if ($j + 1 -lt $total -and $tokens[$j] -ieq 'as') { $alias = $tokens[$j + 1]; $j += 2 }
-                                if ($itemKind -eq 'function') { $useFunc[$alias] = $target }
-                                elseif ($itemKind -eq 'const') { $useConst[$alias] = $target }
-                                else { $useClass[$alias] = $target }
+                                $imports = if ($itemKind -eq 'function') { $useFunc }
+                                    elseif ($itemKind -eq 'const') { $useConst } else { $useClass }
+                                if ($imports.ContainsKey($alias)) {
+                                    $label = if ($itemKind -eq 'class') { '' } else { $itemKind + ' ' }
+                                    $message = 'Cannot use ' + $label + $target + ' as ' + $alias +
+                                        ' because the name is already in use'
+                                    if ($isCli) {
+                                        $CliContext['CompileError'] = [pscustomobject]@{
+                                            Type='CompileError'; Reason='duplicate_import'; ImportKind=$itemKind
+                                            Target=$target; Alias=$alias; Message=$message
+                                            SourcePath=$state.ScriptName; Line=$importLine
+                                        }
+                                    }
+                                    throw ('ALL PHP: ' + $message)
+                                }
+                                $imports[$alias] = $target
                             }
                             $i = $j
                             continue
@@ -448,7 +542,18 @@
                 $state.Tokens[$scan + 1] -cne '(') { $needsNameResolution = $true; break }
         }
         if ($needsNameResolution) {
-            $resolvedNames = Resolve-PhpNamespaceTokens $state.Tokens $state.TokenLines
+            try { $resolvedNames = Resolve-PhpNamespaceTokens $state.Tokens $state.TokenLines }
+            catch {
+                if (-not $isCli -or -not ($CliContext.Keys -contains 'CompileError')) { throw }
+                $compileError = $CliContext['CompileError']
+                [Console]::Error.Write('Fatal error: ' + $compileError.Message + ' in ' +
+                    $compileError.SourcePath + ' on line ' + $compileError.Line +
+                    "`nStack trace:`n#0 {main}`n")
+                $CliContext['ExitCode'] = [long]255
+                $CliContext['Terminated'] = $true
+                $CliContext['TerminationReason'] = 'compile_error'
+                return
+            }
             $state.Tokens = $resolvedNames.Tokens
             $state.NamespaceFallbacks = $resolvedNames.Fallbacks
             $state.TokenLines = $resolvedNames.Lines
@@ -897,6 +1002,12 @@
                         }
                     }
                     $callArgs = Read-Arguments
+                    # Only the engine-owned prelude can create this opcode. A
+                    # user function with this spelling remains an ordinary call.
+                    if ($state.ParsingInternalPrelude -and $token -ceq '__all_throwable_string') {
+                        if ($callArgs.Count -ne 1) { throw 'ALL PHP: Invalid internal Throwable formatting call' }
+                        return [pscustomobject]@{ Kind='internal_throwable_string'; Object=$callArgs[0] }
+                    }
                     return [pscustomobject]@{ Kind='call'; Name=$token; Args=@($callArgs); Fallback=$fallbackName; ResolvedName=$null }
                 }
                 return [pscustomobject]@{ Kind='class_name'; Name=$token; Fallback=$fallbackName; ResolvedName=$null }
@@ -2150,11 +2261,12 @@ class UnhandledMatchError extends Error {}
         function Ensure-PhpPrelude {
             if ($state.PreludeLoaded) { return }
             $state.PreludeLoaded = $true
-            if ($null -eq $script:ALLPhpPreludeAst) {
+            if ($null -eq $script:ALLPhpPreludeAstPrivateThrowableV1) {
                 $savedTokens = $state.Tokens
                 $savedLines = $state.TokenLines
                 $savedPos = $state.Pos
                 $savedFallbacks = $state.NamespaceFallbacks
+                $savedPreludeParsing = $state.ParsingInternalPrelude
                 try {
                     $state.Tokens = [System.Collections.Generic.List[string]]::new()
                     $state.TokenLines = [System.Collections.Generic.List[int]]::new()
@@ -2162,20 +2274,22 @@ class UnhandledMatchError extends Error {}
                     # The prelude is separate source. Source-token positions must never attach
                     # namespace fallback metadata to its cached AST or leak into later Runs.
                     $state.NamespaceFallbacks = [System.Collections.Generic.Dictionary[int,string]]::new()
+                    $state.ParsingInternalPrelude = $true
                     ConvertTo-PhpTokens $phpPreludeSource $state.Tokens $state.TokenLines
                     $nodes = [System.Collections.Generic.List[object]]::new()
                     while ((Peek-Token) -cne '(EOF)') { [void]$nodes.Add((Read-Statement)) }
-                    $script:ALLPhpPreludeAst = $nodes.ToArray()
+                    $script:ALLPhpPreludeAstPrivateThrowableV1 = $nodes.ToArray()
                 } finally {
                     $state.Tokens = $savedTokens
                     $state.TokenLines = $savedLines
                     $state.Pos = $savedPos
                     $state.NamespaceFallbacks = $savedFallbacks
+                    $state.ParsingInternalPrelude = $savedPreludeParsing
                 }
             }
             $savedLine = $state.Line
             $savedSteps = $state.Steps
-            foreach ($node in $script:ALLPhpPreludeAst) { Invoke-PhpStatement $node }
+            foreach ($node in $script:ALLPhpPreludeAstPrivateThrowableV1) { Invoke-PhpStatement $node }
             $state.Line = $savedLine
             $state.Steps = $savedSteps
         }
@@ -3372,7 +3486,7 @@ class UnhandledMatchError extends Error {}
                 'object' { return (Is-PhpObject $value) }
                 'iterable' { return (Is-PhpArray $value) }
                 'callable' {
-                    if ($value -is [string]) { return $state.Functions.ContainsKey($value) }
+                    if ($value -is [string]) { return ($state.Functions.ContainsKey($value) -or (Test-PhpNativeFunction $value)) }
                     if ($null -eq $value) { return $false }
                     if ($value.PSObject.Properties['PhpType']) {
                         if ($value.PhpType -in @('closure','first_class_callable')) { return $true }
@@ -4384,6 +4498,7 @@ class UnhandledMatchError extends Error {}
                 foreach ($arg in $callArgs) {
                     if ($null -ne $arg -and $arg.PSObject.Properties['PhpType'] -and
                         $arg.PhpType -ceq 'named_argument') {
+                        if (Test-PhpNativeFunction $name) { Throw-PhpNativeUnsupported 'named native arguments are not implemented' }
                         throw 'ALL PHP: Named arguments for builtins are not yet supported'
                     }
                 }
@@ -4792,7 +4907,6 @@ class UnhandledMatchError extends Error {}
                     }
                     return [string]::Join($separator, $items.ToArray())
                 }
-                '__all_throwable_string' { return (Get-PhpThrowableString $callArgs[0]) }
                 'print_r' {
                     if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 2) { throw 'ALL PHP: print_r() requires one or two arguments' }
                     $printed = Format-PhpPrintR $callArgs[0] 0
@@ -4895,7 +5009,7 @@ class UnhandledMatchError extends Error {}
                 'function_exists' {
                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: function_exists() requires one argument' }
                     $functionName = To-PhpText $callArgs[0]
-                    return ($state.Functions.ContainsKey($functionName) -or ($isCli -and $functionName -ine '__all_throwable_string' -and $phpBuiltinNames.Contains($functionName)))
+                    return ($state.Functions.ContainsKey($functionName) -or ($isCli -and $functionName -ine '__all_throwable_string' -and $phpBuiltinNames.Contains($functionName)) -or (Test-PhpNativeFunction $functionName))
                 }
                 'call_user_func' {
                     if ($callArgs.Count -lt 1) { throw 'ALL PHP: call_user_func() requires a callable' }
@@ -5015,6 +5129,7 @@ class UnhandledMatchError extends Error {}
                 }
             }
             if (-not $state.Functions.ContainsKey($name)) {
+                if (Test-PhpNativeFunction $name) { return (Invoke-PhpNativeFunction $name $callArgs) }
                 throw "ALL PHP: Undefined function '$name'"
             }
             return (Invoke-PhpCallable $state.Functions[$name] $callArgs $null)
@@ -5073,14 +5188,14 @@ class UnhandledMatchError extends Error {}
         }
         function Resolve-PhpFunctionNodeName($node) {
             if (-not $node.PSObject.Properties['Fallback'] -or $null -eq $node.Fallback) {
-                if ($state.Functions.ContainsKey($node.Name) -or $phpBuiltinNames.Contains($node.Name)) { return $node.Name }
+                if ($state.Functions.ContainsKey($node.Name) -or $phpBuiltinNames.Contains($node.Name) -or (Test-PhpNativeFunction $node.Name)) { return $node.Name }
                 Throw-PhpError 'Error' ("Call to undefined function " + $node.Name + '()')
             }
             if ($null -ne $node.ResolvedName) { return $node.ResolvedName }
             # A call site's first successful namespace/global binding is retained, like PHP's
             # runtime cache. Conditional/nested declarations are not installed during parsing.
-            if ($state.Functions.ContainsKey($node.Name)) { $node.ResolvedName = $node.Name }
-            elseif ($state.Functions.ContainsKey($node.Fallback) -or $phpBuiltinNames.Contains($node.Fallback)) {
+            if ($state.Functions.ContainsKey($node.Name) -or (Test-PhpNativeFunction $node.Name)) { $node.ResolvedName = $node.Name }
+            elseif ($state.Functions.ContainsKey($node.Fallback) -or $phpBuiltinNames.Contains($node.Fallback) -or (Test-PhpNativeFunction $node.Fallback)) {
                 $node.ResolvedName = $node.Fallback
             } else {
                 # A failed lookup must remain unresolved: a later conditional declaration can
@@ -5105,6 +5220,7 @@ class UnhandledMatchError extends Error {}
             if ($node.Kind -eq 'call') {
                 $callName = Resolve-PhpFunctionNodeName $node
                 if (-not $state.Functions.ContainsKey($callName)) {
+                    if (Test-PhpNativeFunction $callName) { Throw-PhpNativeUnsupported 'native reference-return calls are not implemented' }
                     throw 'ALL PHP: Reference return requires a declared function'
                 }
                 $def=$state.Functions[$callName]
@@ -5152,6 +5268,9 @@ class UnhandledMatchError extends Error {}
         function Invoke-PhpExpr($node) {
             switch ($node.Kind) {
                 'literal' { return $node.Value }
+                'internal_throwable_string' {
+                    return (Get-PhpThrowableString (Invoke-PhpExpr $node.Object))
+                }
                 'cli_exit' { Invoke-PhpCliExit @() }
                 'silence' {
                     $state.SilenceDepth++
@@ -5870,6 +5989,9 @@ class UnhandledMatchError extends Error {}
                     return
                 }
                 'functiondef' {
+                    if (Test-PhpRegisteredPublicFunction $node.Name) {
+                        Throw-PhpRegisteredFunctionRedeclaration $node
+                    }
                     if ($state.Functions.ContainsKey($node.Name)) {
                         throw "ALL PHP: Function already declared '$($node.Name)'"
                     }
@@ -6418,6 +6540,16 @@ class UnhandledMatchError extends Error {}
             if ($phpPreludeTriggers.Contains($programToken)) { Ensure-PhpPrelude; break }
         }
         try {
+
+            # Direct global declarations are checked before any program output. Conditional
+            # and nested declarations remain runtime checks in the functiondef registration path.
+            foreach ($declaration in $statements) {
+                if ($declaration.Kind -ceq 'functiondef' -and
+                    (Test-PhpRegisteredPublicFunction $declaration.Name)) {
+                    Throw-PhpRegisteredFunctionRedeclaration $declaration
+                }
+            }
+
             foreach ($statement in $statements) {
                 if ($state.Flow.Returned) { break }
                 Invoke-PhpStatement $statement

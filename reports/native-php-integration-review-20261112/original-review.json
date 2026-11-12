@@ -22,7 +22,7 @@
     "nativeOptOutMatchesReference": true,
     "inputHashesStable": true
   },
-  "reviewMethod": "Read-only source and saved measurement review, plus separately authorized9+2 focused reproductions",
+  "reviewMethod": "Read-only source and saved measurement review; focused same-source9+2 reproductions recorded separately",
   "packageOrFrozenCandidateChanged": false,
   "foundDefects": [
     "Registered native function names can be globally redefined by user declarations",

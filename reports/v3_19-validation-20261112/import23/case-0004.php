@@ -1,0 +1,1 @@
+<?php use function B\f as q; use function E\g as q;

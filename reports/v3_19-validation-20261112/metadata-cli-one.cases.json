@@ -1,0 +1,6 @@
+[
+  {
+    "id": "cli.warning-location-stream",
+    "code": "<?php echo $missing;"
+  }
+]

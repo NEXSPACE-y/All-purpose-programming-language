@@ -1,0 +1,1 @@
+<?php $e=new Error('normal'); echo $e->__toString();

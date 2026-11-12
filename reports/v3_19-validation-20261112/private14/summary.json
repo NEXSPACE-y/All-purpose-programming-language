@@ -1,0 +1,37 @@
+{
+  "status": "NOT_COMPLETE",
+  "actual_package_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+  "actual_package_sha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+  "total": 14,
+  "passed": 12,
+  "different": 2,
+  "inputs_unchanged": true,
+  "source_cases_unchanged": true,
+  "known_remaining": [
+    {
+      "id": "private-throwable.dynamic-absent",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle_exit": 0,
+      "candidate_exit": 1,
+      "oracle_stdout": "Call to undefined function __all_throwable_string()",
+      "candidate_stderr": "ALL PHP: Undefined function '__all_throwable_string'\r\n"
+    },
+    {
+      "id": "private-throwable.unrelated-dynamic-absent-control",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle_exit": 0,
+      "candidate_exit": 1,
+      "oracle_stdout": "Call to undefined function __unregistered_dynamic_control()",
+      "candidate_stderr": "ALL PHP: Undefined function '__unregistered_dynamic_control'\r\n"
+    }
+  ],
+  "report_sha256": "50009e2d735ecf01008b0016c29ce459ddd4b46a8ec92f2857a164e236b07abe"
+}

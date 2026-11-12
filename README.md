@@ -60,6 +60,17 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\package\ALL_PHP_v3_17_
 
 公式PHPの[API参照台帳](reports/php-api-inventory-20261112/README.md)は、観測した13,934件をすべて未検証として記録しています。[base関数の登録照会](reports/php-registration-probe-20261112/run-01/README.md)では参照925件に対し候補は80件true・845件falseでした。登録照会の件数は、関数本体の実装完了数や互換率ではありません。
 
+## 2026-11-12の統合チェックポイント v3.19
+
+独立native ABIを実PHP評価器へ接続し、内部Throwable整形の乗っ取り、import alias重複、登録済み公開関数との再宣言衝突を修正しました。
+
+- 実packageで既存 **965/965 PASS**、CLI追加37例・import23例・登録衝突等19例が一致。
+- 選定したnative23例は全再測定で一致。初回の1タイムアウトも保持しています。
+- private14例は **12一致・2差分**。未定義dynamic関数のError分類差を残件として記録しています。
+- package216ファイルのハッシュは実行前後・strict比較後も一致。導入済みALLの45ファイルも不変です。
+
+[統合検証・残件](reports/v3_19-validation-20261112/INTEGRATION_REVIEW.md)。PHP全体・native拡張全体・Web/Linuxは未完成で、第2段階も未着手です。
+
 ## 完了条件と開発順序
 
 [所有者の対象決定](docs/COMPAT_TARGET.md)はPHP8.5.12、Windows11x64/Linuxx64、CLI・内蔵Web・CGI/FastCGI・Apache・LinuxFPM、標準拡張と既存ネイティブ拡張バイナリを含みます。

@@ -1,0 +1,17 @@
+{
+  "status": "NOT_COMPLETE",
+  "measurement_result": "ALL_LISTED_EXAMPLES_MATCH",
+  "actual_package_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+  "actual_package_sha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+  "case_file": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-php-integration-review-20261112\\known-builtin-redeclare.cases.json",
+  "case_file_sha256": "f2a2df5ab4ab92d98b236fe05bcbad040db127d9c6dd6e49fcbb8fe36d93c1a4",
+  "total": 2,
+  "passed": 2,
+  "different": 0,
+  "inputs_unchanged": true,
+  "report_sha256": "e539b2f83ed2d118d4d430d0382aaa43439bfbb0ee09f708a5d87ae3d50faf18",
+  "ids": [
+    "known-builtin-redeclare.strlen",
+    "known-builtin-redeclare.conditional-strlen"
+  ]
+}

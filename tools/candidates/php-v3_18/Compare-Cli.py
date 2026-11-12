@@ -3,6 +3,7 @@ from pathlib import Path
 import argparse
 import importlib.util
 import json
+import sys
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
@@ -25,6 +26,7 @@ def main():
         parser.error("Output exists; choose a new run directory to preserve evidence.")
     paths = {key: getattr(args, key).resolve(strict=True) for key in ["cases", "adapter", "php", "powershell"]}
     paths["worker"] = ROOT / "tools/differential/PhpCliCandidateWorker.ps1"
+    paths["driver"] = Path(__file__).resolve()
     before = {key: strict.sha256(path) for key, path in paths.items()}
     cases = json.loads(paths["cases"].read_text(encoding="utf-8-sig"))
     if not cases or len({x["id"] for x in cases}) != len(cases):
@@ -41,6 +43,8 @@ def main():
         print(rows[-1]["verdict"] + ": " + case["id"], flush=True)
     after = {key: strict.sha256(path) for key, path in paths.items()}
     report = {"schema_version": 1, "status": "NOT_COMPLETE", "isolated_candidate": True,
+              "driver_argv": [sys.executable, *sys.argv], "working_directory": str(Path.cwd()),
+              "timeout_seconds": args.timeout,
               "measurement": "exact stdout bytes, stderr bytes and actual process status; no normalization",
               "scope": "Listed examples only; not full CLI/SAPI/PHP conformance.",
               "inputs_before": before, "inputs_after": after, "inputs_unchanged": before == after,
