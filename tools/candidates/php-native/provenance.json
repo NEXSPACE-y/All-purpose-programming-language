@@ -1,0 +1,52 @@
+{
+  "status": "ISOLATED_NATIVE_INTEGRATION_CANDIDATE_NOT_COMPLETE",
+  "base_path": "tools\\candidates\\php-v3_18\\ALL_PHP_v3_18_candidate.ps1",
+  "base_sha256": "6cfde5e729ff594741b6bb3a254a5bcbd25c2a1ef62f2ad4c9f2b9642b1efb8a",
+  "candidate_path": "tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+  "candidate_sha256": "47c8edb9e39bffe3ed5475f2aeed7e36673a798d2f72baf0cb60abc39695322d",
+  "optional_context": "NativeContext=null preserves the reviewed default path",
+  "source_profile": "preloaded native extension, weak positional scalar calls only",
+  "base_mutated": false,
+  "edits": [
+    {
+      "anchor": "param([string]$Code, [switch]$PhpDiagnostics, [System.Collections.IDictionary]$CliContext = $null)",
+      "matches": 1
+    },
+    {
+      "anchor": "        $state.Globals = $state.Vars\n",
+      "matches": 1
+    },
+    {
+      "anchor": "throw 'ALL PHP: Named arguments for builtins are not yet supported'",
+      "matches": 1
+    },
+    {
+      "anchor": "return ($state.Functions.ContainsKey($functionName) -or ($isCli -and $functionName -ine '__all_throwable_string' -and $phpBuiltinNames.Conta",
+      "matches": 1
+    },
+    {
+      "anchor": "if ($value -is [string]) { return $state.Functions.ContainsKey($value) }",
+      "matches": 1
+    },
+    {
+      "anchor": "            if (-not $state.Functions.ContainsKey($name)) {\n                throw \"ALL PHP: Undefined function '$name'\"\n            }",
+      "matches": 1
+    },
+    {
+      "anchor": "if ($state.Functions.ContainsKey($node.Name) -or $phpBuiltinNames.Contains($node.Name)) { return $node.Name }",
+      "matches": 1
+    },
+    {
+      "anchor": "if ($state.Functions.ContainsKey($node.Name)) { $node.ResolvedName = $node.Name }",
+      "matches": 1
+    },
+    {
+      "anchor": "elseif ($state.Functions.ContainsKey($node.Fallback) -or $phpBuiltinNames.Contains($node.Fallback)) {",
+      "matches": 1
+    },
+    {
+      "anchor": "                if (-not $state.Functions.ContainsKey($callName)) {\n                    throw 'ALL PHP: Reference return requires a declared",
+      "matches": 1
+    }
+  ]
+}

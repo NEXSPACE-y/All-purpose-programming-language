@@ -1,0 +1,352 @@
+[
+  {
+    "path": "reports/native-php-integration-20261112/default73.json",
+    "sha256": "7a0a0442def5a450ef1e9f801c4052963bc9cd6c38d8dd1ee167a998c9312791",
+    "size_bytes": 33956
+  },
+  {
+    "path": "reports/native-php-integration-20261112/host-contract2/absent-param.native.json",
+    "sha256": "1f9c200f9b11fba79c37c549509e26f173cc8dc4652b6fd113aef1131f600bab",
+    "size_bytes": 1289
+  },
+  {
+    "path": "reports/native-php-integration-20261112/host-contract2/must-not-execute.php",
+    "sha256": "e2a273c6373ab134d79e727b2efde7812d017436c21d551aaa5c880d61820d39",
+    "size_bytes": 29
+  },
+  {
+    "path": "reports/native-php-integration-20261112/host-contract2/native-opt-out.php",
+    "sha256": "4c57feb4510f22c4887ab089fe38920bf186adafed800fc10be4fb29dd94211c",
+    "size_bytes": 65
+  },
+  {
+    "path": "reports/native-php-integration-20261112/host-contract2/report.json",
+    "sha256": "26ea0f540a89a677671bbea0e1821dbb291bad81d3ea30241929be79a53677f1",
+    "size_bytes": 6789
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0000.native.json",
+    "sha256": "a6c076c4c9ea59b052ba2e20ea824aa84797d5593daa064874054db498a16b48",
+    "size_bytes": 6319
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0000.php",
+    "sha256": "02ae4eb1478932e1a257ba6c05dc2462efeeec748c2f9a3ed92e78311a6bb2bf",
+    "size_bytes": 160
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0001.native.json",
+    "sha256": "ee4015030ebe6ecf97f404e437ab5a698a488dbd7ff5a7de0908cfe230e07d8b",
+    "size_bytes": 6319
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0001.php",
+    "sha256": "e144b1f3d67e1cabde298c9a689c319179eb7b83e3eacdfa103f9f27343f3683",
+    "size_bytes": 55
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0002.native.json",
+    "sha256": "aee659f432692e1cc256f032ef7f93b5b8b493216255405df5bfb5cd9ea4ae54",
+    "size_bytes": 6386
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0002.php",
+    "sha256": "e2b85891ea51e54793ef4289976c0d64cd217b1524a8f3fef790a7ee49321077",
+    "size_bytes": 32
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0003.native.json",
+    "sha256": "5c8aabe1ad3ae1f54cca21fa71ea277e008191815107dfcabab62a9a8127e57f",
+    "size_bytes": 6386
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0003.php",
+    "sha256": "1fb963abd09d3b0c46600f6b1f0c55c4631ac6239ac0899dcd4a79652388eb01",
+    "size_bytes": 33
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0004.native.json",
+    "sha256": "3166413c1554bd9ab4c5d924bfcee00dd239b41a13e7367848c6ed24fd3944a6",
+    "size_bytes": 6386
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0004.php",
+    "sha256": "ffe0684e1c0c02073c012ac03af461669ffdb23ae5a7af1c97ee69ac62f54baa",
+    "size_bytes": 45
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0005.native.json",
+    "sha256": "a453e40d8d24bef66477921238d7f5480c3041177295e2015c0685066c96b22d",
+    "size_bytes": 6386
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0005.php",
+    "sha256": "72bac1a7f5d6856a98fb796e5af5ba1f959be165bb61dff54103a90a1a958857",
+    "size_bytes": 74
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0006.native.json",
+    "sha256": "1bad3c2ef8e791c100225d0e4ba04d6dc68ff6171b7f2ac017b9c349f366d3d4",
+    "size_bytes": 6319
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0006.php",
+    "sha256": "035d667f15dcee277172707bf9351c7130dcf9eaf733b16a7b48fc3dd94f7f05",
+    "size_bytes": 92
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0007.native.json",
+    "sha256": "b161dea6d852c8be9a1b93fd92f8f831418fedda716146237bcb03494db65bf1",
+    "size_bytes": 6386
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0007.php",
+    "sha256": "1ac1444595a7ecd8c6d7e4c1f434b8ae8aeb55d11370ffa608070656bafa4b20",
+    "size_bytes": 44
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0008.native.json",
+    "sha256": "2dcad19789999f76dc1848884190cc16ac13543ee66078c0f064f912e86502b3",
+    "size_bytes": 6386
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0008.php",
+    "sha256": "1281e18f5879549b25af1868eed2308a4cae54bd47b3001d1bae063dc29b86f7",
+    "size_bytes": 57
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0009.native.json",
+    "sha256": "c45b7b9ec5be37a0f7a86af6d67f059ea91c18bb6c5635482e7cfa6d2a2754ef",
+    "size_bytes": 6386
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0009.php",
+    "sha256": "beb4b16c30410070280598434c30b5c4cd031b7dedee7da87dff89344f9dccca",
+    "size_bytes": 41
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0010.native.json",
+    "sha256": "7bc48ec01b5afa22449bd519b7c19cd9382b9ade97e52f53f6659ab978bc399d",
+    "size_bytes": 6386
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0010.php",
+    "sha256": "78e58dca14f18bce45561c76ac1793a96e8cd8225d65435366716fa2fd9c9495",
+    "size_bytes": 42
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0011.native.json",
+    "sha256": "0505a8007066feba45f185d32b1c742b470db8d748ea93be312a40f8820a29a3",
+    "size_bytes": 6386
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0011.php",
+    "sha256": "6db8afcf6413d542d457df77a2c99570f1da838af2a2a98e7ce1c9f39d03ca54",
+    "size_bytes": 49
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0012.native.json",
+    "sha256": "aeaedc658aa95acdb5e270dc86247bebf469f58b1957bb6f691b62fc3b3c6c0f",
+    "size_bytes": 6386
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0012.php",
+    "sha256": "86a51d54c503139d56c9c3791463961c342e0bce711a8d352cb94830f0cf9699",
+    "size_bytes": 59
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0013.native.json",
+    "sha256": "a1afedaade0b07b08f61eea86eecdadc84caa95a0feea1bb68ede3a7774d901b",
+    "size_bytes": 6381
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0013.php",
+    "sha256": "f4fc0965bcba6d7cc4f782e93decbf487ddfa1a53df6034c2d4b73338c6cc971",
+    "size_bytes": 53
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0014.native.json",
+    "sha256": "4b3d834064df51f89e62090754ef2240296f6ee0c2cd804354dac73777d46eea",
+    "size_bytes": 6386
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0014.php",
+    "sha256": "2e54f832d25b874203ab9e0e8f71030bd3137947f0dce83b294dd55e3166f790",
+    "size_bytes": 102
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0015.native.json",
+    "sha256": "d304bc500d2387582a64e54dc8075d3ac533cf45be0234e6e99c126ace2c47ea",
+    "size_bytes": 6386
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0015.php",
+    "sha256": "810a674aa3294488a689fd0a6c6a208c888b5b2b229fe3f94482e4a0af6e43a2",
+    "size_bytes": 38
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0016.native.json",
+    "sha256": "a5272f7b748ad5a099317a1aec3c1cdecb96364b228cd524edce26bb9426a49e",
+    "size_bytes": 6386
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0016.php",
+    "sha256": "78a75675eba24a9268b9cf5ebb5e5026b5f7cb8fd592f24de45f1815cf5661e4",
+    "size_bytes": 32
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0017.native.json",
+    "sha256": "6f265aad884fc434029bc4c7b6c776bd741b022310c3a3ec68025b315b9db838",
+    "size_bytes": 6399
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0017.php",
+    "sha256": "4ede9952c60b9f74a2a3f0256da6fdac945a4c132dbea06c0a6cfab32468d483",
+    "size_bytes": 95
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0018.native.json",
+    "sha256": "827008a315f5150cb5055d23fdeb0c07b72694a807418d72bf68df10e9094fa6",
+    "size_bytes": 6568
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0018.php",
+    "sha256": "9783961f02fe2c5cdd1d98f61793809e4cec707fe98c367f4ffceca91bac7d2d",
+    "size_bytes": 107
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0019.native.json",
+    "sha256": "7ec5e585a0c8950b2fbe496501de60291391bb56ec8b09efc50a0778980b9323",
+    "size_bytes": 6406
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0019.php",
+    "sha256": "bfa5ace223a04a1d0e9b3b5aca5682ccf6a77b0a8f0b4e718a4eac5e7f828c7e",
+    "size_bytes": 100
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0020.native.json",
+    "sha256": "777625918990d326a8beab95559b8f7773e3133ee1f176b735f28a78a0e5e338",
+    "size_bytes": 6399
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0020.php",
+    "sha256": "9eb2603a32db0a64fd9cb63193c816319a6532c1f00959f7cb7bd85e95b4552e",
+    "size_bytes": 46
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0021.native.json",
+    "sha256": "8e33321bf2fe0b04a326bd002eebb37bd237f0d043364ddfe460303bcb19078c",
+    "size_bytes": 6399
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0021.php",
+    "sha256": "ea1581a357e431426a4fca95e97a3f22498cf34758582cf7b09f268fed15f26f",
+    "size_bytes": 60
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0022.native.json",
+    "sha256": "3e905b8595755e23b3d0602ddfc61d705415e3e2581d98c9ee77ed0336f38b76",
+    "size_bytes": 6399
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0022.php",
+    "sha256": "eeec7b64ade83e52c107b3e5b4719e071d4aceba996fae0a45ee425631e70433",
+    "size_bytes": 41
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0023.native.json",
+    "sha256": "1a94958d0a8958845fdfb093326922f12b149e05376a22f3d28b605335dfd7e9",
+    "size_bytes": 6082
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0023.php",
+    "sha256": "6ddb11ef5cabbe212178f6d966af22bf5c34ae87eda544aba49682422bc00167",
+    "size_bytes": 102
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0024.native.json",
+    "sha256": "4bb616a1943df54034503882a63a18da91c10e337a19d5ab5ef38733fd28a5ab",
+    "size_bytes": 6046
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0024.php",
+    "sha256": "adb98770d3ec4ff48e1c669eef45d04cad5b26df618121516d934c5933782a6d",
+    "size_bytes": 31
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0025.native.json",
+    "sha256": "be33258d4008c6e55e08ea8f798466fc212db1e8eddbfa3804e43785c69d56f9",
+    "size_bytes": 6249
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0025.php",
+    "sha256": "c83c62715a24266948ad1c5fc0257eb9aec7cec323f4dd80d1f52cbccfa78b56",
+    "size_bytes": 27
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0026.native.json",
+    "sha256": "de68556a578c997706d312f64506327a751abad41f97438ab28a9ac9ccb0b097",
+    "size_bytes": 6053
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/case-0026.php",
+    "sha256": "2ee8189da7c54fcd6638b1740c13acbf0fe4a82e125157477f0e584003d5b788",
+    "size_bytes": 31
+  },
+  {
+    "path": "reports/native-php-integration-20261112/initial27/report.json",
+    "sha256": "ade36d0434d0aad909cdad1657a3291de0bf9eb92b5e27e7f161e4bc26c65fca",
+    "size_bytes": 190732
+  },
+  {
+    "path": "reports/native-php-integration-20261112/README.md",
+    "sha256": "8e1a176adccc2e7201e965b9e9641b6748f89a5011d6fb8fe15cc13d8b26b90a",
+    "size_bytes": 1998
+  },
+  {
+    "path": "tools/abi/Invoke-NativePhpWorker.ps1",
+    "sha256": "555c4a6c5ac6898fad2076f66b0b465a9d174f91f585f8871756049d32055d18",
+    "size_bytes": 4419
+  },
+  {
+    "path": "tools/candidates/php-native/ALL_PHP_native_candidate.ps1",
+    "sha256": "47c8edb9e39bffe3ed5475f2aeed7e36673a798d2f72baf0cb60abc39695322d",
+    "size_bytes": 358764
+  },
+  {
+    "path": "tools/candidates/php-native/Build-NativeCandidate.py",
+    "sha256": "0a144eb6a04ee4e32dea4044045823aa721e4444bf643479c45971497903d059",
+    "size_bytes": 8321
+  },
+  {
+    "path": "tools/candidates/php-native/Check-NativeContextContract.py",
+    "sha256": "00582fe531c56e92f9708eb497f6076dbc2c5765696b5b0e4b16c71f24c429da",
+    "size_bytes": 3633
+  },
+  {
+    "path": "tools/candidates/php-native/Compare-NativePhp.py",
+    "sha256": "569c0ab137bfae92d5a20c83ce93aeb61d7afc06a0e584c9ba29bf4fdee2a56f",
+    "size_bytes": 5908
+  },
+  {
+    "path": "tools/candidates/php-native/native-context.patch",
+    "sha256": "ea7b0045ff97fb44c17324f5a36340409d0cdbdb26009cf41d0c93b2fcf0c7d5",
+    "size_bytes": 8546
+  },
+  {
+    "path": "tools/candidates/php-native/native-source.cases.json",
+    "sha256": "bb0f0ce864c0b2ec415e1df3d836eb65fe2f16a55387dadf1ecf2440f81ab155",
+    "size_bytes": 3615
+  },
+  {
+    "path": "tools/candidates/php-native/provenance.json",
+    "sha256": "917041c5f2f9af3ea9fff194728652ce070400514177f4517cb45d279fde9c3c",
+    "size_bytes": 2166
+  },
+  {
+    "path": "tools/candidates/php-native/README.md",
+    "sha256": "2fd655fe88f0cca25ac4bab5ff653ddbbe3b5a8dfc951717835d0e4a8323d1d6",
+    "size_bytes": 6905
+  }
+]

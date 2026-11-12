@@ -1,0 +1,118 @@
+{
+  "status": "PASS",
+  "scope": "AST host parameter guard and NativeContext=null opt-out only; not PHP full conformance",
+  "native_parameter_absent_rejected_before_source_or_module_execution": true,
+  "absent_parameter_result": {
+    "state": "EXITED",
+    "exit_code": 1,
+    "elapsed_seconds": 3.761356099974364,
+    "stdout_base64": "",
+    "stderr_base64": "Q2FuZGlkYXRlIFJ1biBoYXMgbm8gZGVjbGFyZWQgTmF0aXZlQ29udGV4dCBwYXJhbWV0ZXI7IHJlZnVzaW5nIHNpbGVudGx5IGlnbm9yZWQgUG93ZXJTaGVsbCBhcmd1bWVudHMNCg==",
+    "stdout_utf8_preview": "",
+    "stderr_utf8_preview": "Candidate Run has no declared NativeContext parameter; refusing silently ignored PowerShell arguments\r\n",
+    "command": [
+      "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\abi\\Invoke-NativePhpWorker.ps1",
+      "-AdapterPath",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-v3_18\\ALL_PHP_v3_18_candidate.ps1",
+      "-SourcePath",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-php-integration-20261112\\host-contract2\\must-not-execute.php",
+      "-CorePath",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi\\out\\windows-x64-ts\\php8ts.dll",
+      "-ExtensionPath",
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll",
+      "-MetadataPath",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-php-integration-20261112\\host-contract2\\absent-param.native.json",
+      "-ExpectedCoreHash",
+      "b2ffd9f38abd20894b064b53a94e4a05e5d39eaa2055e910db6d762558e46757"
+    ]
+  },
+  "absent_parameter_metadata": {
+    "method": "actual_ALL_evaluator_source_execution_preloaded_native_profile",
+    "native_context_parameter_verified": false,
+    "failure": "Candidate Run has no declared NativeContext parameter; refusing silently ignored PowerShell arguments",
+    "native_unsupported": false,
+    "inputs_before": {
+      "source": "E2A273C6373AB134D79E727B2EFDE7812D017436C21D551AAA5C880D61820D39",
+      "adapter": "6CFDE5E729FF594741B6BB3A254A5BCBD25C2A1EF62F2AD4C9F2B9642B1EFB8A",
+      "core": "b2ffd9f38abd20894b064b53a94e4a05e5d39eaa2055e910db6d762558e46757",
+      "extension": "532B9F0944D482A704EB81AC1CB9AF3B59AA0F54C753C53A5709C17F57D4E938"
+    },
+    "pipeline_count": 0,
+    "exit_code": 1,
+    "inputs_after": {
+      "source": "E2A273C6373AB134D79E727B2EFDE7812D017436C21D551AAA5C880D61820D39",
+      "adapter": "6CFDE5E729FF594741B6BB3A254A5BCBD25C2A1EF62F2AD4C9F2B9642B1EFB8A",
+      "core": "b2ffd9f38abd20894b064b53a94e4a05e5d39eaa2055e910db6d762558e46757",
+      "extension": "532B9F0944D482A704EB81AC1CB9AF3B59AA0F54C753C53A5709C17F57D4E938"
+    }
+  },
+  "native_opt_out_matches_unextended_PHP": true,
+  "opt_out_differences": [],
+  "opt_out_oracle": {
+    "state": "EXITED",
+    "exit_code": 0,
+    "elapsed_seconds": 0.26902570005040616,
+    "stdout_base64": "Ym9vbChmYWxzZSkKZGVmYXVsdA==",
+    "stderr_base64": "",
+    "stdout_utf8_preview": "bool(false)\ndefault",
+    "stderr_utf8_preview": "",
+    "command": [
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "-d",
+      "error_reporting=-1",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-php-integration-20261112\\host-contract2\\native-opt-out.php"
+    ]
+  },
+  "opt_out_candidate": {
+    "state": "EXITED",
+    "exit_code": 0,
+    "elapsed_seconds": 4.752072999952361,
+    "stdout_base64": "Ym9vbChmYWxzZSkKZGVmYXVsdA==",
+    "stderr_base64": "",
+    "stdout_utf8_preview": "bool(false)\ndefault",
+    "stderr_utf8_preview": "",
+    "command": [
+      "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+      "-AdapterPath",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+      "-SourcePath",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-php-integration-20261112\\host-contract2\\native-opt-out.php"
+    ]
+  },
+  "inputs_before": {
+    "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll": "532b9f0944d482a704eb81ac1cb9af3b59aa0f54c753c53a5709c17f57d4e938",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi\\out\\windows-x64-ts\\php8ts.dll": "b2ffd9f38abd20894b064b53a94e4a05e5d39eaa2055e910db6d762558e46757",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1": "47c8edb9e39bffe3ed5475f2aeed7e36673a798d2f72baf0cb60abc39695322d",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-v3_18\\ALL_PHP_v3_18_candidate.ps1": "6cfde5e729ff594741b6bb3a254a5bcbd25c2a1ef62f2ad4c9f2b9642b1efb8a",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\abi\\Invoke-NativePhpWorker.ps1": "555c4a6c5ac6898fad2076f66b0b465a9d174f91f585f8871756049d32055d18"
+  },
+  "inputs_after": {
+    "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll": "532b9f0944d482a704eb81ac1cb9af3b59aa0f54c753c53a5709c17f57d4e938",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi\\out\\windows-x64-ts\\php8ts.dll": "b2ffd9f38abd20894b064b53a94e4a05e5d39eaa2055e910db6d762558e46757",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1": "47c8edb9e39bffe3ed5475f2aeed7e36673a798d2f72baf0cb60abc39695322d",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-v3_18\\ALL_PHP_v3_18_candidate.ps1": "6cfde5e729ff594741b6bb3a254a5bcbd25c2a1ef62f2ad4c9f2b9642b1efb8a",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\abi\\Invoke-NativePhpWorker.ps1": "555c4a6c5ac6898fad2076f66b0b465a9d174f91f585f8871756049d32055d18"
+  },
+  "inputs_unchanged": true
+}

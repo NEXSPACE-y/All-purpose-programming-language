@@ -1,0 +1,20 @@
+{
+    "method":  "actual_ALL_evaluator_source_execution_preloaded_native_profile",
+    "native_context_parameter_verified":  false,
+    "failure":  "Candidate Run has no declared NativeContext parameter; refusing silently ignored PowerShell arguments",
+    "native_unsupported":  false,
+    "inputs_before":  {
+                          "source":  "E2A273C6373AB134D79E727B2EFDE7812D017436C21D551AAA5C880D61820D39",
+                          "adapter":  "6CFDE5E729FF594741B6BB3A254A5BCBD25C2A1EF62F2AD4C9F2B9642B1EFB8A",
+                          "core":  "b2ffd9f38abd20894b064b53a94e4a05e5d39eaa2055e910db6d762558e46757",
+                          "extension":  "532B9F0944D482A704EB81AC1CB9AF3B59AA0F54C753C53A5709C17F57D4E938"
+                      },
+    "pipeline_count":  0,
+    "exit_code":  1,
+    "inputs_after":  {
+                         "source":  "E2A273C6373AB134D79E727B2EFDE7812D017436C21D551AAA5C880D61820D39",
+                         "adapter":  "6CFDE5E729FF594741B6BB3A254A5BCBD25C2A1EF62F2AD4C9F2B9642B1EFB8A",
+                         "core":  "b2ffd9f38abd20894b064b53a94e4a05e5d39eaa2055e910db6d762558e46757",
+                         "extension":  "532B9F0944D482A704EB81AC1CB9AF3B59AA0F54C753C53A5709C17F57D4E938"
+                     }
+}

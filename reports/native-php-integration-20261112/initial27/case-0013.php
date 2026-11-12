@@ -1,0 +1,1 @@
+<?php echo 'before:'; dl_test_test1(); echo ':after';

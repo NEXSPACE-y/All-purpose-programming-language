@@ -1,0 +1,1 @@
+<?php namespace A; define('A\VALUE', 7); echo VALUE;
