@@ -1,0 +1,163 @@
+{
+  "schema_version": "1.0",
+  "status": "NOT_COMPLETE",
+  "generated_at_utc": "2026-11-12T11:45:50.125913+00:00",
+  "host": {
+    "system": "Windows",
+    "release": "11",
+    "version": "10.0.26200",
+    "machine": "AMD64",
+    "libc": null,
+    "linux_distribution": {}
+  },
+  "workspace": "C:\\Users\\rinpa\\ALL-php-compat-20261112",
+  "tools_on_path": {
+    "wsl": "C:\\WINDOWS\\system32\\wsl.EXE",
+    "docker": null,
+    "podman": null,
+    "ssh": "C:\\Program Files\\OpenSSH\\OpenSSH-Win64\\ssh.EXE",
+    "scp": "C:\\Program Files\\OpenSSH\\OpenSSH-Win64\\scp.EXE",
+    "qemu-system-x86_64": null,
+    "VBoxManage": null,
+    "vmrun": null,
+    "multipass": null,
+    "pwsh": "C:\\Program Files\\WindowsApps\\OpenAI.CodexPrimaryRuntime.v26-1110-778-0_26.1110.778.0_x64__3k8sg7r9htsxt\\dependencies\\native\\powershell\\pwsh.EXE",
+    "cmake": null,
+    "ninja": null,
+    "clang": null,
+    "clang-cl": null,
+    "gcc": null,
+    "g++": null,
+    "cc": null,
+    "c++": null,
+    "make": null,
+    "php": null,
+    "python3": "C:\\Users\\rinpa\\AppData\\Local\\Microsoft\\WindowsApps\\python3.EXE",
+    "readelf": null,
+    "ldd": null
+  },
+  "read_only_probes": [
+    {
+      "argv": [
+        "C:\\WINDOWS\\system32\\wsl.EXE",
+        "--list",
+        "--verbose"
+      ],
+      "exit_code": 1,
+      "stdout": {
+        "encoding": "none",
+        "text": ""
+      },
+      "stderr": {
+        "encoding": "utf-16-le",
+        "text": "Linux 用 Windows サブシステムがインストールされていません。'wsl.exe --install' を実行してインストールできます。\r\r\n詳細については、https://aka.ms/wslinstall にアクセスしてください\r\r\n"
+      },
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "7a7782485211ec1c1e6df3368ce1f7f9fc158118c082b23583e481d60b709913"
+    },
+    {
+      "argv": [
+        "C:\\WINDOWS\\system32\\wsl.EXE",
+        "--status"
+      ],
+      "exit_code": 50,
+      "stdout": {
+        "encoding": "none",
+        "text": ""
+      },
+      "stderr": {
+        "encoding": "utf-16-le",
+        "text": "Linux 用 Windows サブシステムがインストールされていません。'wsl.exe --install' を実行してインストールできます。\r\r\n詳細については、https://aka.ms/wslinstall にアクセスしてください\r\r\n"
+      },
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "7a7782485211ec1c1e6df3368ce1f7f9fc158118c082b23583e481d60b709913"
+    },
+    {
+      "argv": [
+        "C:\\Program Files\\OpenSSH\\OpenSSH-Win64\\ssh.EXE",
+        "-V"
+      ],
+      "exit_code": 0,
+      "stdout": {
+        "encoding": "none",
+        "text": ""
+      },
+      "stderr": {
+        "encoding": "utf-8",
+        "text": "OpenSSH_for_Windows_10.4p1 Win32-OpenSSH-GitHub, LibreSSL 4.3.3\r\n"
+      },
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "71f4c8e283a3b130b3fbcc4dcbc1c42d7cc5d06ec1c9e3c857e8bd5edba66a32"
+    },
+    {
+      "argv": [
+        "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "-NoProfile",
+        "-NonInteractive",
+        "-Command",
+        "$ErrorActionPreference='SilentlyContinue';$s=@(Get-Service -Name WslService,LxssManager,vmcompute,'com.docker.service' | Select-Object Name,Status,StartType);$p=@(Get-Process -Name 'vmware-vmx','VirtualBoxVM','VBoxHeadless','qemu*','wsl*','vmmem*','docker','podman' | Select-Object Name,Id);$h=@(Get-Command Get-VM | Select-Object Name,Source);[pscustomobject]@{services=$s;processes=$p;hyperv_cmdlets=$h;lxss_registry_present=(Test-Path -LiteralPath 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Lxss')} | ConvertTo-Json -Depth 4 -Compress"
+      ],
+      "exit_code": 0,
+      "stdout": {
+        "encoding": "utf-8",
+        "text": "{\"services\":[],\"processes\":[],\"hyperv_cmdlets\":[],\"lxss_registry_present\":false}\r\n"
+      },
+      "stderr": {
+        "encoding": "none",
+        "text": ""
+      },
+      "stdout_sha256": "d707b0ce3e93be523b67aefd02bc84f663b45bdd17e6eb90ee726aa71a2237fe",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "known_locations": [
+    {
+      "path": "C:\\Users\\rinpa\\ALL_php_oracle",
+      "exists": true,
+      "children": [
+        "php-8.5.12-tests",
+        "php-8.5.12-ts-x64"
+      ]
+    },
+    {
+      "path": "C:\\Program Files\\Docker",
+      "exists": false,
+      "children": []
+    },
+    {
+      "path": "C:\\Program Files\\Oracle\\VirtualBox",
+      "exists": false,
+      "children": []
+    },
+    {
+      "path": "C:\\Program Files\\qemu",
+      "exists": false,
+      "children": []
+    },
+    {
+      "path": "C:\\Program Files\\VMware",
+      "exists": false,
+      "children": []
+    }
+  ],
+  "tracked_linux_or_backend_candidates": [
+    "package/ALL_install_linux.ps1",
+    "package/ALL_linux_core.ps1",
+    "package/ALL_linux_validation.ps1",
+    "package/ALL_sqlite_driver_linux.cs"
+  ],
+  "native_candidate_directory_exists": false,
+  "linux_runtime_discovered": false,
+  "linux_build_validated": false,
+  "linux_native_execution_validated": false,
+  "linux_php_8_5_12_oracle_verified": false,
+  "linux_web_sapi_validated": false,
+  "ssh_endpoint_selected_or_contacted": false,
+  "limitations": [
+    "PATH, named default program directories, scoped workspace and read-only backend inventories only; not an exhaustive machine search.",
+    "An installed SSH client proves no Linux endpoint or connection.",
+    "An installed WSL launcher proves no installed feature/distro.",
+    "Existing Linux scripts and Windows build/header artifacts prove no Linux execution.",
+    "No backend started/imported, dependency installed, package downloaded, service restarted, credential read or remote connection attempted."
+  ]
+}
