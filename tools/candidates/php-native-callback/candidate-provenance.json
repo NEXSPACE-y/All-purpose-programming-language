@@ -1,0 +1,12 @@
+{
+  "status": "EXPERIMENTAL_NOT_ADOPTED",
+  "base_sha256": "47c8edb9e39bffe3ed5475f2aeed7e36673a798d2f72baf0cb60abc39695322d",
+  "candidate_sha256": "6ccacffa8b143f35a06c0213885f659773424ffc24bea62921de8e0c957437d2",
+  "edits": [
+    "if ($null -ne $state.ErrorHandler) {\n                Throw-PhpNativeUnsupported",
+    "            } catch {\n                Throw-PhpNativeUnsupported ('scalar boundary: ' + $_.Exception",
+    "            foreach ($event in $nativeResult.DiagnosticEvents) {\n                Write-PhpDiagnostic",
+    "        try {\n            foreach ($statement in $statements) {"
+  ],
+  "frozen_base_unchanged": true
+}

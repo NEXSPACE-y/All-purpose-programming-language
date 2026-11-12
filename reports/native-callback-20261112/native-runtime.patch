@@ -1,0 +1,127 @@
+--- native/php85abi/src/Runtime.cpp
++++ native/php85abi-callback/src/Runtime.cpp
+@@ -36,7 +36,8 @@
+ struct IniDefinition { const zend_ini_entry_def *def{}; int module{}; };
+ struct IniValue { zend_ini_entry entry{}; };
+ struct Allocation { size_t bytes; DWORD thread; uint64_t request; };
+-struct Diagnostic { int level; std::string message; };
++struct Diagnostic { int level; std::string message; bool delivered=false; };
++struct CallbackAbort {};
+ struct ThreadState {
+     void **storage = nullptr; // TSRM cache's first pointer is the resource table.
+     void *slots[16]{};
+@@ -47,6 +48,12 @@
+     zend_execute_data *current=nullptr;
+     zval last{};
+     uint64_t requests_started=0, requests_ended=0, global_ctors=0;
++    all_php_diagnostic_callback diagnostic_callback=nullptr;
++    all_php_output_callback output_callback=nullptr;
++    void *callback_user=nullptr;
++    DWORD callback_thread=0;
++    uint64_t callback_request=0;
++    int owned_invocation_depth=0;
+     ThreadState() { storage=slots; ZVAL_UNDEF(&last); }
+     ~ThreadState();
+ };
+@@ -64,6 +71,8 @@
+     std::map<std::string,uint64_t> calls;
+     std::recursive_mutex mutex;
+     std::atomic<uint64_t> minit{0},mshutdown{0},rinit{0},rshutdown{0},invocations{0},tls_created{0},tls_destroyed{0};
++    std::atomic<DWORD> callback_owner{0};
++    std::atomic<uint64_t> callback_calls{0},callback_aborts{0},callback_rejections{0},callback_output_bytes{0},contract_started{0},contract_after_diagnostic{0};
+ } runtime;
+ ThreadState::~ThreadState() {if(attached&&slots[0]){if(runtime.module&&runtime.module->globals_dtor)runtime.module->globals_dtor(slots[0]);std::free(slots[0]);++runtime.tls_destroyed;}}
+ 
+@@ -72,7 +81,8 @@
+ void error(const char *kind,const std::string &message) { tls.error_class=kind; tls.error=message; }
+ void clear_error() { tls.error_class.clear(); tls.error.clear(); }
+ std::string json_string(const std::string &value) {std::ostringstream s;s<<'\"';for(unsigned char c:value){if(c=='\\'||c=='\"')s<<'\\';if(c<32)s<<"\\u00"<<std::hex<<std::setw(2)<<std::setfill('0')<<static_cast<unsigned>(c)<<std::dec;else s<<c;}s<<'\"';return s.str();}
+-void diagnostic(int level,const std::string &message){tls.diagnostic_events.push_back({level,message});tls.diagnostics+=(level==E_DEPRECATED?"Deprecated: ":level==E_WARNING?"Warning: ":"Diagnostic: ")+message+"\n";}
++void diagnostic(int level,const std::string &message);
++bool callback_owner_valid(){DWORD owner=runtime.callback_owner.load();if(owner&&owner!=GetCurrentThreadId()){++runtime.callback_rejections;error("ALLNativeUnsupported","Callback prototype rejects another native thread before execution");return false;}if(tls.diagnostic_callback&&(!tls.active||tls.callback_thread!=GetCurrentThreadId()||tls.callback_request!=tls.requests_started)){++runtime.callback_rejections;error("ALLNativeUnsupported","Callback prototype request ownership mismatch");return false;}return true;}
+ std::string format(const char *fmt,va_list ap) {
+     va_list copy; va_copy(copy,ap); int n=vsnprintf(nullptr,0,fmt,copy); va_end(copy);
+     if(n<0) return "[formatting error]";
+@@ -113,6 +123,31 @@
+ }
+ void copy_value(zval *dest,const zval *src) {
+     *dest=*src; if(Z_TYPE_P(dest)==IS_STRING && !(GC_FLAGS(Z_STR_P(dest))&IS_STR_INTERNED)) ++Z_STR_P(dest)->gc.refcount;
++}
++// Native-only transient frame. No managed exception is permitted to cross this scope.
++struct CallbackTransientState {
++    zval last;zend_execute_data *current;bool strict;
++    std::string error_class,error,output,diagnostics;std::vector<Diagnostic> events;
++    CallbackTransientState():last(tls.last),current(tls.current),strict(tls.strict),error_class(std::move(tls.error_class)),error(std::move(tls.error)),output(std::move(tls.output)),diagnostics(std::move(tls.diagnostics)),events(std::move(tls.diagnostic_events)){ZVAL_UNDEF(&tls.last);tls.output.clear();tls.diagnostics.clear();tls.diagnostic_events.clear();}
++    ~CallbackTransientState(){destroy(&tls.last);tls.last=last;tls.current=current;tls.strict=strict;tls.error_class=std::move(error_class);tls.error=std::move(error);tls.output=std::move(output);tls.diagnostics=std::move(diagnostics);tls.diagnostic_events=std::move(events);}
++};
++void flush_callback_output(){
++    if(!tls.output_callback||tls.output.empty())return;
++    std::string bytes=std::move(tls.output);tls.output.clear();int status;
++    {CallbackTransientState preserve;status=tls.output_callback(reinterpret_cast<const unsigned char*>(bytes.data()),bytes.size(),tls.callback_user);}
++    if(status!=1)throw CallbackAbort{};runtime.callback_output_bytes+=bytes.size();
++}
++void diagnostic(int level,const std::string &message){
++    bool delivered=false;
++    if(tls.diagnostic_callback){
++        if(tls.owned_invocation_depth<=0){++runtime.callback_rejections;error("ALLNativeUnsupported","Synchronous diagnostic outside an owned native invocation is rejected");return;}
++        if(!callback_owner_valid())throw CallbackAbort{};
++        flush_callback_output();int status;++runtime.callback_calls;
++        {CallbackTransientState preserve;status=tls.diagnostic_callback(level,reinterpret_cast<const unsigned char*>(message.data()),message.size(),tls.callback_user);}
++        if(status!=1)throw CallbackAbort{};delivered=true;
++    }
++    tls.diagnostic_events.push_back({level,message,delivered});
++    if(!delivered)tls.diagnostics+=(level==E_DEPRECATED?"Deprecated: ":level==E_WARNING?"Warning: ":"Diagnostic: ")+message+"\n";
+ }
+ zend_ulong hash_bytes(const char *s,size_t n) { zend_ulong h=5381; for(size_t i=0;i<n;++i) h=h*33+static_cast<unsigned char>(s[i]); return h | (static_cast<zend_ulong>(1)<<63); }
+ void hash_initialize(HashTable *table,uint32_t capacity=8) {
+@@ -327,10 +362,10 @@
+     if(m->module_startup_func&&m->module_startup_func(MODULE_PERSISTENT,1)!=SUCCESS)return -1;
+     ++runtime.minit;m->module_started=1;return tls.error.empty()?0:-1;
+ }
+-int all_php_request_start(void) {clear_error();if(!runtime.module||tls.active){error("Error","Native request cannot start");return -1;}if(attach_thread()!=0)return -1;tls.active=true;++tls.requests_started;if(apply_ini_defaults()!=0){clear_ini();tls.active=false;return -1;}if(runtime.module->request_startup_func&&runtime.module->request_startup_func(MODULE_PERSISTENT,1)!=SUCCESS)return -1;++runtime.rinit;return 0;}
+-int all_php_request_end(void) {if(!tls.active){error("Error","No active native request");return -1;}if(runtime.module->request_shutdown_func&&runtime.module->request_shutdown_func(MODULE_PERSISTENT,1)!=SUCCESS)return -1;++runtime.rshutdown;destroy(&tls.last);clear_ini();tls.active=false;++tls.requests_ended;return 0;}
++int all_php_request_start(void) {clear_error();if(!callback_owner_valid())return -1;if(!runtime.module||tls.active){error("Error","Native request cannot start");return -1;}if(attach_thread()!=0)return -1;tls.active=true;++tls.requests_started;if(apply_ini_defaults()!=0){clear_ini();tls.active=false;return -1;}if(runtime.module->request_startup_func&&runtime.module->request_startup_func(MODULE_PERSISTENT,1)!=SUCCESS)return -1;++runtime.rinit;return 0;}
++int all_php_request_end(void) {if(!callback_owner_valid())return -1;if(tls.diagnostic_callback){error("ALLNativeUnsupported","Clear callback lease before request teardown");return -1;}if(!tls.active){error("Error","No active native request");return -1;}if(runtime.module->request_shutdown_func&&runtime.module->request_shutdown_func(MODULE_PERSISTENT,1)!=SUCCESS)return -1;++runtime.rshutdown;destroy(&tls.last);clear_ini();tls.active=false;++tls.requests_ended;return 0;}
+ int all_php_invoke(const char *scope,const char *name,const all_php_value *args,uint32_t count,int strict,all_php_value *result) {
+-    clear_error();if(!tls.active){error("Error","Native call outside request");return -1;}destroy(&tls.last);Function *fn=nullptr;Class *cls=nullptr;
++    clear_error();if(!callback_owner_valid())return -1;if(!tls.active){error("Error","Native call outside request");return -1;}destroy(&tls.last);Function *fn=nullptr;Class *cls=nullptr;
+     if(scope&&*scope){auto c=runtime.classes.find(lower(scope));if(c==runtime.classes.end()){error("Error","Unknown native class");return -1;}cls=c->second.get();auto f=cls->methods.find(lower(name));if(f!=cls->methods.end())fn=f->second;}
+     else {auto f=runtime.functions.find(lower(name));if(f!=runtime.functions.end())fn=f->second.get();}
+     if(!fn){error("Error","Unknown native callable");return -1;}
+@@ -339,16 +374,16 @@
+     zend_object *object=nullptr;if(cls){object=object_new(cls);ZVAL_OBJ(&frame->This,object);ZEND_CALL_NUM_ARGS(frame)=count;}
+     for(uint32_t i=0;i<count;++i)if(!value_in(args[i],ZEND_CALL_ARG(frame,i+1))){for(uint32_t j=0;j<i;++j)destroy(ZEND_CALL_ARG(frame,j+1));object_destroy(object);return -1;}
+     auto *previous=tls.current;tls.current=frame;tls.strict=strict!=0;ZVAL_NULL(&tls.last);++runtime.invocations;
+-    fn->raw.internal_function.handler(frame,&tls.last);
++    bool aborted=false;++tls.owned_invocation_depth;try{fn->raw.internal_function.handler(frame,&tls.last);}catch(const CallbackAbort&){aborted=true;++runtime.callback_aborts;}catch(...){error("ALLNativeUnsupported","Unexpected native C++ exception in callback prototype");}--tls.owned_invocation_depth;
+     tls.current=previous;tls.strict=false;for(uint32_t i=0;i<count;++i)destroy(ZEND_CALL_ARG(frame,i+1));object_destroy(object);
+-    if(!tls.error.empty())return 1;return value_out(&tls.last,result)?0:-1;
++    if(aborted)return 2;if(!tls.error.empty())return 1;return value_out(&tls.last,result)?0:-1;
+ }
+ int all_php_invoke_frameless(const char *name,const all_php_value *arg,int strict,all_php_value *result) {
+-    clear_error();if(!tls.active){error("Error","Frameless call outside request");return -1;}auto it=runtime.functions.find(lower(name));if(it==runtime.functions.end()||!it->second->entry->frameless_function_infos){error("ALLNativeUnsupported","No registered frameless native callable");return -1;}
++    clear_error();if(!callback_owner_valid())return -1;if(!tls.active){error("Error","Frameless call outside request");return -1;}auto it=runtime.functions.find(lower(name));if(it==runtime.functions.end()||!it->second->entry->frameless_function_infos){error("ALLNativeUnsupported","No registered frameless native callable");return -1;}
+     auto *info=it->second->entry->frameless_function_infos;if(info->num_args!=1){error("ALLNativeUnsupported","Frameless arity unsupported");return -1;}
+     zend_execute_data frame{};frame.func=&it->second->raw;ZEND_CALL_NUM_ARGS(&frame)=1;zval value{};if(!value_in(*arg,&value))return -1;destroy(&tls.last);ZVAL_NULL(&tls.last);
+-    tls.current=&frame;tls.strict=strict!=0;using Fast=void(ZEND_FASTCALL*)(zval*,zval*);reinterpret_cast<Fast>(info->handler)(&tls.last,&value);tls.current=nullptr;tls.strict=false;destroy(&value);++runtime.invocations;
+-    if(!tls.error.empty())return 1;return value_out(&tls.last,result)?0:-1;
++    tls.current=&frame;tls.strict=strict!=0;using Fast=void(ZEND_FASTCALL*)(zval*,zval*);bool aborted=false;++tls.owned_invocation_depth;try{reinterpret_cast<Fast>(info->handler)(&tls.last,&value);}catch(const CallbackAbort&){aborted=true;++runtime.callback_aborts;}catch(...){error("ALLNativeUnsupported","Unexpected native C++ exception in callback prototype");}--tls.owned_invocation_depth;tls.current=nullptr;tls.strict=false;destroy(&value);++runtime.invocations;
++    if(aborted)return 2;if(!tls.error.empty())return 1;return value_out(&tls.last,result)?0:-1;
+ }
+ const char *all_php_error_class(void){return tls.error_class.c_str();}
+ const char *all_php_error_message(void){return tls.error.c_str();}
+@@ -368,7 +403,13 @@
+ const char *all_php_diagnostics_json(void){std::ostringstream s;s<<'[';bool first=true;for(auto &e:tls.diagnostic_events){if(!first)s<<',';first=false;s<<"{\"level\":"<<e.level<<",\"message\":"<<json_string(e.message)<<'}';}s<<']';tls.stats=s.str();return tls.stats.c_str();}
+ uint32_t all_php_diagnostic_count(void){return static_cast<uint32_t>(tls.diagnostic_events.size());}
+ const char *all_php_diagnostic_get(uint32_t index,int *level,size_t *length){if(index>=tls.diagnostic_events.size()){*level=0;*length=0;return nullptr;}auto &e=tls.diagnostic_events[index];*level=e.level;*length=e.message.size();return e.message.data();}
++int all_php_diagnostic_delivered(uint32_t index){return index<tls.diagnostic_events.size()&&tls.diagnostic_events[index].delivered?1:0;}
++uint64_t all_php_request_id(void){return tls.active?tls.requests_started:0;}
++int all_php_set_callbacks(all_php_diagnostic_callback callback,all_php_output_callback output,void *user){clear_error();DWORD expected=0;if(!tls.active||!callback||!output||!runtime.callback_owner.compare_exchange_strong(expected,GetCurrentThreadId())){error("ALLNativeUnsupported","Callback lease requires an active exclusively owned request");return -1;}tls.diagnostic_callback=callback;tls.output_callback=output;tls.callback_user=user;tls.callback_thread=GetCurrentThreadId();tls.callback_request=tls.requests_started;return 0;}
++int all_php_clear_callbacks(void){if(!runtime.callback_owner.load())return 0;if(!callback_owner_valid())return -1;tls.diagnostic_callback=nullptr;tls.output_callback=nullptr;tls.callback_user=nullptr;tls.callback_thread=0;tls.callback_request=0;runtime.callback_owner=0;return 0;}
++const char *all_php_callback_stats_json(void){std::ostringstream s;s<<"{\"callbacks\":"<<runtime.callback_calls<<",\"aborts\":"<<runtime.callback_aborts<<",\"owner_rejections\":"<<runtime.callback_rejections<<",\"flushed_output_bytes\":"<<runtime.callback_output_bytes<<",\"contract_started\":"<<runtime.contract_started<<",\"contract_after_diagnostic\":"<<runtime.contract_after_diagnostic<<",\"callback_owner_thread\":"<<runtime.callback_owner<<'}';tls.stats=s.str();return tls.stats.c_str();}
++int all_php_callback_contract_probe(void){clear_error();if(!callback_owner_valid()||!tls.active)return -1;all_php_clear_output();++runtime.contract_started;++tls.owned_invocation_depth;try{php_printf("N-before");diagnostic(E_WARNING,"ALL callback contract probe");++runtime.contract_after_diagnostic;php_printf("N-after");}catch(const CallbackAbort&){--tls.owned_invocation_depth;++runtime.callback_aborts;return 2;}--tls.owned_invocation_depth;return 0;}
+ const char *all_php_memory_probe(void){clear_error();if(!tls.active){error("Error","Memory probe outside native request");return nullptr;}size_t before;{std::lock_guard<std::recursive_mutex> lock(runtime.mutex);before=runtime.request_allocations.size();}auto *block=static_cast<unsigned char*>(_emalloc(32));std::memset(block,0x5a,32);std::atomic<bool> rejected{false};std::thread foreign([&](){_efree(block);rejected=tls.error_class=="ALLNativeUnsupported";});foreign.join();bool intact=block[0]==0x5a;_efree(block);zval one{},two{};ZVAL_STR(&one,string_new("shared",6));auto *s=Z_STR(one);copy_value(&two,&one);uint32_t retained=GC_REFCOUNT(s);destroy(&one);uint32_t surviving=GC_REFCOUNT(s);destroy(&two);size_t after;{std::lock_guard<std::recursive_mutex> lock(runtime.mutex);after=runtime.request_allocations.size();}std::ostringstream out;out<<"{\"before\":"<<before<<",\"after\":"<<after<<",\"retained_refcount\":"<<retained<<",\"remaining_refcount\":"<<surviving<<",\"cross_thread_free_rejected\":"<<(rejected?"true":"false")<<",\"owner_buffer_intact\":"<<(intact?"true":"false")<<"}";tls.stats=out.str();return tls.stats.c_str();}
+-int all_php_shutdown(void){clear_error();if(tls.active){error("Error","End native request before shutdown");return -1;}auto *m=runtime.module;if(!m)return 0;if(m->module_shutdown_func&&m->module_shutdown_func(MODULE_PERSISTENT,1)!=SUCCESS)return -1;++runtime.mshutdown;if(tls.attached){if(m->globals_dtor)m->globals_dtor(tls.slots[0]);std::free(tls.slots[0]);tls.slots[0]=nullptr;tls.attached=false;++runtime.tls_destroyed;}
++int all_php_shutdown(void){clear_error();if(!callback_owner_valid())return -1;if(tls.active){error("Error","End native request before shutdown");return -1;}auto *m=runtime.module;if(!m)return 0;if(m->module_shutdown_func&&m->module_shutdown_func(MODULE_PERSISTENT,1)!=SUCCESS)return -1;++runtime.mshutdown;if(tls.attached){if(m->globals_dtor)m->globals_dtor(tls.slots[0]);std::free(tls.slots[0]);tls.slots[0]=nullptr;tls.attached=false;++runtime.tls_destroyed;}
+     for(auto &p:runtime.classes){auto *ce=&p.second->raw;for(int i=0;i<ce->default_properties_count;++i)destroy(ce->default_properties_table+i);std::free(ce->default_properties_table);hash_destroy_storage(&ce->function_table);hash_destroy_storage(&ce->properties_info);}runtime.classes.clear();runtime.method_functions.clear();runtime.functions.clear();runtime.constants.clear();runtime.ini.clear();for(auto &p:runtime.interned)std::free(p.second);runtime.interned.clear();runtime.module=nullptr;FreeLibrary(runtime.extension);runtime.extension=nullptr;return 0;}
+ }

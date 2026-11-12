@@ -1,0 +1,7 @@
+/out/
+/sdk/
+*.obj
+*.exp
+*.lib
+*.pdb
+*.ilk

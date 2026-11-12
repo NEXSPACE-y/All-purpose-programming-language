@@ -1,0 +1,568 @@
+{
+  "schema_version": 1,
+  "status": "NOT_COMPLETE",
+  "measurement": "same PHP source; exact stdout bytes/stderr bytes/actual process exit; no normalization",
+  "profile": "preloaded unchanged native extension in the actual ALL evaluator; not ALL CLI extension flags",
+  "scope": "selected valid-UTF8/NUL-literal/scalar/weak positional paths; callbacks/refs/objects/populated arrays/named native args remain unsupported",
+  "inputs_before": {
+    "cases": "78553ef4dae6047c2abb2f28df21d116f160218d4a822629b48aae1abfc72739",
+    "adapter": "6ccacffa8b143f35a06c0213885f659773424ffc24bea62921de8e0c957437d2",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "extension": "532b9f0944d482a704eb81ac1cb9af3b59aa0f54c753c53a5709c17f57d4e938",
+    "core": "84dcba798218022b84acaef4c308b35276c621d9758aac712309fd1314254ae0",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "worker": "107be1d7af38a87b882d35642909f53e740233216a44013a635055211f3a0071",
+    "bridge": "e1b2500bcb14bfa8c12e3ac502e01f358d885e866b16fdc09ed02acf24633b90",
+    "frozen_base": "47c8edb9e39bffe3ed5475f2aeed7e36673a798d2f72baf0cb60abc39695322d",
+    "frozen_core_source": "a50d51c96c658dfee6f344baa458d58aa5d1344e2a7068dda39e662a7b117eee",
+    "frozen_bridge": "32692504898a77063bcbad631c48d40d8fa1f7c17fcf3f5d837c6f77479ec077"
+  },
+  "inputs_after": {
+    "cases": "78553ef4dae6047c2abb2f28df21d116f160218d4a822629b48aae1abfc72739",
+    "adapter": "6ccacffa8b143f35a06c0213885f659773424ffc24bea62921de8e0c957437d2",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "extension": "532b9f0944d482a704eb81ac1cb9af3b59aa0f54c753c53a5709c17f57d4e938",
+    "core": "84dcba798218022b84acaef4c308b35276c621d9758aac712309fd1314254ae0",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "worker": "107be1d7af38a87b882d35642909f53e740233216a44013a635055211f3a0071",
+    "bridge": "e1b2500bcb14bfa8c12e3ac502e01f358d885e866b16fdc09ed02acf24633b90",
+    "frozen_base": "47c8edb9e39bffe3ed5475f2aeed7e36673a798d2f72baf0cb60abc39695322d",
+    "frozen_core_source": "a50d51c96c658dfee6f344baa458d58aa5d1344e2a7068dda39e662a7b117eee",
+    "frozen_bridge": "32692504898a77063bcbad631c48d40d8fa1f7c17fcf3f5d837c6f77479ec077"
+  },
+  "inputs_unchanged": true,
+  "base_frozen_sha256": "47c8edb9e39bffe3ed5475f2aeed7e36673a798d2f72baf0cb60abc39695322d",
+  "total_comparisons": 3,
+  "passed": 3,
+  "guard_cases": 0,
+  "guards_rejected_before_native": 0,
+  "results": [
+    {
+      "id": "callback.no_handler",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0000.php",
+      "source_sha256": "5a92990cefe34fa9b797279641a8d6da9fea82c3d36ffb8f524ef29a23732475",
+      "verdict": "PASS",
+      "differences": [],
+      "native_guard_case": false,
+      "inputs_stable_in_worker": true,
+      "own_native_core_verified": true,
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.441172800026834,
+        "stdout_base64": "SGVsbG8g",
+        "stderr_base64": "RGVwcmVjYXRlZDogZGxfdGVzdF90ZXN0MigpOiBQYXNzaW5nIG51bGwgdG8gcGFyYW1ldGVyICMxICgkc3RyKSBvZiB0eXBlIHN0cmluZyBpcyBkZXByZWNhdGVkIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNcbmF0aXZlLWNhbGxiYWNrLTIwMjYxMTEyXHNtb2tlM1xjYXNlLTAwMDAucGhwIG9uIGxpbmUgMQo=",
+        "stdout_utf8_preview": "Hello ",
+        "stderr_utf8_preview": "Deprecated: dl_test_test2(): Passing null to parameter #1 ($str) of type string is deprecated in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0000.php on line 1\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "extension=C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0000.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 14.033778400043957,
+        "stdout_base64": "SGVsbG8g",
+        "stderr_base64": "RGVwcmVjYXRlZDogZGxfdGVzdF90ZXN0MigpOiBQYXNzaW5nIG51bGwgdG8gcGFyYW1ldGVyICMxICgkc3RyKSBvZiB0eXBlIHN0cmluZyBpcyBkZXByZWNhdGVkIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNcbmF0aXZlLWNhbGxiYWNrLTIwMjYxMTEyXHNtb2tlM1xjYXNlLTAwMDAucGhwIG9uIGxpbmUgMQo=",
+        "stdout_utf8_preview": "Hello ",
+        "stderr_utf8_preview": "Deprecated: dl_test_test2(): Passing null to parameter #1 ($str) of type string is deprecated in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0000.php on line 1\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-callback\\Invoke-CallbackPhpWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-callback\\ALL_PHP_callback_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0000.php",
+          "-CorePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+          "-ExtensionPath",
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll",
+          "-MetadataPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0000.native.json",
+          "-ExpectedCoreHash",
+          "84dcba798218022b84acaef4c308b35276c621d9758aac712309fd1314254ae0"
+        ]
+      },
+      "metadata_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0000.native.json",
+      "native_metadata": {
+        "method": "actual_ALL_evaluator_source_execution_preloaded_native_profile",
+        "native_context_parameter_verified": true,
+        "failure": null,
+        "native_unsupported": false,
+        "inputs_before": {
+          "source": "5A92990CEFE34FA9B797279641A8D6DA9FEA82C3D36FFB8F524EF29A23732475",
+          "adapter": "6CCACFFA8B143F35A06C0213885F659773424FFC24BEA62921DE8E0C957437D2",
+          "core": "84dcba798218022b84acaef4c308b35276c621d9758aac712309fd1314254ae0",
+          "extension": "532B9F0944D482A704EB81AC1CB9AF3B59AA0F54C753C53A5709C17F57D4E938"
+        },
+        "core_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+        "loaded_php_modules": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll"
+        ],
+        "function_catalog": {
+          "value": [
+            {
+              "name": "dl_test_frameless",
+              "required_args": 1,
+              "declared_args": 1,
+              "flags": 0,
+              "module": "dl_test",
+              "supports_named_arguments": false,
+              "parameters": [
+                {
+                  "position": 1,
+                  "name": "value"
+                }
+              ]
+            },
+            {
+              "name": "dl_test_test1",
+              "required_args": 0,
+              "declared_args": 0,
+              "flags": 0,
+              "module": "dl_test",
+              "supports_named_arguments": false,
+              "parameters": []
+            },
+            {
+              "name": "dl_test_test2",
+              "required_args": 0,
+              "declared_args": 1,
+              "flags": 0,
+              "module": "dl_test",
+              "supports_named_arguments": false,
+              "parameters": [
+                {
+                  "position": 1,
+                  "name": "str"
+                }
+              ]
+            }
+          ],
+          "Count": 3
+        },
+        "cli_context": {
+          "TerminationReason": null,
+          "ExitCode": 0,
+          "Terminated": false,
+          "SourcePath": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0000.php"
+        },
+        "native_stats": {
+          "minit": 1,
+          "mshutdown": 1,
+          "rinit": 1,
+          "rshutdown": 1,
+          "thread_requests_started": 1,
+          "thread_requests_ended": 1,
+          "thread_global_ctors": 1,
+          "tls_contexts_created": 1,
+          "tls_contexts_destroyed": 1,
+          "native_invocations": 1,
+          "registered_functions": 0,
+          "registered_classes": 0,
+          "request_allocations_live": 0,
+          "api_calls": {
+            "OnUpdateLong": 1,
+            "OnUpdateString": 1,
+            "__zend_malloc": 1,
+            "tsrm_get_ls_cache": 2,
+            "zend_declare_typed_property": 1,
+            "zend_parse_arg_str_slow@@24": 1,
+            "zend_register_functions": 1,
+            "zend_register_ini_entries_ex": 1,
+            "zend_register_internal_class_with_flags": 4,
+            "zend_register_long_constant": 1,
+            "zend_string_init_interned": 17,
+            "zend_strpprintf": 1,
+            "zend_unregister_ini_entries_ex": 1
+          }
+        },
+        "callback_stats": {
+          "callbacks": 1,
+          "aborts": 0,
+          "owner_rejections": 0,
+          "flushed_output_bytes": 0,
+          "contract_started": 0,
+          "contract_after_diagnostic": 0,
+          "callback_owner_thread": 0
+        },
+        "pipeline_count": 0,
+        "exit_code": 0,
+        "inputs_after": {
+          "source": "5A92990CEFE34FA9B797279641A8D6DA9FEA82C3D36FFB8F524EF29A23732475",
+          "adapter": "6CCACFFA8B143F35A06C0213885F659773424FFC24BEA62921DE8E0C957437D2",
+          "core": "84dcba798218022b84acaef4c308b35276c621d9758aac712309fd1314254ae0",
+          "extension": "532B9F0944D482A704EB81AC1CB9AF3B59AA0F54C753C53A5709C17F57D4E938"
+        }
+      }
+    },
+    {
+      "id": "callback.handler_true",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0001.php",
+      "source_sha256": "2d9c55918c0f54c626c2ab99c64cf8fffbcf78b06754d3466e01804b8644826f",
+      "verdict": "PASS",
+      "differences": [],
+      "native_guard_case": false,
+      "inputs_stable_in_worker": true,
+      "own_native_core_verified": true,
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.24780470004770905,
+        "stdout_base64": "SEhlbGxvIA==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "HHello ",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "extension=C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0001.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 11.329294500057586,
+        "stdout_base64": "SEhlbGxvIA==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "HHello ",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-callback\\Invoke-CallbackPhpWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-callback\\ALL_PHP_callback_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0001.php",
+          "-CorePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+          "-ExtensionPath",
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll",
+          "-MetadataPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0001.native.json",
+          "-ExpectedCoreHash",
+          "84dcba798218022b84acaef4c308b35276c621d9758aac712309fd1314254ae0"
+        ]
+      },
+      "metadata_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0001.native.json",
+      "native_metadata": {
+        "method": "actual_ALL_evaluator_source_execution_preloaded_native_profile",
+        "native_context_parameter_verified": true,
+        "failure": null,
+        "native_unsupported": false,
+        "inputs_before": {
+          "source": "2D9C55918C0F54C626C2AB99C64CF8FFFBCF78B06754D3466E01804B8644826F",
+          "adapter": "6CCACFFA8B143F35A06C0213885F659773424FFC24BEA62921DE8E0C957437D2",
+          "core": "84dcba798218022b84acaef4c308b35276c621d9758aac712309fd1314254ae0",
+          "extension": "532B9F0944D482A704EB81AC1CB9AF3B59AA0F54C753C53A5709C17F57D4E938"
+        },
+        "core_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+        "loaded_php_modules": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll"
+        ],
+        "function_catalog": {
+          "value": [
+            {
+              "name": "dl_test_frameless",
+              "required_args": 1,
+              "declared_args": 1,
+              "flags": 0,
+              "module": "dl_test",
+              "supports_named_arguments": false,
+              "parameters": [
+                {
+                  "position": 1,
+                  "name": "value"
+                }
+              ]
+            },
+            {
+              "name": "dl_test_test1",
+              "required_args": 0,
+              "declared_args": 0,
+              "flags": 0,
+              "module": "dl_test",
+              "supports_named_arguments": false,
+              "parameters": []
+            },
+            {
+              "name": "dl_test_test2",
+              "required_args": 0,
+              "declared_args": 1,
+              "flags": 0,
+              "module": "dl_test",
+              "supports_named_arguments": false,
+              "parameters": [
+                {
+                  "position": 1,
+                  "name": "str"
+                }
+              ]
+            }
+          ],
+          "Count": 3
+        },
+        "cli_context": {
+          "TerminationReason": null,
+          "ExitCode": 0,
+          "Terminated": false,
+          "SourcePath": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0001.php"
+        },
+        "native_stats": {
+          "minit": 1,
+          "mshutdown": 1,
+          "rinit": 1,
+          "rshutdown": 1,
+          "thread_requests_started": 1,
+          "thread_requests_ended": 1,
+          "thread_global_ctors": 1,
+          "tls_contexts_created": 1,
+          "tls_contexts_destroyed": 1,
+          "native_invocations": 1,
+          "registered_functions": 0,
+          "registered_classes": 0,
+          "request_allocations_live": 0,
+          "api_calls": {
+            "OnUpdateLong": 1,
+            "OnUpdateString": 1,
+            "__zend_malloc": 1,
+            "tsrm_get_ls_cache": 2,
+            "zend_declare_typed_property": 1,
+            "zend_parse_arg_str_slow@@24": 1,
+            "zend_register_functions": 1,
+            "zend_register_ini_entries_ex": 1,
+            "zend_register_internal_class_with_flags": 4,
+            "zend_register_long_constant": 1,
+            "zend_string_init_interned": 17,
+            "zend_strpprintf": 1,
+            "zend_unregister_ini_entries_ex": 1
+          }
+        },
+        "callback_stats": {
+          "callbacks": 1,
+          "aborts": 0,
+          "owner_rejections": 0,
+          "flushed_output_bytes": 0,
+          "contract_started": 0,
+          "contract_after_diagnostic": 0,
+          "callback_owner_thread": 0
+        },
+        "pipeline_count": 0,
+        "exit_code": 0,
+        "inputs_after": {
+          "source": "2D9C55918C0F54C626C2AB99C64CF8FFFBCF78B06754D3466E01804B8644826F",
+          "adapter": "6CCACFFA8B143F35A06C0213885F659773424FFC24BEA62921DE8E0C957437D2",
+          "core": "84dcba798218022b84acaef4c308b35276c621d9758aac712309fd1314254ae0",
+          "extension": "532B9F0944D482A704EB81AC1CB9AF3B59AA0F54C753C53A5709C17F57D4E938"
+        }
+      }
+    },
+    {
+      "id": "callback.handler_throw",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0002.php",
+      "source_sha256": "9fb8e097ff06b7282ad4679bdac850bbaa1042a6632aea2863d9b16fc641be1f",
+      "verdict": "PASS",
+      "differences": [],
+      "native_guard_case": false,
+      "inputs_stable_in_worker": true,
+      "own_native_core_verified": true,
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.4001037999987602,
+        "stdout_base64": "Y2F1Z2h0OnN0b3A6YWZ0ZXI=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "caught:stop:after",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "extension=C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0002.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 17.042650699964724,
+        "stdout_base64": "Y2F1Z2h0OnN0b3A6YWZ0ZXI=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "caught:stop:after",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-callback\\Invoke-CallbackPhpWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-callback\\ALL_PHP_callback_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0002.php",
+          "-CorePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+          "-ExtensionPath",
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll",
+          "-MetadataPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0002.native.json",
+          "-ExpectedCoreHash",
+          "84dcba798218022b84acaef4c308b35276c621d9758aac712309fd1314254ae0"
+        ]
+      },
+      "metadata_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0002.native.json",
+      "native_metadata": {
+        "method": "actual_ALL_evaluator_source_execution_preloaded_native_profile",
+        "native_context_parameter_verified": true,
+        "failure": null,
+        "native_unsupported": false,
+        "inputs_before": {
+          "source": "9FB8E097FF06B7282AD4679BDAC850BBAA1042A6632AEA2863D9B16FC641BE1F",
+          "adapter": "6CCACFFA8B143F35A06C0213885F659773424FFC24BEA62921DE8E0C957437D2",
+          "core": "84dcba798218022b84acaef4c308b35276c621d9758aac712309fd1314254ae0",
+          "extension": "532B9F0944D482A704EB81AC1CB9AF3B59AA0F54C753C53A5709C17F57D4E938"
+        },
+        "core_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+        "loaded_php_modules": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll"
+        ],
+        "function_catalog": {
+          "value": [
+            {
+              "name": "dl_test_frameless",
+              "required_args": 1,
+              "declared_args": 1,
+              "flags": 0,
+              "module": "dl_test",
+              "supports_named_arguments": false,
+              "parameters": [
+                {
+                  "position": 1,
+                  "name": "value"
+                }
+              ]
+            },
+            {
+              "name": "dl_test_test1",
+              "required_args": 0,
+              "declared_args": 0,
+              "flags": 0,
+              "module": "dl_test",
+              "supports_named_arguments": false,
+              "parameters": []
+            },
+            {
+              "name": "dl_test_test2",
+              "required_args": 0,
+              "declared_args": 1,
+              "flags": 0,
+              "module": "dl_test",
+              "supports_named_arguments": false,
+              "parameters": [
+                {
+                  "position": 1,
+                  "name": "str"
+                }
+              ]
+            }
+          ],
+          "Count": 3
+        },
+        "cli_context": {
+          "TerminationReason": null,
+          "ExitCode": 0,
+          "Terminated": false,
+          "SourcePath": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-20261112\\smoke3\\case-0002.php"
+        },
+        "native_stats": {
+          "minit": 1,
+          "mshutdown": 1,
+          "rinit": 1,
+          "rshutdown": 1,
+          "thread_requests_started": 1,
+          "thread_requests_ended": 1,
+          "thread_global_ctors": 1,
+          "tls_contexts_created": 1,
+          "tls_contexts_destroyed": 1,
+          "native_invocations": 1,
+          "registered_functions": 0,
+          "registered_classes": 0,
+          "request_allocations_live": 0,
+          "api_calls": {
+            "OnUpdateLong": 1,
+            "OnUpdateString": 1,
+            "__zend_malloc": 1,
+            "tsrm_get_ls_cache": 2,
+            "zend_declare_typed_property": 1,
+            "zend_parse_arg_str_slow@@24": 1,
+            "zend_register_functions": 1,
+            "zend_register_ini_entries_ex": 1,
+            "zend_register_internal_class_with_flags": 4,
+            "zend_register_long_constant": 1,
+            "zend_string_init_interned": 17,
+            "zend_unregister_ini_entries_ex": 1
+          }
+        },
+        "callback_stats": {
+          "callbacks": 1,
+          "aborts": 1,
+          "owner_rejections": 0,
+          "flushed_output_bytes": 0,
+          "contract_started": 0,
+          "contract_after_diagnostic": 0,
+          "callback_owner_thread": 0
+        },
+        "pipeline_count": 0,
+        "exit_code": 0,
+        "inputs_after": {
+          "source": "9FB8E097FF06B7282AD4679BDAC850BBAA1042A6632AEA2863D9B16FC641BE1F",
+          "adapter": "6CCACFFA8B143F35A06C0213885F659773424FFC24BEA62921DE8E0C957437D2",
+          "core": "84dcba798218022b84acaef4c308b35276c621d9758aac712309fd1314254ae0",
+          "extension": "532B9F0944D482A704EB81AC1CB9AF3B59AA0F54C753C53A5709C17F57D4E938"
+        }
+      }
+    }
+  ]
+}

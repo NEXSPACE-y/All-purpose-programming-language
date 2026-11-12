@@ -1,0 +1,8 @@
+Runtime.cpp
+C:\Users\rinpa\AppData\Local\Temp\ALL-php85abi-sdk-14ef56e4dc4b4ab4afa1af8fab14ac3f\php-8.5.12-devel-vs17-x64\include\Zend\zend_gc.h(170): warning C4244: '=': conversion from '__int64' to 'int', possible loss of data
+C:\Users\rinpa\AppData\Local\Temp\ALL-php85abi-sdk-14ef56e4dc4b4ab4afa1af8fab14ac3f\php-8.5.12-devel-vs17-x64\include\Zend\zend_API.h(546): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\rinpa\AppData\Local\Temp\ALL-php85abi-sdk-14ef56e4dc4b4ab4afa1af8fab14ac3f\php-8.5.12-devel-vs17-x64\include\Zend\zend_API.h(557): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\rinpa\ALL-php-compat-20261112\native\php85abi-callback\src\Runtime.cpp(155): warning C4146: unary minus operator applied to unsigned type, result still unsigned
+C:\Users\rinpa\ALL-php-compat-20261112\native\php85abi-callback\src\Runtime.cpp(156): warning C4146: unary minus operator applied to unsigned type, result still unsigned
+C:\Users\rinpa\ALL-php-compat-20261112\native\php85abi-callback\src\Runtime.cpp(168): warning C4146: unary minus operator applied to unsigned type, result still unsigned
+   Creating library C:\Users\rinpa\ALL-php-compat-20261112\native\php85abi-callback\out\windows-x64-ts\all_php85abi.lib and object C:\Users\rinpa\ALL-php-compat-20261112\native\php85abi-callback\out\windows-x64-ts\all_php85abi.exp

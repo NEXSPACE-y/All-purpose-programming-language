@@ -1,0 +1,1 @@
+<?php $n=0;set_error_handler(function($l,$m)use(&$n){$n++;echo '{';echo dl_test_test2(null);echo '}';return true;});echo dl_test_test2(null);echo ':'.$n;

@@ -1,0 +1,55 @@
+{
+    "status":  "PASS",
+    "scope":  "synthetic owned-native control/output contract; not a PHP compatibility comparison",
+    "mode":  "continue",
+    "checks":  {
+                   "registration_requires_active_request":  true,
+                   "wrong_thread_rejected_before_invocation":  true,
+                   "callback_control_result":  true,
+                   "prefix_flushed_exact_byte_count":  true,
+                   "request_generation_advances":  true,
+                   "request_after_abort_or_callback_usable":  true,
+                   "request_teardown_balanced":  true
+               },
+    "caught":  null,
+    "callback_stats":  {
+                           "callbacks":  1,
+                           "aborts":  0,
+                           "owner_rejections":  0,
+                           "flushed_output_bytes":  8,
+                           "contract_started":  1,
+                           "contract_after_diagnostic":  1,
+                           "callback_owner_thread":  23320
+                       },
+    "native_stats":  {
+                         "minit":  1,
+                         "mshutdown":  1,
+                         "rinit":  2,
+                         "rshutdown":  2,
+                         "thread_requests_started":  2,
+                         "thread_requests_ended":  2,
+                         "thread_global_ctors":  1,
+                         "tls_contexts_created":  1,
+                         "tls_contexts_destroyed":  1,
+                         "native_invocations":  1,
+                         "registered_functions":  0,
+                         "registered_classes":  0,
+                         "request_allocations_live":  0,
+                         "api_calls":  {
+                                           "OnUpdateLong":  2,
+                                           "OnUpdateString":  2,
+                                           "__zend_malloc":  1,
+                                           "php_printf":  2,
+                                           "tsrm_get_ls_cache":  3,
+                                           "zend_declare_typed_property":  1,
+                                           "zend_register_functions":  1,
+                                           "zend_register_ini_entries_ex":  1,
+                                           "zend_register_internal_class_with_flags":  4,
+                                           "zend_register_long_constant":  1,
+                                           "zend_string_init_interned":  19,
+                                           "zend_strpprintf":  1,
+                                           "zend_unregister_ini_entries_ex":  1
+                                       }
+                     },
+    "core_path":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll"
+}

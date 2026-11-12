@@ -1,0 +1,87 @@
+Microsoft (R) COFF/PE Dumper Version 14.44.35228.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file C:\Users\rinpa\ALL-php-compat-20261112\native\php85abi-callback\out\windows-x64-ts\php8ts.dll
+
+File Type: DLL
+
+  Section contains the following exports for php8ts.dll
+
+    00000000 characteristics
+    FFFFFFFF time date stamp
+        0.00 version
+           1 ordinal base
+          60 number of functions
+          60 number of names
+
+    ordinal hint RVA      name
+
+          1    0 00011160 OnUpdateLong
+          2    1 00011210 OnUpdateString
+          3    2 00011290 __zend_malloc
+          4    3 000112C0 _efree@@8
+          5    4 000112F0 _emalloc@@8
+          6    5 00011320 all_php_callback_contract_probe
+          7    6 000114D0 all_php_callback_stats_json
+          8    7 00011790 all_php_class_parent
+          9    8 000119E0 all_php_class_property
+         10    9 00012040 all_php_clear_callbacks
+         11    A 00012120 all_php_clear_output
+         12    B 00012200 all_php_constant_get
+         13    C 000123E0 all_php_core_path
+         14    D 00012430 all_php_diagnostic_count
+         15    E 00012490 all_php_diagnostic_delivered
+         16    F 00012540 all_php_diagnostic_get
+         17   10 00012620 all_php_diagnostics
+         18   11 000126A0 all_php_diagnostics_json
+         19   12 00012980 all_php_error_class
+         20   13 000129D0 all_php_error_message
+         21   14 00012A20 all_php_function_catalog_json
+         22   15 000130C0 all_php_has_function
+         23   16 00013370 all_php_ini_get
+         24   17 00013590 all_php_ini_set
+         25   18 00013A70 all_php_invoke
+         26   19 00014770 all_php_invoke_frameless
+         27   1A 00014EF0 all_php_load_extension
+         28   1B 00015720 all_php_memory_probe
+         29   1C 00015D70 all_php_module_info
+         30   1D 00015DE0 all_php_output
+         31   1E 00015E60 all_php_request_end
+         32   1F 00016190 all_php_request_id
+         33   20 00016210 all_php_request_start
+         34   21 00016470 all_php_set_callbacks
+         35   22 000166F0 all_php_shutdown
+         36   23 00016C60 all_php_stats_json
+         37   24 00017190 display_ini_entries
+         38   25 00017670 php_info_print_table_end
+         39   26 000176C0 php_info_print_table_row
+         40   27 00017850 php_info_print_table_start
+         41   28 000178A0 php_printf
+         42   29 0002A7D0 std_object_handlers
+         43   2A 000179A0 tsrm_get_ls_cache
+         44   2B 00017A60 zend_declare_typed_property
+         45   2C 000180A0 zend_flf_parse_arg_long_slow@@24
+         46   2D 00018140 zend_parse_arg_long_slow@@24
+         47   2E 00018720 zend_parse_arg_str_slow@@24
+         48   2F 00018B20 zend_register_functions
+         49   30 00019240 zend_register_ini_entries
+         50   31 00019280 zend_register_ini_entries_ex
+         51   32 000197A0 zend_register_internal_class_with_flags
+         52   33 0001A210 zend_register_long_constant
+         53   34 0002A000 zend_string_init_interned
+         54   35 0001A4C0 zend_strpprintf
+         55   36 0001A610 zend_unregister_ini_entries
+         56   37 0001A640 zend_unregister_ini_entries_ex
+         57   38 0001A760 zend_wrong_parameter_error@@40
+         58   39 0001AA60 zend_wrong_parameter_type_error@@24
+         59   3A 0001B360 zend_wrong_parameters_count_error@@16
+         60   3B 0001BBC0 zend_wrong_parameters_none_error@@0
+
+  Summary
+
+       11000 .data
+        2000 .pdata
+        B000 .rdata
+        1000 .reloc
+       1E000 .text

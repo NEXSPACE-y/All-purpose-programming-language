@@ -82,7 +82,9 @@
     {
       "component": "Synchronous native diagnostic callback",
       "path": "native/php85abi-callback/",
-      "state": "Separate prototype only; final15 same-source comparisons and synthetic27 contract checks passed; documentation being fixed; not part of package or accepted frozen core"
+      "state": "Frozen separate prototype, NOT_ADOPTED. Final15 actual same-source comparisons match; synthetic3modes/27checks pass. Based on47c without v3.19 core fixes. Adoption requires rebase onto113d and old native74/bridge24/default965 regression.",
+      "report": "reports/native-callback-20261112/README.md",
+      "dll_sha256": "88117b8f38dc77d20e638ce573bb83fc6f959c1ad6821f8803c5499969fe234b"
     },
     {
       "component": "PHP language/standard library and general native ABI",
@@ -107,5 +109,6 @@
     "do_not_count_registration_or_selected_test_passes_as_full_compatibility": true,
     "do_not_start_other_languages_or_ALL_stage2_early": true,
     "keep_real_failed_and_partial_measurements": true
-  }
+  },
+  "latest_package_checkpoint_commit": "19cc200"
 }
