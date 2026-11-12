@@ -1,0 +1,51 @@
+{
+  "status": "ISOLATED_PRIVATE_THROWABLE_CANDIDATE_NOT_COMPLETE",
+  "base_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+  "base_sha256": "47c8edb9e39bffe3ed5475f2aeed7e36673a798d2f72baf0cb60abc39695322d",
+  "candidate_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-private-throwable\\ALL_PHP_private_throwable_candidate.ps1",
+  "candidate_sha256": "2527caddc86273163981883d996a8969f3190a0bc86edda180b05605c9dfd78b",
+  "base_mutated": false,
+  "package_written": false,
+  "edits": [
+    {
+      "anchor": "                NamespaceFallbacks = [System.Collections.Generic.Dictionary[int,string]]::new()\n",
+      "matches": 1
+    },
+    {
+      "anchor": "'explode','implode','__all_throwable_string','print_r'",
+      "matches": 1
+    },
+    {
+      "anchor": "                    $callArgs = Read-Arguments\n                    return [pscustomobject]@{ Kind='call'; Name=$token; A",
+      "matches": 1
+    },
+    {
+      "anchor": "                $savedFallbacks = $state.NamespaceFallbacks\n",
+      "matches": 1
+    },
+    {
+      "anchor": "                    $state.NamespaceFallbacks = [System.Collections.Generic.Dictionary[int,string]]::new()\n",
+      "matches": 1
+    },
+    {
+      "anchor": "                    $state.NamespaceFallbacks = $savedFallbacks\n",
+      "matches": 1
+    },
+    {
+      "anchor": "$script:ALLPhpPreludeAst",
+      "matches": 3,
+      "reason": "Versioned private AST cache cannot reuse a prior public-call AST."
+    },
+    {
+      "anchor": "                '__all_throwable_string' { return (Get-PhpThrowableString $callArgs[0]) }\n",
+      "matches": 1
+    },
+    {
+      "anchor": "                'literal' { return $node.Value }",
+      "matches": 1
+    }
+  ],
+  "binding": "Prelude-only parser flag creates private AST opcode; evaluator calls formatter directly.",
+  "cache_key": "ALLPhpPreludeAstPrivateThrowableV1",
+  "retained_scope": "Existing CLI/default/native paths preserved; no new dependency or runtime delegation."
+}

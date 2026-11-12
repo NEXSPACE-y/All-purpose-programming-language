@@ -1,0 +1,7 @@
+[
+  {"id":"public-redeclare.conditional-false-valid","code":"<?php if(false){function strlen($v){return 9;}} echo strlen('ALL');"},
+  {"id":"public-redeclare.namespace-valid","code":"<?php namespace N; function strlen($v){return 9;} echo strlen('ALL');"},
+  {"id":"public-redeclare.same-method-valid","code":"<?php class A {function strlen($v){return 9;}} $a=new A(); echo $a->strlen('ALL'),'|',strlen('ALL');"},
+  {"id":"public-redeclare.private-helper-user-legal","code":"<?php function __all_throwable_string($v){return 'user';} echo __all_throwable_string('ALL');"},
+  {"id":"public-redeclare.case-insensitive-fatal","code":"<?php echo 'before:'; function STRLEN($v){return 9;} echo STRLEN('ALL');"}
+]

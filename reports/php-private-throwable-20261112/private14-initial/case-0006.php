@@ -1,0 +1,1 @@
+<?php function __all_throwable_string($x){return 'dynamic-user';} $f='__all_throwable_string'; echo $f(new Exception('x'));

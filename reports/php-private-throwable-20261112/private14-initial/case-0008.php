@@ -1,0 +1,1 @@
+<?php try {$f=__all_throwable_string(...);} catch(Error $e){echo $e->getMessage();}

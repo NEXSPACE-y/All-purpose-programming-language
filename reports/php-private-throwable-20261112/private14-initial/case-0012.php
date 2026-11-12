@@ -1,0 +1,1 @@
+<?php $p=new Exception('inner'); $e=new Exception('outer',0,$p); echo $e->__toString();

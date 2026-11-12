@@ -1,0 +1,1 @@
+<?php class A {function dl_test_test2(){return 'method';}} $a=new A(); echo $a->dl_test_test2(), '|', dl_test_test2('ALL');

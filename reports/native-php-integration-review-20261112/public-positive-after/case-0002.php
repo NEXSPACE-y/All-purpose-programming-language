@@ -1,0 +1,1 @@
+<?php class A {function strlen($v){return 9;}} $a=new A(); echo $a->strlen('ALL'),'|',strlen('ALL');

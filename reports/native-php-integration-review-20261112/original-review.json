@@ -1,0 +1,37 @@
+{
+  "reviewedAdapterSha256": "47c8edb9e39bffe3ed5475f2aeed7e36673a798d2f72baf0cb60abc39695322d",
+  "reviewedCoreSha256": "b2ffd9f38abd20894b064b53a94e4a05e5d39eaa2055e910db6d762558e46757",
+  "reviewedBridgeSha256": "32692504898a77063bcbad631c48d40d8fa1f7c17fcf3f5d837c6f77479ec077",
+  "reviewedWorkerSha256": "555c4a6c5ac6898fad2076f66b0b465a9d174f91f585f8871756049d32055d18",
+  "sourceComparisons": {
+    "normalPassed": 23,
+    "normalTotal": 23,
+    "guardsRejectedBeforeNative": 4,
+    "guardCases": 4,
+    "allWorkerInputHashesStable": true,
+    "allOwnedCoreVerified": true,
+    "overallInputHashesStable": true,
+    "allMinitOne": true,
+    "allMshutdownOne": true,
+    "allRinitOne": true,
+    "allRshutdownOne": true,
+    "allGuardInvocationsZero": true
+  },
+  "hostContracts": {
+    "nativeContextAbsenceRejectsBeforeSource": true,
+    "nativeOptOutMatchesReference": true,
+    "inputHashesStable": true
+  },
+  "reviewMethod": "Read-only source and saved measurement review, plus separately authorized9+2 focused reproductions",
+  "packageOrFrozenCandidateChanged": false,
+  "foundDefects": [
+    "Registered native function names can be globally redefined by user declarations",
+    "Same public builtin registration collision exists without NativeContext"
+  ],
+  "unverifiedRisks": [
+    "RINIT/RSHUTDOWN failure cleanup paths not injected: worker started flag is assigned only after Start returns; End failure can cause second End attempt and prevent Shutdown",
+    "LoadedPhpModules is captured before source execution, not a second post-source module snapshot",
+    "Unsupported argument guard applies to the target invocation after PHP argument expression evaluation; not whole-source side-effect preflight",
+    "Invalid UTF8 native output/return is unsupported after native invocation; no fallback occurs but output cannot be represented in current managed-string path"
+  ]
+}

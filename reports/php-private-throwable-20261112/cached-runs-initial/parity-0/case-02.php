@@ -1,0 +1,1 @@
+<?php function __all_throwable_string($e){return 'hijacked';} $e=new Exception('x'); echo $e->__toString();
