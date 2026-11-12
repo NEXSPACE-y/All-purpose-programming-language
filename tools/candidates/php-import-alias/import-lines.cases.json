@@ -1,0 +1,18 @@
+[
+  {
+    "id": "import.group-line",
+    "code": "<?php use B\\{\nC as Q,\nD as Q\n};"
+  },
+  {
+    "id": "import.split-use-line",
+    "code": "<?php use\nB\\C\nas Q;\nuse\nE\\F\nas Q;"
+  },
+  {
+    "id": "import.group-const-line",
+    "code": "<?php use B\\{\nconst C as Q,\nconst D as Q\n};"
+  },
+  {
+    "id": "import.comma-line",
+    "code": "<?php use B\\C as Q,\n E\\F as Q;"
+  }
+]

@@ -1,0 +1,1 @@
+<?php namespace A; use B\C as d; use E\F as D;

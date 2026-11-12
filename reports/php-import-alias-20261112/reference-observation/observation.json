@@ -1,0 +1,104 @@
+[
+  {
+    "id": "import.duplicate-class",
+    "exit": 255,
+    "stderr": "Fatal error: Cannot use E\\F as D because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\reference-observation\\00.php on line 1\nStack trace:\n#0 {main}\n",
+    "stdout": ""
+  },
+  {
+    "id": "import.duplicate-class-case",
+    "exit": 255,
+    "stderr": "Fatal error: Cannot use E\\F as D because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\reference-observation\\01.php on line 1\nStack trace:\n#0 {main}\n",
+    "stdout": ""
+  },
+  {
+    "id": "import.duplicate-class-implicit",
+    "exit": 255,
+    "stderr": "Fatal error: Cannot use E\\C as C because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\reference-observation\\02.php on line 1\nStack trace:\n#0 {main}\n",
+    "stdout": ""
+  },
+  {
+    "id": "import.duplicate-class-identical",
+    "exit": 255,
+    "stderr": "Fatal error: Cannot use B\\C as C because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\reference-observation\\03.php on line 1\nStack trace:\n#0 {main}\n",
+    "stdout": ""
+  },
+  {
+    "id": "import.duplicate-function",
+    "exit": 255,
+    "stderr": "Fatal error: Cannot use function E\\g as q because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\reference-observation\\04.php on line 1\nStack trace:\n#0 {main}\n",
+    "stdout": ""
+  },
+  {
+    "id": "import.duplicate-function-case",
+    "exit": 255,
+    "stderr": "Fatal error: Cannot use function E\\g as Q because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\reference-observation\\05.php on line 1\nStack trace:\n#0 {main}\n",
+    "stdout": ""
+  },
+  {
+    "id": "import.duplicate-const",
+    "exit": 255,
+    "stderr": "Fatal error: Cannot use const E\\W as Q because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\reference-observation\\06.php on line 1\nStack trace:\n#0 {main}\n",
+    "stdout": ""
+  },
+  {
+    "id": "import.const-case-distinct",
+    "exit": 0,
+    "stderr": "",
+    "stdout": "ok"
+  },
+  {
+    "id": "import.three-symbol-spaces",
+    "exit": 0,
+    "stderr": "",
+    "stdout": "ok"
+  },
+  {
+    "id": "import.duplicate-group",
+    "exit": 255,
+    "stderr": "Fatal error: Cannot use B\\D as Q because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\reference-observation\\09.php on line 1\nStack trace:\n#0 {main}\n",
+    "stdout": ""
+  },
+  {
+    "id": "import.duplicate-group-function",
+    "exit": 255,
+    "stderr": "Fatal error: Cannot use function B\\g as Q because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\reference-observation\\10.php on line 1\nStack trace:\n#0 {main}\n",
+    "stdout": ""
+  },
+  {
+    "id": "import.duplicate-group-const",
+    "exit": 255,
+    "stderr": "Fatal error: Cannot use const B\\W as Q because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\reference-observation\\11.php on line 1\nStack trace:\n#0 {main}\n",
+    "stdout": ""
+  },
+  {
+    "id": "import.namespace-block-reset",
+    "exit": 0,
+    "stderr": "",
+    "stdout": "ok"
+  },
+  {
+    "id": "import.namespace-semicolon-reset",
+    "exit": 0,
+    "stderr": "",
+    "stdout": "ok"
+  },
+  {
+    "id": "import.duplicate-before-output",
+    "exit": 255,
+    "stderr": "Fatal error: Cannot use E\\F as D because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\reference-observation\\14.php on line 1\nStack trace:\n#0 {main}\n",
+    "stdout": ""
+  },
+  {
+    "id": "import.duplicate-multiline",
+    "exit": 255,
+    "stderr": "Fatal error: Cannot use E\\F as Q because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\reference-observation\\15.php on line 4\nStack trace:\n#0 {main}\n",
+    "stdout": ""
+  },
+  {
+    "id": "import.trailing-global-qualified",
+    "exit": 255,
+    "stderr": "Fatal error: Cannot use E\\F as Q because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\reference-observation\\16.php on line 1\nStack trace:\n#0 {main}\n",
+    "stdout": ""
+  }
+]

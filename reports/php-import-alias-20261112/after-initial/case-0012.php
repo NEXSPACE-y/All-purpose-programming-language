@@ -1,0 +1,1 @@
+<?php namespace A {use B\C as Q;} namespace A {use E\F as Q; echo "ok";}

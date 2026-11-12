@@ -1,0 +1,919 @@
+{
+  "schema_version": 1,
+  "status": "NOT_COMPLETE",
+  "isolated_candidate": true,
+  "measurement": "exact stdout bytes, stderr bytes and actual process status; no normalization",
+  "scope": "Listed examples only; not full CLI/SAPI/PHP conformance.",
+  "inputs_before": {
+    "cases": "ba4795d6fb276110f3684eb6637c4d3d8554d077db238ad0125ef61f642c5196",
+    "adapter": "47c8edb9e39bffe3ed5475f2aeed7e36673a798d2f72baf0cb60abc39695322d",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "worker": "471bcb240f0a29ea256ef1a5fc8f6ecdeb0094a323f19a8811d3f84e883e62ac"
+  },
+  "inputs_after": {
+    "cases": "ba4795d6fb276110f3684eb6637c4d3d8554d077db238ad0125ef61f642c5196",
+    "adapter": "47c8edb9e39bffe3ed5475f2aeed7e36673a798d2f72baf0cb60abc39695322d",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "worker": "471bcb240f0a29ea256ef1a5fc8f6ecdeb0094a323f19a8811d3f84e883e62ac"
+  },
+  "inputs_unchanged": true,
+  "total": 17,
+  "passed": 4,
+  "different": 13,
+  "results": [
+    {
+      "id": "import.duplicate-class",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0000.php",
+      "source_sha256": "670f4a3764cd1febfeef4502b8b97c498da9492632923f93b792f679086647ac",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.22607570001855493,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IENhbm5vdCB1c2UgRVxGIGFzIEQgYmVjYXVzZSB0aGUgbmFtZSBpcyBhbHJlYWR5IGluIHVzZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1pbXBvcnQtYWxpYXMtMjAyNjExMTJcYmVmb3JlXGNhc2UtMDAwMC5waHAgb24gbGluZSAxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0K",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Cannot use E\\F as D because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0000.php on line 1\nStack trace:\n#0 {main}\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0000.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 4.48663379997015,
+        "stdout_base64": "dW5yZWFjaGFibGU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "unreachable",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0000.php"
+        ]
+      }
+    },
+    {
+      "id": "import.duplicate-class-case",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0001.php",
+      "source_sha256": "5fa4ef1398189c87c1e3495f646dc413d9276998819b6d8410b8e95d073f71d0",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.2251976999687031,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IENhbm5vdCB1c2UgRVxGIGFzIEQgYmVjYXVzZSB0aGUgbmFtZSBpcyBhbHJlYWR5IGluIHVzZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1pbXBvcnQtYWxpYXMtMjAyNjExMTJcYmVmb3JlXGNhc2UtMDAwMS5waHAgb24gbGluZSAxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0K",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Cannot use E\\F as D because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0001.php on line 1\nStack trace:\n#0 {main}\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0001.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 3.7405690999003127,
+        "stdout_base64": "",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0001.php"
+        ]
+      }
+    },
+    {
+      "id": "import.duplicate-class-implicit",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0002.php",
+      "source_sha256": "468a59a3d5dabd277e9457fc9e99d860c279c9cf84dc232ec74201c032c59d20",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.19416179996915162,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IENhbm5vdCB1c2UgRVxDIGFzIEMgYmVjYXVzZSB0aGUgbmFtZSBpcyBhbHJlYWR5IGluIHVzZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1pbXBvcnQtYWxpYXMtMjAyNjExMTJcYmVmb3JlXGNhc2UtMDAwMi5waHAgb24gbGluZSAxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0K",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Cannot use E\\C as C because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0002.php on line 1\nStack trace:\n#0 {main}\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0002.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 3.9152164000552148,
+        "stdout_base64": "",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0002.php"
+        ]
+      }
+    },
+    {
+      "id": "import.duplicate-class-identical",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0003.php",
+      "source_sha256": "d9b4ac1233ecc1b323a23069af6a00d0d6aaa97f25b200ea84baa5e7e8bc9ede",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.18422109994571656,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IENhbm5vdCB1c2UgQlxDIGFzIEMgYmVjYXVzZSB0aGUgbmFtZSBpcyBhbHJlYWR5IGluIHVzZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1pbXBvcnQtYWxpYXMtMjAyNjExMTJcYmVmb3JlXGNhc2UtMDAwMy5waHAgb24gbGluZSAxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0K",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Cannot use B\\C as C because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0003.php on line 1\nStack trace:\n#0 {main}\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0003.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 3.7503228000132367,
+        "stdout_base64": "",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0003.php"
+        ]
+      }
+    },
+    {
+      "id": "import.duplicate-function",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0004.php",
+      "source_sha256": "c19a448c8e72da5a244d2be7e932882795d565ac8b489a8b108c1bcba2118bfe",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.19526300008874387,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IENhbm5vdCB1c2UgZnVuY3Rpb24gRVxnIGFzIHEgYmVjYXVzZSB0aGUgbmFtZSBpcyBhbHJlYWR5IGluIHVzZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1pbXBvcnQtYWxpYXMtMjAyNjExMTJcYmVmb3JlXGNhc2UtMDAwNC5waHAgb24gbGluZSAxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0K",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Cannot use function E\\g as q because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0004.php on line 1\nStack trace:\n#0 {main}\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0004.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 3.84490910009481,
+        "stdout_base64": "",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0004.php"
+        ]
+      }
+    },
+    {
+      "id": "import.duplicate-function-case",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0005.php",
+      "source_sha256": "1296ec86a744714eaf3c533c29d04d388e1c72f223c527fb1be2f46da333b2f1",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.3812374999979511,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IENhbm5vdCB1c2UgZnVuY3Rpb24gRVxnIGFzIFEgYmVjYXVzZSB0aGUgbmFtZSBpcyBhbHJlYWR5IGluIHVzZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1pbXBvcnQtYWxpYXMtMjAyNjExMTJcYmVmb3JlXGNhc2UtMDAwNS5waHAgb24gbGluZSAxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0K",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Cannot use function E\\g as Q because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0005.php on line 1\nStack trace:\n#0 {main}\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0005.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 4.3779607999604195,
+        "stdout_base64": "",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0005.php"
+        ]
+      }
+    },
+    {
+      "id": "import.duplicate-const",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0006.php",
+      "source_sha256": "ce8c80706f21de053971d5758509e4e4af0a0eb5d12855c00f0fcb5643f538b4",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.16592399997171015,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IENhbm5vdCB1c2UgY29uc3QgRVxXIGFzIFEgYmVjYXVzZSB0aGUgbmFtZSBpcyBhbHJlYWR5IGluIHVzZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1pbXBvcnQtYWxpYXMtMjAyNjExMTJcYmVmb3JlXGNhc2UtMDAwNi5waHAgb24gbGluZSAxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0K",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Cannot use const E\\W as Q because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0006.php on line 1\nStack trace:\n#0 {main}\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0006.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 3.764979899977334,
+        "stdout_base64": "",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0006.php"
+        ]
+      }
+    },
+    {
+      "id": "import.const-case-distinct",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0007.php",
+      "source_sha256": "daf74e2864436b748ade3a6a40d9189af00da504c494e8a07c2516f5e7112583",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.20028470002580434,
+        "stdout_base64": "b2s=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "ok",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0007.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 5.028686799923889,
+        "stdout_base64": "b2s=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "ok",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0007.php"
+        ]
+      }
+    },
+    {
+      "id": "import.three-symbol-spaces",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0008.php",
+      "source_sha256": "5a939c71daa5fe24239553d02ec4755fa89e4571069959925d5defa5a28b63d8",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2305983001133427,
+        "stdout_base64": "b2s=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "ok",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0008.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 4.279345100047067,
+        "stdout_base64": "b2s=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "ok",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0008.php"
+        ]
+      }
+    },
+    {
+      "id": "import.duplicate-group",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0009.php",
+      "source_sha256": "c3b7bf2a404d7fc1bcd4620cc810c40990d28f0ee5fe169295d724bf630521aa",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.20094550005160272,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IENhbm5vdCB1c2UgQlxEIGFzIFEgYmVjYXVzZSB0aGUgbmFtZSBpcyBhbHJlYWR5IGluIHVzZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1pbXBvcnQtYWxpYXMtMjAyNjExMTJcYmVmb3JlXGNhc2UtMDAwOS5waHAgb24gbGluZSAxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0K",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Cannot use B\\D as Q because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0009.php on line 1\nStack trace:\n#0 {main}\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0009.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 3.9200221999781206,
+        "stdout_base64": "",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0009.php"
+        ]
+      }
+    },
+    {
+      "id": "import.duplicate-group-function",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0010.php",
+      "source_sha256": "ed2102a406a683818a56b8b420fdfd53c0b7725e63072e717b5c9e8fec2fce5b",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.15588139998726547,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IENhbm5vdCB1c2UgZnVuY3Rpb24gQlxnIGFzIFEgYmVjYXVzZSB0aGUgbmFtZSBpcyBhbHJlYWR5IGluIHVzZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1pbXBvcnQtYWxpYXMtMjAyNjExMTJcYmVmb3JlXGNhc2UtMDAxMC5waHAgb24gbGluZSAxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0K",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Cannot use function B\\g as Q because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0010.php on line 1\nStack trace:\n#0 {main}\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0010.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 3.714263099944219,
+        "stdout_base64": "",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0010.php"
+        ]
+      }
+    },
+    {
+      "id": "import.duplicate-group-const",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0011.php",
+      "source_sha256": "042905beb9e0b341e7b73e97d1da620449199c9ddc122c84eb712ff16bea0564",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.16333480004686862,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IENhbm5vdCB1c2UgY29uc3QgQlxXIGFzIFEgYmVjYXVzZSB0aGUgbmFtZSBpcyBhbHJlYWR5IGluIHVzZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1pbXBvcnQtYWxpYXMtMjAyNjExMTJcYmVmb3JlXGNhc2UtMDAxMS5waHAgb24gbGluZSAxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0K",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Cannot use const B\\W as Q because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0011.php on line 1\nStack trace:\n#0 {main}\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0011.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 3.7529994000215083,
+        "stdout_base64": "",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0011.php"
+        ]
+      }
+    },
+    {
+      "id": "import.namespace-block-reset",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0012.php",
+      "source_sha256": "3b784b42a75196ce190bc9f6edc2026b2beb6ae5e9db06c089c6af848fbb6669",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.18440260004717857,
+        "stdout_base64": "b2s=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "ok",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0012.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 4.4449760999996215,
+        "stdout_base64": "b2s=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "ok",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0012.php"
+        ]
+      }
+    },
+    {
+      "id": "import.namespace-semicolon-reset",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0013.php",
+      "source_sha256": "4077f9da9e26c1d2cdd429a8b67fd09e6c208359bdcce889498348e71eeb3400",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.1587586000096053,
+        "stdout_base64": "b2s=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "ok",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0013.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 4.223648199927993,
+        "stdout_base64": "b2s=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "ok",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0013.php"
+        ]
+      }
+    },
+    {
+      "id": "import.duplicate-before-output",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0014.php",
+      "source_sha256": "e78caf23b21bf15d7113e0bf7ef0cb09da9b3ecc684a028c772356e1fa14e361",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.16630639997310936,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IENhbm5vdCB1c2UgRVxGIGFzIEQgYmVjYXVzZSB0aGUgbmFtZSBpcyBhbHJlYWR5IGluIHVzZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1pbXBvcnQtYWxpYXMtMjAyNjExMTJcYmVmb3JlXGNhc2UtMDAxNC5waHAgb24gbGluZSAxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0K",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Cannot use E\\F as D because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0014.php on line 1\nStack trace:\n#0 {main}\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0014.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 3.9712306999135762,
+        "stdout_base64": "dW5yZWFjaGFibGU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "unreachable",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0014.php"
+        ]
+      }
+    },
+    {
+      "id": "import.duplicate-multiline",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0015.php",
+      "source_sha256": "9ff942774e84dc773f55dc7fc8daaa21cee0b6a6572cfb6019092d124506e6eb",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.16626039997208863,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IENhbm5vdCB1c2UgRVxGIGFzIFEgYmVjYXVzZSB0aGUgbmFtZSBpcyBhbHJlYWR5IGluIHVzZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1pbXBvcnQtYWxpYXMtMjAyNjExMTJcYmVmb3JlXGNhc2UtMDAxNS5waHAgb24gbGluZSA0ClN0YWNrIHRyYWNlOgojMCB7bWFpbn0K",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Cannot use E\\F as Q because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0015.php on line 4\nStack trace:\n#0 {main}\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0015.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 4.137712399940938,
+        "stdout_base64": "dW5yZWFjaGFibGU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "unreachable",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0015.php"
+        ]
+      }
+    },
+    {
+      "id": "import.trailing-global-qualified",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0016.php",
+      "source_sha256": "53e750e2155c98d2e58e9e7a3dd5e3b5ce08960db7fd89a18181517b92f06429",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.16488359996583313,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IENhbm5vdCB1c2UgRVxGIGFzIFEgYmVjYXVzZSB0aGUgbmFtZSBpcyBhbHJlYWR5IGluIHVzZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1pbXBvcnQtYWxpYXMtMjAyNjExMTJcYmVmb3JlXGNhc2UtMDAxNi5waHAgb24gbGluZSAxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0K",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Cannot use E\\F as Q because the name is already in use in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0016.php on line 1\nStack trace:\n#0 {main}\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0016.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 3.745881399954669,
+        "stdout_base64": "",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native\\ALL_PHP_native_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-import-alias-20261112\\before\\case-0016.php"
+        ]
+      }
+    }
+  ]
+}

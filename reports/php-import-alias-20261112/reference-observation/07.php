@@ -1,0 +1,1 @@
+<?php use const B\V as q; use const E\W as Q; echo "ok";

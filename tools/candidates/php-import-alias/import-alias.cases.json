@@ -1,0 +1,70 @@
+[
+  {
+    "id": "import.duplicate-class",
+    "code": "<?php namespace A; use B\\C as D; use E\\F as D; echo \"unreachable\";"
+  },
+  {
+    "id": "import.duplicate-class-case",
+    "code": "<?php namespace A; use B\\C as d; use E\\F as D;"
+  },
+  {
+    "id": "import.duplicate-class-implicit",
+    "code": "<?php use B\\C; use E\\C;"
+  },
+  {
+    "id": "import.duplicate-class-identical",
+    "code": "<?php use B\\C; use B\\C;"
+  },
+  {
+    "id": "import.duplicate-function",
+    "code": "<?php use function B\\f as q; use function E\\g as q;"
+  },
+  {
+    "id": "import.duplicate-function-case",
+    "code": "<?php use function B\\f as q; use function E\\g as Q;"
+  },
+  {
+    "id": "import.duplicate-const",
+    "code": "<?php use const B\\V as Q; use const E\\W as Q;"
+  },
+  {
+    "id": "import.const-case-distinct",
+    "code": "<?php use const B\\V as q; use const E\\W as Q; echo \"ok\";"
+  },
+  {
+    "id": "import.three-symbol-spaces",
+    "code": "<?php use B\\C as Q; use function E\\f as Q; use const G\\V as Q; echo \"ok\";"
+  },
+  {
+    "id": "import.duplicate-group",
+    "code": "<?php use B\\{C as Q, D as Q};"
+  },
+  {
+    "id": "import.duplicate-group-function",
+    "code": "<?php use B\\{function f as Q, function g as Q};"
+  },
+  {
+    "id": "import.duplicate-group-const",
+    "code": "<?php use B\\{const V as Q, const W as Q};"
+  },
+  {
+    "id": "import.namespace-block-reset",
+    "code": "<?php namespace A {use B\\C as Q;} namespace A {use E\\F as Q; echo \"ok\";}"
+  },
+  {
+    "id": "import.namespace-semicolon-reset",
+    "code": "<?php namespace A; use B\\C as Q; namespace A; use E\\F as Q; echo \"ok\";"
+  },
+  {
+    "id": "import.duplicate-before-output",
+    "code": "<?php echo \"unreachable\"; use B\\C as D; use E\\F as D;"
+  },
+  {
+    "id": "import.duplicate-multiline",
+    "code": "<?php \nnamespace A;\nuse B\\C as Q;\nuse E\\F as Q;\necho \"unreachable\";"
+  },
+  {
+    "id": "import.trailing-global-qualified",
+    "code": "<?php use \\B\\C as Q; use \\E\\F as Q;"
+  }
+]

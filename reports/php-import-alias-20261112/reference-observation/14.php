@@ -1,0 +1,1 @@
+<?php echo "unreachable"; use B\C as D; use E\F as D;

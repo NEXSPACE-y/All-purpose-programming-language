@@ -1,0 +1,1 @@
+<?php use B\{function f as Q, function g as Q};
