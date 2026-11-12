@@ -1,0 +1,58 @@
+[
+  {
+    "id": "isset.missing-sideeffect",
+    "code": "<?php function k(){echo 'k';return 0;} var_dump(isset($a[k()]));"
+  },
+  {
+    "id": "isset.nested-missing",
+    "code": "<?php function k($s){echo $s;return 0;} var_dump(isset($a[k('a')][k('b')]));"
+  },
+  {
+    "id": "isset.nested-null",
+    "code": "<?php $a=null; function k($s){echo $s;return 0;} var_dump(isset($a[k('a')][k('b')]));"
+  },
+  {
+    "id": "isset.nested-empty",
+    "code": "<?php $a=[]; function k($s){echo $s;return 0;} var_dump(isset($a[k('a')][k('b')]));"
+  },
+  {
+    "id": "isset.nested-present",
+    "code": "<?php $a=[[9]]; function k($s){echo $s;return 0;} var_dump(isset($a[k('a')][k('b')]));"
+  },
+  {
+    "id": "isset.undefined-key",
+    "code": "<?php var_dump(isset($a[$key]));"
+  },
+  {
+    "id": "isset.undefined-nested-keys",
+    "code": "<?php var_dump(isset($a[$k1][$k2]));"
+  },
+  {
+    "id": "isset.key-throws",
+    "code": "<?php function k(){throw new Exception('key');} try {isset($a[k()]);} catch(Exception $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "isset.base-throws",
+    "code": "<?php function b(){echo 'b';throw new Exception('base');} function k(){echo 'k';return 0;} try {isset(b()[k()]);} catch(Exception $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "isset.base-null",
+    "code": "<?php function b(){echo 'b';return null;} function k(){echo 'k';return 0;} var_dump(isset(b()[k()]));"
+  },
+  {
+    "id": "isset.key-handler-throws",
+    "code": "<?php set_error_handler(function(){throw new Exception('warning');}); try {isset($a[$key]);} catch(Exception $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "isset.invalid-key-missing",
+    "code": "<?php try {var_dump(isset($a[[]]));} catch(Throwable $e){echo get_class($e),':',$e->getMessage();}"
+  },
+  {
+    "id": "isset.invalid-key-array",
+    "code": "<?php $a=[]; try {var_dump(isset($a[[]]));} catch(Throwable $e){echo get_class($e),':',$e->getMessage();}"
+  },
+  {
+    "id": "isset.nullsafe-chain",
+    "code": "<?php $a=null; function k(){echo 'k';return 0;} var_dump(isset($a?->p[k()]));"
+  }
+]

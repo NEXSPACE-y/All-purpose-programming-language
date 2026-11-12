@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "status": "NOT_COMPLETE",
+  "isolated_candidate": true,
+  "measurement": "exact stdout bytes, stderr bytes and actual process status; no normalization",
+  "scope": "Listed examples only; not full CLI/SAPI/PHP conformance.",
+  "inputs_before": {
+    "cases": "0fad6370c701e2b48cccaf0e75892386fe7bdd06f0bb2269decc877d7f4ec763",
+    "adapter": "cd4c47e0c177cccd2e2bc8bbf6f357e53c370daf0f430725074a8fed6f8968b6",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "worker": "471bcb240f0a29ea256ef1a5fc8f6ecdeb0094a323f19a8811d3f84e883e62ac"
+  },
+  "inputs_after": {
+    "cases": "0fad6370c701e2b48cccaf0e75892386fe7bdd06f0bb2269decc877d7f4ec763",
+    "adapter": "cd4c47e0c177cccd2e2bc8bbf6f357e53c370daf0f430725074a8fed6f8968b6",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "worker": "471bcb240f0a29ea256ef1a5fc8f6ecdeb0094a323f19a8811d3f84e883e62ac"
+  },
+  "inputs_unchanged": true,
+  "total": 2,
+  "passed": 1,
+  "different": 1,
+  "results": [
+    {
+      "id": "handler.exit",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-candidate-20261112\\handler-fixed\\case-0000.php",
+      "source_sha256": "bdcf4980a8fd461a3aed41bff22800ef77a05018a39886c64589243ee710ce3f",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 7,
+        "elapsed_seconds": 0.19682940002530813,
+        "stdout_base64": "",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-candidate-20261112\\handler-fixed\\case-0000.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 7,
+        "elapsed_seconds": 8.181651699938811,
+        "stdout_base64": "",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-v3_18\\ALL_PHP_v3_18_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-candidate-20261112\\handler-fixed\\case-0000.php"
+        ]
+      }
+    },
+    {
+      "id": "handler.throw",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-candidate-20261112\\handler-fixed\\case-0001.php",
+      "source_sha256": "07391bab3e29f2a42f9a6a1eb7288061dff6037b6e176efe043284360e7db371",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.6228328000288457,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IFVuY2F1Z2h0IEV4Y2VwdGlvbjogaGFuZGxlciBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1jbGktY2FuZGlkYXRlLTIwMjYxMTEyXGhhbmRsZXItZml4ZWRcY2FzZS0wMDAxLnBocDoxClN0YWNrIHRyYWNlOgojMCBbaW50ZXJuYWwgZnVuY3Rpb25dOiB7Y2xvc3VyZTpDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1jbGktY2FuZGlkYXRlLTIwMjYxMTEyXGhhbmRsZXItZml4ZWRcY2FzZS0wMDAxLnBocDoxfShPYmplY3QoRXhjZXB0aW9uKSkKIzEge21haW59CiAgdGhyb3duIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLWNsaS1jYW5kaWRhdGUtMjAyNjExMTJcaGFuZGxlci1maXhlZFxjYXNlLTAwMDEucGhwIG9uIGxpbmUgMQo=",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Uncaught Exception: handler in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-candidate-20261112\\handler-fixed\\case-0001.php:1\nStack trace:\n#0 [internal function]: {closure:C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-candidate-20261112\\handler-fixed\\case-0001.php:1}(Object(Exception))\n#1 {main}\n  thrown in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-candidate-20261112\\handler-fixed\\case-0001.php on line 1\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-candidate-20261112\\handler-fixed\\case-0001.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 13.268895499990322,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IFVuY2F1Z2h0IEV4Y2VwdGlvbjogaGFuZGxlciBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1jbGktY2FuZGlkYXRlLTIwMjYxMTEyXGhhbmRsZXItZml4ZWRcY2FzZS0wMDAxLnBocDoxClN0YWNrIHRyYWNlOgojMCBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1jbGktY2FuZGlkYXRlLTIwMjYxMTEyXGhhbmRsZXItZml4ZWRcY2FzZS0wMDAxLnBocCgxKTogKGNsb3N1cmUpKE9iamVjdChFeGNlcHRpb24pKQojMSB7bWFpbn0KICB0aHJvd24gaW4gQzpcVXNlcnNccmlucGFcQUxMLXBocC1jb21wYXQtMjAyNjExMTJccmVwb3J0c1xwaHAtY2xpLWNhbmRpZGF0ZS0yMDI2MTExMlxoYW5kbGVyLWZpeGVkXGNhc2UtMDAwMS5waHAgb24gbGluZSAxCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Fatal error: Uncaught Exception: handler in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-candidate-20261112\\handler-fixed\\case-0001.php:1\nStack trace:\n#0 C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-candidate-20261112\\handler-fixed\\case-0001.php(1): (closure)(Object(Exception))\n#1 {main}\n  thrown in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-candidate-20261112\\handler-fixed\\case-0001.php on line 1\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-v3_18\\ALL_PHP_v3_18_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-candidate-20261112\\handler-fixed\\case-0001.php"
+        ]
+      }
+    }
+  ]
+}

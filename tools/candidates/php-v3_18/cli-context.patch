@@ -1,0 +1,551 @@
+--- a/package/ALL_PHP_v3_12_adapter.ps1
++++ b/package/ALL_PHP_v3_12_adapter.ps1
+@@ -3,7 +3,14 @@
+     Run = {
+         # -PhpDiagnostics: report an uncaught PHP exception the way the PHP CLI does (text on the
+         # output stream) instead of surfacing it as a PowerShell error. Default behaviour is unchanged.
+-        param([string]$Code, [switch]$PhpDiagnostics)
++        param([string]$Code, [switch]$PhpDiagnostics, [System.Collections.IDictionary]$CliContext = $null)
++        $isCli = $null -ne $CliContext
++        if ($isCli) {
++            $CliContext['ExitCode'] = [long]0
++            $CliContext['Terminated'] = $false
++            $CliContext['TerminationReason'] = $null
++            [void]$CliContext.Remove('CompileError')
++        }
+         $ErrorActionPreference = 'Stop'
+ 
+         # ALL's own PHP subset interpreter. No PHP executable, eval, or Invoke-Expression.
+@@ -76,6 +83,22 @@
+         }
+ 
+         $state.Globals = $state.Vars
++        if ($isCli -and ($CliContext.Keys -contains 'SourcePath') -and
++            -not [string]::IsNullOrEmpty([string]$CliContext['SourcePath'])) {
++            $state.ScriptName = [string]$CliContext['SourcePath']
++        }
++        # Unforgeable within PHP: exit is a host control signal, never Throwable.
++        $cliExitToken = [object]::new()
++        function Test-PhpCliExit($errorRecord) {
++            $ex = $errorRecord.Exception
++            while ($null -ne $ex) {
++                if ($ex.Data.Contains('AllPhpCliExit') -and
++                    [object]::ReferenceEquals($ex.Data['AllPhpCliExit'], $cliExitToken)) { return $true }
++                $ex = $ex.InnerException
++            }
++            return $false
++        }
++
+ 
+         # Predefined constants. PHP_EOL is CRLF because the compatibility target is PHP on Windows.
+         $phpConstants = [System.Collections.Generic.Dictionary[string,object]]::new(
+@@ -135,6 +158,10 @@
+             'is_null','is_numeric','intval','floatval','doubleval','boolval','intdiv','fdiv',
+             'pow','sqrt','floor','ceil','is_nan','is_infinite','is_finite','strval'
+         )) { [void]$phpBuiltinNames.Add($builtinName) }
++        if ($isCli) {
++            [void]$phpBuiltinNames.Add('exit')
++            [void]$phpBuiltinNames.Add('die')
++        }
+ 
+         # Tokenize before parsing. Unknown characters produce an error, never disappear.
+         $pattern = '(?:\s+|//[^\r\n]*|\#[^\r\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|''(?:\\.|[^''\\])*''|\$\$[A-Za-z_][A-Za-z_0-9]*|\$[A-Za-z_][A-Za-z_0-9]*|\$(?=\{)|0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|(?:\d[\d_]*(?:\.[\d_]*)?|\.\d[\d_]*)(?:[eE][+-]?\d[\d_]*)?|\\?[A-Za-z_][A-Za-z_0-9]*(?:\\[A-Za-z_][A-Za-z_0-9]*)*\\?|<=>|::|\.\.\.|<<=|>>=|<<|>>|===|!==|==|!=|<=|>=|&&|\|\||=>|->|\*\*=|\*\*|\?\?=|\?\?|\?->|\+\+|--|\*=|/=|%=|&=|\|=|\^=|\+=|-=|\.=|[+\-*/%.=<>!?:;{},()\[\]&|^~@])'
+@@ -437,6 +464,22 @@
+         }
+         function Expect-Token([string]$expected) {
+             if ((Peek-Token) -cne $expected) {
++                $unexpected = Peek-Token
++                if ($isCli -and $expected -ceq ';' -and $unexpected.Length -ge 2 -and
++                    ($unexpected.StartsWith("'") -or $unexpected.StartsWith('"'))) {
++                    $tokenKind = if ($unexpected.StartsWith("'")) { 'single-quoted string' } else { 'double-quoted string' }
++                    $tokenContent = $unexpected.Substring(1, $unexpected.Length - 2)
++                    $message = 'syntax error, unexpected ' + $tokenKind + ' "' + $tokenContent + '"'
++                    $info = [pscustomobject]@{
++                        Type='ParseError'; TokenKind=$tokenKind; TokenContent=$tokenContent
++                        Message=$message; SourcePath=$state.ScriptName
++                        Line=[long]$state.TokenLines[$state.Pos]
++                    }
++                    $CliContext['CompileError'] = $info
++                    $compileSignal = [System.Exception]::new('ALL PHP: structured compilation error')
++                    $compileSignal.Data['AllPhpCompileError'] = $info
++                    throw $compileSignal
++                }
+                 throw "ALL PHP: Expected '$expected', got '$(Peek-Token)'"
+             }
+             [void](Next-Token)
+@@ -639,7 +682,8 @@
+                 return (ConvertTo-PhpDoubleFromBigInt ([bigint]::Parse($text, $inv)))
+             }
+             try { return [double]::Parse($text, [System.Globalization.NumberStyles]::Float, $inv) }
+-            catch { return [double]::PositiveInfinity }
++            catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw } return [double]::PositiveInfinity }
+         }
+         function Read-Array([string]$close) {
+             $entries = [System.Collections.Generic.List[object]]::new()
+@@ -830,6 +874,11 @@
+                 [void](Next-Token)
+                 Expect-Token '('
+                 return (Read-Array ')')
++            }
++            if ($isCli -and $token -in @('exit','die') -and
++                $state.Tokens[$state.Pos + 1] -cne '(') {
++                [void](Next-Token)
++                return [pscustomobject]@{ Kind='cli_exit'; Args=@() }
+             }
+             switch ($token) {
+                 'true'  { [void](Next-Token); return [pscustomobject]@{ Kind='literal'; Value=$true } }
+@@ -2024,8 +2073,20 @@
+ 
+         # Parse the entire program first, before emitting any output.
+         $statements = [System.Collections.Generic.List[object]]::new()
+-        while ((Peek-Token) -cne '(EOF)') {
+-            [void]$statements.Add((Read-Statement))
++        try {
++            while ((Peek-Token) -cne '(EOF)') {
++                [void]$statements.Add((Read-Statement))
++            }
++        } catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
++            if (-not $isCli -or -not ($CliContext.Keys -contains 'CompileError')) { throw }
++            $compileError = $CliContext['CompileError']
++            [Console]::Error.Write('Parse error: ' + $compileError.Message + ' in ' +
++                $compileError.SourcePath + ' on line ' + $compileError.Line + "`n")
++            $CliContext['ExitCode'] = [long]255
++            $CliContext['Terminated'] = $true
++            $CliContext['TerminationReason'] = 'compile_error'
++            return
+         }
+ 
+         # ---- PHP exceptions --------------------------------------------------------------------
+@@ -2279,14 +2340,16 @@
+                 finally { $state.InErrorHandler = $false; $state.Line = $savedLine }
+                 if (-not ($handled -is [bool] -and -not $handled)) { return }
+             }
+-            if (-not $PhpDiagnostics) { return }
++            if (-not $PhpDiagnostics -and -not $isCli) { return }
+             if ($state.SilenceDepth -gt 0) { return }
+             if (($state.ErrorReporting -band $level) -eq 0) { return }
+             $label = 'Warning'
+             if ($level -eq 8 -or $level -eq 1024) { $label = 'Notice' }
+             elseif ($level -eq 8192 -or $level -eq 16384) { $label = 'Deprecated' }
+             elseif ($level -eq 256) { $label = 'Fatal error' }
+-            [Console]::Write("`n" + $label + ': ' + $message + ' in ' + $state.ScriptName + ' on line ' + $state.Line + "`n")
++            $diagnostic = $label + ': ' + $message + ' in ' + $state.ScriptName + ' on line ' + $state.Line + "`n"
++            if ($isCli) { [Console]::Error.Write($diagnostic) }
++            else { [Console]::Write("`n" + $diagnostic) }
+         }
+         function Test-PhpObjectHasProp($object, [string]$name) {
+             if ($object.Props -is [System.Collections.Specialized.OrderedDictionary]) {
+@@ -2424,7 +2487,7 @@
+             $slot=Get-PhpVariableSlot $name
+             if (-not $slot.Store.ContainsKey($slot.Key)) {
+                 if ($state.GlobalBindings.Contains($name)) { return $null }
+-                if ($PhpDiagnostics -and $state.QuietDepth -eq 0) {
++                if (($PhpDiagnostics -or $isCli) -and $state.QuietDepth -eq 0) {
+                     Write-PhpDiagnostic 2 ('Undefined variable $' + $name)
+                     return $null
+                 }
+@@ -2475,6 +2538,7 @@
+                     $state.QuietDepth++
+                     try { $baseValue=Get-PhpVariableValue $baseName }
+                     catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                         if ($_.Exception.Message -notlike 'ALL PHP: Undefined variable*') { throw }
+                     }
+                     finally { $state.QuietDepth-- }
+@@ -2853,6 +2917,7 @@
+             }
+             try { return [double]::Parse($body, [System.Globalization.NumberStyles]::Float, $inv) }
+             catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                 if ($body.StartsWith('-')) { return [double]::NegativeInfinity }
+                 return [double]::PositiveInfinity
+             }
+@@ -2888,7 +2953,8 @@
+         function Php-Mul($a, $b) {
+             if ($a -is [long] -and $b -is [long]) {
+                 $r = $null
+-                try { $r = [System.Decimal]$a * [System.Decimal]$b } catch { $r = $null }
++                try { $r = [System.Decimal]$a * [System.Decimal]$b } catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw } $r = $null }
+                 if ($null -ne $r -and $r -ge $phpIntMinDec -and $r -le $phpIntMaxDec) { return [long]$r }
+             }
+             return ([double]$a * [double]$b)
+@@ -2932,7 +2998,8 @@
+                         $exp = $exp -shr 1
+                         if ($exp -gt 0) { $base = $base * $base }
+                     }
+-                } catch { $ok = $false }
++                } catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw } $ok = $false }
+                 if ($ok -and $result -ge $phpIntMinDec -and $result -le $phpIntMaxDec) { return [long]$result }
+             }
+             return [Math]::Pow([double]$a, [double]$b)
+@@ -3157,7 +3224,7 @@
+             if (-not (Is-PhpArray $array)) { throw 'ALL PHP: Indexing requires array' }
+             $keyString = To-PhpKey $key
+             if (-not $array.Items.Contains($keyString)) {
+-                if ($PhpDiagnostics -and $state.QuietDepth -eq 0) {
++                if (($PhpDiagnostics -or $isCli) -and $state.QuietDepth -eq 0) {
+                     if ($keyString.StartsWith('i:')) { Write-PhpDiagnostic 2 ('Undefined array key ' + $keyString.Substring(2)) }
+                     else { Write-PhpDiagnostic 2 ('Undefined array key "' + $keyString.Substring(2) + '"') }
+                     return $null
+@@ -3640,6 +3707,7 @@
+             if ($className -eq 'stdClass') { return $null }
+             try { return (Find-PhpMethod $className $methodName) }
+             catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                 if ($_.Exception.Message -notlike 'ALL PHP: Undefined method*') { throw }
+                 return $null
+             }
+@@ -3750,6 +3818,67 @@
+                 [void]$state.PropertyHookActive.Remove($hookKey)
+             }
+         }
++        # isset/empty container reads are quiet, but offset expressions are normal
++        # expressions. Keep that distinction explicit rather than incrementing
++        # QuietDepth around a complete dimension expression.
++        function Get-PhpCliQuietPath($node) {
++            $missing = [pscustomobject]@{ Found=$false; Value=$null; ShortCircuited=$false }
++            if ($node.Kind -in @('variable','dynamic_variable')) {
++                $name = if ($node.Kind -ceq 'variable') { $node.Name } else { Resolve-PhpDynamicVariableName $node }
++                $slot = Get-PhpVariableSlot $name
++                if (-not $slot.Store.ContainsKey($slot.Key)) { return $missing }
++                $value = $slot.Store[$slot.Key]
++                if (Is-PhpRefCell $value) { $value = $value.Value }
++                return [pscustomobject]@{ Found=$true; Value=$value; ShortCircuited=$false }
++            }
++            if ($node.Kind -ceq 'index') {
++                if ($null -eq $node.Key) { throw 'ALL PHP: Cannot read an empty [] index' }
++                $container = Get-PhpCliQuietPath $node.Base
++                if ($container.ShortCircuited) { return $container }
++                # Evaluate even if a parent variable/offset is absent. Undefined
++                # key variables, user callbacks, throws and exit retain normal
++                # evaluation/diagnostic semantics, in source order.
++                $key = Invoke-PhpExpr $node.Key
++                if (-not $container.Found -or $null -eq $container.Value) { return $missing }
++                if (-not (Is-PhpArray $container.Value)) { return $missing }
++                if ((Is-PhpArray $key) -or (Is-PhpObject $key)) {
++                    $type = if (Is-PhpArray $key) { 'array' } else { $key.Class }
++                    Throw-PhpError 'TypeError' ('Cannot access offset of type ' + $type + ' in isset or empty')
++                }
++                $encoded = To-PhpKey $key
++                if (-not $container.Value.Items.Contains($encoded)) { return $missing }
++                $value = $container.Value.Items[$encoded]
++                if (Is-PhpRefCell $value) { $value=$value.Value }
++                return [pscustomobject]@{ Found=$true; Value=$value; ShortCircuited=$false }
++            }
++            if ($node.Kind -ceq 'property') {
++                $container = Get-PhpCliQuietPath $node.Base
++                if ($container.ShortCircuited) { return $container }
++                if ($node.NullSafe -and $null -eq $container.Value) {
++                    return [pscustomobject]@{ Found=$false; Value=$null; ShortCircuited=$true }
++                }
++                if (-not $container.Found -or -not (Is-PhpObject $container.Value)) { return $missing }
++                # Capture the receiver once; property lookup has no remaining
++                # key expression to accidentally suppress or evaluate twice.
++                $property = [pscustomobject]@{
++                    Kind='property'; Base=[pscustomobject]@{Kind='literal';Value=$container.Value}
++                    Name=$node.Name; NullSafe=$node.NullSafe
++                }
++                $state.QuietDepth++
++                try { $value=Get-LValue $property }
++                catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
++                    if ($_.Exception.Message -like 'ALL PHP: Undefined *' -or
++                        $_.Exception.Message -like 'ALL PHP: Typed property *') { return $missing }
++                    throw
++                } finally { $state.QuietDepth-- }
++                return [pscustomobject]@{Found=$true;Value=$value;ShortCircuited=$false}
++            }
++            # Function/method receivers and their argument expressions execute
++            # normally. A real base exception precedes every outer offset.
++            $value = Invoke-PhpExpr $node
++            return [pscustomobject]@{Found=$true;Value=$value;ShortCircuited=$false}
++        }
+         function Get-LValue($node) {
+             if ($node.Kind -eq 'dynamic_variable') {
+                 return (Get-PhpVariableValue (Resolve-PhpDynamicVariableName $node))
+@@ -3804,7 +3933,7 @@
+                         try { return (Invoke-PhpMethod $base '__get' @($node.Name)) }
+                         finally { [void]$state.MagicGetActive.Remove($guardKey) }
+                     }
+-                    if ($PhpDiagnostics -and $state.QuietDepth -eq 0) {
++                    if (($PhpDiagnostics -or $isCli) -and $state.QuietDepth -eq 0) {
+                         Write-PhpDiagnostic 2 ('Undefined property: ' + $base.Class + '::$' + $node.Name)
+                         return $null
+                     }
+@@ -3834,6 +3963,7 @@
+                     $part=$null
+                     try { $part=Get-PhpArrayItem $value $key; $found=$true }
+                     catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                         if ($_.Exception.Message -notlike 'ALL PHP: Undefined array key*') { throw }
+                     }
+                     if (-not $found) { $part=$null }
+@@ -3883,6 +4013,7 @@
+                     $state.QuietDepth++
+                     try { $baseValue=Get-PhpVariableValue $baseName }
+                     catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                         if ($_.Exception.Message -notlike 'ALL PHP: Undefined variable*') { throw }
+                     }
+                     finally { $state.QuietDepth-- }
+@@ -4196,7 +4327,59 @@
+             if ($encoded.StartsWith('i:')) { return [long]$encoded.Substring(2) }
+             return $encoded.Substring(2)
+         }
++        function Invoke-PhpCliExit($callArgs) {
++            if ($callArgs.Count -gt 1) {
++                Throw-PhpError 'ArgumentCountError' ('exit() expects at most 1 argument, ' + $callArgs.Count + ' given')
++            }
++            $status = [long]0
++            if ($callArgs.Count -eq 1) {
++                $argument = $callArgs[0]
++                if ($null -ne $argument -and $argument.PSObject.Properties['PhpType'] -and
++                    $argument.PhpType -ceq 'named_argument') {
++                    if ($argument.Name -cne 'status') { Throw-PhpError 'Error' ('Unknown named parameter $' + $argument.Name) }
++                    $argument = $argument.Value
++                }
++                if (Is-PhpRefCell $argument) { $argument = $argument.Value }
++                if ($argument -is [long]) { $status = $argument }
++                elseif ($argument -is [string]) { [Console]::Write($argument) }
++                elseif ($argument -is [bool]) { if ($argument) { $status = [long]1 } }
++                elseif ($null -eq $argument) {
++                    Write-PhpDiagnostic 8192 'exit(): Passing null to parameter #1 ($status) of type string|int is deprecated'
++                }
++                elseif ($argument -is [double]) {
++                    if ([double]::IsNaN($argument)) {
++                        Write-PhpDiagnostic 2 'unexpected NAN value was coerced to string'
++                        [Console]::Write('NAN')
++                    } elseif ([double]::IsInfinity($argument) -or
++                        $argument -lt -9223372036854775808.0 -or $argument -ge 9223372036854775808.0) {
++                        [Console]::Write((To-PhpText $argument))
++                    } else {
++                        $status = To-PhpInt $argument
++                        if ([double]$status -ne $argument) {
++                            Write-PhpDiagnostic 8192 ('Implicit conversion from float ' + (To-PhpText $argument) + ' to int loses precision')
++                        }
++                    }
++                }
++                elseif ((Is-PhpObject $argument) -and $null -ne (Find-OptionalPhpMethod $argument.Class '__toString')) {
++                    [Console]::Write((To-PhpText $argument))
++                } else {
++                    $type = if (Is-PhpArray $argument) { 'array' } elseif (Is-PhpObject $argument) { $argument.Class } else { $argument.GetType().Name }
++                    Throw-PhpError 'TypeError' ('exit(): Argument #1 ($status) must be of type string|int, ' + $type + ' given')
++                }
++            }
++            # PHP's Windows process status is the low unsigned32 bits of zend_long.
++            # The worker supplies the same bits to Environment.Exit; no reference
++            # status is guessed or substituted in the worker.
++            $CliContext['ExitCode'] = [long]($status -band [long]4294967295)
++            $CliContext['Terminated'] = $true
++            $CliContext['TerminationReason'] = 'exit'
++            $signal = [System.Exception]::new('ALL PHP: private CLI exit control signal')
++            $signal.Data['AllPhpCliExit'] = $cliExitToken
++            throw $signal
++        }
+         function Invoke-PhpFunction([string]$name, $callArgs) {
++            if ($isCli -and $name -in @('exit','die')) { Invoke-PhpCliExit $callArgs }
++
+             if (-not $state.Functions.ContainsKey($name)) {
+                 foreach ($arg in $callArgs) {
+                     if ($null -ne $arg -and $arg.PSObject.Properties['PhpType'] -and
+@@ -4239,6 +4422,7 @@
+                         $state.JsonErrorMessage = 'No error'
+                         return $output
+                     } catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                         # Invalid JSON is not an interpreter error in PHP without THROW_ON_ERROR.
+                         $state.JsonError = 4
+                         $state.JsonErrorMessage = 'Syntax error'
+@@ -4710,7 +4894,8 @@
+                 }
+                 'function_exists' {
+                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: function_exists() requires one argument' }
+-                    return $state.Functions.ContainsKey((To-PhpText $callArgs[0]))
++                    $functionName = To-PhpText $callArgs[0]
++                    return ($state.Functions.ContainsKey($functionName) -or ($isCli -and $functionName -ine '__all_throwable_string' -and $phpBuiltinNames.Contains($functionName)))
+                 }
+                 'call_user_func' {
+                     if ($callArgs.Count -lt 1) { throw 'ALL PHP: call_user_func() requires a callable' }
+@@ -4967,6 +5152,7 @@
+         function Invoke-PhpExpr($node) {
+             switch ($node.Kind) {
+                 'literal' { return $node.Value }
++                'cli_exit' { Invoke-PhpCliExit @() }
+                 'silence' {
+                     $state.SilenceDepth++
+                     try { return (Invoke-PhpExpr $node.Arg) }
+@@ -5204,6 +5390,7 @@
+                         $hook=$null
+                         try { $hook=Find-PhpMethod $original.Class '__clone' }
+                         catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                             if ($_.Exception.Message -notlike 'ALL PHP: Undefined method*') { throw }
+                         }
+                         if ($null -ne $hook) { [void](Invoke-PhpMethod $copy '__clone' @()) }
+@@ -5232,6 +5419,7 @@
+                         $state.QuietDepth++
+                         try { $current = Get-LValue $node.Target }
+                         catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                             if ($_.Exception.Message -notlike 'ALL PHP: Undefined *') { throw }
+                         }
+                         finally { $state.QuietDepth-- }
+@@ -5315,15 +5503,22 @@
+                                     }
+                                 }
+                             }
+-                            $state.QuietDepth++
+-                            try {
+-                                $value = Invoke-PhpExpr $arg
+-                            } catch {
+-                                if ($_.Exception.Message -like 'ALL PHP: Undefined *') {
+-                                    $found = $false
+-                                } else { throw }
+-                            }
+-                            finally { $state.QuietDepth-- }
++                            if ($isCli -and $arg.Kind -ceq 'index') {
++                                $quiet = Get-PhpCliQuietPath $arg
++                                $found = $quiet.Found
++                                $value = $quiet.Value
++                            } else {
++                                $state.QuietDepth++
++                                try {
++                                    $value = Invoke-PhpExpr $arg
++                                } catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
++                                    if ($_.Exception.Message -like 'ALL PHP: Undefined *') {
++                                        $found = $false
++                                    } else { throw }
++                                }
++                                finally { $state.QuietDepth-- }
++                            }
+                             $isset = ($found -and $null -ne $value)
+                             if ($node.Name -ceq 'isset' -and -not $isset) { return $false }
+                             if ($node.Name -ceq 'empty') { return (-not $found -or -not (Is-Truthy $value)) }
+@@ -5460,6 +5655,7 @@
+                     $construct=$null
+                     try { $construct=Find-PhpMethod $className '__construct' }
+                     catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                         if ($_.Exception.Message -notlike 'ALL PHP: Undefined method*') { throw }
+                     }
+                     if ($null -ne $construct) {
+@@ -5510,6 +5706,7 @@
+                         $state.QuietDepth++
+                         try { $leftValue = Invoke-PhpExpr $node.Left }
+                         catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                             if ($_.Exception.Message -notlike 'ALL PHP: Undefined *') { throw }
+                         }
+                         finally { $state.QuietDepth-- }
+@@ -5592,6 +5789,7 @@
+                     try {
+                         try { Invoke-PhpStatement $node.Body }
+                         catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                             $thrown = Get-PhpThrown $_
+                             if ($null -eq $thrown) { throw }
+                             $handler = $null
+@@ -5607,7 +5805,8 @@
+                             if ($null -ne $handler.Var) { Set-PhpVariableValue $handler.Var $thrown }
+                             Invoke-PhpStatement $handler.Body
+                         }
+-                    } catch { $pending = $_ }
++                    } catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw } $pending = $_ }
+                     if ($null -ne $node.Finally) {
+                         # finally runs with a clean control-flow state; a return/break/continue that
+                         # was already under way resumes afterwards unless finally issues its own.
+@@ -5618,6 +5817,7 @@
+                         $flow.LoopControl = $null
+                         try { Invoke-PhpStatement $node.Finally }
+                         catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                             # An exception raised by finally replaces the pending one and keeps it
+                             # reachable at the end of its "previous" chain.
+                             $replacement = Get-PhpThrown $_
+@@ -5840,6 +6040,7 @@
+                             $parentMethod=$null
+                             try { $parentMethod=Find-PhpMethod $node.Parent $method.Name }
+                             catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                                 if ($_.Exception.Message -notlike 'ALL PHP: Undefined method*') { throw }
+                             }
+                             if ($null -ne $parentMethod) {
+@@ -5888,6 +6089,7 @@
+                                 $inherited=$null
+                                 try { $inherited=Find-PhpMethod $node.Parent $method.Name }
+                                 catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                                     if ($_.Exception.Message -notlike 'ALL PHP: Undefined method*') { throw }
+                                 }
+                                 if ($null -ne $inherited) {
+@@ -5978,6 +6180,7 @@
+                                         $implementation=$null
+                                         try { $implementation=Find-PhpMethod $node.Name $required.Name }
+                                         catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                                             if ($_.Exception.Message -notlike 'ALL PHP: Undefined method*') { throw }
+                                         }
+                                         if ($null -eq $implementation -or $implementation.Abstract) {
+@@ -6028,6 +6231,7 @@
+                         $state.QuietDepth++
+                         try { $current = Get-LValue $node.Target }
+                         catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                             if ($_.Exception.Message -notlike 'ALL PHP: Undefined *') { throw }
+                         }
+                         finally { $state.QuietDepth-- }
+@@ -6219,18 +6423,41 @@
+                 Invoke-PhpStatement $statement
+             }
+         } catch {
++            if ($isCli -and (Test-PhpCliExit $_)) { return }
+             $uncaught = Get-PhpThrown $_
+             if ($null -ne $uncaught -and $null -ne $state.ExceptionHandler) {
+                 $handler = $state.ExceptionHandler
+                 $state.ExceptionHandler = $null
+-                [void](Invoke-PhpValueCallable $handler @($uncaught))
+-                return
+-            }
+-            if ($null -eq $uncaught -or -not $PhpDiagnostics) { throw }
++                if ($isCli) {
++                    $handlerFailed = $false
++                    try { [void](Invoke-PhpValueCallable $handler @($uncaught)) }
++                    catch
++                    {
++                        # This callback runs inside the outer handler catch, so
++                        # its private exit must be consumed at this boundary.
++                        if (Test-PhpCliExit $_) { return }
++                        $replacement = Get-PhpThrown $_
++                        if ($null -eq $replacement) { throw }
++                        $uncaught = $replacement
++                        $handlerFailed = $true
++                    }
++                    if (-not $handlerFailed) { return }
++                } else {
++                    [void](Invoke-PhpValueCallable $handler @($uncaught))
++                    return
++                }
++            }
++            if ($null -eq $uncaught -or (-not $PhpDiagnostics -and -not $isCli)) { throw }
+             # Same text the PHP CLI writes with display_errors=1 and html_errors=0.
+-            [Console]::Write("`nFatal error: Uncaught " +
+-                (Get-PhpThrowableString $uncaught) + "`n  thrown in " + (To-PhpText $uncaught.Props['file']) +
+-                ' on line ' + (To-PhpText $uncaught.Props['line']) + "`n")
++            $fatal = 'Fatal error: Uncaught ' + (Get-PhpThrowableString $uncaught) +
++                "`n  thrown in " + (To-PhpText $uncaught.Props['file']) +
++                ' on line ' + (To-PhpText $uncaught.Props['line']) + "`n"
++            if ($isCli) {
++                [Console]::Error.Write($fatal)
++                $CliContext['ExitCode'] = [long]255
++                $CliContext['Terminated'] = $true
++                $CliContext['TerminationReason'] = 'uncaught_php_throwable'
++            } else { [Console]::Write("`n" + $fatal) }
+         }
+     }
+ }

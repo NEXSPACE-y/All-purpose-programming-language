@@ -1,0 +1,16 @@
+{
+  "adapterPath": "package/ALL_PHP_v3_12_adapter.ps1",
+  "adapterSha256": "6cfde5e729ff594741b6bb3a254a5bcbd25c2a1ef62f2ad4c9f2b9642b1efb8a",
+  "isolatedCandidateSha256": "6cfde5e729ff594741b6bb3a254a5bcbd25c2a1ef62f2ad4c9f2b9642b1efb8a",
+  "actualCliWorkerPath": "tools/differential/PhpCliCandidateWorker.ps1",
+  "workerSha256": "471bcb240f0a29ea256ef1a5fc8f6ecdeb0094a323f19a8811d3f84e883e62ac",
+  "comparatorPath": "tools/candidates/php-v3_18/Compare-Cli.py",
+  "comparatorSha256": "e5d232b949601e95b058a8afda053f46d026731ca5bc1fa4afbee6d525606722",
+  "strictProtocolSha256": "f9d7c8161d000dde5b4314998a053ca8b2333d2e93edc630b6243058a13f60cd",
+  "cli14CasesSha256": "ba67c822720568d8763eadd79f834e766a3c0879467cba4ad0a7e12238aed551",
+  "exit23CasesSha256": "dbbd14bf874b28cacd957d9cedbd68c5b9bf74daa4b80bc8cb77bc43eeae5a71",
+  "oracleSha256": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+  "currentHead": "b2f07e9c08ef41e3ff32fa1116b0211be35a272f",
+  "original940Base": "9d8171712828a0b57555b8eb1e1ca5c475391244",
+  "candidateOverride": "--adapter points to actual package adapter, not the separate candidate default"
+}

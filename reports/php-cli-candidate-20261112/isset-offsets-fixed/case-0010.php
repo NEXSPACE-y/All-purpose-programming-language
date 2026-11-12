@@ -1,0 +1,1 @@
+<?php set_error_handler(function(){throw new Exception('warning');}); try {isset($a[$key]);} catch(Exception $e){echo $e->getMessage();}

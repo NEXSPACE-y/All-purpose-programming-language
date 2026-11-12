@@ -1,0 +1,10 @@
+[
+  {
+    "id": "handler.exit",
+    "code": "<?php set_exception_handler(function($e){exit(7);}); throw new Exception('x');"
+  },
+  {
+    "id": "handler.throw",
+    "code": "<?php set_exception_handler(function($e){throw new Exception('handler');}); throw new Exception('x');"
+  }
+]

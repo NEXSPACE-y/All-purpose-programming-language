@@ -1,0 +1,1 @@
+<?php $a=[]; try {var_dump(isset($a[[]]));} catch(Throwable $e){echo get_class($e),':',$e->getMessage();}

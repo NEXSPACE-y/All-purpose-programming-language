@@ -1,0 +1,14 @@
+[
+  {
+    "id": "builtin.internal-helper-hidden",
+    "code": "<?php var_dump(function_exists('__all_throwable_string'),function_exists('__ALL_THROWABLE_STRING'),function_exists('exit'));"
+  },
+  {
+    "id": "builtin.user-helper-name-visible",
+    "code": "<?php function __all_throwable_string(){return 'user';} var_dump(function_exists('__all_throwable_string'));"
+  },
+  {
+    "id": "known-pending.user-helper-hijacks-prelude",
+    "code": "<?php function __all_throwable_string($e){return 'hijacked';} $e=new Exception('x'); echo $e->__toString();"
+  }
+]

@@ -1,0 +1,1 @@
+<?php set_exception_handler(function($e){throw new Exception('handler');}); throw new Exception('x');

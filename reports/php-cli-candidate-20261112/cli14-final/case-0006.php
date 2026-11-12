@@ -1,0 +1,1 @@
+<?php die('bye'); echo 'after';

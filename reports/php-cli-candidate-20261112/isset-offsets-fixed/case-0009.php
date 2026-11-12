@@ -1,0 +1,1 @@
+<?php function b(){echo 'b';return null;} function k(){echo 'k';return 0;} var_dump(isset(b()[k()]));

@@ -1,0 +1,1 @@
+<?php try {exit(foo:1);} catch(Error $e){echo $e->getMessage();}

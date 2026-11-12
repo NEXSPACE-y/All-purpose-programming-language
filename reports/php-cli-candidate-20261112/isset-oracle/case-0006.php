@@ -1,0 +1,1 @@
+<?php var_dump(isset($a[$k1][$k2]));

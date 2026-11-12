@@ -3,8 +3,18 @@
   "authorized_work": true,
   "stage1": {
     "goal": "Independent full PHP 8.5.12 compatibility",
-    "platforms": ["Windows 11 x64", "Linux x64"],
-    "sapis": ["CLI", "built-in Web server", "CGI", "FastCGI", "Apache module", "FPM on Linux"],
+    "platforms": [
+      "Windows 11 x64",
+      "Linux x64"
+    ],
+    "sapis": [
+      "CLI",
+      "built-in Web server",
+      "CGI",
+      "FastCGI",
+      "Apache module",
+      "FPM on Linux"
+    ],
     "standard_extensions": true,
     "unchanged_existing_native_extension_binaries": true,
     "complete": false
@@ -46,20 +56,21 @@
       "candidate_dll_sha256": "b2ffd9f38abd20894b064b53a94e4a05e5d39eaa2055e910db6d762558e46757",
       "report": "reports/native-abi-implementation-20261112/README.md",
       "limits": "Selected Windows module/operations only. Object execution, arrays, refs, resources, callbacks, other modules, Linux and Web are incomplete."
+    },
+    {
+      "component": "PHP v3.18 explicit CLI context",
+      "integration": "Exact reviewed candidate adopted into isolated package and verified",
+      "report": "reports/v3_18-validation-20261112/README.md",
+      "default_regression": "965/965 PASS; original 940 definitions/expectations unchanged",
+      "strict_examples": "CLI14/14 and exit23/23 exact stdout/stderr bytes and actual exit status",
+      "source_sha256": "6cfde5e729ff594741b6bb3a254a5bcbd25c2a1ef62f2ad4c9f2b9642b1efb8a"
     }
   ],
   "in_progress": [
     {
-      "component": "PHP v3.18 explicit CLI context",
-      "package_source_sha256": "6cfde5e729ff594741b6bb3a254a5bcbd25c2a1ef62f2ad4c9f2b9642b1efb8a",
-      "integration": "Exact reviewed candidate copied into the isolated package; full 965 regression pending at this record",
-      "prior_same_source_examples": "CLI 14/14; exit 23/23; selected legacy 73/73; generic context reuse 3/3",
-      "report": "reports/php-cli-candidate-20261112/assessment.json"
-    },
-    {
       "component": "Optional NativeContext integration with the actual PHP evaluator",
       "path": "tools/candidates/php-native/",
-      "state": "Isolated implementation; not yet merged or accepted",
+      "state": "Isolated candidate: selected 23 exact comparisons, 4 explicit pre-invocation rejections, default73/73; independent review pending before adoption",
       "base_sha256": "6cfde5e729ff594741b6bb3a254a5bcbd25c2a1ef62f2ad4c9f2b9642b1efb8a"
     },
     {
@@ -67,6 +78,11 @@
       "path": "reports/php-api-inventory-20261112/",
       "observation": "37 profiles; 35/36 DLLs loaded; php_pdo_firebird startup failure retained; 13934 exposure candidates are UNVERIFIED/NOT_ASSESSED",
       "candidate_function_implementation_verified_by_inventory": false
+    },
+    {
+      "component": "Private Throwable formatting binding",
+      "path": "tools/candidates/php-private-throwable/",
+      "state": "Independent candidate based on frozen native integration; removes user-hijackable internal helper binding"
     }
   ],
   "pending_owner_input": [

@@ -1,0 +1,94 @@
+[
+  {
+    "id": "exit.coercion.0",
+    "code": "<?php try { exit(false); } catch(Throwable $e) { echo get_class($e), \":\", $e->getMessage(); }"
+  },
+  {
+    "id": "exit.coercion.1",
+    "code": "<?php try { exit(null); } catch(Throwable $e) { echo get_class($e), \":\", $e->getMessage(); }"
+  },
+  {
+    "id": "exit.coercion.2",
+    "code": "<?php try { exit(2.0); } catch(Throwable $e) { echo get_class($e), \":\", $e->getMessage(); }"
+  },
+  {
+    "id": "exit.coercion.3",
+    "code": "<?php try { exit(2.5); } catch(Throwable $e) { echo get_class($e), \":\", $e->getMessage(); }"
+  },
+  {
+    "id": "exit.coercion.4",
+    "code": "<?php try { exit(-1.5); } catch(Throwable $e) { echo get_class($e), \":\", $e->getMessage(); }"
+  },
+  {
+    "id": "exit.coercion.5",
+    "code": "<?php try { exit(INF); } catch(Throwable $e) { echo get_class($e), \":\", $e->getMessage(); }"
+  },
+  {
+    "id": "exit.coercion.6",
+    "code": "<?php try { exit(NAN); } catch(Throwable $e) { echo get_class($e), \":\", $e->getMessage(); }"
+  },
+  {
+    "id": "exit.coercion.7",
+    "code": "<?php try { exit(\"7\"); } catch(Throwable $e) { echo get_class($e), \":\", $e->getMessage(); }"
+  },
+  {
+    "id": "exit.coercion.8",
+    "code": "<?php try { exit(true); } catch(Throwable $e) { echo get_class($e), \":\", $e->getMessage(); }"
+  },
+  {
+    "id": "exit.coercion.9",
+    "code": "<?php try { exit([]); } catch(Throwable $e) { echo get_class($e), \":\", $e->getMessage(); }"
+  },
+  {
+    "id": "exit.coercion.10",
+    "code": "<?php try { exit(new stdClass()); } catch(Throwable $e) { echo get_class($e), \":\", $e->getMessage(); }"
+  },
+  {
+    "id": "exit.function-skips-finally",
+    "code": "<?php function f(){try {exit(4);} finally {echo 'bad';}} try {f();} catch(Throwable $e){echo 'caught';} echo 'after';"
+  },
+  {
+    "id": "exit.finally-exit-overrides-throw",
+    "code": "<?php try {throw new Exception('x');} finally {exit(8);}"
+  },
+  {
+    "id": "exit.stringable",
+    "code": "<?php class S{function __toString(){return 'str';}} exit(new S());"
+  },
+  {
+    "id": "exit.error-handler-exit",
+    "code": "<?php set_error_handler(function(){exit(6);}); echo $missing; echo 'after';"
+  },
+  {
+    "id": "exit.call-user-func",
+    "code": "<?php call_user_func('exit',12); echo 'bad';"
+  },
+  {
+    "id": "exit.named-status",
+    "code": "<?php exit(status:13);"
+  },
+  {
+    "id": "exit.bad-name",
+    "code": "<?php try {exit(foo:1);} catch(Error $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "exit.too-many",
+    "code": "<?php try {exit(1,2);} catch(ArgumentCountError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "exit.loop-unwind",
+    "code": "<?php while(true){exit(3);} echo 'bad';"
+  },
+  {
+    "id": "exit.exit-in-quiet-wrapper",
+    "code": "<?php isset($a[exit(5)]); echo 'bad';"
+  },
+  {
+    "id": "exit.first-class-callable",
+    "code": "<?php $f=exit(...); $f(14);"
+  },
+  {
+    "id": "exit.callable-exists",
+    "code": "<?php var_dump(function_exists('exit')); exit();"
+  }
+]

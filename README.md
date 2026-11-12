@@ -48,6 +48,18 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\package\ALL_PHP_v3_12_
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\package\ALL_PHP_v3_17_validate.ps1 -CompileCSharp
 ```
 
+## 2026-11-12の検証済み候補 v3.18
+
+明示的なCLI実行contextを追加し、対応する診断をstderrへ、終了値を呼出し元へ渡す経路を実装しました。exit/die、isset/emptyのoffset評価、対応する構文エラーの診断も修正しています。
+
+- 実packageで **965/965 PASS**。既存940件の定義と期待値は変更していません。
+- 別プロセスの公式PHP8.5.12と、選定したCLI14例・exit23例のstdout/stderrバイト列と実終了値が一致。
+- 構文98本・SHA212件・C#2件を確認し、package213ファイルの実行前後ハッシュが一致。
+
+[実packageでの検証記録](reports/v3_18-validation-20261112/README.md)。これらは選定した回帰の結果で、PHP全体・CLI全体の完全互換は未達です。
+
+公式PHPの[API参照台帳](reports/php-api-inventory-20261112/README.md)は、観測した13,934件をすべて未検証として記録しています。[base関数の登録照会](reports/php-registration-probe-20261112/run-01/README.md)では参照925件に対し候補は80件true・845件falseでした。登録照会の件数は、関数本体の実装完了数や互換率ではありません。
+
 ## 完了条件と開発順序
 
 [所有者の対象決定](docs/COMPAT_TARGET.md)はPHP8.5.12、Windows11x64/Linuxx64、CLI・内蔵Web・CGI/FastCGI・Apache・LinuxFPM、標準拡張と既存ネイティブ拡張バイナリを含みます。

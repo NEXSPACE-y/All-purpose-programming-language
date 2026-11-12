@@ -1,0 +1,1 @@
+<?php function __all_throwable_string(){return 'user';} var_dump(function_exists('__all_throwable_string'));

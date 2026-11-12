@@ -1,0 +1,83 @@
+{
+  "status": "NOT_COMPLETE",
+  "defaultApiRegressionStatus": "PASS",
+  "adapterSha256": "6cfde5e729ff594741b6bb3a254a5bcbd25c2a1ef62f2ad4c9f2b9642b1efb8a",
+  "packageEqualsReviewedCandidate": true,
+  "defaultApiValidation": {
+    "total": 965,
+    "passed": 965,
+    "failed": 0,
+    "original940Passed": 940,
+    "namespace25Passed": 25,
+    "processExitCode": 0,
+    "durationSeconds": 374.978,
+    "processDurationSeconds": 388.125,
+    "powerShellSyntaxScripts": 98,
+    "manifestFiles": 212,
+    "compiledCSharpHelpers": 2,
+    "packageSnapshotFiles": 213,
+    "packageUnchanged": true,
+    "stderrBytes": 0,
+    "passLines": 965,
+    "failLines": 0,
+    "summary": "ALL PHP v3.18 default API regression: 965/965 passed; 0 failed",
+    "helperAssemblies": [
+      {
+        "fullName": "c1wo4uaj, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "location": "",
+        "fileExists": false
+      },
+      {
+        "fullName": "1wfiuqi5, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "location": "",
+        "fileExists": false
+      }
+    ]
+  },
+  "old940": {
+    "against": "9d8171712828a0b57555b8eb1e1ca5c475391244",
+    "trackedFiles": 34,
+    "beforeDiffExitCode": 0,
+    "afterDiffExitCode": 0,
+    "afterDiffOutput": []
+  },
+  "cliEntry": {
+    "worker": "tools/differential/PhpCliCandidateWorker.ps1",
+    "adapterOverride": "actual package adapter",
+    "actualCliContext": true,
+    "sourcePathAndRealExitStatus": true,
+    "commandsChecked": 37,
+    "allCommandPathsMatchActualPackage": true,
+    "normalization": false
+  },
+  "cli14": {
+    "cases": "tools/differential/cli-semantics.cases.json",
+    "total": 14,
+    "passed": 14,
+    "different": 0,
+    "processExitCode": 0,
+    "inputsUnchanged": true,
+    "adapterSha256": "6cfde5e729ff594741b6bb3a254a5bcbd25c2a1ef62f2ad4c9f2b9642b1efb8a",
+    "workerSha256": "471bcb240f0a29ea256ef1a5fc8f6ecdeb0094a323f19a8811d3f84e883e62ac",
+    "report": "cli14/report.json"
+  },
+  "exit23": {
+    "cases": "tools/candidates/php-v3_18/exit-extended.cases.json",
+    "total": 23,
+    "passed": 23,
+    "different": 0,
+    "processExitCode": 0,
+    "inputsUnchanged": true,
+    "adapterSha256": "6cfde5e729ff594741b6bb3a254a5bcbd25c2a1ef62f2ad4c9f2b9642b1efb8a",
+    "workerSha256": "471bcb240f0a29ea256ef1a5fc8f6ecdeb0094a323f19a8811d3f84e883e62ac",
+    "report": "exit23/report.json"
+  },
+  "unitTestsRepeated": false,
+  "referenceApiInventoryUsedAsCandidateEvidence": false,
+  "limitations": [
+    "965 default API regression and37 selected CLI examples only",
+    "Not full CLI flags/stdin/argv/INI/lifecycle or complete PHP semantics",
+    "No Web/Linux/native-extension ABI/real-application verification",
+    "Installed C:\\Users\\rinpa\\ALL was not executed"
+  ]
+}

@@ -1,0 +1,1 @@
+<?php isset($a[exit(5)]); echo 'bad';

@@ -1,0 +1,45 @@
+{
+    "scope":  "Host IDictionary context/reset contract only; not PHP conformance",
+    "total":  3,
+    "passed":  3,
+    "results":  [
+                    {
+                        "id":  "dictionary.exit",
+                        "code":  "\u003c?php exit(7);",
+                        "passed":  true,
+                        "stdout":  "",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0,
+                        "exit_code":  7,
+                        "terminated":  true,
+                        "compile_error_present":  false
+                    },
+                    {
+                        "id":  "dictionary.compile",
+                        "code":  "\u003c?php exit \u0027another\u0027;",
+                        "passed":  true,
+                        "stdout":  "",
+                        "stderr":  "Parse error: syntax error, unexpected single-quoted string \"another\" in dictionary-context.php on line 1\n",
+                        "error":  null,
+                        "pipeline_count":  0,
+                        "exit_code":  255,
+                        "terminated":  true,
+                        "compile_error_present":  true
+                    },
+                    {
+                        "id":  "dictionary.reuse",
+                        "code":  "\u003c?php echo \u0027reused\u0027;",
+                        "passed":  true,
+                        "stdout":  "reused",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0,
+                        "exit_code":  0,
+                        "terminated":  false,
+                        "compile_error_present":  false
+                    }
+                ],
+    "adapter_sha256_before":  "6CFDE5E729FF594741B6BB3A254A5BCBD25C2A1EF62F2AD4C9F2B9642B1EFB8A",
+    "adapter_sha256_after":  "6CFDE5E729FF594741B6BB3A254A5BCBD25C2A1EF62F2AD4C9F2B9642B1EFB8A"
+}
