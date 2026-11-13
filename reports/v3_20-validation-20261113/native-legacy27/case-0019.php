@@ -1,0 +1,1 @@
+<?php try {dl_test_test1(1);} catch(ArgumentCountError $e){echo get_class($e).':'.$e->getMessage();}

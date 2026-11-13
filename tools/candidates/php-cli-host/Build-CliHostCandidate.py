@@ -11,10 +11,11 @@ parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--output-directory',type=Path,required=True)
 parser.add_argument('--file-lexer',action='store_true')
 parser.add_argument('--base',type=Path,default=ROOT/'package/ALL_PHP_v3_12_adapter.ps1')
+parser.add_argument('--expected-base-sha256',default='113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b')
 args=parser.parse_args();destination=args.output_directory.resolve()
 if destination.exists():raise SystemExit('Output directory exists; preserve measured revisions')
 BASE=args.base.resolve(strict=True)
-EXPECTED='113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b'
+EXPECTED=args.expected_base_sha256
 raw=BASE.read_bytes()
 if hashlib.sha256(raw).hexdigest()!=EXPECTED:raise SystemExit('Package input differs from reviewed v3.19')
 before=raw.decode('utf-8-sig');value=before
@@ -95,6 +96,6 @@ output=b'\xef\xbb\xbf'+value.encode('utf-8')
 destination.mkdir(parents=True)
 candidate=destination/'ALL_PHP_cli_host_candidate.ps1'
 candidate.write_bytes(output)
-(destination/'cli-host-context.patch').write_text(''.join(difflib.unified_diff(before.splitlines(True),value.splitlines(True),fromfile='base113d',tofile='cli-host-context')),encoding='utf-8',newline='')
+(destination/'cli-host-context.patch').write_text(''.join(difflib.unified_diff(before.splitlines(True),value.splitlines(True),fromfile='base-'+EXPECTED,tofile='cli-host-context')),encoding='utf-8',newline='')
 (destination/'provenance.json').write_text(json.dumps({'status':'ISOLATED_NOT_VERIFIED','base':str(BASE),'base_sha256':EXPECTED,'candidate':str(candidate),'candidate_sha256':hashlib.sha256(output).hexdigest(),'package_modified':False,'scope':'CLI code-body mode, initial diagnostic INI profile and argv/argc; not all CLI flags/INI/server globals'},indent=2)+'\n',encoding='utf-8')
 print(hashlib.sha256(output).hexdigest())

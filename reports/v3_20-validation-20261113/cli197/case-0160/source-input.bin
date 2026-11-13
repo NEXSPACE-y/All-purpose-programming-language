@@ -1,0 +1,1 @@
+<?php class C{private function f(){}}$a=[new C(),'f'];try{$a();}catch(Error $e){echo $e->getMessage();}

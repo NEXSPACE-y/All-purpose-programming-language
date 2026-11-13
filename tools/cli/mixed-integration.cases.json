@@ -1,0 +1,52 @@
+[
+  {
+    "id": "mixed.html-heredoc",
+    "mode": "file",
+    "code": "HEAD\n<?php $name=\"world\"; echo <<<TXT\nhello $name\nTXT;\n?>TAIL\n"
+  },
+  {
+    "id": "mixed.heredoc-unicode",
+    "mode": "file",
+    "code": "<?php echo <<<TXT\n\\u{1F600}\\xE6\\x97\\xA5\nTXT;\n?>tail"
+  },
+  {
+    "id": "mixed.nowdoc",
+    "mode": "file",
+    "code": "A<?php echo <<<'TXT'\n$name \\n\nTXT;\n?>B"
+  },
+  {
+    "id": "mixed.body-doc-tags",
+    "mode": "body",
+    "code": "echo <<<TXT\none\nTXT;\n?>OUT<?= \"tail\" ?>"
+  },
+  {
+    "id": "mixed.dynamic-doc-arg",
+    "mode": "file",
+    "code": "<?php function f($x){return $x;} $fn=\"f\"; echo $fn(<<<TXT\nargument\nTXT);\n?>done"
+  },
+  {
+    "id": "mixed.reference-doc",
+    "mode": "file",
+    "code": "<?php function add(&$x){$x++;} $n=1;call_user_func_array(\"add\",[&$n]);echo <<<TXT\n$n\nTXT;\n?>"
+  },
+  {
+    "id": "mixed.namespace-alias-doc",
+    "mode": "file",
+    "code": "<?php namespace N;use function call_user_func as call;function f($x){return $x;} ?>X<?php echo call('N\\\\f',<<<TXT\nY\nTXT);\n?>Z"
+  },
+  {
+    "id": "mixed.compiler-warning-before-runtime",
+    "mode": "file",
+    "code": "PREFIX\n<?php if(false){echo \"\\400\";} error_reporting(0);echo \"done\";?>TAIL"
+  },
+  {
+    "id": "mixed.missing-call-before-iife",
+    "mode": "file",
+    "code": "H<?php $f=\"missing\";try{$f((function(){echo \"SIDE\";return 1;})());}catch(Error $e){echo \"caught\";}?>T"
+  },
+  {
+    "id": "mixed.function-doc-template",
+    "mode": "file",
+    "code": "<?php function f(){if(false){?>NO<?php }return <<<TXT\nYES\nTXT;\n}echo f();?>TAIL"
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "status": "TARGETED_REVIEW_FIXED_NOT_FULL_PHP_ACCEPTANCE",
+  "files": [
+    {
+      "path": "composition-check.json",
+      "bytes": 1912,
+      "sha256": "27173e3e783470248fa0a017a013ff72b01046bc4766b53c8947288dc154b67e"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2763,
+      "sha256": "01e5287b4415c4addb0cb79848797f67f52dd6afc6f30a9203c3344b78e992f9"
+    },
+    {
+      "path": "review.json",
+      "bytes": 5665,
+      "sha256": "a4bf774f20f50e95132534ed02b201df1176f76de8848443fea5d18852c622af"
+    }
+  ]
+}

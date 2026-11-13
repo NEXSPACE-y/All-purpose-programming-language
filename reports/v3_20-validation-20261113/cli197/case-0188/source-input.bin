@@ -1,0 +1,1 @@
+<?php echo 'before'; exit('message'); echo 'after';

@@ -19,13 +19,17 @@ def sha(raw):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--part', nargs=2, action='append', metavar=('PATH', 'SHA256'), required=True)
+    parser.add_argument('--base',type=Path,default=BASE)
+    parser.add_argument('--expected-base-sha256',default=EXPECTED_BASE)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     out = args.output.resolve()
     if out.exists():
         parser.error('Output exists; preserve it and select a fresh path.')
-    raw = BASE.read_bytes()
-    if sha(raw) != EXPECTED_BASE:
+    base=args.base.resolve(strict=True)
+    expected_base=args.expected_base_sha256
+    raw = base.read_bytes()
+    if sha(raw) != expected_base:
         parser.error('Frozen base hash changed.')
     original = raw.splitlines(keepends=True)
     edits = []
@@ -62,14 +66,14 @@ def main():
     result.extend(original[end:])
     generated = b''.join(result)
     # Detect any input changing while its diff was computed.
-    if sha(BASE.read_bytes()) != EXPECTED_BASE or any(sha(Path(i['path']).read_bytes()) != i['sha256'] for i in inputs):
+    if sha(base.read_bytes()) != expected_base or any(sha(Path(i['path']).read_bytes()) != i['sha256'] for i in inputs):
         parser.error('An input changed during integration.')
     out.mkdir(parents=True)
     candidate = out / 'ALL_PHP_integrated_candidate.ps1'
     candidate.write_bytes(generated)
     (out / 'base.snapshot.ps1').write_bytes(raw)
     (out / 'integration.patch').write_text(''.join(difflib.unified_diff(raw.decode('utf-8-sig').splitlines(True), generated.decode('utf-8-sig').splitlines(True), fromfile='frozen-native-base', tofile='integrated-candidate')), encoding='utf-8', newline='')
-    report = {'status':'ISOLATED_NOT_VERIFIED', 'base':str(BASE), 'base_sha256':EXPECTED_BASE, 'parts':inputs, 'candidate':str(candidate), 'candidate_sha256':sha(generated), 'package_modified':False, 'merge':'Nonoverlapping line edits with input hash guards; no semantic compatibility inference'}
+    report = {'status':'ISOLATED_NOT_VERIFIED', 'base':str(base), 'base_sha256':expected_base, 'parts':inputs, 'candidate':str(candidate), 'candidate_sha256':sha(generated), 'package_modified':False, 'merge':'Nonoverlapping line edits with input hash guards; no semantic compatibility inference'}
     (out / 'provenance.json').write_text(json.dumps(report, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'candidate':str(candidate), 'sha256':sha(generated), 'parts':len(inputs), 'edits':len(edits)}))
 

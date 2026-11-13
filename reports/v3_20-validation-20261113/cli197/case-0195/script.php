@@ -1,0 +1,1 @@
+<?php try { exit([]); } catch(TypeError $e) { echo $e->getMessage(); }

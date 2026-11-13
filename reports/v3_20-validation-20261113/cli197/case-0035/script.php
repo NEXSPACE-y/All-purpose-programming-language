@@ -1,0 +1,1 @@
+outside<?php namespace A; echo "x";

@@ -1,0 +1,40 @@
+{
+  "status": "COMPOSITION_RECREATED_AND_TARGETED_STATIC_CHECKS_PASS_NOT_COMPLETION",
+  "candidate_sha256": "5856687f7abd1471b4af7af9827ca2d17a011e836ad2852bf1d7993298fddc9f",
+  "base_sha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+  "parts": [
+    {
+      "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-v3_20\\literal-cli\\ALL_PHP_cli_host_candidate.ps1",
+      "sha256": "8203d911d28514df01b2c0720365ae2351153e09a40e640a0fcdfa91a8541c60",
+      "edit_count": 27
+    },
+    {
+      "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+      "sha256": "3ab4d48af3eb26a69ebb99b45b93202dba453f752b966de7b0414c3d5d1ae36b",
+      "edit_count": 17
+    },
+    {
+      "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-callback-v3_20\\revision02\\ALL_PHP_v3_20_callback_candidate.ps1",
+      "sha256": "907171b658edb943a307f3dae32945a0105391f652fa477a4275b586385ce0bd",
+      "edit_count": 5
+    }
+  ],
+  "edit_count": 49,
+  "nonoverlap": true,
+  "recreated_exact_candidate_bytes": true,
+  "checks": {
+    "native_scalar_invocation_one_site": true,
+    "native_dispatch_one_site": true,
+    "doc_scanner_call_one_site": true,
+    "different_sentinel_controls": true,
+    "callback_optional_set_guard": true,
+    "callback_optional_clear_guard": true,
+    "callback_clear_finally_guard": true,
+    "delivered_diagnostics_not_replayed": true,
+    "legacy_unsupported_prefix_preserved": true,
+    "cli_setup_before_literal_warning_delivery": true,
+    "private_formatter_direct_ast_preserved": true,
+    "private_prelude_cache_key_preserved": true
+  },
+  "limits": "Static composition checks do not establish runtime semantics or full PHP compatibility; source code reviewed separately; no PHP program run here."
+}

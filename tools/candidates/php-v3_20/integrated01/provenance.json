@@ -1,0 +1,372 @@
+{
+  "status": "ISOLATED_NOT_VERIFIED",
+  "base": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-cli-host\\base113d.snapshot.ps1",
+  "base_sha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+  "parts": [
+    {
+      "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-v3_20\\literal-cli\\ALL_PHP_cli_host_candidate.ps1",
+      "sha256": "8203d911d28514df01b2c0720365ae2351153e09a40e640a0fcdfa91a8541c60",
+      "edits": [
+        {
+          "kind": "insert",
+          "base_start": 2,
+          "base_end": 2,
+          "part_start": 2,
+          "part_end": 3
+        },
+        {
+          "kind": "replace",
+          "base_start": 16,
+          "base_end": 24,
+          "part_start": 17,
+          "part_end": 33
+        },
+        {
+          "kind": "insert",
+          "base_start": 82,
+          "base_end": 82,
+          "part_start": 91,
+          "part_end": 94
+        },
+        {
+          "kind": "replace",
+          "base_start": 247,
+          "base_end": 248,
+          "part_start": 259,
+          "part_end": 370
+        },
+        {
+          "kind": "replace",
+          "base_start": 249,
+          "base_end": 251,
+          "part_start": 371,
+          "part_end": 432
+        },
+        {
+          "kind": "replace",
+          "base_start": 262,
+          "base_end": 263,
+          "part_start": 443,
+          "part_end": 445
+        },
+        {
+          "kind": "insert",
+          "base_start": 291,
+          "base_end": 291,
+          "part_start": 473,
+          "part_end": 474
+        },
+        {
+          "kind": "replace",
+          "base_start": 367,
+          "base_end": 368,
+          "part_start": 550,
+          "part_end": 551
+        },
+        {
+          "kind": "insert",
+          "base_start": 371,
+          "base_end": 371,
+          "part_start": 554,
+          "part_end": 565
+        },
+        {
+          "kind": "replace",
+          "base_start": 529,
+          "base_end": 530,
+          "part_start": 723,
+          "part_end": 736
+        },
+        {
+          "kind": "replace",
+          "base_start": 631,
+          "base_end": 640,
+          "part_start": 837,
+          "part_end": 850
+        },
+        {
+          "kind": "replace",
+          "base_start": 641,
+          "base_end": 644,
+          "part_start": 851,
+          "part_end": 859
+        },
+        {
+          "kind": "replace",
+          "base_start": 645,
+          "base_end": 657,
+          "part_start": 860,
+          "part_end": 876
+        },
+        {
+          "kind": "replace",
+          "base_start": 658,
+          "base_end": 661,
+          "part_start": 877,
+          "part_end": 892
+        },
+        {
+          "kind": "replace",
+          "base_start": 662,
+          "base_end": 665,
+          "part_start": 893,
+          "part_end": 903
+        },
+        {
+          "kind": "replace",
+          "base_start": 666,
+          "base_end": 674,
+          "part_start": 904,
+          "part_end": 922
+        },
+        {
+          "kind": "replace",
+          "base_start": 675,
+          "base_end": 699,
+          "part_start": 923,
+          "part_end": 924
+        },
+        {
+          "kind": "replace",
+          "base_start": 700,
+          "base_end": 701,
+          "part_start": 925,
+          "part_end": 928
+        },
+        {
+          "kind": "insert",
+          "base_start": 841,
+          "base_end": 841,
+          "part_start": 1068,
+          "part_end": 1075
+        },
+        {
+          "kind": "insert",
+          "base_start": 842,
+          "base_end": 842,
+          "part_start": 1076,
+          "part_end": 1078
+        },
+        {
+          "kind": "replace",
+          "base_start": 843,
+          "base_end": 844,
+          "part_start": 1079,
+          "part_end": 1080
+        },
+        {
+          "kind": "insert",
+          "base_start": 1298,
+          "base_end": 1298,
+          "part_start": 1534,
+          "part_end": 1547
+        },
+        {
+          "kind": "insert",
+          "base_start": 2025,
+          "base_end": 2025,
+          "part_start": 2274,
+          "part_end": 2277
+        },
+        {
+          "kind": "insert",
+          "base_start": 2575,
+          "base_end": 2575,
+          "part_start": 2827,
+          "part_end": 2832
+        },
+        {
+          "kind": "replace",
+          "base_start": 5556,
+          "base_end": 5557,
+          "part_start": 5813,
+          "part_end": 5818
+        },
+        {
+          "kind": "insert",
+          "base_start": 5894,
+          "base_end": 5894,
+          "part_start": 6155,
+          "part_end": 6156
+        },
+        {
+          "kind": "insert",
+          "base_start": 6536,
+          "base_end": 6536,
+          "part_start": 6798,
+          "part_end": 6824
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+      "sha256": "3ab4d48af3eb26a69ebb99b45b93202dba453f752b966de7b0414c3d5d1ae36b",
+      "edits": [
+        {
+          "kind": "insert",
+          "base_start": 801,
+          "base_end": 801,
+          "part_start": 801,
+          "part_end": 806
+        },
+        {
+          "kind": "insert",
+          "base_start": 806,
+          "base_end": 806,
+          "part_start": 811,
+          "part_end": 812
+        },
+        {
+          "kind": "insert",
+          "base_start": 808,
+          "base_end": 808,
+          "part_start": 814,
+          "part_end": 815
+        },
+        {
+          "kind": "replace",
+          "base_start": 810,
+          "base_end": 811,
+          "part_start": 817,
+          "part_end": 818
+        },
+        {
+          "kind": "insert",
+          "base_start": 2386,
+          "base_end": 2386,
+          "part_start": 2393,
+          "part_end": 2540
+        },
+        {
+          "kind": "replace",
+          "base_start": 2388,
+          "base_end": 2389,
+          "part_start": 2542,
+          "part_end": 2544
+        },
+        {
+          "kind": "insert",
+          "base_start": 2390,
+          "base_end": 2390,
+          "part_start": 2545,
+          "part_end": 2546
+        },
+        {
+          "kind": "replace",
+          "base_start": 5017,
+          "base_end": 5018,
+          "part_start": 5173,
+          "part_end": 5174
+        },
+        {
+          "kind": "replace",
+          "base_start": 5023,
+          "base_end": 5024,
+          "part_start": 5179,
+          "part_end": 5180
+        },
+        {
+          "kind": "replace",
+          "base_start": 5253,
+          "base_end": 5254,
+          "part_start": 5409,
+          "part_end": 5410
+        },
+        {
+          "kind": "replace",
+          "base_start": 5351,
+          "base_end": 5352,
+          "part_start": 5507,
+          "part_end": 5508
+        },
+        {
+          "kind": "insert",
+          "base_start": 5353,
+          "base_end": 5353,
+          "part_start": 5509,
+          "part_end": 5514
+        },
+        {
+          "kind": "insert",
+          "base_start": 5356,
+          "base_end": 5356,
+          "part_start": 5517,
+          "part_end": 5526
+        },
+        {
+          "kind": "replace",
+          "base_start": 5371,
+          "base_end": 5372,
+          "part_start": 5541,
+          "part_end": 5542
+        },
+        {
+          "kind": "insert",
+          "base_start": 5407,
+          "base_end": 5407,
+          "part_start": 5577,
+          "part_end": 5582
+        },
+        {
+          "kind": "insert",
+          "base_start": 5564,
+          "base_end": 5564,
+          "part_start": 5739,
+          "part_end": 5746
+        },
+        {
+          "kind": "insert",
+          "base_start": 5695,
+          "base_end": 5695,
+          "part_start": 5877,
+          "part_end": 5894
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-callback-v3_20\\revision02\\ALL_PHP_v3_20_callback_candidate.ps1",
+      "sha256": "907171b658edb943a307f3dae32945a0105391f652fa477a4275b586385ce0bd",
+      "edits": [
+        {
+          "kind": "replace",
+          "base_start": 128,
+          "base_end": 129,
+          "part_start": 128,
+          "part_end": 129
+        },
+        {
+          "kind": "insert",
+          "base_start": 143,
+          "base_end": 143,
+          "part_start": 143,
+          "part_end": 146
+        },
+        {
+          "kind": "replace",
+          "base_start": 153,
+          "base_end": 154,
+          "part_start": 156,
+          "part_end": 157
+        },
+        {
+          "kind": "insert",
+          "base_start": 6541,
+          "base_end": 6541,
+          "part_start": 6544,
+          "part_end": 6558
+        },
+        {
+          "kind": "insert",
+          "base_start": 6592,
+          "base_end": 6592,
+          "part_start": 6609,
+          "part_end": 6611
+        }
+      ]
+    }
+  ],
+  "candidate": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-v3_20\\integrated01\\ALL_PHP_integrated_candidate.ps1",
+  "candidate_sha256": "5856687f7abd1471b4af7af9827ca2d17a011e836ad2852bf1d7993298fddc9f",
+  "package_modified": false,
+  "merge": "Nonoverlapping line edits with input hash guards; no semantic compatibility inference"
+}

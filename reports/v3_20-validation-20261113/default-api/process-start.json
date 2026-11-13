@@ -1,0 +1,14 @@
+{
+  "pid": 7208,
+  "startedUtc": "2026-11-13T03:26:31.306192+00:00",
+  "command": [
+    "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\v3_20-validation-20261113\\default-api\\capture-validation.ps1"
+  ],
+  "observation": "PID recorded at actual spawn; later liveness must be checked, this record alone is not proof of a live process"
+}

@@ -1,0 +1,1 @@
+<?php $e=new Exception('normal'); echo $e->__toString();

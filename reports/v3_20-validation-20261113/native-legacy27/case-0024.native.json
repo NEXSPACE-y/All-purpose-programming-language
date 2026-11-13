@@ -1,0 +1,97 @@
+{
+    "method":  "actual_ALL_evaluator_source_execution_preloaded_native_profile",
+    "native_context_parameter_verified":  true,
+    "failure":  "ALL PHP Native Unsupported: named native arguments are not implemented",
+    "native_unsupported":  true,
+    "inputs_before":  {
+                          "source":  "ADB98770D3EC4FF48E1C669EEF45D04CAD5B26DF618121516D934C5933782A6D",
+                          "adapter":  "5856687F7ABD1471B4AF7AF9827CA2D17A011E836AD2852BF1D7993298FDDC9F",
+                          "core":  "b2ffd9f38abd20894b064b53a94e4a05e5d39eaa2055e910db6d762558e46757",
+                          "extension":  "532B9F0944D482A704EB81AC1CB9AF3B59AA0F54C753C53A5709C17F57D4E938"
+                      },
+    "core_path":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi\\out\\windows-x64-ts\\php8ts.dll",
+    "loaded_php_modules":  [
+                               "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi\\out\\windows-x64-ts\\php8ts.dll",
+                               "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll"
+                           ],
+    "function_catalog":  {
+                             "value":  [
+                                           {
+                                               "name":  "dl_test_frameless",
+                                               "required_args":  1,
+                                               "declared_args":  1,
+                                               "flags":  0,
+                                               "module":  "dl_test",
+                                               "supports_named_arguments":  false,
+                                               "parameters":  [
+                                                                  {
+                                                                      "position":  1,
+                                                                      "name":  "value"
+                                                                  }
+                                                              ]
+                                           },
+                                           {
+                                               "name":  "dl_test_test1",
+                                               "required_args":  0,
+                                               "declared_args":  0,
+                                               "flags":  0,
+                                               "module":  "dl_test",
+                                               "supports_named_arguments":  false,
+                                               "parameters":  [
+
+                                                              ]
+                                           },
+                                           {
+                                               "name":  "dl_test_test2",
+                                               "required_args":  0,
+                                               "declared_args":  1,
+                                               "flags":  0,
+                                               "module":  "dl_test",
+                                               "supports_named_arguments":  false,
+                                               "parameters":  [
+                                                                  {
+                                                                      "position":  1,
+                                                                      "name":  "str"
+                                                                  }
+                                                              ]
+                                           }
+                                       ],
+                             "Count":  3
+                         },
+    "native_stats":  {
+                         "minit":  1,
+                         "mshutdown":  1,
+                         "rinit":  1,
+                         "rshutdown":  1,
+                         "thread_requests_started":  1,
+                         "thread_requests_ended":  1,
+                         "thread_global_ctors":  1,
+                         "tls_contexts_created":  1,
+                         "tls_contexts_destroyed":  1,
+                         "native_invocations":  0,
+                         "registered_functions":  0,
+                         "registered_classes":  0,
+                         "request_allocations_live":  0,
+                         "api_calls":  {
+                                           "OnUpdateLong":  1,
+                                           "OnUpdateString":  1,
+                                           "__zend_malloc":  1,
+                                           "tsrm_get_ls_cache":  2,
+                                           "zend_declare_typed_property":  1,
+                                           "zend_register_functions":  1,
+                                           "zend_register_ini_entries_ex":  1,
+                                           "zend_register_internal_class_with_flags":  4,
+                                           "zend_register_long_constant":  1,
+                                           "zend_string_init_interned":  17,
+                                           "zend_unregister_ini_entries_ex":  1
+                                       }
+                     },
+    "pipeline_count":  0,
+    "exit_code":  1,
+    "inputs_after":  {
+                         "source":  "ADB98770D3EC4FF48E1C669EEF45D04CAD5B26DF618121516D934C5933782A6D",
+                         "adapter":  "5856687F7ABD1471B4AF7AF9827CA2D17A011E836AD2852BF1D7993298FDDC9F",
+                         "core":  "b2ffd9f38abd20894b064b53a94e4a05e5d39eaa2055e910db6d762558e46757",
+                         "extension":  "532B9F0944D482A704EB81AC1CB9AF3B59AA0F54C753C53A5709C17F57D4E938"
+                     }
+}

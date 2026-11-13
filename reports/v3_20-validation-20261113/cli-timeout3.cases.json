@@ -1,0 +1,17 @@
+[
+  {
+    "id": "dynamic:dynamic.int-order",
+    "mode": "file",
+    "code": "<?php function side(){echo 'SIDE';return 1;}$f=3;try{$f(side());}catch(Error $e){echo get_class($e).':'.$e->getMessage();}"
+  },
+  {
+    "id": "dynamic:dynamic.bool",
+    "mode": "file",
+    "code": "<?php $f=false;try{$f();}catch(Error $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "dynamic:dynamic.float",
+    "mode": "file",
+    "code": "<?php $f=1.5;try{$f();}catch(Error $e){echo $e->getMessage();}"
+  }
+]

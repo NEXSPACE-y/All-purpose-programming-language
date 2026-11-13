@@ -1,0 +1,1 @@
+<?php var_dump(function_exists('__all_throwable_string'),function_exists('__ALL_THROWABLE_STRING'));

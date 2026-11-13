@@ -1,0 +1,38 @@
+{
+  "status": "DEFAULT_API_REGRESSION_VERIFIED_NOT_FULL_PHP",
+  "source_sha256": "5856687f7abd1471b4af7af9827ca2d17a011e836ad2852bf1d7993298fddc9f",
+  "powerShellVersion": "5.1.26100.9818",
+  "PSEdition": "Desktop",
+  "actualProcessExitCode": 0,
+  "validatorDurationSeconds": 793.19,
+  "wholeProcessDurationSeconds": 799.064,
+  "casePassLines": 965,
+  "caseFailLines": 0,
+  "stderrBytes": 0,
+  "syntaxScripts": 102,
+  "manifestEntries": 218,
+  "compiledCSharpHelpers": 2,
+  "packageBeforeCount": 219,
+  "packageAfterCount": 219,
+  "packageSnapshotsEqual": true,
+  "currentFilesMatchAfterSnapshot": true,
+  "original940TrackedPaths": 34,
+  "original940BeforeDiff": 0,
+  "original940AfterDiff": 0,
+  "original940Base": "9d8171712828a0b57555b8eb1e1ca5c475391244",
+  "helperAssemblies": [
+    {
+      "fullName": "io3o1wt0, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "location": "",
+      "fileExists": false
+    },
+    {
+      "fullName": "e4qzb10f, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "location": "",
+      "fileExists": false
+    }
+  ],
+  "installedMode": false,
+  "sourceUnchanged": true,
+  "otherStrictOrNativeGroupsIncluded": false
+}

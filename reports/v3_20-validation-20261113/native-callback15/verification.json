@@ -1,0 +1,152 @@
+{
+  "status": "SELECTED_CALLBACK_SOURCE_PROFILE_VERIFIED_NOT_FULL_PHP",
+  "source_sha256": "5856687f7abd1471b4af7af9827ca2d17a011e836ad2852bf1d7993298fddc9f",
+  "actual_package_path": "C:/Users/rinpa/ALL-php-compat-20261112/package/ALL_PHP_v3_12_adapter.ps1",
+  "passed": 15,
+  "total": 15,
+  "same_source_raw_stdout_stderr_actual_status": true,
+  "inputs_unchanged": true,
+  "timeout_seconds": 30.0,
+  "core_sha256": "88117b8f38dc77d20e638ce573bb83fc6f959c1ad6821f8803c5499969fe234b",
+  "bridge_sha256": "8c37470ecafa4c00a41dbf8917295f88f76b7d2fbbd57645a91313bc833efda8",
+  "host_sha256": "32ca20b8ab4c7138b90d2274ff8fbb00645b22d9a71985f8fff4f76441aa1ac7",
+  "report_sha256": "1be5458fe32f3a73ea9a6934eece6fd68253f988de7bfc16809c35428039242d",
+  "controlled_case_checks": [
+    {
+      "id": "callback.no_handler",
+      "actualExitCode": 0,
+      "nativeInvocations": 1,
+      "callbacks": 1,
+      "aborts": 0,
+      "controlledLifecycleBalanced": true,
+      "callbackLeaseReleased": true
+    },
+    {
+      "id": "callback.handler_true",
+      "actualExitCode": 0,
+      "nativeInvocations": 1,
+      "callbacks": 1,
+      "aborts": 0,
+      "controlledLifecycleBalanced": true,
+      "callbackLeaseReleased": true
+    },
+    {
+      "id": "callback.handler_false",
+      "actualExitCode": 0,
+      "nativeInvocations": 1,
+      "callbacks": 1,
+      "aborts": 0,
+      "controlledLifecycleBalanced": true,
+      "callbackLeaseReleased": true
+    },
+    {
+      "id": "callback.handler_throw",
+      "actualExitCode": 0,
+      "nativeInvocations": 1,
+      "callbacks": 1,
+      "aborts": 1,
+      "controlledLifecycleBalanced": true,
+      "callbackLeaseReleased": true
+    },
+    {
+      "id": "callback.reporting_zero_no_handler",
+      "actualExitCode": 0,
+      "nativeInvocations": 1,
+      "callbacks": 1,
+      "aborts": 0,
+      "controlledLifecycleBalanced": true,
+      "callbackLeaseReleased": true
+    },
+    {
+      "id": "callback.reporting_zero_with_handler",
+      "actualExitCode": 0,
+      "nativeInvocations": 1,
+      "callbacks": 1,
+      "aborts": 0,
+      "controlledLifecycleBalanced": true,
+      "callbackLeaseReleased": true
+    },
+    {
+      "id": "callback.suppressed_handler_true",
+      "actualExitCode": 0,
+      "nativeInvocations": 1,
+      "callbacks": 1,
+      "aborts": 0,
+      "controlledLifecycleBalanced": true,
+      "callbackLeaseReleased": true
+    },
+    {
+      "id": "callback.suppressed_handler_false",
+      "actualExitCode": 0,
+      "nativeInvocations": 1,
+      "callbacks": 1,
+      "aborts": 0,
+      "controlledLifecycleBalanced": true,
+      "callbackLeaseReleased": true
+    },
+    {
+      "id": "callback.handler_mask_no_match",
+      "actualExitCode": 0,
+      "nativeInvocations": 1,
+      "callbacks": 1,
+      "aborts": 0,
+      "controlledLifecycleBalanced": true,
+      "callbackLeaseReleased": true
+    },
+    {
+      "id": "callback.native_reentry",
+      "actualExitCode": 0,
+      "nativeInvocations": 2,
+      "callbacks": 1,
+      "aborts": 0,
+      "controlledLifecycleBalanced": true,
+      "callbackLeaseReleased": true
+    },
+    {
+      "id": "callback.recursive_diagnostic_guard",
+      "actualExitCode": 0,
+      "nativeInvocations": 2,
+      "callbacks": 2,
+      "aborts": 0,
+      "controlledLifecycleBalanced": true,
+      "callbackLeaseReleased": true
+    },
+    {
+      "id": "callback.reentry_TypeError_caught_by_handler",
+      "actualExitCode": 0,
+      "nativeInvocations": 2,
+      "callbacks": 1,
+      "aborts": 0,
+      "controlledLifecycleBalanced": true,
+      "callbackLeaseReleased": true
+    },
+    {
+      "id": "callback.reentry_TypeError_unwinds_outer",
+      "actualExitCode": 0,
+      "nativeInvocations": 2,
+      "callbacks": 1,
+      "aborts": 1,
+      "controlledLifecycleBalanced": true,
+      "callbackLeaseReleased": true
+    },
+    {
+      "id": "callback.handler_restore_midcall",
+      "actualExitCode": 0,
+      "nativeInvocations": 2,
+      "callbacks": 2,
+      "aborts": 0,
+      "controlledLifecycleBalanced": true,
+      "callbackLeaseReleased": true
+    },
+    {
+      "id": "callback.handler_exit",
+      "actualExitCode": 7,
+      "nativeInvocations": 1,
+      "callbacks": 1,
+      "aborts": 1,
+      "controlledLifecycleBalanced": true,
+      "callbackLeaseReleased": true
+    }
+  ],
+  "limits": "Pinned Windows x64 TS dl_test scalar/synchronous diagnostics only. Normal outer-Main host, not the original PS-worker host. Counters are not a general memory-safety proof."
+}

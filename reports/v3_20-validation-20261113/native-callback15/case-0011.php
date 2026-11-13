@@ -1,0 +1,1 @@
+<?php set_error_handler(function($l,$m){try{dl_test_frameless('bad');}catch(TypeError $e){echo 'inner-caught';}return true;});echo dl_test_test2(null);

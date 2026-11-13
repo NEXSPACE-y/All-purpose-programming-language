@@ -95,13 +95,29 @@ def apply(value):
             [void]$lines.Add($line)
         }
 '''.replace('\n','\r\n')
+    if '        function Read-PhpDocToken' in value:
+        hook="""                $doc = Read-PhpDocToken $text $offset $line
+                if ($null -ne $doc) {
+                    [void]$tokens.Add($doc.Token);[void]$lines.Add($line)
+                    $offset += $doc.Length;$line += $doc.Newlines
+                    continue
+                }
+""".replace('\n','\r\n')
+        target='                $match = $tokenRx.Match($text, $offset)'
+        if new.count(target)!=1:raise ValueError('Doc hook site is not unique')
+        new=new.replace(target,hook+target)
     value=value[:start]+new+value[end:]
-    replace("""        ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines
-        # Only programs""", """        if ($isCli -and ($CliContext.Keys -contains 'SourceMode') -and
+    source_call="""        if ($isCli -and ($CliContext.Keys -contains 'SourceMode') -and
             $CliContext['SourceMode'] -in @('body','file','stdin')) {
             ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines $true ($CliContext['SourceMode'] -ceq 'body')
         } else { ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines }
-        # Only programs""")
+"""
+    if '        try { ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines }' in value:
+        replace('        try { ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines }',
+                '        try {\n'+source_call+'        }')
+    else:
+        replace("""        ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines
+        # Only programs""",source_call+'        # Only programs')
     replace("""        function Read-StatementCore {
             $token = Peek-Token
 """, """        function Read-StatementCore {
@@ -152,4 +168,11 @@ def apply(value):
                 if ($isCli -and (Peek-Token) -cne ';') { Expect-Token ';' }
                 throw 'ALL PHP: Undefined constant in expression statement'
             }""")
+    if '        foreach($literalWarning in $state.LiteralWarnings)' in value:
+        warning_start=value.index('        foreach($literalWarning in $state.LiteralWarnings)')
+        ini_start=value.index("        if ($isCli -and ($CliContext.Keys -contains 'InitialIni'))")
+        load_start=value.index('        # Load the built-in exception classes')
+        if not warning_start<ini_start<load_start:raise ValueError('Unexpected literal warning/init order')
+        # Initial host INI must be active before scanner/compiler diagnostics.
+        value=value[:warning_start]+value[ini_start:load_start]+value[warning_start:ini_start]+value[load_start:]
     return value

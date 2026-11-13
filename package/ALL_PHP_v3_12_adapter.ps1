@@ -1,5 +1,6 @@
 ﻿@{
     Name = 'PHP'
+    CliContextCapabilities = @('source-body-v1','script-arguments-v1','initial-ini-v1','source-tags-v1')
     Run = {
         # -PhpDiagnostics: report an uncaught PHP exception the way the PHP CLI does (text on the
         # output stream) instead of surfacing it as a PowerShell error. Default behaviour is unchanged.
@@ -14,14 +15,22 @@
         $ErrorActionPreference = 'Stop'
 
         # ALL's own PHP subset interpreter. No PHP executable, eval, or Invoke-Expression.
-        $source = $Code.Trim()
-        if ($source -notmatch '^<\?php(?:\s|$)') {
-            throw 'ALL PHP: A <?php opening tag is required'
-        }
-        $source = [regex]::Replace($source, '^<\?php\b', '')
-        $source = $source.TrimEnd()
-        if ($source.EndsWith('?>')) {
-            $source = $source.Substring(0, $source.Length - 2)
+        if ($isCli -and ($CliContext.Keys -contains 'SourceMode') -and
+            $CliContext['SourceMode'] -in @('body','file','stdin')) {
+            # CLI -r starts in PHP code mode. Preserve the actual input body,
+            # including leading lines; do not add a synthetic opening tag.
+            # Empty file/stdin input is a legitimate zero-statement program.
+            $source = $Code
+        } else {
+            $source = $Code.Trim()
+            if ($source -notmatch '^<\?php(?:\s|$)') {
+                throw 'ALL PHP: A <?php opening tag is required'
+            }
+            $source = [regex]::Replace($source, '^<\?php\b', '')
+            $source = $source.TrimEnd()
+            if ($source.EndsWith('?>')) {
+                $source = $source.Substring(0, $source.Length - 2)
+            }
         }
 
         $state = @{
@@ -80,6 +89,9 @@
                 ExceptionHandlerStack = [System.Collections.Generic.List[object]]::new()
                 Ini = @{}
                 NamespaceFallbacks = [System.Collections.Generic.Dictionary[int,string]]::new()
+                InlineHtml = [System.Collections.Generic.Dictionary[string,string]]::new([StringComparer]::Ordinal)
+                DocStrings = [System.Collections.Generic.Dictionary[string,object]]::new([StringComparer]::Ordinal)
+                LiteralWarnings = [System.Collections.Generic.List[object]]::new()
                 ParsingInternalPrelude = $false
         }
 
@@ -126,7 +138,7 @@
         function Invoke-PhpNativeFunction([string]$name, $values) {
             # Deferred events cannot reproduce synchronous user-handler callbacks.
             # Refuse before invoking native code while any user handler is installed.
-            if ($null -ne $state.ErrorHandler) {
+            if ($null -ne $state.ErrorHandler -and -not $NativeContext.SynchronousCallbacksEnabled) {
                 Throw-PhpNativeUnsupported 'native calls with an installed PHP error handler require synchronous callbacks'
             }
             $nativeName = Get-PhpNativeName $name
@@ -141,6 +153,9 @@
                 # This candidate's selected source execution is weak/positional only.
                 $nativeResult = $NativeContext.InvokeScalar($nativeName, [object[]]@($values), $false)
             } catch {
+                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                $callbackThrowable = Get-PhpThrown $_
+                if ($null -ne $callbackThrowable) { Throw-PhpObject $callbackThrowable }
                 Throw-PhpNativeUnsupported ('scalar boundary: ' + $_.Exception.Message)
             }
             # The native call has happened exactly once. Even an unsupported result
@@ -151,7 +166,7 @@
                 $nativeStdout.Flush()
             }
             foreach ($event in $nativeResult.DiagnosticEvents) {
-                Write-PhpDiagnostic ([long]$event.Level) ([string]$event.Message)
+                if (-not $event.Delivered) { Write-PhpDiagnostic ([long]$event.Level) ([string]$event.Message) }
             }
             if (-not $nativeResult.Ok) {
                 if ($nativeResult.Status -lt 0 -or $nativeResult.ErrorClass -ceq 'ALLNativeUnsupported') {
@@ -245,10 +260,179 @@
         # Tokenize before parsing. Unknown characters produce an error, never disappear.
         $pattern = '(?:\s+|//[^\r\n]*|\#[^\r\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|''(?:\\.|[^''\\])*''|\$\$[A-Za-z_][A-Za-z_0-9]*|\$[A-Za-z_][A-Za-z_0-9]*|\$(?=\{)|0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|(?:\d[\d_]*(?:\.[\d_]*)?|\.\d[\d_]*)(?:[eE][+-]?\d[\d_]*)?|\\?[A-Za-z_][A-Za-z_0-9]*(?:\\[A-Za-z_][A-Za-z_0-9]*)*\\?|<=>|::|\.\.\.|<<=|>>=|<<|>>|===|!==|==|!=|<=|>=|&&|\|\||=>|->|\*\*=|\*\*|\?\?=|\?\?|\?->|\+\+|--|\*=|/=|%=|&=|\|=|\^=|\+=|-=|\.=|[+\-*/%.=<>!?:;{},()\[\]&|^~@])'
         $rx = [regex]::new($pattern)
-        function ConvertTo-PhpTokens([string]$text, $tokens, $lines) {
+        $phpLiteralUtf8 = [Text.UTF8Encoding]::new($false,$true)
+        function Throw-PhpLiteralParseError([string]$message,[long]$line) {
+            if ($isCli) {
+                $CliContext['CompileError']=[pscustomobject]@{
+                    Type='ParseError'; Reason='string_literal'; Message=$message
+                    SourcePath=$state.ScriptName; Line=$line
+                }
+            }
+            throw ('ALL PHP: '+$message)
+        }
+        function Add-PhpLiteralText($bytes,[string]$text) {
+            foreach ($b in $phpLiteralUtf8.GetBytes($text)) { [void]$bytes.Add($b) }
+        }
+        function Read-PhpDocToken([string]$text,[int]$offset,[long]$line) {
+            $start=$offset
+            if ($offset -ge $text.Length) { return $null }
+            if (($text[$offset] -ceq 'b' -or $text[$offset] -ceq 'B') -and $offset+1 -lt $text.Length) {
+                if ($text[$offset+1] -ceq '"' -or $text[$offset+1] -ceq "'") {
+                    $quoted=$rx.Match($text,$offset+1)
+                    if ($quoted.Success -and $quoted.Index -eq $offset+1) {
+                        return [pscustomobject]@{Token=$quoted.Value;Length=$quoted.Length+1;Newlines=[regex]::Matches($quoted.Value,"`r`n|`r|`n").Count}
+                    }
+                }
+                $offset++
+            }
+            if ($offset+3 -gt $text.Length -or $text.Substring($offset,3) -cne '<<<') { return $null }
+            $headerRx=[regex]::new('\G<<<[ \t]*(?:''(?<nowdoc>[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*)''|"(?<quoted>[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*)"|(?<bare>[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*))(?:\r\n|\n|\r)')
+            $header=$headerRx.Match($text,$offset)
+            if (-not $header.Success -or $header.Index -ne $offset) { return $null }
+            $nowdoc=$header.Groups['nowdoc'].Success
+            $label=if($nowdoc){$header.Groups['nowdoc'].Value}elseif($header.Groups['quoted'].Success){$header.Groups['quoted'].Value}else{$header.Groups['bare'].Value}
+            $bodyStart=$offset+$header.Length
+            $closingRx=[regex]::new('^(?<indent>[ \t]*)'+[regex]::Escape($label)+'(?![A-Za-z_0-9\x80-\uffff])')
+            $position=$bodyStart;$closing=$null;$closingLine=$line+1
+            while ($position -le $text.Length) {
+                $end=$text.IndexOfAny([char[]]@([char]13,[char]10),$position)
+                if ($end -lt 0) { $end=$text.Length }
+                $closing=$closingRx.Match($text.Substring($position,$end-$position))
+                if ($closing.Success) { break }
+                if ($end -eq $text.Length) { $closing=$null;break }
+                $position=$end+1
+                if ($text[$end] -ceq [char]13 -and $position -lt $text.Length -and $text[$position] -ceq [char]10) { $position++ }
+                $closingLine++
+            }
+            if ($null -eq $closing) { throw 'ALL PHP: Unterminated heredoc/nowdoc literal' }
+            $indent=$closing.Groups['indent'].Value
+            $body=$text.Substring($bodyStart,$position-$bodyStart)
+            if ($indent.Contains(' ') -and $indent.Contains("`t")) {
+                # The PHP scanner detects this before committing the current
+                # text token's newline count. Interpolations commit earlier
+                # segments; nowdoc and a plain heredoc stay at body-start line.
+                $errorLine=$line+1;$lastInterpolation=-1
+                if(-not$nowdoc) {
+                    for($k=0;$k-lt$body.Length;$k++) {
+                        if($body[$k]-ceq'\'){$k++;continue}
+                        if($body[$k]-ceq'$'-and$k+1-lt$body.Length-and[string]$body[$k+1]-cmatch'[A-Za-z_\x80-\uffff{]') {
+                            $lastInterpolation=$k
+                            $errorLine=$line+1+[regex]::Matches($body.Substring(0,$k),"`r`n|`r|`n").Count
+                        }
+                    }
+                }
+                if($lastInterpolation-ge0) {
+                    # Earlier literal segments are indentation-checked before
+                    # the scanner reaches the malformed closing marker. A
+                    # mixed closing prefix selects the tab indentation branch.
+                    $prefixLines=[regex]::Split($body.Substring(0,$lastInterpolation+1),"`r`n|`r|`n")
+                    for($partIndex=0;$partIndex-lt$prefixLines.Length;$partIndex++) {
+                        $prefixLine=$prefixLines[$partIndex]
+                        for($column=0;$column-lt$indent.Length-and$column-lt$prefixLine.Length;$column++) {
+                            if($prefixLine[$column]-cne' '-and$prefixLine[$column]-cne[char]9) {
+                                Throw-PhpLiteralParseError ('Invalid body indentation level (expecting an indentation level of at least '+$indent.Length+')') ($line+1+$partIndex)
+                            }
+                            if($prefixLine[$column]-cne[char]9) {
+                                Throw-PhpLiteralParseError 'Invalid indentation - tabs and spaces cannot be mixed' ($line+1+$partIndex)
+                            }
+                        }
+                    }
+                }
+                Throw-PhpLiteralParseError 'Invalid indentation - tabs and spaces cannot be mixed' $errorLine
+            }
+            if ($body.EndsWith("`r`n")) { $body=$body.Substring(0,$body.Length-2) }
+            elseif ($body.EndsWith("`r") -or $body.EndsWith("`n")) { $body=$body.Substring(0,$body.Length-1) }
+            if ($indent.Length -gt 0) {
+                $clean=[Text.StringBuilder]::new();$bodyPosition=0;$bodyLine=$line+1
+                while ($bodyPosition -lt $body.Length) {
+                    $end=$body.IndexOfAny([char[]]@([char]13,[char]10),$bodyPosition)
+                    if ($end -lt 0) { $end=$body.Length }
+                    $part=$body.Substring($bodyPosition,$end-$bodyPosition);$skip=0
+                    while ($skip -lt $indent.Length -and $skip -lt $part.Length) {
+                        if ($part[$skip] -cne ' ' -and $part[$skip] -cne [char]9) {
+                            Throw-PhpLiteralParseError ('Invalid body indentation level (expecting an indentation level of at least '+$indent.Length+')') $bodyLine
+                        }
+                        if ($part[$skip] -cne $indent[0]) { Throw-PhpLiteralParseError 'Invalid indentation - tabs and spaces cannot be mixed' $bodyLine }
+                        $skip++
+                    }
+                    [void]$clean.Append($part.Substring($skip))
+                    if ($end -lt $body.Length) {
+                        [void]$clean.Append($body[$end]);$end++
+                        if ($body[$end-1] -ceq [char]13 -and $end -lt $body.Length -and $body[$end] -ceq [char]10) { [void]$clean.Append($body[$end]);$end++ }
+                    }
+                    $bodyPosition=$end;$bodyLine++
+                }
+                $body=$clean.ToString()
+            }
+            $id=[string][char]29+'DOC:'+$state.DocStrings.Count
+            $state.DocStrings[$id]=[pscustomobject]@{Body=$body;Nowdoc=$nowdoc;BodyLine=$line+1}
+            $length=$position+$closing.Length-$start
+            return [pscustomobject]@{Token=$id;Length=$length;Newlines=[regex]::Matches($text.Substring($start,$length),"`r`n|`r|`n").Count}
+        }
+        function ConvertTo-PhpTokens([string]$text, $tokens, $lines,
+            [bool]$FileMode=$false, [bool]$StartsInPhp=$true) {
             $line = 1
-            for ($offset = 0; $offset -lt $text.Length;) {
-                $match = $rx.Match($text, $offset)
+            $insidePhp = $StartsInPhp
+            $tokenRx = $rx
+            $openRx = $null
+            if ($FileMode) {
+                $openPattern = '<\?(?:php(?=\s|$)|=)'
+                if ($isCli -and ($CliContext.Keys -contains 'InitialIni') -and
+                    ($CliContext['InitialIni'].Keys -contains 'short_open_tag') -and
+                    $CliContext['InitialIni']['short_open_tag'] -ceq '1') {
+                    $openPattern = '<\?(?:php(?=\s|$)|=)?'
+                }
+                $openRx = [regex]::new($openPattern, [Text.RegularExpressions.RegexOptions]::IgnoreCase)
+                # A close tag ends a line comment, but not a quoted string or
+                # block comment. Those stay whole tokens under the existing rx.
+                $filePattern = $pattern.Replace('//[^\r\n]*','//(?:(?!\?>)[^\r\n])*').Replace('\#[^\r\n]*','\#(?:(?!\?>)[^\r\n])*')
+                $tokenRx = [regex]::new($filePattern)
+            }
+            $initialOffset = 0
+            if ($FileMode -and -not $StartsInPhp -and $text.StartsWith('#!')) {
+                $firstNewline = [regex]::Match($text,"`r`n|`r|`n")
+                if ($firstNewline.Success) { $initialOffset=$firstNewline.Index+$firstNewline.Length;$line=2 }
+                else { $initialOffset=$text.Length }
+            }
+            for ($offset = $initialOffset; $offset -lt $text.Length;) {
+                if ($FileMode -and -not $insidePhp) {
+                    $opening = $openRx.Match($text,$offset)
+                    $stop = if ($opening.Success) { $opening.Index } else { $text.Length }
+                    if ($stop -gt $offset) {
+                        $html = $text.Substring($offset,$stop-$offset)
+                        $id = [string][char]30 + 'HTML:' + $state.InlineHtml.Count
+                        $state.InlineHtml[$id] = $html
+                        [void]$tokens.Add($id);[void]$lines.Add($line)
+                        $line += [regex]::Matches($html,"`r`n|`r|`n").Count
+                    }
+                    $offset = $stop
+                    if (-not $opening.Success) { break }
+                    if ($opening.Value -ceq '<?=') {
+                        [void]$tokens.Add('echo');[void]$lines.Add($line)
+                    }
+                    $offset += $opening.Length
+                    $insidePhp = $true
+                    continue
+                }
+                if ($FileMode -and $offset+1 -lt $text.Length -and
+                    $text[$offset] -ceq '?' -and $text[$offset+1] -ceq '>') {
+                    # A closing tag supplies the statement terminator and may
+                    # consume one following newline. The next text is HTML.
+                    [void]$tokens.Add(';');[void]$lines.Add($line)
+                    $offset += 2
+                    if ($offset -lt $text.Length -and $text[$offset] -ceq [char]13) {
+                        $offset++;if ($offset -lt $text.Length -and $text[$offset] -ceq [char]10) { $offset++ };$line++
+                    } elseif ($offset -lt $text.Length -and $text[$offset] -ceq [char]10) { $offset++;$line++ }
+                    $insidePhp = $false
+                    continue
+                }
+                $doc = Read-PhpDocToken $text $offset $line
+                if ($null -ne $doc) {
+                    [void]$tokens.Add($doc.Token);[void]$lines.Add($line)
+                    $offset += $doc.Length;$line += $doc.Newlines
+                    continue
+                }
+                $match = $tokenRx.Match($text, $offset)
                 if (-not $match.Success -or $match.Index -ne $offset) {
                     throw "ALL PHP: Unknown character at offset $offset"
                 }
@@ -260,7 +444,8 @@
                     [void]$tokens.Add($token)
                     [void]$lines.Add($line)
                 }
-                if ($token.IndexOf([char]10) -ge 0) { $line += ($token.Split([char]10).Count - 1) }
+                if ($FileMode) { $line += [regex]::Matches($token,"`r`n|`r|`n").Count }
+                elseif ($token.IndexOf([char]10) -ge 0) { $line += ($token.Split([char]10).Count - 1) }
                 $offset += $token.Length
             }
             [void]$tokens.Add('(EOF)')
@@ -289,6 +474,7 @@
             $outLines = [System.Collections.Generic.List[int]]::new()
             $outFallbacks = [System.Collections.Generic.Dictionary[int,string]]::new()
             foreach ($pass in 1, 2) {
+                $seenNamespace = $false
                 $ns = ''
                 $depth = 0
                 $classStack = [System.Collections.Generic.Stack[int]]::new()
@@ -365,10 +551,21 @@
                         $isMember = ($prev -ceq '->' -or $prev -ceq '?->' -or $prev -ceq '::')
                         $plainName = ($prev -ieq 'const' -or $prev -ieq 'function' -or $prev -ieq 'as' -or
                             $prev -ieq 'case' -or ($inClass -and ($next -ieq 'as' -or $next -ieq 'insteadof')))
-                        $startsStatement = ($prev -ceq '' -or $prev -ceq ';' -or $prev -ceq '{' -or $prev -ceq '}')
+                        $startsStatement = ($prev -ceq '' -or $prev -ceq ';' -or $prev -ceq '{' -or $prev -ceq '}' -or $state.InlineHtml.ContainsKey($prev))
                         if (-not $isMember -and -not $plainName -and $startsStatement -and
                             $lower -ceq 'namespace' -and $next -cne '(') {
                             # namespace A\B;   namespace A\B { ... }   namespace { ... }
+                            if (-not $seenNamespace -and $i -gt 0 -and $state.InlineHtml.ContainsKey($tokens[0])) {
+                                $message = 'Namespace declaration statement has to be the very first statement or after any declare call in the script'
+                                if ($isCli) {
+                                    $CliContext['CompileError'] = [pscustomobject]@{
+                                        Type='CompileError'; Reason='namespace_after_inline_html'; Message=$message
+                                        SourcePath=$state.ScriptName; Line=[long]$lines[$i]
+                                    }
+                                }
+                                throw ('ALL PHP: '+$message)
+                            }
+                            $seenNamespace = $true
                             $j = $i + 1
                             $name = ''
                             if ($j -lt $total -and $tokens[$j] -cne '{' -and $tokens[$j] -cne ';') { $name = $tokens[$j]; $j++ }
@@ -527,7 +724,19 @@
             }
             return [pscustomobject]@{ Tokens=$outTokens; Lines=$outLines; Fallbacks=$outFallbacks }
         }
-        ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines
+        try {
+        if ($isCli -and ($CliContext.Keys -contains 'SourceMode') -and
+            $CliContext['SourceMode'] -in @('body','file','stdin')) {
+            ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines $true ($CliContext['SourceMode'] -ceq 'body')
+        } else { ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines }
+        }
+        catch {
+            if (-not $isCli -or -not ($CliContext.Keys -contains 'CompileError')) { throw }
+            $literalError=$CliContext['CompileError']
+            [Console]::Error.Write('Parse error: '+$literalError.Message+' in '+$literalError.SourcePath+' on line '+$literalError.Line+"`n")
+            $CliContext['ExitCode']=[long]255;$CliContext['Terminated']=$true;$CliContext['TerminationReason']='compile_error'
+            return
+        }
         # Only programs that actually use namespaces, imports or qualified names take this pass.
         $needsNameResolution = $false
         for ($scan = 0; $scan -lt $state.Tokens.Count; $scan++) {
@@ -629,76 +838,97 @@
             }
             return $sb.ToString()
         }
-        function Expand-PhpDoubleString([string]$token) {
-            $body = $token.Substring(1, $token.Length - 2)
-            $output = [System.Text.StringBuilder]::new()
-            for ($i=0; $i -lt $body.Length; $i++) {
-                $ch = $body[$i]
-                if ($ch -eq '\') {
-                    if ($i + 1 -ge $body.Length) {
-                        [void]$output.Append('\')
-                        continue
+        function Expand-PhpDoubleString([string]$token,[bool]$IsBody=$false,[bool]$Heredoc=$false,[bool]$ValidateOnly=$false,[long]$LineBase=0) {
+            $body=if($IsBody){$token}else{$token.Substring(1,$token.Length-2)}
+            $output=[Collections.Generic.List[byte]]::new()
+            if($LineBase-le0){$LineBase=[long]$state.Line}
+            for($i=0;$i-lt$body.Length;$i++) {
+                $ch=$body[$i]
+                if($ch-ceq'\') {
+                    if($i+1-ge$body.Length){[void]$output.Add([byte]92);continue}
+                    $next=$body[$i+1]
+                    if($next-ceq'x'-or$next-ceq'X') {
+                        $hex='';$j=$i+2
+                        while($j-lt$body.Length-and$hex.Length-lt2-and[string]$body[$j]-cmatch'^[0-9A-Fa-f]$'){$hex+=$body[$j];$j++}
+                        if($hex.Length-gt0){[void]$output.Add([Convert]::ToByte($hex,16));$i=$j-1;continue}
                     }
-                    $next = $body[$i + 1]
-                    if ([string]$next -cmatch '[0-7xu]') {
-                        throw 'ALL PHP: Hexadecimal, octal and Unicode string escapes are not implemented'
+                    if([string]$next-cmatch'^[0-7]$') {
+                        $octal='';$j=$i+1
+                        while($j-lt$body.Length-and$octal.Length-lt3-and[string]$body[$j]-cmatch'^[0-7]$'){$octal+=$body[$j];$j++}
+                        $value=[Convert]::ToInt32($octal,8)
+                        if($value-gt255-and$ValidateOnly){
+                            [void]$state.LiteralWarnings.Add([pscustomobject]@{Level=[long]2;Message=('Octal escape sequence overflow \'+$octal+' is greater than \377');Line=($LineBase+[regex]::Matches($body.Substring(0,$i),"`r`n|`r|`n").Count)})
+                        }
+                        [void]$output.Add([byte]($value-band255));$i=$j-1;continue
                     }
-                    $recognized = $true
-                    switch ([string]$next) {
-                        'n' { [void]$output.Append("`n") }
-                        'r' { [void]$output.Append("`r") }
-                        't' { [void]$output.Append("`t") }
-                        'v' { [void]$output.Append([char]11) }
-                        'e' { [void]$output.Append([char]27) }
-                        'f' { [void]$output.Append([char]12) }
-                        '\' { [void]$output.Append('\') }
-                        '"' { [void]$output.Append('"') }
-                        '$' { [void]$output.Append('$') }
-                        default { $recognized = $false }
+                    if($next-ceq'u'-and$i+2-lt$body.Length-and$body[$i+2]-ceq'{') {
+                        $end=$body.IndexOf('}',$i+3)
+                        $errorLine=$LineBase+[regex]::Matches($body.Substring(0,$i),"`r`n|`r|`n").Count
+                        if($end-lt0){Throw-PhpLiteralParseError 'Invalid UTF-8 codepoint escape sequence' $errorLine}
+                        $hex=$body.Substring($i+3,$end-$i-3)
+                        if($hex-cnotmatch'\A[0-9A-Fa-f]+\z'){Throw-PhpLiteralParseError 'Invalid UTF-8 codepoint escape sequence' $errorLine}
+                        $point=[long]0
+                        foreach($digit in $hex.ToCharArray()) {
+                            if($point-le0x10ffff){$point=$point*16+[Convert]::ToInt32([string]$digit,16)}
+                        }
+                        if($point-gt0x10ffff){Throw-PhpLiteralParseError 'Invalid UTF-8 codepoint escape sequence: Codepoint too large' $errorLine}
+                        if($point-ge0xd800-and$point-le0xdfff){
+                            if($ValidateOnly){$i=$end;continue}
+                            throw 'ALL PHP: Binary string containing a non-scalar UTF-8 codepoint is not supported'
+                        }
+                        Add-PhpLiteralText $output ([char]::ConvertFromUtf32([int]$point));$i=$end;continue
                     }
-                    if ($recognized) { $i++; continue }
-                    [void]$output.Append('\')
-                    continue
-                }
-                if ($ch -eq '$' -and $i + 1 -lt $body.Length -and
-                    $body[$i + 1] -eq '{') {
-                    throw 'ALL PHP: Legacy ${...} interpolation is not implemented'
-                }
-                $braced = $false
-                $start = $i
-                if ($ch -eq '{' -and $i + 1 -lt $body.Length -and $body[$i + 1] -eq '$') {
-                    $braced = $true
-                    $start++
-                } elseif ($ch -ne '$') {
-                    [void]$output.Append($ch)
-                    continue
-                }
-                if ($start + 1 -ge $body.Length -or
-                    -not ([string]$body[$start + 1] -cmatch '[A-Za-z_]')) {
-                    [void]$output.Append($ch)
-                    continue
-                }
-                $end = $start + 2
-                while ($end -lt $body.Length -and
-                    ([string]$body[$end] -cmatch '[A-Za-z_0-9]')) { $end++ }
-                if ($braced) {
-                    if ($end -ge $body.Length -or $body[$end] -ne '}') {
-                        throw 'ALL PHP: Complex braced string interpolation is not implemented'
+                    $recognized=$true
+                    switch -CaseSensitive ([string]$next) {
+                        'n' {[void]$output.Add([byte]10)}
+                        'r' {[void]$output.Add([byte]13)}
+                        't' {[void]$output.Add([byte]9)}
+                        'v' {[void]$output.Add([byte]11)}
+                        'e' {[void]$output.Add([byte]27)}
+                        'f' {[void]$output.Add([byte]12)}
+                        '\' {[void]$output.Add([byte]92)}
+                        '"' {if($Heredoc){$recognized=$false}else{[void]$output.Add([byte]34)}}
+                        '$' {[void]$output.Add([byte]36)}
+                        default {$recognized=$false}
                     }
-                } elseif ($end -lt $body.Length -and
-                         ($body[$end] -eq '[' -or
-                         ($end + 1 -lt $body.Length -and
-                          $body.Substring($end, 2) -ceq '->'))) {
-                    throw 'ALL PHP: Complex string interpolation is not implemented'
+                    if($recognized){$i++;continue}
+                    [void]$output.Add([byte]92);continue
                 }
-                $name = $body.Substring($start + 1, $end - $start - 1)
-                if ($state.Vars.ContainsKey($name)) {
-                    [void]$output.Append((To-PhpText (Get-PhpVariableValue $name)))
+                # Compilation validates escape syntax but must not evaluate or
+                # reject valid, presently unsupported interpolation in dead code.
+                if($ValidateOnly){continue}
+                if($ch-ceq'$'-and$i+1-lt$body.Length-and$body[$i+1]-ceq'{'){throw 'ALL PHP: Legacy ${...} interpolation is not implemented'}
+                $braced=$false;$start=$i
+                if($ch-ceq'{'-and$i+1-lt$body.Length-and$body[$i+1]-ceq'$'){$braced=$true;$start++}
+                elseif($ch-cne'$') {
+                    $length=1
+                    if([char]::IsHighSurrogate($ch)-and$i+1-lt$body.Length-and[char]::IsLowSurrogate($body[$i+1])){$length=2}
+                    Add-PhpLiteralText $output $body.Substring($i,$length);$i+=$length-1;continue
                 }
-                if ($braced) { $i = $end }
-                else { $i = $end - 1 }
+                if($start+1-ge$body.Length-or-not([string]$body[$start+1]-cmatch'[A-Za-z_]')) {Add-PhpLiteralText $output ([string]$ch);continue}
+                $end=$start+2
+                while($end-lt$body.Length-and[string]$body[$end]-cmatch'[A-Za-z_0-9]'){$end++}
+                if($braced){if($end-ge$body.Length-or$body[$end]-cne'}'){throw 'ALL PHP: Complex braced string interpolation is not implemented'}}
+                elseif($end-lt$body.Length-and($body[$end]-ceq'['-or($end+1-lt$body.Length-and$body.Substring($end,2)-ceq'->'))){throw 'ALL PHP: Complex string interpolation is not implemented'}
+                $name=$body.Substring($start+1,$end-$start-1)
+                if(-not$ValidateOnly) {
+                    $savedLine=$state.Line
+                    try{
+                        $state.Line=$LineBase+[regex]::Matches($body.Substring(0,$start),"`r`n|`r|`n").Count
+                        $slot=Get-PhpVariableSlot $name
+                        # The existing default API intentionally omits the PHP
+                        # notice/warning while CLI and PhpDiagnostics expose it.
+                        if($slot.Store.ContainsKey($slot.Key)-or$PhpDiagnostics-or$isCli){
+                            Add-PhpLiteralText $output (To-PhpText (Get-PhpVariableValue $name))
+                        }
+                    }
+                    finally{$state.Line=$savedLine}
+                }
+                if($braced){$i=$end}else{$i=$end-1}
             }
-            return $output.ToString()
+            if($ValidateOnly){return ''}
+            try{return $phpLiteralUtf8.GetString($output.ToArray())}
+            catch [Text.DecoderFallbackException]{throw 'ALL PHP: Arbitrary non-UTF8 PHP byte strings are not supported'}
         }
         function Take-PhpFirstClassCallableArgs {
             if ((Peek-Token) -cne '(' -or $state.Pos + 2 -ge $state.Tokens.Count) {
@@ -799,16 +1029,23 @@
                         [void](Next-Token)
                         $spread = $true
                     }
+                    $byReference=$false
+                    if ((Peek-Token) -ceq '&') {
+                        if ($spread) { throw 'ALL PHP: Array spread cannot be by reference' }
+                        [void](Next-Token);$byReference=$true
+                    }
                     $first = Read-Expr 1
                     $key = $null
                     $value = $first
                     if ((Peek-Token) -ceq '=>') {
                         if ($spread) { throw 'ALL PHP: Spread cannot have explicit key' }
+                        if ($byReference) { throw 'ALL PHP: Array key cannot be a reference' }
                         [void](Next-Token)
                         $key = $first
+                        if ((Peek-Token) -ceq '&') { [void](Next-Token);$byReference=$true }
                         $value = Read-Expr 1
                     }
-                    [void]$entries.Add([pscustomobject]@{ Key=$key; Value=$value; Spread=$spread })
+                    [void]$entries.Add([pscustomobject]@{ Key=$key; Value=$value; Spread=$spread;ByReference=$byReference })
                     if ((Peek-Token) -cne ',') { break }
                     [void](Next-Token)
                     if ((Peek-Token) -ceq $close) { break }
@@ -839,9 +1076,18 @@
                     Kind='literal'; Value=(ConvertFrom-PhpNumberLiteral $token)
                 }
             }
-            if ($token.StartsWith('"')) {
+            if ($state.DocStrings.ContainsKey($token)) {
+                $doc=$state.DocStrings[$token]
                 [void](Next-Token)
-                return [pscustomobject]@{ Kind='double_string'; Raw=$token }
+                if ($doc.Nowdoc) { return [pscustomobject]@{Kind='literal';Value=$doc.Body} }
+                [void](Expand-PhpDoubleString $doc.Body $true $true $true $doc.BodyLine)
+                return [pscustomobject]@{Kind='double_string';Raw=$doc.Body;IsBody=$true;Heredoc=$true;StringLine=$doc.BodyLine}
+            }
+            if ($token.StartsWith('"')) {
+                $literalLine=[long]$state.TokenLines[$state.Pos]
+                [void](Expand-PhpDoubleString $token $false $false $true $literalLine)
+                [void](Next-Token)
+                return [pscustomobject]@{ Kind='double_string'; Raw=$token;IsBody=$false;Heredoc=$false;StringLine=$literalLine }
             }
             if ($token.StartsWith("'")) {
                 [void](Next-Token)
@@ -1296,6 +1542,19 @@
         }
         function Read-StatementCore {
             $token = Peek-Token
+            if ($isCli -and ($CliContext.Keys -contains 'SourceMode') -and
+                $CliContext['SourceMode'] -ceq 'body' -and $state.Pos -eq 0 -and $token -ceq '<') {
+                $message = 'syntax error, unexpected token "<", expecting end of file'
+                $CliContext['CompileError'] = [pscustomobject]@{
+                    Type='ParseError'; TokenKind='<'; TokenContent='<'; Message=$message
+                    SourcePath=$state.ScriptName; Line=[long]$state.TokenLines[$state.Pos]
+                }
+                throw 'ALL PHP: structured code-body parse error'
+            }
+            if ($state.InlineHtml.ContainsKey($token)) {
+                [void](Next-Token)
+                return [pscustomobject]@{ Kind='inline_html'; Text=$state.InlineHtml[$token] }
+            }
             if ($token -ceq '{') {
                 [void](Next-Token)
                 $body = [System.Collections.Generic.List[object]]::new()
@@ -2023,6 +2282,9 @@
             }
             $expr=Read-Expr 1
             if ($expr.Kind -ceq 'class_name') {
+                # Diagnose invalid syntax before the legacy bare-constant guard.
+                # The existing structured parser reports the actual next token.
+                if ($isCli -and (Peek-Token) -cne ';') { Expect-Token ';' }
                 throw 'ALL PHP: Undefined constant in expression statement'
             }
             Expect-Token ';'
@@ -2384,10 +2646,159 @@ class UnhandledMatchError extends Error {}
             $state.ObjectSeq++
             return $state.ObjectSeq
         }
+        function Throw-PhpInvalidValueCallable([string]$message, [string]$callbackReason,
+            [string]$callbackFunction, [string]$legacyText='ALL PHP: Value is not callable') {
+            if ($callbackFunction.Length -gt 0) {
+                Throw-PhpError 'TypeError' ($callbackFunction+'(): Argument #1 ($callback) must be a valid callback, '+$callbackReason) $legacyText
+            }
+            Throw-PhpError 'Error' $message $legacyText
+        }
+        function Assert-PhpMethodValueCallable([string]$className, [string]$methodName,
+            [bool]$staticOnly, [string]$callbackFunction) {
+            if ($className.StartsWith([string][char]92)) { $className=$className.Substring(1) }
+            $className=Resolve-PhpClass $className
+            if ($phpPreludeTriggers.Contains($className)) { Ensure-PhpPrelude }
+            if ($className -ine 'stdClass' -and -not $state.Classes.ContainsKey($className)) {
+                Throw-PhpInvalidValueCallable ('Class "'+$className+'" not found') ('class "'+$className+'" not found') $callbackFunction
+            }
+            $method=Find-OptionalPhpMethod $className $methodName
+            if ($null -eq $method) {
+                Throw-PhpInvalidValueCallable ('Call to undefined method '+$className+'::'+$methodName+'()') ('class '+$className+' does not have a method "'+$methodName+'"') $callbackFunction
+            }
+            try { Assert-PhpVisibility $method.Visibility $method.Owner }
+            catch {
+                if ($_.Exception.Message -notlike 'ALL PHP: Cannot access*') { throw }
+                $scope=if ($null -eq $state.ClassContext) { 'global scope' } else { 'scope '+$state.ClassContext }
+                Throw-PhpInvalidValueCallable ('Call to '+$method.Visibility+' method '+$method.Owner+'::'+$method.Name+'() from '+$scope) ('cannot access '+$method.Visibility+' method '+$method.Owner+'::'+$method.Name+'()') $callbackFunction
+            }
+            if ($staticOnly -and -not $method.Static) {
+                Throw-PhpInvalidValueCallable ('Non-static method '+$method.Owner+'::'+$method.Name+'() cannot be called statically') ('non-static method '+$method.Owner+'::'+$method.Name+'() cannot be called statically') $callbackFunction
+            }
+            return $className
+        }
+        function Assert-PhpValueCallable($callee, [string]$callbackFunction='') {
+            if ($null -ne $callee -and $callee.PSObject.Properties['PhpType'] -and
+                $callee.PhpType -in @('closure','first_class_callable')) { return $callee }
+            if ($callee -is [string]) {
+                $name=$callee
+                if ($name.StartsWith([string][char]92)) { $name=$name.Substring(1) }
+                $split=$name.IndexOf('::')
+                if ($split -gt 0) {
+                    $className=Assert-PhpMethodValueCallable $name.Substring(0,$split) $name.Substring($split+2) $true $callbackFunction
+                    return ($className+'::'+$name.Substring($split+2))
+                }
+                if (-not $state.Functions.ContainsKey($name) -and -not $phpBuiltinNames.Contains($name) -and
+                    -not (Test-PhpNativeFunction $name)) {
+                    Throw-PhpInvalidValueCallable ('Call to undefined function '+$name+'()') ('function "'+$callee+'" not found or invalid function name') $callbackFunction ("ALL PHP: Undefined function '"+$callee+"'")
+                }
+                return $name
+            }
+            if (Is-PhpObject $callee) {
+                if ($null -eq (Find-OptionalPhpMethod $callee.Class '__invoke')) {
+                    Throw-PhpInvalidValueCallable ('Object of type '+$callee.Class+' is not callable') 'no array or string given' $callbackFunction 'ALL PHP: Object is not callable'
+                }
+                return $callee
+            }
+            if (Is-PhpArray $callee) {
+                if ($callee.Items.Count -ne 2) {
+                    Throw-PhpInvalidValueCallable 'Array callback must have exactly two elements' 'array callback must have exactly two members' $callbackFunction 'ALL PHP: Array is not a valid callable'
+                }
+                if (-not $callee.Items.Contains('i:0') -or -not $callee.Items.Contains('i:1')) {
+                    Throw-PhpInvalidValueCallable 'Array callback has to contain indices 0 and 1' 'array callback has to contain indices 0 and 1' $callbackFunction 'ALL PHP: Array is not a valid callable'
+                }
+                $target=Get-PhpArrayItem $callee ([long]0)
+                $member=Get-PhpArrayItem $callee ([long]1)
+                if ($target -isnot [string] -and -not (Is-PhpObject $target)) {
+                    Throw-PhpInvalidValueCallable 'First array member is not a valid class name or object' 'first array member is not a valid class name or object' $callbackFunction 'ALL PHP: Array is not a valid callable'
+                }
+                if ($member -isnot [string]) {
+                    Throw-PhpInvalidValueCallable 'Second array member is not a valid method' 'second array member is not a valid method' $callbackFunction 'ALL PHP: Array is not a valid callable'
+                }
+                if (Is-PhpObject $target) {
+                    [void](Assert-PhpMethodValueCallable $target.Class $member $false $callbackFunction)
+                } else { $target=Assert-PhpMethodValueCallable $target $member $true $callbackFunction }
+                # Bind the selected array target before argument expressions can
+                # mutate the source variable. Object identity is preserved.
+                $bound=New-PhpArray
+                Set-PhpArrayItem $bound $null $target $true
+                Set-PhpArrayItem $bound $null $member $true
+                return $bound
+            }
+            $type=if ($null -eq $callee) { 'null' } elseif ($callee -is [bool]) { 'bool' }
+                elseif ($callee -is [long]) { 'int' } elseif ($callee -is [double]) { 'float' } else { 'unknown' }
+            Throw-PhpInvalidValueCallable ('Value of type '+$type+' is not callable') 'no array or string given' $callbackFunction
+        }
+        function Get-PhpValueCallableDefinition($callee) {
+            if ($null -ne $callee -and $callee.PSObject.Properties['PhpType']) {
+                if ($callee.PhpType -ceq 'closure') { return $callee.Definition }
+                if ($callee.PhpType -ceq 'first_class_callable') {
+                    if ($callee.Mode -ceq 'function' -and $state.Functions.ContainsKey($callee.Name)) { return $state.Functions[$callee.Name] }
+                    if ($callee.Mode -ceq 'method') { return (Find-OptionalPhpMethod $callee.BoundThis.Class $callee.Name) }
+                    if ($callee.Mode -ceq 'static') { return (Find-OptionalPhpMethod $callee.Class $callee.Name) }
+                }
+            }
+            if (Is-PhpObject $callee) { return (Find-OptionalPhpMethod $callee.Class '__invoke') }
+            if (Is-PhpArray $callee) {
+                $target=Get-PhpArrayItem $callee ([long]0);$member=Get-PhpArrayItem $callee ([long]1)
+                $className=if (Is-PhpObject $target) { $target.Class } else { [string]$target }
+                return (Find-OptionalPhpMethod $className $member)
+            }
+            if ($callee -is [string]) {
+                if ($state.Functions.ContainsKey($callee)) { return $state.Functions[$callee] }
+                $split=$callee.IndexOf('::')
+                if ($split -gt 0) { return (Find-OptionalPhpMethod $callee.Substring(0,$split) $callee.Substring($split+2)) }
+            }
+            return $null
+        }
+        function Get-PhpCallbackArrayArguments($array) {
+            $values=[System.Collections.Generic.List[object]]::new()
+            foreach ($key in $array.Items.Keys) {
+                $value=$array.Items[$key]
+                if ($key.StartsWith('s:')) {
+                    [void]$values.Add([pscustomobject]@{ PhpType='named_argument';Name=$key.Substring(2);Value=$value })
+                } else { [void]$values.Add($value) }
+            }
+            return ,($values.ToArray())
+        }
+        function Prepare-PhpCallbackValues($callee,$values) {
+            $definition=Get-PhpValueCallableDefinition $callee
+            if ($null -eq $definition) { return ,$values }
+            $prepared=[System.Collections.Generic.List[object]]::new()
+            $position=0;$index=0
+            foreach ($item in $values) {
+                $name=$null;$value=$item;$parameter=$null
+                if ($null -ne $item -and $item.PSObject.Properties['PhpType'] -and $item.PhpType -ceq 'named_argument') {
+                    $name=$item.Name;$value=$item.Value
+                    foreach ($p in $definition.Params) { if ($p.Name -ceq $name) { $parameter=$p;break } }
+                } elseif ($position -lt $definition.Params.Count) {
+                    $parameter=$definition.Params[$position]
+                    if (-not $parameter.Variadic) { $position++ }
+                }
+                if ($null -ne $parameter -and $parameter.ByRef) {
+                    if (Is-PhpRefCell $value) { $cell=$value }
+                    elseif ($null -ne $value -and $value.PSObject.Properties['PhpType'] -and $value.PhpType -ceq 'refargument') { $cell=$value.Cell }
+                    else {
+                        $displayName=[string]$definition.Name
+                        if ($definition.PSObject.Properties['Owner'] -and -not [string]::IsNullOrEmpty([string]$definition.Owner)) {
+                            $displayName=$definition.Owner+'::'+$displayName
+                        }
+                        Write-PhpDiagnostic 2 ($displayName+'(): Argument #'+($index+1)+' ($'+$parameter.Name+') must be passed by reference, value given')
+                        $cell=[pscustomobject]@{PhpType='refcell';Value=(Copy-PhpValue $value)}
+                    }
+                    $value=[pscustomobject]@{PhpType='refargument';Cell=$cell;Value=(Copy-PhpValue $cell.Value)}
+                } elseif (Is-PhpRefCell $value) { $value=$value.Value }
+                if ($null -ne $name) { $value=[pscustomobject]@{PhpType='named_argument';Name=$name;Value=$value} }
+                [void]$prepared.Add($value);$index++
+            }
+            return ,($prepared.ToArray())
+        }
+
         # Call a PHP callable value (closure, function name, [object, method], invokable object)
         # with already evaluated arguments.
-        function Invoke-PhpValueCallable($callee, $values) {
+        function Invoke-PhpValueCallable($callee, $values, [string]$callbackFunction='') {
+            $callee = Assert-PhpValueCallable $callee $callbackFunction
             $values = @($values)
+            if ($callbackFunction.Length -gt 0) { $values=Prepare-PhpCallbackValues $callee $values }
             if ($null -ne $callee -and $callee.PSObject.Properties['PhpType']) {
                 if ($callee.PhpType -ceq 'closure') {
                     return (Invoke-PhpCallable $callee.Definition $values $callee.BoundThis '' $callee)
@@ -2573,6 +2984,11 @@ class UnhandledMatchError extends Error {}
             return $copy
         }
         function Get-PhpVariableSlot([string]$name) {
+            # CLI-provided server data is a superglobal, including inside user
+            # function frames. Existing non-host runs retain their prior setup.
+            if ($name -ceq '_SERVER' -and $state.Globals.ContainsKey('_SERVER')) {
+                return [pscustomobject]@{ Store=$state.Globals; Key=$name }
+            }
             if ($state.GlobalBindings.Contains($name)) {
                 return [pscustomobject]@{ Store=$state.Globals; Key=$name }
             }
@@ -5015,13 +5431,13 @@ class UnhandledMatchError extends Error {}
                     if ($callArgs.Count -lt 1) { throw 'ALL PHP: call_user_func() requires a callable' }
                     $rest = @()
                     if ($callArgs.Count -gt 1) { $rest = @($callArgs[1..($callArgs.Count - 1)]) }
-                    return (Invoke-PhpValueCallable $callArgs[0] $rest)
+                    return (Invoke-PhpValueCallable $callArgs[0] $rest 'call_user_func')
                 }
                 'call_user_func_array' {
                     if ($callArgs.Count -ne 2 -or -not (Is-PhpArray $callArgs[1])) {
                         throw 'ALL PHP: call_user_func_array() requires a callable and an array'
                     }
-                    return (Invoke-PhpValueCallable $callArgs[0] @($callArgs[1].Items.Values))
+                    return (Invoke-PhpValueCallable $callArgs[0] (Get-PhpCallbackArrayArguments $callArgs[1]) 'call_user_func_array')
                 }
                 'get_class' {
                     if ($callArgs.Count -ne 1 -or -not (Is-PhpObject $callArgs[0])) {
@@ -5251,7 +5667,7 @@ class UnhandledMatchError extends Error {}
                 return (Invoke-PhpCallable $def $args $receiver $def.Owner $null $true)
             }
             if ($node.Kind -eq 'invoke') {
-                $callee=Invoke-PhpExpr $node.Callee
+                $callee=Assert-PhpValueCallable (Invoke-PhpExpr $node.Callee)
                 if ($null -ne $callee -and $callee.PSObject.Properties['PhpType'] -and
                     $callee.PhpType -ceq 'closure') {
                     $args=Evaluate-PhpUserArguments $node.Args $callee.Definition
@@ -5349,11 +5765,25 @@ class UnhandledMatchError extends Error {}
                     }
                 }
                 'first_class_invoke' {
-                    $callable=Invoke-PhpExpr $node.Callee
+                    $callable=Assert-PhpValueCallable (Invoke-PhpExpr $node.Callee)
                     if ($null -ne $callable -and $callable -is [string]) {
+                        $split=$callable.IndexOf('::')
+                        if ($split -gt 0) {
+                            return [pscustomobject]@{ PhpType='first_class_callable'; Id=(New-PhpObjectId)
+                                Mode='static'; Class=$callable.Substring(0,$split); Name=$callable.Substring($split+2) }
+                        }
                         return [pscustomobject]@{
                             PhpType='first_class_callable'; Id=(New-PhpObjectId); Mode='function'; Name=$callable
                         }
+                    }
+                    if (Is-PhpArray $callable) {
+                        $target=Get-PhpArrayItem $callable ([long]0);$member=Get-PhpArrayItem $callable ([long]1)
+                        if (Is-PhpObject $target) {
+                            return [pscustomobject]@{ PhpType='first_class_callable'; Id=(New-PhpObjectId)
+                                Mode='method'; BoundThis=$target; Name=$member }
+                        }
+                        return [pscustomobject]@{ PhpType='first_class_callable'; Id=(New-PhpObjectId)
+                            Mode='static'; Class=[string]$target; Name=$member }
                     }
                     if ($null -ne $callable -and $callable.PSObject.Properties['PhpType'] -and
                         $callable.PhpType -eq 'closure') { return $callable }
@@ -5369,7 +5799,7 @@ class UnhandledMatchError extends Error {}
                     throw 'ALL PHP: Value is not callable'
                 }
                 'invoke' {
-                    $callee=Invoke-PhpExpr $node.Callee
+                    $callee=Assert-PhpValueCallable (Invoke-PhpExpr $node.Callee)
                     if ($null -ne $callee -and $callee.PSObject.Properties['PhpType'] -and
                         $callee.PhpType -ceq 'closure') {
                         $args=Evaluate-PhpUserArguments $node.Args $callee.Definition
@@ -5405,6 +5835,11 @@ class UnhandledMatchError extends Error {}
                             return (Invoke-PhpStaticMethod $callee.Class $callee.Name $args)
                         }
                         throw 'ALL PHP: Unknown first-class callable kind'
+                    }
+                    if (Is-PhpArray $callee) {
+                        $definition=Get-PhpValueCallableDefinition $callee
+                        $args=Evaluate-PhpUserArguments $node.Args $definition
+                        return (Invoke-PhpValueCallable $callee $args)
                     }
                     if (Is-PhpObject $callee) {
                         $magic=Find-OptionalPhpMethod $callee.Class '__invoke'
@@ -5554,7 +5989,11 @@ class UnhandledMatchError extends Error {}
                     }
                     return (Get-LValue $node.Target)
                 }
-                'double_string' { return (Expand-PhpDoubleString $node.Raw) }
+                'double_string' {
+                    $isBody=$false;$heredoc=$false;$stringLine=[long]$state.Line
+                    if($node.PSObject.Properties['IsBody']){$isBody=[bool]$node.IsBody;$heredoc=[bool]$node.Heredoc;$stringLine=[long]$node.StringLine}
+                    return (Expand-PhpDoubleString $node.Raw $isBody $heredoc $false $stringLine)
+                }
                 'variable' { return (Get-LValue $node) }
                 'dynamic_variable' { return (Get-LValue $node) }
                 'index' { return (Get-LValue $node) }
@@ -5562,6 +6001,13 @@ class UnhandledMatchError extends Error {}
                 'array' {
                     $array = New-PhpArray
                     foreach ($entry in $node.Entries) {
+                        if ($entry.PSObject.Properties['ByReference'] -and $entry.ByReference) {
+                            $key=$null
+                            if ($null -ne $entry.Key) { $key=Invoke-PhpExpr $entry.Key }
+                            $cell=Get-PhpLValueCell $entry.Value
+                            Set-PhpArrayItem $array $key $cell ($null -eq $entry.Key)
+                            continue
+                        }
                         $value = Invoke-PhpExpr $entry.Value
                         if ($entry.Spread) {
                             if (-not (Is-PhpArray $value)) {
@@ -5693,6 +6139,23 @@ class UnhandledMatchError extends Error {}
                         return $null
                     }
                     $callName = Resolve-PhpFunctionNodeName $node
+                    $callbackName=$callName.ToLowerInvariant()
+                    if ($node.Name -ieq $callName -and
+                        -not $state.Functions.ContainsKey($callName) -and
+                        (($callbackName -ceq 'call_user_func' -and $node.Args.Count -ge 1) -or
+                         ($callbackName -ceq 'call_user_func_array' -and $node.Args.Count -eq 2))) {
+                        $plainArguments=$true
+                        foreach ($expression in $node.Args) { if ($expression.Kind -ceq 'named_argument') { $plainArguments=$false } }
+                        if ($plainArguments) {
+                            $boundCallback=Assert-PhpValueCallable (Invoke-PhpExpr $node.Args[0]) $callbackName
+                            $earlyArgs=[System.Collections.Generic.List[object]]::new()
+                            [void]$earlyArgs.Add($boundCallback)
+                            for ($argumentIndex=1;$argumentIndex -lt $node.Args.Count;$argumentIndex++) {
+                                [void]$earlyArgs.Add((Invoke-PhpExpr $node.Args[$argumentIndex]))
+                            }
+                            return (Invoke-PhpFunction $callName ($earlyArgs.ToArray()))
+                        }
+                    }
                     if ($state.Functions.ContainsKey($callName)) {
                         $args=Evaluate-PhpUserArguments $node.Args $state.Functions[$callName]
                         return (Invoke-PhpCallable $state.Functions[$callName] $args $null)
@@ -5892,6 +6355,7 @@ class UnhandledMatchError extends Error {}
             }
             if ($null -ne $node.Line) { $state.Line = $node.Line }
             switch ($node.Kind) {
+                'inline_html' { [Console]::Write($node.Text); return }
                 'constdecl' {
                     foreach ($decl in $node.Decls) {
                         if ($state.Constants.ContainsKey($decl.Name) -or $phpConstants.ContainsKey($decl.Name)) {
@@ -6534,10 +6998,50 @@ class UnhandledMatchError extends Error {}
             }
             throw 'ALL PHP: Internal statement error'
         }
+        if ($isCli -and ($CliContext.Keys -contains 'InitialIni')) {
+            foreach ($setting in $CliContext['InitialIni'].Keys) {
+                $state.Ini[[string]$setting] = [string]$CliContext['InitialIni'][$setting]
+            }
+            if ($state.Ini.ContainsKey('error_reporting')) {
+                $state.ErrorReporting = [long]$state.Ini['error_reporting']
+            }
+        }
+        if ($isCli -and ($CliContext.Keys -contains 'ScriptArguments')) {
+            $scriptArguments = @($CliContext['ScriptArguments'])
+            $argumentArray = New-PhpArray
+            foreach ($argument in $scriptArguments) {
+                Set-PhpArrayItem $argumentArray $null ([string]$argument) $true
+            }
+            $state.Globals['argc'] = [long]$scriptArguments.Count
+            $state.Globals['argv'] = $argumentArray
+            $server = New-PhpArray
+            Set-PhpArrayItem $server 'argc' ([long]$scriptArguments.Count) $false
+            Set-PhpArrayItem $server 'argv' $argumentArray $false
+            $state.Globals['_SERVER'] = $server
+        }
+        foreach($literalWarning in $state.LiteralWarnings) {
+            $savedLine=$state.Line
+            try{$state.Line=$literalWarning.Line;Write-PhpDiagnostic $literalWarning.Level $literalWarning.Message}
+            finally{$state.Line=$savedLine}
+        }
         # Load the built-in exception classes up front when the program mentions any of them, so
         # that user classes can extend them.
         foreach ($programToken in $state.Tokens) {
             if ($phpPreludeTriggers.Contains($programToken)) { Ensure-PhpPrelude; break }
+        }
+        # Same-thread Action delegate: managed reverse-P/Invoke catches exceptions.
+        # Older NativeContext hosts retain deferred diagnostics and their prior
+        # installed-handler rejection. Do not call an absent optional interface.
+        $nativeCallbackInstalled = $false
+        if ($null -ne $NativeContext -and
+            $null -ne $NativeContext.PSObject.Methods['SetDiagnosticHandler'] -and
+            $null -ne $NativeContext.PSObject.Methods['ClearDiagnosticHandler']) {
+            $nativeDiagnosticAction = [System.Action[long,string]] {
+                param([long]$nativeLevel, [string]$nativeMessage)
+                Write-PhpDiagnostic $nativeLevel $nativeMessage
+            }
+            $NativeContext.SetDiagnosticHandler($nativeDiagnosticAction)
+            $nativeCallbackInstalled = $true
         }
         try {
 
@@ -6590,6 +7094,8 @@ class UnhandledMatchError extends Error {}
                 $CliContext['Terminated'] = $true
                 $CliContext['TerminationReason'] = 'uncaught_php_throwable'
             } else { [Console]::Write("`n" + $fatal) }
+        } finally {
+            if ($nativeCallbackInstalled) { $NativeContext.ClearDiagnosticHandler() }
         }
     }
 }

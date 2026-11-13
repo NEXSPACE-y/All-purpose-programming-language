@@ -1,0 +1,10 @@
+{
+  "adapterPath": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+  "adapterSha256": "5856687f7abd1471b4af7af9827ca2d17a011e836ad2852bf1d7993298fddc9f",
+  "captureSha256": "0c70bea4beb1e16632b974f027f0a18cb41b8f6267d428b812219a12ec687fbd",
+  "driverSha256": "e0bafae4066fa3e77978582648fd6b725fc07b31f0a473f5fa067f5d2a0ab7ae",
+  "powershellPath": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+  "powershellSha256": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+  "original940Base": "9d8171712828a0b57555b8eb1e1ca5c475391244",
+  "scope": "Actual default API/preflight only; no installed ALL execution"
+}

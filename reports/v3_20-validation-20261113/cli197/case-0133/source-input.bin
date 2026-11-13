@@ -1,0 +1,1 @@
+<?php echo call_user_func('\strlen','abc');

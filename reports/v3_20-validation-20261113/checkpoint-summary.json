@@ -1,0 +1,45 @@
+{
+  "status": "NOT_COMPLETE",
+  "package_source_sha256": "5856687f7abd1471b4af7af9827ca2d17a011e836ad2852bf1d7993298fddc9f",
+  "default_api_pass": 965,
+  "native_callback_selected_pass": 15,
+  "native_legacy_selected_pass": 23,
+  "separate_native_guards": 4,
+  "cli197_pass": 191,
+  "cli197_total": 197,
+  "original_failure_ids": [
+    "literal:literal.octal-ascii",
+    "literal:literal.binary-invalid-byte",
+    "literal:literal.binary-surrogate",
+    "dynamic:dynamic.int-order",
+    "dynamic:dynamic.bool",
+    "dynamic:dynamic.float"
+  ],
+  "separate_timeout_examination_pass": 3,
+  "original_timeouts_remain_recorded": true,
+  "timeout_cause_established": false,
+  "full_php_compatibility": false,
+  "stage2_started": false,
+  "evidence_files": {
+    "default-api/verification.json": {
+      "sha256": "93122e6a82dfcb0dc6876f139cb7732c9eee80a0fdf64f2710e468efd504eccd",
+      "bytes": 1219
+    },
+    "native-callback15/verification.json": {
+      "sha256": "16329c255906061ea45dc6db9a583721edce4e94ee429db0c9193f0ee37a4b04",
+      "bytes": 4653
+    },
+    "native-legacy27/verification.json": {
+      "sha256": "5e478a8a33b3f4fa33f457b3a17368ae41332399eba435b03e08318ce5577e5d",
+      "bytes": 7852
+    },
+    "cli197/report.json": {
+      "sha256": "4188e96ed46a79f2de33b9ff575cb3e51d4837bbd25af201b717aa0e2c4299c0",
+      "bytes": 371281
+    },
+    "cli-timeout3-separate/report.json": {
+      "sha256": "b5e10fb7c504c36662c44a322c383c05fee414f8e40750fd661c4b721a131323",
+      "bytes": 7585
+    }
+  }
+}
