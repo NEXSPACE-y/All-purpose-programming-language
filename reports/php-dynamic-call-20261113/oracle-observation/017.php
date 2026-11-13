@@ -1,0 +1,1 @@
+<?php class C{function __invoke($v){return $v+1;}}$f=new C();echo $f(4);

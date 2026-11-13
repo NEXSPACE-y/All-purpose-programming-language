@@ -1,0 +1,1 @@
+<?php namespace N;use function call_user_func as cf;function s(){echo 'SIDE';return 1;}try{cf('missing',s());}catch(\TypeError $e){echo $e->getMessage();}

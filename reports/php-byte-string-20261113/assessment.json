@@ -1,0 +1,63 @@
+{
+  "status": "DESIGN_AND_COMPONENT_PROOF_NOT_APPLIED",
+  "full_php_compatibility": false,
+  "approved_for_core_application": false,
+  "approval_scope_review": "Root must compare the proposed whole-value migration against existing nativeA approval and specification9.1 before applying to core",
+  "recommended": "Explicit immutable managed bytes and typed array keys, separate context-sensitive symbol policy",
+  "design": "docs/design/PHP_BYTE_STRING_DESIGN.md",
+  "design_sha256": "6d9a7f682356e2eae265636d7cf2558ae760aaddc67aa960114b53a6f7e9375d",
+  "pinned_adapter_sha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+  "component_source_sha256": "63bd6eeb6b903c2521d8b0500a8f9440d1ccba28ed4ee6f885c25cca2cd357f0",
+  "component_dll_sha256": "f5297c6522d4aa702424879c4d733c5de495b4fc18f040e0c88865771fba816f",
+  "protocol": {
+    "total": 75,
+    "matched": 75,
+    "actual_channels_and_exit_match": true,
+    "inputs_unchanged": true,
+    "report": "component02-extended75/report.json",
+    "sha256": "ff9ff5374f1cf7d3c61bd30aef22f199a1ccc285742fd390b9afccdac4573f17"
+  },
+  "raw_stdout": {
+    "total": 4,
+    "matched": 4,
+    "values": "FF, NUL/FF, ED A0 80, all256bytes"
+  },
+  "synthetic_boundaries": {
+    "total": 4,
+    "passed": 4,
+    "not_php_feature_passes": true
+  },
+  "initial_failure_retained": "component01:67/70; comparison return values corrected in own implementation",
+  "core_and_frozen_literal_modified_by_this_task": false,
+  "remaining": [
+    "Core approval-scope review and integration",
+    "Production64bit segmented/native storage",
+    "All PHP string consumers, coercions, diagnostics, source bytes and I/O",
+    "Context-specific byte symbols and all registry behavior",
+    "Native ABI and lifetime integration",
+    "Linux and Web/SAPI",
+    "ALL bidirectional/shared data implementation"
+  ],
+  "external_evidence": [
+    {
+      "path": "reports/php-string-literals-20261113/assessment.json",
+      "sha256": "cb322ad094a5c30de3c4579d57cc75cc202ff58a31d4ecfadcd714889fbcf951"
+    },
+    {
+      "path": "reports/php-identifiers-20261113/php-comparisons/report.json",
+      "sha256": "4fd923f1bd9acc429fbd400c42acfa091815bba26ed0a2764658287fb1d7840c"
+    },
+    {
+      "path": "reports/php-identifiers-20261113/dotnet51-comparisons.json",
+      "sha256": "a322a9f791f6f6a2ccbcf1887aea472a5911012fc9564a71435281520be0abc4"
+    },
+    {
+      "path": "reports/php-identifiers-20261113/registry-rules/report.json",
+      "sha256": "f00c81f3449f4f1d8c823f4216c582e860a45911360fb66a4dffe8eb40e02e54"
+    },
+    {
+      "path": "tools/candidates/php-cli-host/base113d.snapshot.ps1",
+      "sha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b"
+    }
+  ]
+}

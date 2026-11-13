@@ -1,0 +1,1 @@
+<?php error_reporting(0);echo dl_test_test2(null);

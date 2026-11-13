@@ -1,0 +1,7 @@
+{
+  "scope": "Separate legacy-context phase diagnostic, original worker untouched",
+  "base_worker": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\abi\\Invoke-NativePhpWorker.ps1",
+  "base_worker_sha256": "555c4a6c5ac6898fad2076f66b0b465a9d174f91f585f8871756049d32055d18",
+  "trace_worker_sha256": "2f9ddc956c15ba1ae60f8a632ad168a0e2a1ee5274779350e9e891f45aaefa6d",
+  "copied_bridge_sha256": "32692504898a77063bcbad631c48d40d8fa1f7c17fcf3f5d837c6f77479ec077"
+}

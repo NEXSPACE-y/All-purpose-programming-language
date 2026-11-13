@@ -1,0 +1,194 @@
+[
+  {
+    "id": "literal.unicode-emoji",
+    "code": "<?php echo \"\\u{1F600}\";"
+  },
+  {
+    "id": "literal.unicode-boundaries",
+    "code": "<?php echo \"\\u{0}|\\u{7F}|\\u{80}|\\u{7FF}|\\u{800}|\\u{FFFF}|\\u{10000}|\\u{10FFFF}\";"
+  },
+  {
+    "id": "literal.unicode-leading-zero",
+    "code": "<?php echo \"\\u{000000000000000000061}\";"
+  },
+  {
+    "id": "literal.unicode-unknown",
+    "code": "<?php echo \"\\u1234|\\U{41}\";"
+  },
+  {
+    "id": "literal.hex-ascii",
+    "code": "<?php echo \"\\x41\\X42\\x4|\\xZ\";"
+  },
+  {
+    "id": "literal.hex-utf8",
+    "code": "<?php echo \"\\xC3\\xA9|\\xF0\\x9F\\x98\\x80\";"
+  },
+  {
+    "id": "literal.octal-ascii",
+    "code": "<?php echo \"\\101\\102\\000|\\07|\\7777\";"
+  },
+  {
+    "id": "literal.octal-utf8",
+    "code": "<?php echo \"\\303\\251\";"
+  },
+  {
+    "id": "literal.unknown-escapes",
+    "code": "<?php echo \"\\q|\\8|\\9|\\x|\\uX\";"
+  },
+  {
+    "id": "literal.single-unexpanded",
+    "code": "<?php echo '\\u{1F600}|\\x41|\\101|\\n';"
+  },
+  {
+    "id": "literal.heredoc-basic",
+    "code": "<?php echo <<<TEXT\nhello\nTEXT;"
+  },
+  {
+    "id": "literal.heredoc-empty",
+    "code": "<?php echo <<<TEXT\nTEXT;"
+  },
+  {
+    "id": "literal.heredoc-double-label",
+    "code": "<?php echo <<<\"TEXT\"\nhello \"q\"\nTEXT;"
+  },
+  {
+    "id": "literal.heredoc-no-final-extra",
+    "code": "<?php echo <<<T\nhello\n\nT;"
+  },
+  {
+    "id": "literal.nowdoc-basic",
+    "code": "<?php $x='X'; echo <<<'TEXT'\nhello $x \\n \\x41 \"q\"\nTEXT;"
+  },
+  {
+    "id": "literal.heredoc-interpolate",
+    "code": "<?php $x=\"世界\"; echo <<<T\nhello $x {$x}\nT;"
+  },
+  {
+    "id": "literal.heredoc-escape",
+    "code": "<?php echo <<<T\n\\u{1F600} \\x41 \\101 \\\" \\q\nT;"
+  },
+  {
+    "id": "literal.heredoc-indent-space",
+    "code": "<?php echo <<<T\n    first\n      second\n    T;"
+  },
+  {
+    "id": "literal.heredoc-indent-tab",
+    "code": "<?php echo <<<T\n\tfirst\n\t\tsecond\n\tT;"
+  },
+  {
+    "id": "literal.heredoc-indent-blank",
+    "code": "<?php echo <<<T\n    first\n  \n    last\n    T;"
+  },
+  {
+    "id": "literal.heredoc-close-expression",
+    "code": "<?php echo [<<<T\nhello\nT, \"world\"][0];"
+  },
+  {
+    "id": "literal.heredoc-label-successor",
+    "code": "<?php echo <<<T\nT_more\nT;"
+  },
+  {
+    "id": "literal.heredoc-crlf",
+    "code": "<?php echo <<<T\r\nhello\r\nT;"
+  },
+  {
+    "id": "literal.heredoc-cr",
+    "code": "<?php echo <<<T\rhello\rT;"
+  },
+  {
+    "id": "literal.missing-variable",
+    "code": "<?php echo \"a$missing b\";"
+  },
+  {
+    "id": "literal.heredoc-missing-variable",
+    "code": "<?php echo <<<T\na$missing b\nT;"
+  },
+  {
+    "id": "literal.unicode-invalid-empty",
+    "code": "<?php echo \"before\"; echo \"\\u{}\";"
+  },
+  {
+    "id": "literal.unicode-invalid-hex",
+    "code": "<?php echo \"before\"; echo \"\\u{xyz}\";"
+  },
+  {
+    "id": "literal.unicode-too-large",
+    "code": "<?php echo \"before\"; echo \"\\u{110000}\";"
+  },
+  {
+    "id": "literal.heredoc-indent-invalid",
+    "code": "<?php echo <<<T\n  low\n    T;"
+  },
+  {
+    "id": "literal.heredoc-mixed-end",
+    "code": "<?php echo <<<T\n \ttext\n \tT;"
+  },
+  {
+    "id": "literal.binary-invalid-byte",
+    "code": "<?php echo \"\\xFF\";"
+  },
+  {
+    "id": "literal.binary-surrogate",
+    "code": "<?php echo \"\\u{D800}\";"
+  },
+  {
+    "id": "literal.octal-overflow-nul",
+    "code": "<?php echo \"\\400\";"
+  },
+  {
+    "id": "literal.mixed-end-multiline",
+    "code": "<?php echo <<<T\na\nb\n \tT;"
+  },
+  {
+    "id": "literal.mixed-end-interpolated",
+    "code": "<?php $x=1; echo <<<T\na\n$x\nb\n \tT;"
+  },
+  {
+    "id": "literal.mixed-end-nowdoc",
+    "code": "<?php echo <<<'T'\na\nb\n \tT;"
+  },
+  {
+    "id": "literal.nowdoc-indent",
+    "code": "<?php echo <<<'T'\n    $x \\u{41}\n    T;"
+  },
+  {
+    "id": "literal.binary-prefix-quoted",
+    "code": "<?php echo b\"A\\x42\".B'C';"
+  },
+  {
+    "id": "literal.binary-prefix-doc",
+    "code": "<?php echo b<<<T\nhello\nT;"
+  },
+  {
+    "id": "literal.unused-complex",
+    "code": "<?php if(false){echo \"$x[0]\";} echo \"ok\";"
+  },
+  {
+    "id": "literal.unused-nonutf8",
+    "code": "<?php if(false){echo \"\\xFF\";} echo \"ok\";"
+  },
+  {
+    "id": "literal.mixed-probe-plain-first",
+    "code": "<?php $x=1; echo <<<T\na\n$x\nb\n \tT;"
+  },
+  {
+    "id": "literal.mixed-probe-space-prefix",
+    "code": "<?php $x=1; echo <<<T\n  a\n  $x\nb\n \tT;"
+  },
+  {
+    "id": "literal.mixed-probe-tab-prefix",
+    "code": "<?php $x=1; echo <<<T\n\t\ta\n\t\t$x\nb\n \tT;"
+  },
+  {
+    "id": "literal.mixed-probe-tab-space-tail",
+    "code": "<?php $x=1; echo <<<T\n\t\ta\n\t\t$x\n  b\n \tT;"
+  },
+  {
+    "id": "literal.mixed-probe-space-then-unindented",
+    "code": "<?php $x=1; echo <<<T\n  a\n$x\n \tT;"
+  },
+  {
+    "id": "literal.mixed-probe-normal-space-end",
+    "code": "<?php $x=1; echo <<<T\na\n$x\n  T;"
+  }
+]

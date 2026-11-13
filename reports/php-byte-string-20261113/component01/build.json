@@ -1,0 +1,11 @@
+{
+    "status":  "BUILT_NOT_RUNTIME_VERIFIED",
+    "source":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-string\\PhpByteValues.cs",
+    "source_sha256":  "c712e5efad8e64cf43561692aa4ad56528b2cb895931677e04c14a02e2285595",
+    "dll":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-string\\out\\component01\\PhpByteValues.dll",
+    "dll_sha256":  "9d68106c76249c5d96cb6800dc0097fee6e3fb2732d707979b8527da926a62ae",
+    "powerShell":  "5.1.26100.9818",
+    "clr":  "4.0.30319.42000",
+    "pointer_bytes":  8,
+    "compiler_options":  "/platform:x64 /optimize+ /langversion:5"
+}

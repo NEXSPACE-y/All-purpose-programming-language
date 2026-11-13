@@ -1,0 +1,19 @@
+{
+  "archive": "C:\\Users\\rinpa\\Downloads\\php-8.5.12-1-src.zip",
+  "archive_sha256": "9dac05f72f328afd0a2b0e795a519ae4cb3d056bc3f3b55147bd048bd64e45e8",
+  "entry": "Zend/zend_compile.c",
+  "entry_sha256": "2c0b14383e7e74a92e3e039127b5045eae6d1c943b358ea4f71e10c7e5b5ffe9",
+  "use": "Reference reading only; PHP C implementation was not adopted",
+  "functions": [
+    {
+      "name": "zend_compile_func_cufa",
+      "line": 4292,
+      "source": "static zend_result zend_compile_func_cufa(znode *result, zend_ast_list *args, zend_string *lcname) /* {{{ */\n{\n\tznode arg_node;\n\tzend_op *opline;\n\n\tif (args->children != 2) {\n\t\treturn FAILURE;\n\t}\n\n\tzend_compile_init_user_func(args->child[0], 0, lcname);\n\tif (args->child[1]->kind == ZEND_AST_CALL\n\t && args->child[1]->child[0]->kind == ZEND_AST_ZVAL\n\t && Z_TYPE_P(zend_ast_get_zval(args->child[1]->child[0])) == IS_STRING\n\t && args->child[1]->child[1]->kind == ZEND_AST_ARG_LIST) {\n\t\tzend_string *orig_name = zend_ast_get_str(args->child[1]->child[0]);\n\t\tzend_ast_list *list = zend_ast_get_list(args->child[1]->child[1]);\n\t\tbool is_fully_qualified;\n\t\tzend_string *name = zend_resolve_function_name(orig_name, args->child[1]->child[0]->attr, &is_fully_qualified);\n\n\t\tif (zend_string_equals_literal_ci(name, \"array_slice\")\n\t     && !zend_args_contain_unpack_or_named(list)\n\t\t && list->children == 3\n\t\t && list->child[1]->kind == ZEND_AST_ZVAL) {\n\t\t\tzval *zv = zend_ast_get_zval(list->child[1]);\n\n\t\t\tif (Z_TYPE_P(zv) == IS_LONG\n\t\t\t && Z_LVAL_P(zv) >= 0\n\t\t\t && Z_LVAL_P(zv) <= 0x7fffffff) {\n\t\t\t\tzend_op *opline;\n\t\t\t\tznode len_node;\n\n\t\t\t\tzend_compile_expr(&arg_node, list->child[0]);\n\t\t\t\tzend_compile_expr(&len_node, list->child[2]);\n\t\t\t\topline = zend_emit_op(NULL, ZEND_SEND_ARRAY, &arg_node, &len_node);\n\t\t\t\topline->extended_value = Z_LVAL_P(zv);\n\t\t\t\tzend_emit_op(result, ZEND_DO_FCALL, NULL, NULL);\n\t\t\t\tzend_string_release_ex(name, 0);\n\t\t\t\treturn SUCCESS;\n\t\t\t}\n\t\t}\n\t\tzend_string_release_ex(name, 0);\n\t}\n\tzend_compile_expr(&arg_node, args->child[1]);\n\tzend_emit_op(NULL, ZEND_SEND_ARRAY, &arg_node, NULL);\n\tzend_emit_op(NULL, ZEND_CHECK_UNDEF_ARGS, NULL, NULL);\n\topline = zend_emit_op(result, ZEND_DO_FCALL, NULL, NULL);\n\topline->extended_value = ZEND_FCALL_MAY_HAVE_EXTRA_NAMED_PARAMS;\n\n\treturn SUCCESS;\n}"
+    },
+    {
+      "name": "zend_compile_func_cuf",
+      "line": 4345,
+      "source": "static zend_result zend_compile_func_cuf(znode *result, zend_ast_list *args, zend_string *lcname) /* {{{ */\n{\n\tuint32_t i;\n\n\tif (args->children < 1) {\n\t\treturn FAILURE;\n\t}\n\n\tzend_compile_init_user_func(args->child[0], args->children - 1, lcname);\n\tfor (i = 1; i < args->children; ++i) {\n\t\tzend_ast *arg_ast = args->child[i];\n\t\tznode arg_node;\n\t\tzend_op *opline;\n\n\t\tzend_compile_expr(&arg_node, arg_ast);\n\n\t\topline = zend_emit_op(NULL, ZEND_SEND_USER, &arg_node, NULL);\n\t\topline->op2.num = i;\n\t\topline->result.var = EX_NUM_TO_VAR(i - 1);\n\t}\n\tzend_emit_op(result, ZEND_DO_FCALL, NULL, NULL);\n\n\treturn SUCCESS;\n}"
+    }
+  ]
+}

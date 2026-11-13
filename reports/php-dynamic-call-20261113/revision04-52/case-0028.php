@@ -1,0 +1,1 @@
+<?php class C{static function f(){return 7;}}$f=['a'=>'C','b'=>'f'];try{echo $f();}catch(Error $e){echo $e->getMessage();}

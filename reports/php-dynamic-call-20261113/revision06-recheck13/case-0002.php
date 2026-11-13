@@ -1,0 +1,1 @@
+<?php namespace N;function s(){echo 'SIDE';return 1;}try{call_user_func('missing',s());}catch(\TypeError $e){echo $e->getMessage();}

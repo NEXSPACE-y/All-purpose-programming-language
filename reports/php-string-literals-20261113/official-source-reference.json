@@ -1,0 +1,13 @@
+{
+  "archive": "C:\\Users\\rinpa\\Downloads\\php-8.5.12-1-src.zip",
+  "archive_sha256": "9dac05f72f328afd0a2b0e795a519ae4cb3d056bc3f3b55147bd048bd64e45e8",
+  "entry": "Zend/zend_language_scanner.l",
+  "entry_sha256": "8dfed84b0f6cabe73f004ea00c69614ea84542130a9b97e7699f801ef7ce7403",
+  "use": "Read as official specification evidence for escape and heredoc scan/indent/error timing; no PHP implementation component adopted",
+  "symbols": [
+    "zend_scan_escape_string",
+    "strip_multiline_string_indentation",
+    "ST_HEREDOC",
+    "ST_NOWDOC"
+  ]
+}

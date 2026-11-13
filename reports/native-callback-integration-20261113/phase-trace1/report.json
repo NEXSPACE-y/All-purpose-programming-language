@@ -1,0 +1,304 @@
+{
+  "scope": "Instrumented diagnostic single-case run, not substituted into conformance measurements",
+  "case_id": "callback.handler_false",
+  "timeout_seconds": 30,
+  "oracle": {
+    "state": "EXITED",
+    "exit_code": 0,
+    "elapsed_seconds": 1.3473816999994597,
+    "stdout_base64": "SEhlbGxvIA==",
+    "stderr_base64": "RGVwcmVjYXRlZDogZGxfdGVzdF90ZXN0MigpOiBQYXNzaW5nIG51bGwgdG8gcGFyYW1ldGVyICMxICgkc3RyKSBvZiB0eXBlIHN0cmluZyBpcyBkZXByZWNhdGVkIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNcbmF0aXZlLWNhbGxiYWNrLWludGVncmF0aW9uLTIwMjYxMTEzXHBoYXNlLXRyYWNlMVxzb3VyY2UucGhwIG9uIGxpbmUgMQo=",
+    "stdout_utf8_preview": "HHello ",
+    "stderr_utf8_preview": "Deprecated: dl_test_test2(): Passing null to parameter #1 ($str) of type string is deprecated in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-integration-20261113\\phase-trace1\\source.php on line 1\n",
+    "command": [
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+      "-n",
+      "-d",
+      "extension=C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll",
+      "-d",
+      "display_errors=stderr",
+      "-d",
+      "error_reporting=-1",
+      "-d",
+      "date.timezone=UTC",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-integration-20261113\\phase-trace1\\source.php"
+    ]
+  },
+  "candidate": {
+    "state": "EXITED",
+    "exit_code": 0,
+    "elapsed_seconds": 14.749433499999213,
+    "stdout_base64": "SEhlbGxvIA==",
+    "stderr_base64": "RGVwcmVjYXRlZDogZGxfdGVzdF90ZXN0MigpOiBQYXNzaW5nIG51bGwgdG8gcGFyYW1ldGVyICMxICgkc3RyKSBvZiB0eXBlIHN0cmluZyBpcyBkZXByZWNhdGVkIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNcbmF0aXZlLWNhbGxiYWNrLWludGVncmF0aW9uLTIwMjYxMTEzXHBoYXNlLXRyYWNlMVxzb3VyY2UucGhwIG9uIGxpbmUgMQo=",
+    "stdout_utf8_preview": "HHello ",
+    "stderr_utf8_preview": "Deprecated: dl_test_test2(): Passing null to parameter #1 ($str) of type string is deprecated in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-integration-20261113\\phase-trace1\\source.php on line 1\n",
+    "command": [
+      "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-callback-v3_20\\Invoke-CallbackPhpTraceWorker.ps1",
+      "-AdapterPath",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-callback-v3_20\\revision02\\ALL_PHP_v3_20_callback_candidate.ps1",
+      "-SourcePath",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-integration-20261113\\phase-trace1\\source.php",
+      "-CorePath",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+      "-ExtensionPath",
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll",
+      "-MetadataPath",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-integration-20261113\\phase-trace1\\native.json",
+      "-ExpectedCoreHash",
+      "88117b8f38dc77d20e638ce573bb83fc6f959c1ad6821f8803c5499969fe234b"
+    ]
+  },
+  "differences": [],
+  "matched": true,
+  "inputs_before": {
+    "adapter": "907171b658edb943a307f3dae32945a0105391f652fa477a4275b586385ce0bd",
+    "worker": "75eebb9e5beb06b1c718e7046428b64a82814109c0138b62e013f92291ba2082",
+    "bridge": "8c37470ecafa4c00a41dbf8917295f88f76b7d2fbbd57645a91313bc833efda8",
+    "core": "88117b8f38dc77d20e638ce573bb83fc6f959c1ad6821f8803c5499969fe234b",
+    "extension": "532b9f0944d482a704eb81ac1cb9af3b59aa0f54c753c53a5709c17f57d4e938",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "source": "e312601c8a378cd254ef3f73a3d653f70556e9aaf95ebe51781e3ec979c45426",
+    "helper": "f9d7c8161d000dde5b4314998a053ca8b2333d2e93edc630b6243058a13f60cd"
+  },
+  "inputs_after": {
+    "adapter": "907171b658edb943a307f3dae32945a0105391f652fa477a4275b586385ce0bd",
+    "worker": "75eebb9e5beb06b1c718e7046428b64a82814109c0138b62e013f92291ba2082",
+    "bridge": "8c37470ecafa4c00a41dbf8917295f88f76b7d2fbbd57645a91313bc833efda8",
+    "core": "88117b8f38dc77d20e638ce573bb83fc6f959c1ad6821f8803c5499969fe234b",
+    "extension": "532b9f0944d482a704eb81ac1cb9af3b59aa0f54c753c53a5709c17f57d4e938",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "source": "e312601c8a378cd254ef3f73a3d653f70556e9aaf95ebe51781e3ec979c45426",
+    "helper": "f9d7c8161d000dde5b4314998a053ca8b2333d2e93edc630b6243058a13f60cd"
+  },
+  "inputs_unchanged": true,
+  "phases": [
+    {
+      "phase": "worker-entered",
+      "utc": "2026-11-13T02:18:42.5332268Z",
+      "pid": 18004,
+      "thread": 10
+    },
+    {
+      "phase": "before-AddType",
+      "utc": "2026-11-13T02:18:44.3042506Z",
+      "pid": 18004,
+      "thread": 10
+    },
+    {
+      "phase": "after-AddType",
+      "utc": "2026-11-13T02:18:46.4495377Z",
+      "pid": 18004,
+      "thread": 10
+    },
+    {
+      "phase": "before-BridgeConstructor",
+      "utc": "2026-11-13T02:18:46.4515515Z",
+      "pid": 18004,
+      "thread": 10
+    },
+    {
+      "phase": "after-BridgeConstructor",
+      "utc": "2026-11-13T02:18:46.5235639Z",
+      "pid": 18004,
+      "thread": 10
+    },
+    {
+      "phase": "before-LoadExtension",
+      "utc": "2026-11-13T02:18:46.5462850Z",
+      "pid": 18004,
+      "thread": 10
+    },
+    {
+      "phase": "after-LoadExtension",
+      "utc": "2026-11-13T02:18:46.5619243Z",
+      "pid": 18004,
+      "thread": 10
+    },
+    {
+      "phase": "before-Start",
+      "utc": "2026-11-13T02:18:46.7681544Z",
+      "pid": 18004,
+      "thread": 10
+    },
+    {
+      "phase": "after-Start",
+      "utc": "2026-11-13T02:18:46.7747129Z",
+      "pid": 18004,
+      "thread": 10
+    },
+    {
+      "phase": "before-Run",
+      "utc": "2026-11-13T02:18:46.7767250Z",
+      "pid": 18004,
+      "thread": 10
+    },
+    {
+      "phase": "after-Run",
+      "utc": "2026-11-13T02:18:49.9017283Z",
+      "pid": 18004,
+      "thread": 10
+    },
+    {
+      "phase": "before-End",
+      "utc": "2026-11-13T02:18:49.9123991Z",
+      "pid": 18004,
+      "thread": 10
+    },
+    {
+      "phase": "after-End",
+      "utc": "2026-11-13T02:18:49.9174164Z",
+      "pid": 18004,
+      "thread": 10
+    },
+    {
+      "phase": "before-Shutdown",
+      "utc": "2026-11-13T02:18:49.9254164Z",
+      "pid": 18004,
+      "thread": 10
+    },
+    {
+      "phase": "after-Shutdown",
+      "utc": "2026-11-13T02:18:49.9380266Z",
+      "pid": 18004,
+      "thread": 10
+    },
+    {
+      "phase": "before-metadata",
+      "utc": "2026-11-13T02:18:50.0193986Z",
+      "pid": 18004,
+      "thread": 10
+    },
+    {
+      "phase": "after-metadata",
+      "utc": "2026-11-13T02:18:50.0557567Z",
+      "pid": 18004,
+      "thread": 10
+    },
+    {
+      "phase": "before-EnvironmentExit",
+      "utc": "2026-11-13T02:18:50.0926933Z",
+      "pid": 18004,
+      "thread": 10
+    }
+  ],
+  "native_metadata": {
+    "method": "actual_ALL_evaluator_source_execution_preloaded_native_profile",
+    "native_context_parameter_verified": true,
+    "failure": null,
+    "native_unsupported": false,
+    "inputs_before": {
+      "source": "E312601C8A378CD254EF3F73A3D653F70556E9AAF95EBE51781E3EC979C45426",
+      "adapter": "907171B658EDB943A307F3DAE32945A0105391F652FA477A4275B586385CE0BD",
+      "core": "88117b8f38dc77d20e638ce573bb83fc6f959c1ad6821f8803c5499969fe234b",
+      "extension": "532B9F0944D482A704EB81AC1CB9AF3B59AA0F54C753C53A5709C17F57D4E938"
+    },
+    "core_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+    "loaded_php_modules": [
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll"
+    ],
+    "function_catalog": {
+      "value": [
+        {
+          "name": "dl_test_frameless",
+          "required_args": 1,
+          "declared_args": 1,
+          "flags": 0,
+          "module": "dl_test",
+          "supports_named_arguments": false,
+          "parameters": [
+            {
+              "position": 1,
+              "name": "value"
+            }
+          ]
+        },
+        {
+          "name": "dl_test_test1",
+          "required_args": 0,
+          "declared_args": 0,
+          "flags": 0,
+          "module": "dl_test",
+          "supports_named_arguments": false,
+          "parameters": []
+        },
+        {
+          "name": "dl_test_test2",
+          "required_args": 0,
+          "declared_args": 1,
+          "flags": 0,
+          "module": "dl_test",
+          "supports_named_arguments": false,
+          "parameters": [
+            {
+              "position": 1,
+              "name": "str"
+            }
+          ]
+        }
+      ],
+      "Count": 3
+    },
+    "cli_context": {
+      "TerminationReason": null,
+      "ExitCode": 0,
+      "Terminated": false,
+      "SourcePath": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-integration-20261113\\phase-trace1\\source.php"
+    },
+    "native_stats": {
+      "minit": 1,
+      "mshutdown": 1,
+      "rinit": 1,
+      "rshutdown": 1,
+      "thread_requests_started": 1,
+      "thread_requests_ended": 1,
+      "thread_global_ctors": 1,
+      "tls_contexts_created": 1,
+      "tls_contexts_destroyed": 1,
+      "native_invocations": 1,
+      "registered_functions": 0,
+      "registered_classes": 0,
+      "request_allocations_live": 0,
+      "api_calls": {
+        "OnUpdateLong": 1,
+        "OnUpdateString": 1,
+        "__zend_malloc": 1,
+        "tsrm_get_ls_cache": 2,
+        "zend_declare_typed_property": 1,
+        "zend_parse_arg_str_slow@@24": 1,
+        "zend_register_functions": 1,
+        "zend_register_ini_entries_ex": 1,
+        "zend_register_internal_class_with_flags": 4,
+        "zend_register_long_constant": 1,
+        "zend_string_init_interned": 17,
+        "zend_strpprintf": 1,
+        "zend_unregister_ini_entries_ex": 1
+      }
+    },
+    "callback_stats": {
+      "callbacks": 1,
+      "aborts": 0,
+      "owner_rejections": 0,
+      "flushed_output_bytes": 0,
+      "contract_started": 0,
+      "contract_after_diagnostic": 0,
+      "callback_owner_thread": 0
+    },
+    "pipeline_count": 0,
+    "exit_code": 0,
+    "inputs_after": {
+      "source": "E312601C8A378CD254EF3F73A3D653F70556E9AAF95EBE51781E3EC979C45426",
+      "adapter": "907171B658EDB943A307F3DAE32945A0105391F652FA477A4275B586385CE0BD",
+      "core": "88117b8f38dc77d20e638ce573bb83fc6f959c1ad6821f8803c5499969fe234b",
+      "extension": "532B9F0944D482A704EB81AC1CB9AF3B59AA0F54C753C53A5709C17F57D4E938"
+    }
+  }
+}

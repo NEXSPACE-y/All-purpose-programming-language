@@ -1,0 +1,1 @@
+<?php set_error_handler(function($n,$m){echo 'handler';return true;}); echo 'before:';dl_test_test1();

@@ -1,0 +1,29 @@
+{
+  "command": [
+    "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-callback-v3_20\\Invoke-DlTestWorker.ps1",
+    "-Core",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+    "-Extension",
+    "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll",
+    "-Cases",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\abi\\DlTest-Cases.json",
+    "-Output",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-integration-20261113\\native-regression-run01\\normal-candidate.json"
+  ],
+  "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-integration-20261113\\native-regression-run01",
+  "inherited_legacy_flags": {
+    "PHP_DL_TEST_USE_OLD_REGISTER_INI_ENTRIES": null,
+    "PHP_DL_TEST_USE_REGISTER_FUNCTIONS_DIRECTLY": null
+  },
+  "state": "EXITED",
+  "exit_code": 0,
+  "elapsed_seconds": 9.44926200000009,
+  "stdout_base64": "TmF0aXZlIERMTCB3b3JrZXIgY29tcGxldGVkIDM3IGNhbGxzDQo=",
+  "stderr_base64": ""
+}

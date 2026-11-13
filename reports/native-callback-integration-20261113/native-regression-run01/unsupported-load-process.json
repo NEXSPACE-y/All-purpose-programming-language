@@ -1,0 +1,27 @@
+{
+  "command": [
+    "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-callback-v3_20\\Invoke-NativeLoadProbe.ps1",
+    "-Core",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+    "-Extension",
+    "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_shmop.dll",
+    "-Output",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-integration-20261113\\native-regression-run01\\unsupported-load.json"
+  ],
+  "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-integration-20261113\\native-regression-run01",
+  "inherited_legacy_flags": {
+    "PHP_DL_TEST_USE_OLD_REGISTER_INI_ENTRIES": null,
+    "PHP_DL_TEST_USE_REGISTER_FUNCTIONS_DIRECTLY": null
+  },
+  "state": "EXITED",
+  "exit_code": 0,
+  "elapsed_seconds": 6.943165599999702,
+  "stdout_base64": "TE9BRF9SRUpFQ1RFRA0K",
+  "stderr_base64": ""
+}

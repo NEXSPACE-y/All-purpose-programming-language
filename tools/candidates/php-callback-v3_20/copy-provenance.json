@@ -1,0 +1,6 @@
+{
+  "tools\\candidates\\php-native-callback\\AllNativeCallbackBridge.cs": "8c37470ecafa4c00a41dbf8917295f88f76b7d2fbbd57645a91313bc833efda8",
+  "tools\\candidates\\php-native-callback\\Invoke-CallbackPhpWorker.ps1": "107be1d7af38a87b882d35642909f53e740233216a44013a635055211f3a0071",
+  "tools\\candidates\\php-native-callback\\Invoke-CallbackContractWorker.ps1": "34e7e21fd783fa7868fe20811520d185f85d0bb0c45c7bec55564bd1beb32baf",
+  "tools\\candidates\\php-native-callback\\Compare-CallbackContract.py": "94facde2578710820b95881a997d1692368289a886b4d4c144cbf87b8121ff25"
+}

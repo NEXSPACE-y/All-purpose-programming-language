@@ -1,0 +1,1 @@
+<?php if(false){echo "\xFF";} echo "ok";

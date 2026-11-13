@@ -1,0 +1,140 @@
+{
+  "status": "SELECTED_INTEGRATION_AND_OUTER_HOST_VERIFIED_NOT_ADOPTED",
+  "PHP_FULL_COMPATIBLE": false,
+  "package_modified_by_task": false,
+  "candidate_sha256": "907171b658edb943a307f3dae32945a0105391f652fa477a4275b586385ce0bd",
+  "base_package_sha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+  "callback_core_sha256": "88117b8f38dc77d20e638ce573bb83fc6f959c1ad6821f8803c5499969fe234b",
+  "callback_bridge_sha256": "8c37470ecafa4c00a41dbf8917295f88f76b7d2fbbd57645a91313bc833efda8",
+  "native_unchanged_fixture_comparisons": {
+    "matched": 74,
+    "total": 74,
+    "unique_cases": 37,
+    "registration_modes": 2
+  },
+  "scalar_contract": {
+    "passed": 24,
+    "total": 24
+  },
+  "consistency": {
+    "passed": 20,
+    "total": 20
+  },
+  "synthetic_contract": {
+    "modes_passed": 3,
+    "modes_total": 3,
+    "checks_passed": 27,
+    "checks_total": 27,
+    "not_PHP_compatibility_cases": true
+  },
+  "existing_default_subset": {
+    "passed": 73,
+    "total": 73,
+    "actual_process_exit": 0,
+    "full965_not_run_here": true
+  },
+  "managed_host": {
+    "callback_source_matched": 15,
+    "callback_source_total": 15,
+    "legacy_source_matched": 23,
+    "legacy_source_total": 23,
+    "legacy_guard_rejections": 4,
+    "legacy_guards_total": 4,
+    "guards_not_compatibility_passes": true,
+    "same_source_and_core_bridge_case_hashes_verified": true,
+    "original_worker_logic_changed_only_final_exit_to_return": true,
+    "build_record": "managed-host-build02/build.json"
+  },
+  "retained_failures": {
+    "initial_candidate_legacy_method_missing": true,
+    "initial_callback_run": {
+      "matched": 14,
+      "total": 15,
+      "timeouts": 1
+    },
+    "revision02_callback_first": {
+      "matched": 4,
+      "total": 15,
+      "timeouts": 11
+    },
+    "revision02_legacy_first": {
+      "matched": 14,
+      "total": 23,
+      "timeouts": 9,
+      "guards_rejected": 4
+    },
+    "revision02_legacy_repeat": {
+      "matched": 20,
+      "total": 23,
+      "timeouts": 3,
+      "guards_rejected": 3,
+      "guard_clr_exit": 2148732969,
+      "guard_clr_exit_hex": "0x80131029"
+    }
+  },
+  "timeout_origin_cause": "UNDETERMINED; phase traces did not reproduce stall; source inputs/timeouts not relaxed; outer Main is a distinct host implementation, not a reinterpretation of failed old observations",
+  "clr_code_primary_source": "https://raw.githubusercontent.com/dotnet/coreclr/master/src/inc/corerror.xml",
+  "clr_code_symbol": "HOST_E_EXITPROCESS_TIMEOUT",
+  "remaining": [
+    "Full combined-package965 and final integrated source tests",
+    "Original PowerShell-worker process-exit anomalies remain recorded, not proved fixed",
+    "General native ABI/values/objects/resources/references/byte strings",
+    "Arbitrary C++/noexcept/async extensions and arbitrary native-to-PHP callable API",
+    "Lifecycle diagnostic/output callbacks",
+    "Linux and all Web SAPIs"
+  ],
+  "evidence": [
+    {
+      "path": "reports/native-callback-integration-20261113/native-regression-run01/report.json",
+      "sha256": "0b3f9ee47041dfde7873c1dc44417d2082401a7e504f531833feb864fb9629d9"
+    },
+    {
+      "path": "reports/native-callback-integration-20261113/contract3-run01/report.json",
+      "sha256": "b594bf677a2de5434134b325265e2449b1caec873d3096c66d212c074d907509"
+    },
+    {
+      "path": "reports/native-callback-integration-20261113/callback15-run01/report.json",
+      "sha256": "5919b4f8edc7ea3395ec1ab245f2845ae303b5bedeae25f4b362b7911806c13a"
+    },
+    {
+      "path": "reports/native-callback-integration-20261113/callback15-revision02/report.json",
+      "sha256": "2dc69b1e52789ebec70f98675230d98abaec7070991e510fb49a3bb57af891df"
+    },
+    {
+      "path": "reports/native-callback-integration-20261113/callback15-revision02-sequential-repeat/report.json",
+      "sha256": "6880c109075ca085f4ff14b37e6d1b942af8d4f7d96f8c43d14292f4b2b76359"
+    },
+    {
+      "path": "reports/native-callback-integration-20261113/legacy27-revision02/report.json",
+      "sha256": "1ae62acf1ed41c2209f4f0e6392de933296eb3a8360cf7eeeab55f9652dea194"
+    },
+    {
+      "path": "reports/native-callback-integration-20261113/legacy27-revision02-sequential-repeat/report.json",
+      "sha256": "72007aae1d91da8e306e92d9b1bde6603a0f10f6cb4e87ba61ae0cdd73ff2b10"
+    },
+    {
+      "path": "reports/native-callback-integration-20261113/managed-host-callback15/report.json",
+      "sha256": "f319c71a1e21275f12a3ec7859e2af1323269f95f32ec0f775e40c1caef83400"
+    },
+    {
+      "path": "reports/native-callback-integration-20261113/managed-host-legacy27/report.json",
+      "sha256": "235b60773427b1508e275128b22fb7510eb29de0dcba0730009f08d5931e0e83"
+    },
+    {
+      "path": "reports/native-callback-integration-20261113/phase-trace1/report.json",
+      "sha256": "308fe29ffb447d39ce980b67b8e4800caf436ce45f2adb023bc474ce8bd9d5a3"
+    },
+    {
+      "path": "reports/native-callback-integration-20261113/legacy-guard-phase1/report.json",
+      "sha256": "d26bce52bce460abae90e4aadd1f4e3cd01907f1be5549308de3b5ae37fd0602"
+    },
+    {
+      "path": "reports/native-callback-integration-20261113/managed-host-guard1/report.json",
+      "sha256": "30379719e55cec5e92e4632db3a8aee9c8bc872917becc3656c91a3e0a9cd081"
+    },
+    {
+      "path": "reports/native-callback-integration-20261113/legacy-before1/report.json",
+      "sha256": "43a6f0919b089114f32ff6335c2fe52ba9b72708b78bae25188acdb530cfd9f5"
+    }
+  ]
+}

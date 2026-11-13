@@ -1,0 +1,1816 @@
+{
+  "schema_version": 1,
+  "status": "NOT_COMPLETE",
+  "isolated_candidate": true,
+  "driver_argv": [
+    "C:\\Users\\rinpa\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "tools/candidates/php-v3_18/Compare-Cli.py",
+    "--adapter",
+    "package/ALL_PHP_v3_12_adapter.ps1",
+    "--cases",
+    "tools/candidates/php-string-literals/literal.cases.json",
+    "--output",
+    "reports/php-string-literals-20261113/baseline33",
+    "--timeout",
+    "30"
+  ],
+  "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112",
+  "timeout_seconds": 30.0,
+  "measurement": "exact stdout bytes, stderr bytes and actual process status; no normalization",
+  "scope": "Listed examples only; not full CLI/SAPI/PHP conformance.",
+  "inputs_before": {
+    "cases": "b17c43daf9d4fe0e23e0901a8c5619fd3be2e9cd221a089e60b162e88dd569b0",
+    "adapter": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "worker": "471bcb240f0a29ea256ef1a5fc8f6ecdeb0094a323f19a8811d3f84e883e62ac",
+    "driver": "880a8a6461d010eade53ec55ddc9ef5f8bad8adf018bab65c9d8f7c7b524a8f0"
+  },
+  "inputs_after": {
+    "cases": "b17c43daf9d4fe0e23e0901a8c5619fd3be2e9cd221a089e60b162e88dd569b0",
+    "adapter": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "worker": "471bcb240f0a29ea256ef1a5fc8f6ecdeb0094a323f19a8811d3f84e883e62ac",
+    "driver": "880a8a6461d010eade53ec55ddc9ef5f8bad8adf018bab65c9d8f7c7b524a8f0"
+  },
+  "inputs_unchanged": true,
+  "total": 33,
+  "passed": 1,
+  "different": 32,
+  "results": [
+    {
+      "id": "literal.unicode-emoji",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0000.php",
+      "source_sha256": "2d0712cc3aa81dba42ed0611685c276f754059d379e7503ded74a375984a4505",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.825649299998986,
+        "stdout_base64": "8J+YgA==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "😀",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0000.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 13.01005190000069,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogSGV4YWRlY2ltYWwsIG9jdGFsIGFuZCBVbmljb2RlIHN0cmluZyBlc2NhcGVzIGFyZSBub3QgaW1wbGVtZW50ZWQNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Hexadecimal, octal and Unicode string escapes are not implemented\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0000.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.unicode-boundaries",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0001.php",
+      "source_sha256": "115006bc01a57e680a25b6c03fc19467e8a6e645d3c339db4a9062ef1b70d6e5",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.9383515999998053,
+        "stdout_base64": "AHx/fMKAfN+/fOCggHzvv7988JCAgHz0j7+/",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "\u0000|||߿|ࠀ|￿|𐀀|􏿿",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0001.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 9.58863939999901,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogSGV4YWRlY2ltYWwsIG9jdGFsIGFuZCBVbmljb2RlIHN0cmluZyBlc2NhcGVzIGFyZSBub3QgaW1wbGVtZW50ZWQNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Hexadecimal, octal and Unicode string escapes are not implemented\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0001.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.unicode-leading-zero",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0002.php",
+      "source_sha256": "19d7ad94137dc3dae7ba7dffa15b073cf3f4c6e183f98524af4b94004b025c2f",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.787905099999989,
+        "stdout_base64": "YQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "a",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0002.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 7.013349100001506,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogSGV4YWRlY2ltYWwsIG9jdGFsIGFuZCBVbmljb2RlIHN0cmluZyBlc2NhcGVzIGFyZSBub3QgaW1wbGVtZW50ZWQNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Hexadecimal, octal and Unicode string escapes are not implemented\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0002.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.unicode-unknown",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0003.php",
+      "source_sha256": "8053088650aba19303e104386c516946801ed004ac431942c8f5e2afdb6331fa",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.21829040000011446,
+        "stdout_base64": "XHUxMjM0fFxVezQxfQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "\\u1234|\\U{41}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0003.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 5.028949100000318,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogSGV4YWRlY2ltYWwsIG9jdGFsIGFuZCBVbmljb2RlIHN0cmluZyBlc2NhcGVzIGFyZSBub3QgaW1wbGVtZW50ZWQNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Hexadecimal, octal and Unicode string escapes are not implemented\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0003.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.hex-ascii",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0004.php",
+      "source_sha256": "b57c264d95f2ea7a414b48fe51007abd264c424699a8249016879575e3a97707",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.37643759999991744,
+        "stdout_base64": "QUIEfFx4Wg==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "AB\u0004|\\xZ",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0004.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 6.392353400000502,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogSGV4YWRlY2ltYWwsIG9jdGFsIGFuZCBVbmljb2RlIHN0cmluZyBlc2NhcGVzIGFyZSBub3QgaW1wbGVtZW50ZWQNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Hexadecimal, octal and Unicode string escapes are not implemented\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0004.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.hex-utf8",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0005.php",
+      "source_sha256": "d7652da128cfab123177ca160261d9a3a1559887d28f83a378dcab1b6411a43d",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.29525849999845377,
+        "stdout_base64": "w6l88J+YgA==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "é|😀",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0005.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 4.805820899999162,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogSGV4YWRlY2ltYWwsIG9jdGFsIGFuZCBVbmljb2RlIHN0cmluZyBlc2NhcGVzIGFyZSBub3QgaW1wbGVtZW50ZWQNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Hexadecimal, octal and Unicode string escapes are not implemented\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0005.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.octal-ascii",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0006.php",
+      "source_sha256": "6f083adfe8bb316aabe04a07b79e5d094030effa97902900bdb215b46559335b",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5354623000002903,
+        "stdout_base64": "QUIAfAd8/zc=",
+        "stderr_base64": "V2FybmluZzogT2N0YWwgZXNjYXBlIHNlcXVlbmNlIG92ZXJmbG93IFw3NzcgaXMgZ3JlYXRlciB0aGFuIFwzNzcgaW4gQzpcVXNlcnNccmlucGFcQUxMLXBocC1jb21wYXQtMjAyNjExMTJccmVwb3J0c1xwaHAtc3RyaW5nLWxpdGVyYWxzLTIwMjYxMTEzXGJhc2VsaW5lMzNcY2FzZS0wMDA2LnBocCBvbiBsaW5lIDEK",
+        "stdout_utf8_preview": "AB\u0000|\u0007|\\xff7",
+        "stderr_utf8_preview": "Warning: Octal escape sequence overflow \\777 is greater than \\377 in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0006.php on line 1\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0006.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 13.948452800001178,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogSGV4YWRlY2ltYWwsIG9jdGFsIGFuZCBVbmljb2RlIHN0cmluZyBlc2NhcGVzIGFyZSBub3QgaW1wbGVtZW50ZWQNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Hexadecimal, octal and Unicode string escapes are not implemented\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0006.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.octal-utf8",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0007.php",
+      "source_sha256": "035ce0e0f64d014dec4c95e3c10247ff2876c7d6d0abaacef919540ee041d05d",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5376849000003858,
+        "stdout_base64": "w6k=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "é",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0007.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 7.929343399999198,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogSGV4YWRlY2ltYWwsIG9jdGFsIGFuZCBVbmljb2RlIHN0cmluZyBlc2NhcGVzIGFyZSBub3QgaW1wbGVtZW50ZWQNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Hexadecimal, octal and Unicode string escapes are not implemented\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0007.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.unknown-escapes",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0008.php",
+      "source_sha256": "9b091e93bac08fc33f23e62e415e3ed11a894e10738d2fe266e2adada042f1d1",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.35584320000089065,
+        "stdout_base64": "XHF8XDh8XDl8XHh8XHVY",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "\\q|\\8|\\9|\\x|\\uX",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0008.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 11.003135900000416,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogSGV4YWRlY2ltYWwsIG9jdGFsIGFuZCBVbmljb2RlIHN0cmluZyBlc2NhcGVzIGFyZSBub3QgaW1wbGVtZW50ZWQNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Hexadecimal, octal and Unicode string escapes are not implemented\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0008.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.single-unexpanded",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0009.php",
+      "source_sha256": "50bf278fdcd6903c2f51c0528a2736155476e07fa0ac08333aaa83e4b2902b7e",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 1.0470212000000174,
+        "stdout_base64": "XHV7MUY2MDB9fFx4NDF8XDEwMXxcbg==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "\\u{1F600}|\\x41|\\101|\\n",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0009.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 10.436523599999418,
+        "stdout_base64": "XHV7MUY2MDB9fFx4NDF8XDEwMXxcbg==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "\\u{1F600}|\\x41|\\101|\\n",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0009.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.heredoc-basic",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0010.php",
+      "source_sha256": "45282aa677d1121c230560eab3988d27a7dd54c68f825cc1ad576f026562cc16",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.3519630999999208,
+        "stdout_base64": "aGVsbG8=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "hello",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0010.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 11.255179599998883,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5zdXBwb3J0ZWQgZXhwcmVzc2lvbiBzdGFydGluZyB3aXRoICc8PCcNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unsupported expression starting with '<<'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0010.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.heredoc-empty",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0011.php",
+      "source_sha256": "d65f64a671d9838c266afbd4bdb10e53110549cd77a31bdb5960a20c7c2d67dc",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.642235499999515,
+        "stdout_base64": "",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0011.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 11.36811999999918,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5zdXBwb3J0ZWQgZXhwcmVzc2lvbiBzdGFydGluZyB3aXRoICc8PCcNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unsupported expression starting with '<<'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0011.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.heredoc-double-label",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0012.php",
+      "source_sha256": "18968bbfdf606330630ab39824fc99732d03111024a70aac370746bd226b3b26",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.8638690000007045,
+        "stdout_base64": "aGVsbG8gInEi",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "hello \"q\"",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0012.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 20.093534899999213,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5zdXBwb3J0ZWQgZXhwcmVzc2lvbiBzdGFydGluZyB3aXRoICc8PCcNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unsupported expression starting with '<<'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0012.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.heredoc-no-final-extra",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0013.php",
+      "source_sha256": "c30e304012f91bbfb1f2d9e43a332ed5573fcf3b5b74ab94e5e6289c6763b8f9",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 3.2583322999998927,
+        "stdout_base64": "aGVsbG8K",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "hello\n",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0013.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 19.19639829999869,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5zdXBwb3J0ZWQgZXhwcmVzc2lvbiBzdGFydGluZyB3aXRoICc8PCcNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unsupported expression starting with '<<'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0013.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.nowdoc-basic",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0014.php",
+      "source_sha256": "4df5b4528ad57895dbe27a245e8f144fd753ae779f897dcf308152aa80b8b758",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 1.8914453999987018,
+        "stdout_base64": "aGVsbG8gJHggXG4gXHg0MSAicSI=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "hello $x \\n \\x41 \"q\"",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0014.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 14.81324339999992,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5zdXBwb3J0ZWQgZXhwcmVzc2lvbiBzdGFydGluZyB3aXRoICc8PCcNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unsupported expression starting with '<<'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0014.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.heredoc-interpolate",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0015.php",
+      "source_sha256": "8e738ad5183af09f132e974605e2f8f0da1704befa8cdff43fba74a212781db0",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.8771335000001272,
+        "stdout_base64": "aGVsbG8g5LiW55WMIOS4lueVjA==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "hello 世界 世界",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0015.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 21.57207550000021,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5zdXBwb3J0ZWQgZXhwcmVzc2lvbiBzdGFydGluZyB3aXRoICc8PCcNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unsupported expression starting with '<<'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0015.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.heredoc-escape",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0016.php",
+      "source_sha256": "273d5adc63aba7d0148cb73f54541da74304116c5355ef3c6a57fa44bd58e799",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 4.092537799999263,
+        "stdout_base64": "8J+YgCBBIEEgXCIgXHE=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "😀 A A \\\" \\q",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0016.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 19.150050300000657,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5rbm93biBjaGFyYWN0ZXIgYXQgb2Zmc2V0IDI2DQo=",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unknown character at offset 26\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0016.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.heredoc-indent-space",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0017.php",
+      "source_sha256": "5fec9edc10e74b37c7b7b4f687ed8386d3f9b2cacca2c070531d085764bad4d3",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.4867046999988816,
+        "stdout_base64": "Zmlyc3QKICBzZWNvbmQ=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "first\n  second",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0017.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 19.394944000001487,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5zdXBwb3J0ZWQgZXhwcmVzc2lvbiBzdGFydGluZyB3aXRoICc8PCcNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unsupported expression starting with '<<'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0017.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.heredoc-indent-tab",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0018.php",
+      "source_sha256": "c906943f74be63757ed7c76a6cad749a7fba04940f116d71303bd21f611fd84f",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.108462400001372,
+        "stdout_base64": "Zmlyc3QKCXNlY29uZA==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "first\n\tsecond",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0018.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 15.09195229999932,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5zdXBwb3J0ZWQgZXhwcmVzc2lvbiBzdGFydGluZyB3aXRoICc8PCcNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unsupported expression starting with '<<'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0018.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.heredoc-indent-blank",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0019.php",
+      "source_sha256": "7f0a2748e1045d032659bb72938e8c60224ea60f04b36536c22781d76ce47e38",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 3.606494900001053,
+        "stdout_base64": "Zmlyc3QKCmxhc3Q=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "first\n\nlast",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0019.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 21.577551099999255,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5zdXBwb3J0ZWQgZXhwcmVzc2lvbiBzdGFydGluZyB3aXRoICc8PCcNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unsupported expression starting with '<<'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0019.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.heredoc-close-expression",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0020.php",
+      "source_sha256": "ce510611648b4d9ac4b49f4c7964e198b3f21568218dff00ffaa082cec581e6a",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.068556600001102,
+        "stdout_base64": "aGVsbG8=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "hello",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0020.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 13.768257600000652,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5zdXBwb3J0ZWQgZXhwcmVzc2lvbiBzdGFydGluZyB3aXRoICc8PCcNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unsupported expression starting with '<<'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0020.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.heredoc-label-successor",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0021.php",
+      "source_sha256": "11356a08c00c54029ae7dacc9bf4b6dd7455e5c2cc85a0f85ded997d931143e4",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 1.477424599999722,
+        "stdout_base64": "VF9tb3Jl",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "T_more",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0021.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 15.57629679999991,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5zdXBwb3J0ZWQgZXhwcmVzc2lvbiBzdGFydGluZyB3aXRoICc8PCcNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unsupported expression starting with '<<'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0021.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.heredoc-crlf",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0022.php",
+      "source_sha256": "8e1fef8bb708b0f0762797c6f8b7c527f4589f9a0757c425b288fdaa7714d15b",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 1.6838913000010507,
+        "stdout_base64": "aGVsbG8=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "hello",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0022.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 13.990345600001092,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5zdXBwb3J0ZWQgZXhwcmVzc2lvbiBzdGFydGluZyB3aXRoICc8PCcNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unsupported expression starting with '<<'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0022.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.heredoc-cr",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0023.php",
+      "source_sha256": "44adf68ae7f493f312d27454f7cd7dc74c273f040702d687c03126e6d59f09ea",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 1.2666900999993231,
+        "stdout_base64": "aGVsbG8=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "hello",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0023.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 11.872836599999573,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5zdXBwb3J0ZWQgZXhwcmVzc2lvbiBzdGFydGluZyB3aXRoICc8PCcNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unsupported expression starting with '<<'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0023.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.missing-variable",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0024.php",
+      "source_sha256": "b1188ad0f64b50e79ae740341935ffd32b10db13450363938ac5a6e904d902a8",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.378203400001439,
+        "stdout_base64": "YSBi",
+        "stderr_base64": "V2FybmluZzogVW5kZWZpbmVkIHZhcmlhYmxlICRtaXNzaW5nIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLXN0cmluZy1saXRlcmFscy0yMDI2MTExM1xiYXNlbGluZTMzXGNhc2UtMDAyNC5waHAgb24gbGluZSAxCg==",
+        "stdout_utf8_preview": "a b",
+        "stderr_utf8_preview": "Warning: Undefined variable $missing in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0024.php on line 1\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0024.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 29.284695599999395,
+        "stdout_base64": "YSBi",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "a b",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0024.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.heredoc-missing-variable",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0025.php",
+      "source_sha256": "b9c75e524196bd48d2d19e8ad51633134903fb7aa486aac8c5f94926f052379c",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.606179800000973,
+        "stdout_base64": "YSBi",
+        "stderr_base64": "V2FybmluZzogVW5kZWZpbmVkIHZhcmlhYmxlICRtaXNzaW5nIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLXN0cmluZy1saXRlcmFscy0yMDI2MTExM1xiYXNlbGluZTMzXGNhc2UtMDAyNS5waHAgb24gbGluZSAyCg==",
+        "stdout_utf8_preview": "a b",
+        "stderr_utf8_preview": "Warning: Undefined variable $missing in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0025.php on line 2\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0025.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 24.334371700000702,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5zdXBwb3J0ZWQgZXhwcmVzc2lvbiBzdGFydGluZyB3aXRoICc8PCcNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unsupported expression starting with '<<'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0025.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.unicode-invalid-empty",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0026.php",
+      "source_sha256": "ecd36489ff95936322ee402f7a5b095071a6e8a410356a4ad6c5f79d6fb7f057",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 2.6187934999998106,
+        "stdout_base64": "",
+        "stderr_base64": "UGFyc2UgZXJyb3I6IEludmFsaWQgVVRGLTggY29kZXBvaW50IGVzY2FwZSBzZXF1ZW5jZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1zdHJpbmctbGl0ZXJhbHMtMjAyNjExMTNcYmFzZWxpbmUzM1xjYXNlLTAwMjYucGhwIG9uIGxpbmUgMQo=",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Parse error: Invalid UTF-8 codepoint escape sequence in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0026.php on line 1\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0026.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 19.704839699999866,
+        "stdout_base64": "YmVmb3Jl",
+        "stderr_base64": "QUxMIFBIUDogSGV4YWRlY2ltYWwsIG9jdGFsIGFuZCBVbmljb2RlIHN0cmluZyBlc2NhcGVzIGFyZSBub3QgaW1wbGVtZW50ZWQNCg==",
+        "stdout_utf8_preview": "before",
+        "stderr_utf8_preview": "ALL PHP: Hexadecimal, octal and Unicode string escapes are not implemented\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0026.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.unicode-invalid-hex",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0027.php",
+      "source_sha256": "e77394a27953f41176d7f5de0009f19332edae113fecc3fc3a2de396243cbe7a",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 1.2764698000009957,
+        "stdout_base64": "",
+        "stderr_base64": "UGFyc2UgZXJyb3I6IEludmFsaWQgVVRGLTggY29kZXBvaW50IGVzY2FwZSBzZXF1ZW5jZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1zdHJpbmctbGl0ZXJhbHMtMjAyNjExMTNcYmFzZWxpbmUzM1xjYXNlLTAwMjcucGhwIG9uIGxpbmUgMQo=",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Parse error: Invalid UTF-8 codepoint escape sequence in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0027.php on line 1\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0027.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 15.037239600000248,
+        "stdout_base64": "YmVmb3Jl",
+        "stderr_base64": "QUxMIFBIUDogSGV4YWRlY2ltYWwsIG9jdGFsIGFuZCBVbmljb2RlIHN0cmluZyBlc2NhcGVzIGFyZSBub3QgaW1wbGVtZW50ZWQNCg==",
+        "stdout_utf8_preview": "before",
+        "stderr_utf8_preview": "ALL PHP: Hexadecimal, octal and Unicode string escapes are not implemented\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0027.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.unicode-too-large",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0028.php",
+      "source_sha256": "67c2cf5a294a72fb0124b8de79876a982e490af67d67477ce3f698e3cbd7aa71",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 1.288478299999042,
+        "stdout_base64": "",
+        "stderr_base64": "UGFyc2UgZXJyb3I6IEludmFsaWQgVVRGLTggY29kZXBvaW50IGVzY2FwZSBzZXF1ZW5jZTogQ29kZXBvaW50IHRvbyBsYXJnZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1zdHJpbmctbGl0ZXJhbHMtMjAyNjExMTNcYmFzZWxpbmUzM1xjYXNlLTAwMjgucGhwIG9uIGxpbmUgMQo=",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Parse error: Invalid UTF-8 codepoint escape sequence: Codepoint too large in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0028.php on line 1\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0028.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 17.883072200000242,
+        "stdout_base64": "YmVmb3Jl",
+        "stderr_base64": "QUxMIFBIUDogSGV4YWRlY2ltYWwsIG9jdGFsIGFuZCBVbmljb2RlIHN0cmluZyBlc2NhcGVzIGFyZSBub3QgaW1wbGVtZW50ZWQNCg==",
+        "stdout_utf8_preview": "before",
+        "stderr_utf8_preview": "ALL PHP: Hexadecimal, octal and Unicode string escapes are not implemented\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0028.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.heredoc-indent-invalid",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0029.php",
+      "source_sha256": "45689e385f60e44674bd5ddce2220a8b9c043834b39981cf4ac043c4d6d43740",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 3.1988376999997854,
+        "stdout_base64": "",
+        "stderr_base64": "UGFyc2UgZXJyb3I6IEludmFsaWQgYm9keSBpbmRlbnRhdGlvbiBsZXZlbCAoZXhwZWN0aW5nIGFuIGluZGVudGF0aW9uIGxldmVsIG9mIGF0IGxlYXN0IDQpIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLXN0cmluZy1saXRlcmFscy0yMDI2MTExM1xiYXNlbGluZTMzXGNhc2UtMDAyOS5waHAgb24gbGluZSAyCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Parse error: Invalid body indentation level (expecting an indentation level of at least 4) in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0029.php on line 2\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0029.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 20.24311940000007,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5zdXBwb3J0ZWQgZXhwcmVzc2lvbiBzdGFydGluZyB3aXRoICc8PCcNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unsupported expression starting with '<<'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0029.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.heredoc-mixed-end",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0030.php",
+      "source_sha256": "1251ee37e66bbda19376c4a1cbeeaa34da2a9f050f8c976404886a3d1aff68a2",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 1.928906499999357,
+        "stdout_base64": "",
+        "stderr_base64": "UGFyc2UgZXJyb3I6IEludmFsaWQgaW5kZW50YXRpb24gLSB0YWJzIGFuZCBzcGFjZXMgY2Fubm90IGJlIG1peGVkIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLXN0cmluZy1saXRlcmFscy0yMDI2MTExM1xiYXNlbGluZTMzXGNhc2UtMDAzMC5waHAgb24gbGluZSAyCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "Parse error: Invalid indentation - tabs and spaces cannot be mixed in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0030.php on line 2\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0030.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 17.30950429999939,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogVW5zdXBwb3J0ZWQgZXhwcmVzc2lvbiBzdGFydGluZyB3aXRoICc8PCcNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Unsupported expression starting with '<<'\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0030.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.binary-invalid-byte",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0031.php",
+      "source_sha256": "bb4ad7ae8684c08c8089b1c3fa5661d9dd79059e7bcf8fedc7c53543230de3a7",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.7779752999995253,
+        "stdout_base64": "/w==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "\\xff",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0031.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 21.137624900000446,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogSGV4YWRlY2ltYWwsIG9jdGFsIGFuZCBVbmljb2RlIHN0cmluZyBlc2NhcGVzIGFyZSBub3QgaW1wbGVtZW50ZWQNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Hexadecimal, octal and Unicode string escapes are not implemented\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0031.php"
+        ]
+      }
+    },
+    {
+      "id": "literal.binary-surrogate",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0032.php",
+      "source_sha256": "16034cddf74457b107cb246a5f223388bcbb1cfb407a02478916b6c98ab2a104",
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 1.174076100000093,
+        "stdout_base64": "7aCA",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "\\xed\\xa0\\x80",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0032.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 22.171637600000395,
+        "stdout_base64": "",
+        "stderr_base64": "QUxMIFBIUDogSGV4YWRlY2ltYWwsIG9jdGFsIGFuZCBVbmljb2RlIHN0cmluZyBlc2NhcGVzIGFyZSBub3QgaW1wbGVtZW50ZWQNCg==",
+        "stdout_utf8_preview": "",
+        "stderr_utf8_preview": "ALL PHP: Hexadecimal, octal and Unicode string escapes are not implemented\r\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\baseline33\\case-0032.php"
+        ]
+      }
+    }
+  ]
+}

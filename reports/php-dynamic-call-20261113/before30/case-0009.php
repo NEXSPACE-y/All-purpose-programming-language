@@ -1,0 +1,1 @@
+<?php $f=false;try{$f();}catch(Error $e){echo $e->getMessage();}

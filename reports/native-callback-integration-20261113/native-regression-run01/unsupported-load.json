@@ -1,0 +1,9 @@
+{
+    "extension":  "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_shmop.dll",
+    "status":  "LOAD_REJECTED",
+    "error":  "\"1\" 個の引数を指定して \"LoadExtension\" を呼び出し中に例外が発生しました: \"Callback prototype accepts only the pinned tested C dl_test binary\"",
+    "core_path":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+    "loaded_php_modules":  [
+                               "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll"
+                           ]
+}

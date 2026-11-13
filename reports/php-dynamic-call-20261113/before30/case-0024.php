@@ -1,0 +1,1 @@
+<?php function f(&$x){$x=4;return $x;}$x=1;echo call_user_func('f',$x).':'.$x;

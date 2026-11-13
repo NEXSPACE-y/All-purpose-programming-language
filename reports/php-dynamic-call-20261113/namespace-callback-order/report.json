@@ -1,0 +1,44 @@
+[
+  {
+    "id": "fallback",
+    "code": "<?php namespace N;function s(){echo 'SIDE';return 1;}try{call_user_func('missing',s());}catch(TypeError $e){echo $e->getMessage();}",
+    "command": [
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\namespace-callback-order\\0.php"
+    ],
+    "exit": 255,
+    "stdout_base64": "U0lERQ==",
+    "stderr_base64": "RmF0YWwgZXJyb3I6IFVuY2F1Z2h0IFR5cGVFcnJvcjogY2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBmdW5jdGlvbiAibWlzc2luZyIgbm90IGZvdW5kIG9yIGludmFsaWQgZnVuY3Rpb24gbmFtZSBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1keW5hbWljLWNhbGwtMjAyNjExMTNcbmFtZXNwYWNlLWNhbGxiYWNrLW9yZGVyXDAucGhwOjEKU3RhY2sgdHJhY2U6CiMwIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLWR5bmFtaWMtY2FsbC0yMDI2MTExM1xuYW1lc3BhY2UtY2FsbGJhY2stb3JkZXJcMC5waHAoMSk6IGNhbGxfdXNlcl9mdW5jKCdtaXNzaW5nJywgMSkKIzEge21haW59CiAgdGhyb3duIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLWR5bmFtaWMtY2FsbC0yMDI2MTExM1xuYW1lc3BhY2UtY2FsbGJhY2stb3JkZXJcMC5waHAgb24gbGluZSAxCg=="
+  },
+  {
+    "id": "qualified",
+    "code": "<?php namespace N;function s(){echo 'SIDE';return 1;}try{\\call_user_func('missing',s());}catch(\\TypeError $e){echo $e->getMessage();}",
+    "command": [
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\namespace-callback-order\\1.php"
+    ],
+    "exit": 0,
+    "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBmdW5jdGlvbiAibWlzc2luZyIgbm90IGZvdW5kIG9yIGludmFsaWQgZnVuY3Rpb24gbmFtZQ==",
+    "stderr_base64": ""
+  },
+  {
+    "id": "alias",
+    "code": "<?php namespace N;use function call_user_func as cf;function s(){echo 'SIDE';return 1;}try{cf('missing',s());}catch(\\TypeError $e){echo $e->getMessage();}",
+    "command": [
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\namespace-callback-order\\2.php"
+    ],
+    "exit": 0,
+    "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBmdW5jdGlvbiAibWlzc2luZyIgbm90IGZvdW5kIG9yIGludmFsaWQgZnVuY3Rpb24gbmFtZQ==",
+    "stderr_base64": ""
+  }
+]

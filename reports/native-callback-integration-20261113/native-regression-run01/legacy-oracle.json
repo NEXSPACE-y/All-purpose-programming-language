@@ -1,0 +1,516 @@
+{
+    "method": "stock_PHP_separate_reference_process",
+    "cases": [
+        {
+            "id": "output_none",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "null",
+                "Value": null,
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "VGhlIGV4dGVuc2lvbiBkbF90ZXN0IGlzIGxvYWRlZCBhbmQgd29ya2luZyENCg==",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "output_wrong_count",
+            "result": {
+                "Ok": false,
+                "Status": 1,
+                "Type": null,
+                "Value": null,
+                "ErrorClass": "ArgumentCountError",
+                "ErrorMessage": "dl_test_test1() expects exactly 0 arguments, 1 given",
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "string_default",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "string",
+                "Value": "SGVsbG8gV29ybGQ=",
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "string_ascii",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "string",
+                "Value": "SGVsbG8gQUxM",
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "string_empty",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "string",
+                "Value": "SGVsbG8g",
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "string_unicode",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "string",
+                "Value": "SGVsbG8g5pel5pys6Kqe",
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "string_nul",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "string",
+                "Value": "SGVsbG8gQQ==",
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "string_weak_int",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "string",
+                "Value": "SGVsbG8gMTIz",
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "string_weak_bool",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "string",
+                "Value": "SGVsbG8gMQ==",
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "string_bad_array",
+            "result": {
+                "Ok": false,
+                "Status": 1,
+                "Type": null,
+                "Value": null,
+                "ErrorClass": "TypeError",
+                "ErrorMessage": "dl_test_test2(): Argument #1 ($str) must be of type string, array given",
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "string_weak_null",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "string",
+                "Value": "SGVsbG8g",
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": "RGVwcmVjYXRlZDogZGxfdGVzdF90ZXN0MigpOiBQYXNzaW5nIG51bGwgdG8gcGFyYW1ldGVyICMxICgkc3RyKSBvZiB0eXBlIHN0cmluZyBpcyBkZXByZWNhdGVkCg=="
+            }
+        },
+        {
+            "id": "string_weak_float",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "string",
+                "Value": "SGVsbG8gMi41",
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "string_many",
+            "result": {
+                "Ok": false,
+                "Status": 1,
+                "Type": null,
+                "Value": null,
+                "ErrorClass": "ArgumentCountError",
+                "ErrorMessage": "dl_test_test2() expects at most 1 argument, 2 given",
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "string_strict_int",
+            "result": {
+                "Ok": false,
+                "Status": 1,
+                "Type": null,
+                "Value": null,
+                "ErrorClass": "TypeError",
+                "ErrorMessage": "dl_test_test2(): Argument #1 ($str) must be of type string, int given",
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "integer_long",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "int",
+                "Value": 42,
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "integer_minimum",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "int",
+                "Value": -9223372036854775808,
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "integer_maximum",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "int",
+                "Value": 9223372036854775807,
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "integer_numeric_string",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "int",
+                "Value": 19,
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "integer_decimal_string",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "int",
+                "Value": 19,
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "integer_bool",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "int",
+                "Value": 1,
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "integer_float",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "int",
+                "Value": 2,
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "integer_fraction",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "int",
+                "Value": 2,
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": "RGVwcmVjYXRlZDogSW1wbGljaXQgY29udmVyc2lvbiBmcm9tIGZsb2F0IDIuNzUgdG8gaW50IGxvc2VzIHByZWNpc2lvbgo="
+            }
+        },
+        {
+            "id": "integer_bad_array",
+            "result": {
+                "Ok": false,
+                "Status": 1,
+                "Type": null,
+                "Value": null,
+                "ErrorClass": "TypeError",
+                "ErrorMessage": "dl_test_frameless(): Argument #1 ($value) must be of type int, array given",
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "integer_null",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "int",
+                "Value": 0,
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": "RGVwcmVjYXRlZDogZGxfdGVzdF9mcmFtZWxlc3MoKTogUGFzc2luZyBudWxsIHRvIHBhcmFtZXRlciAjMSAoJHZhbHVlKSBvZiB0eXBlIGludCBpcyBkZXByZWNhdGVkCg=="
+            }
+        },
+        {
+            "id": "integer_missing",
+            "result": {
+                "Ok": false,
+                "Status": 1,
+                "Type": null,
+                "Value": null,
+                "ErrorClass": "ArgumentCountError",
+                "ErrorMessage": "dl_test_frameless() expects exactly 1 argument, 0 given",
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "integer_many",
+            "result": {
+                "Ok": false,
+                "Status": 1,
+                "Type": null,
+                "Value": null,
+                "ErrorClass": "ArgumentCountError",
+                "ErrorMessage": "dl_test_frameless() expects exactly 1 argument, 2 given",
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "integer_strict_string",
+            "result": {
+                "Ok": false,
+                "Status": 1,
+                "Type": null,
+                "Value": null,
+                "ErrorClass": "TypeError",
+                "ErrorMessage": "dl_test_frameless(): Argument #1 ($value) must be of type int, string given",
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "frameless_long",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "int",
+                "Value": 71,
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "frameless_string",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "int",
+                "Value": 72,
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "frameless_strict_string",
+            "result": {
+                "Ok": false,
+                "Status": 1,
+                "Type": null,
+                "Value": null,
+                "ErrorClass": "TypeError",
+                "ErrorMessage": "dl_test_frameless(): Argument #1 ($value) must be of type int, string given",
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "frameless_bad_array",
+            "result": {
+                "Ok": false,
+                "Status": 1,
+                "Type": null,
+                "Value": null,
+                "ErrorClass": "TypeError",
+                "ErrorMessage": "dl_test_frameless(): Argument #1 ($value) must be of type int, array given",
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "method_default",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "string",
+                "Value": "SGVsbG8gV29ybGQ=",
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "method_string",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "string",
+                "Value": "SGVsbG8gQUxM",
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "method_type_error",
+            "result": {
+                "Ok": false,
+                "Status": 1,
+                "Type": null,
+                "Value": null,
+                "ErrorClass": "TypeError",
+                "ErrorMessage": "DlTest::test(): Argument #1 ($str) must be of type string, array given",
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "superclass_null",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "null",
+                "Value": null,
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "inherited_method",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "null",
+                "Value": null,
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        },
+        {
+            "id": "string_arbitrary_invalid_UTF8_bytes",
+            "result": {
+                "Ok": true,
+                "Status": 0,
+                "Type": "string",
+                "Value": "SGVsbG8g//5B",
+                "ErrorClass": null,
+                "ErrorMessage": null,
+                "OutputBase64": "",
+                "DiagnosticsBase64": ""
+            }
+        }
+    ],
+    "metadata": {
+        "constant": 42,
+        "parent": "DlTestSuperClass",
+        "property": [
+            1,
+            16,
+            false
+        ],
+        "inherited_property": [
+            1,
+            16,
+            false
+        ],
+        "ini_long": "0",
+        "ini_string": "hello",
+        "direct_registration": {
+            "Ok": true,
+            "Status": 0,
+            "Type": "string",
+            "Value": "T0s=",
+            "ErrorClass": null,
+            "ErrorMessage": null,
+            "OutputBase64": "",
+            "DiagnosticsBase64": ""
+        },
+        "ini_changed": [
+            "97",
+            "changed"
+        ]
+    }
+}

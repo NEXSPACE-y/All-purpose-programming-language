@@ -1,0 +1,90 @@
+[
+  {
+    "id": "dynamic.ext.cuf-dynamic-order",
+    "code": "<?php function s(){echo 'SIDE';return 1;}$c='call_user_func';try{$c('missing',s());}catch(TypeError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "dynamic.ext.cufa-direct-order",
+    "code": "<?php function s(){echo 'SIDE';return [];}try{call_user_func_array('missing',s());}catch(TypeError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "dynamic.ext.cufa-dynamic-order",
+    "code": "<?php function s(){echo 'SIDE';return [];}$c='call_user_func_array';try{$c('missing',s());}catch(TypeError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "dynamic.ext.cuf-callback-expression",
+    "code": "<?php function c(){echo 'CB';return 'missing';}function s(){echo 'SIDE';return 1;}try{call_user_func(c(),s());}catch(TypeError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "dynamic.ext.cuf-namespace-fallback",
+    "code": "<?php namespace N;function s(){echo 'SIDE';return 1;}try{call_user_func('missing',s());}catch(\\TypeError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "dynamic.ext.cuf-namespace-qualified",
+    "code": "<?php namespace N;function s(){echo 'SIDE';return 1;}try{\\call_user_func('missing',s());}catch(\\TypeError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "dynamic.ext.cuf-namespace-alias",
+    "code": "<?php namespace N;use function call_user_func as cf;function s(){echo 'SIDE';return 1;}try{cf('missing',s());}catch(\\TypeError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "dynamic.ext.array-capture-before-args",
+    "code": "<?php class C{function a($x){return 'A';}function b($x){return 'B';}} function s(&$f){$f=[new C(),'b'];return 1;}$f=[new C(),'a'];echo $f(s($f));"
+  },
+  {
+    "id": "dynamic.ext.missing-class",
+    "code": "<?php $f=['NoSuchClass','f'];try{$f();}catch(Error $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "dynamic.ext.missing-method",
+    "code": "<?php class C{}$f=[new C(),'f'];try{$f();}catch(Error $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "dynamic.ext.nonstatic-as-static",
+    "code": "<?php class C{function f(){}}$f=['C','f'];try{$f();}catch(Error $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "dynamic.ext.cuf-missing-class",
+    "code": "<?php try{call_user_func(['NoSuchClass','f']);}catch(TypeError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "dynamic.ext.cuf-missing-method",
+    "code": "<?php class C{}try{call_user_func([new C(),'f']);}catch(TypeError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "dynamic.ext.cuf-nonstatic",
+    "code": "<?php class C{function f(){}}try{call_user_func(['C','f']);}catch(TypeError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "dynamic.ext.cuf-array-empty",
+    "code": "<?php try{call_user_func([]);}catch(TypeError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "dynamic.ext.firstclass-array-static",
+    "code": "<?php class C{static function f(){return 7;}}$a=['C','f'];$f=$a(...);echo $f();"
+  },
+  {
+    "id": "dynamic.ext.firstclass-string-static",
+    "code": "<?php class C{static function f(){return 8;}}$a='C::f';$f=$a(...);echo $f();"
+  },
+  {
+    "id": "dynamic.ext.firstclass-rebind-source",
+    "code": "<?php function f(){return 'F';}function g(){return 'G';}$a='f';$f=$a(...);$a='g';echo $f();"
+  },
+  {
+    "id": "dynamic.ext.cufa-named",
+    "code": "<?php function f($a,$b){return $a.':'.$b;}echo call_user_func_array('f',['b'=>2,'a'=>1]);"
+  },
+  {
+    "id": "dynamic.ext.cufa-reference",
+    "code": "<?php function f(&$x){$x=9;return $x;}$x=1;echo call_user_func_array('f',[&$x]).':'.$x;"
+  },
+  {
+    "id": "dynamic.ext.private-method",
+    "code": "<?php class C{private function f(){}}$a=[new C(),'f'];try{$a();}catch(Error $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "dynamic.ext.cuf-private-method",
+    "code": "<?php class C{private function f(){}}try{call_user_func([new C(),'f']);}catch(TypeError $e){echo $e->getMessage();}"
+  }
+]

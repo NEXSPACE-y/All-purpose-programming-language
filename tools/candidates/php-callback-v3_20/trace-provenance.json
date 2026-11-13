@@ -1,0 +1,18 @@
+{
+  "purpose": "Separate diagnostic worker revision with sidecar phase events; not substituted into conformance runs",
+  "base_worker_sha256": "107be1d7af38a87b882d35642909f53e740233216a44013a635055211f3a0071",
+  "trace_worker_sha256": "75eebb9e5beb06b1c718e7046428b64a82814109c0138b62e013f92291ba2082",
+  "changes": [
+    "$utf8=New-Object Text.UTF8Encoding($false)",
+    " Add-Type -Path (Join-Path $PSScriptRoot 'AllNativeCallbackBridge.cs')",
+    " $bridge=New-Object AllPhp85AbiCallback.Bridge($core)",
+    " $bridge.LoadExtension($extension)",
+    " $bridge.Start();$started=$true",
+    "  $pipeline=@(& ($adapter.Run) -Code $code -CliContext $context -NativeContext $bridge)",
+    "  if($started){$bridge.End();$started=$false}",
+    "$bridge.Shutdown();$metadata.native_stats",
+    " [IO.File]::WriteAllText([IO.Path]::GetFullPath($MetadataPath),($metadata|ConvertTo-Json -",
+    "[Environment]::Exit($signed)"
+  ],
+  "stdout_and_PHP_source_unchanged_by_instrumentation": true
+}

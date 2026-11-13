@@ -1,0 +1,109 @@
+        $phpLiteralUtf8 = [Text.UTF8Encoding]::new($false,$true)
+        function Throw-PhpLiteralParseError([string]$message,[long]$line) {
+            if ($isCli) {
+                $CliContext['CompileError']=[pscustomobject]@{
+                    Type='ParseError'; Reason='string_literal'; Message=$message
+                    SourcePath=$state.ScriptName; Line=$line
+                }
+            }
+            throw ('ALL PHP: '+$message)
+        }
+        function Add-PhpLiteralText($bytes,[string]$text) {
+            foreach ($b in $phpLiteralUtf8.GetBytes($text)) { [void]$bytes.Add($b) }
+        }
+        function Read-PhpDocToken([string]$text,[int]$offset,[long]$line) {
+            $start=$offset
+            if ($offset -ge $text.Length) { return $null }
+            if (($text[$offset] -ceq 'b' -or $text[$offset] -ceq 'B') -and $offset+1 -lt $text.Length) {
+                if ($text[$offset+1] -ceq '"' -or $text[$offset+1] -ceq "'") {
+                    $quoted=$rx.Match($text,$offset+1)
+                    if ($quoted.Success -and $quoted.Index -eq $offset+1) {
+                        return [pscustomobject]@{Token=$quoted.Value;Length=$quoted.Length+1;Newlines=[regex]::Matches($quoted.Value,"`r`n|`r|`n").Count}
+                    }
+                }
+                $offset++
+            }
+            if ($offset+3 -gt $text.Length -or $text.Substring($offset,3) -cne '<<<') { return $null }
+            $headerRx=[regex]::new('\G<<<[ \t]*(?:''(?<nowdoc>[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*)''|"(?<quoted>[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*)"|(?<bare>[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*))(?:\r\n|\n|\r)')
+            $header=$headerRx.Match($text,$offset)
+            if (-not $header.Success -or $header.Index -ne $offset) { return $null }
+            $nowdoc=$header.Groups['nowdoc'].Success
+            $label=if($nowdoc){$header.Groups['nowdoc'].Value}elseif($header.Groups['quoted'].Success){$header.Groups['quoted'].Value}else{$header.Groups['bare'].Value}
+            $bodyStart=$offset+$header.Length
+            $closingRx=[regex]::new('^(?<indent>[ \t]*)'+[regex]::Escape($label)+'(?![A-Za-z_0-9\x80-\uffff])')
+            $position=$bodyStart;$closing=$null;$closingLine=$line+1
+            while ($position -le $text.Length) {
+                $end=$text.IndexOfAny([char[]]@([char]13,[char]10),$position)
+                if ($end -lt 0) { $end=$text.Length }
+                $closing=$closingRx.Match($text.Substring($position,$end-$position))
+                if ($closing.Success) { break }
+                if ($end -eq $text.Length) { $closing=$null;break }
+                $position=$end+1
+                if ($text[$end] -ceq [char]13 -and $position -lt $text.Length -and $text[$position] -ceq [char]10) { $position++ }
+                $closingLine++
+            }
+            if ($null -eq $closing) { throw 'ALL PHP: Unterminated heredoc/nowdoc literal' }
+            $indent=$closing.Groups['indent'].Value
+            $body=$text.Substring($bodyStart,$position-$bodyStart)
+            if ($indent.Contains(' ') -and $indent.Contains("`t")) {
+                # The PHP scanner detects this before committing the current
+                # text token's newline count. Interpolations commit earlier
+                # segments; nowdoc and a plain heredoc stay at body-start line.
+                $errorLine=$line+1;$lastInterpolation=-1
+                if(-not$nowdoc) {
+                    for($k=0;$k-lt$body.Length;$k++) {
+                        if($body[$k]-ceq'\'){$k++;continue}
+                        if($body[$k]-ceq'$'-and$k+1-lt$body.Length-and[string]$body[$k+1]-cmatch'[A-Za-z_\x80-\uffff{]') {
+                            $lastInterpolation=$k
+                            $errorLine=$line+1+[regex]::Matches($body.Substring(0,$k),"`r`n|`r|`n").Count
+                        }
+                    }
+                }
+                if($lastInterpolation-ge0) {
+                    # Earlier literal segments are indentation-checked before
+                    # the scanner reaches the malformed closing marker. A
+                    # mixed closing prefix selects the tab indentation branch.
+                    $prefixLines=[regex]::Split($body.Substring(0,$lastInterpolation+1),"`r`n|`r|`n")
+                    for($partIndex=0;$partIndex-lt$prefixLines.Length;$partIndex++) {
+                        $prefixLine=$prefixLines[$partIndex]
+                        for($column=0;$column-lt$indent.Length-and$column-lt$prefixLine.Length;$column++) {
+                            if($prefixLine[$column]-cne' '-and$prefixLine[$column]-cne[char]9) {
+                                Throw-PhpLiteralParseError ('Invalid body indentation level (expecting an indentation level of at least '+$indent.Length+')') ($line+1+$partIndex)
+                            }
+                            if($prefixLine[$column]-cne[char]9) {
+                                Throw-PhpLiteralParseError 'Invalid indentation - tabs and spaces cannot be mixed' ($line+1+$partIndex)
+                            }
+                        }
+                    }
+                }
+                Throw-PhpLiteralParseError 'Invalid indentation - tabs and spaces cannot be mixed' $errorLine
+            }
+            if ($body.EndsWith("`r`n")) { $body=$body.Substring(0,$body.Length-2) }
+            elseif ($body.EndsWith("`r") -or $body.EndsWith("`n")) { $body=$body.Substring(0,$body.Length-1) }
+            if ($indent.Length -gt 0) {
+                $clean=[Text.StringBuilder]::new();$bodyPosition=0;$bodyLine=$line+1
+                while ($bodyPosition -lt $body.Length) {
+                    $end=$body.IndexOfAny([char[]]@([char]13,[char]10),$bodyPosition)
+                    if ($end -lt 0) { $end=$body.Length }
+                    $part=$body.Substring($bodyPosition,$end-$bodyPosition);$skip=0
+                    while ($skip -lt $indent.Length -and $skip -lt $part.Length) {
+                        if ($part[$skip] -cne ' ' -and $part[$skip] -cne [char]9) {
+                            Throw-PhpLiteralParseError ('Invalid body indentation level (expecting an indentation level of at least '+$indent.Length+')') $bodyLine
+                        }
+                        if ($part[$skip] -cne $indent[0]) { Throw-PhpLiteralParseError 'Invalid indentation - tabs and spaces cannot be mixed' $bodyLine }
+                        $skip++
+                    }
+                    [void]$clean.Append($part.Substring($skip))
+                    if ($end -lt $body.Length) {
+                        [void]$clean.Append($body[$end]);$end++
+                        if ($body[$end-1] -ceq [char]13 -and $end -lt $body.Length -and $body[$end] -ceq [char]10) { [void]$clean.Append($body[$end]);$end++ }
+                    }
+                    $bodyPosition=$end;$bodyLine++
+                }
+                $body=$clean.ToString()
+            }
+            $id=[string][char]29+'DOC:'+$state.DocStrings.Count
+            $state.DocStrings[$id]=[pscustomobject]@{Body=$body;Nowdoc=$nowdoc;BodyLine=$line+1}
+            $length=$position+$closing.Length-$start
+            return [pscustomobject]@{Token=$id;Length=$length;Newlines=[regex]::Matches($text.Substring($start,$length),"`r`n|`r|`n").Count}
+        }

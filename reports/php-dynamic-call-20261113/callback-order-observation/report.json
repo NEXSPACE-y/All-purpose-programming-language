@@ -1,0 +1,132 @@
+[
+  {
+    "id": "direct-cuf",
+    "command": [
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\callback-order-observation\\000.php"
+    ],
+    "stdout_base64": "VHlwZUVycm9yOmNhbGxfdXNlcl9mdW5jKCk6IEFyZ3VtZW50ICMxICgkY2FsbGJhY2spIG11c3QgYmUgYSB2YWxpZCBjYWxsYmFjaywgZnVuY3Rpb24gIm1pc3NpbmciIG5vdCBmb3VuZCBvciBpbnZhbGlkIGZ1bmN0aW9uIG5hbWU=",
+    "stderr_base64": "",
+    "exit": 0
+  },
+  {
+    "id": "direct-cufa",
+    "command": [
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\callback-order-observation\\001.php"
+    ],
+    "stdout_base64": "VHlwZUVycm9yOmNhbGxfdXNlcl9mdW5jX2FycmF5KCk6IEFyZ3VtZW50ICMxICgkY2FsbGJhY2spIG11c3QgYmUgYSB2YWxpZCBjYWxsYmFjaywgZnVuY3Rpb24gIm1pc3NpbmciIG5vdCBmb3VuZCBvciBpbnZhbGlkIGZ1bmN0aW9uIG5hbWU=",
+    "stderr_base64": "",
+    "exit": 0
+  },
+  {
+    "id": "dynamic-cuf",
+    "command": [
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\callback-order-observation\\002.php"
+    ],
+    "stdout_base64": "U0lERVR5cGVFcnJvcjpjYWxsX3VzZXJfZnVuYygpOiBBcmd1bWVudCAjMSAoJGNhbGxiYWNrKSBtdXN0IGJlIGEgdmFsaWQgY2FsbGJhY2ssIGZ1bmN0aW9uICJtaXNzaW5nIiBub3QgZm91bmQgb3IgaW52YWxpZCBmdW5jdGlvbiBuYW1l",
+    "stderr_base64": "",
+    "exit": 0
+  },
+  {
+    "id": "dynamic-cufa",
+    "command": [
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\callback-order-observation\\003.php"
+    ],
+    "stdout_base64": "U0lERVR5cGVFcnJvcjpjYWxsX3VzZXJfZnVuY19hcnJheSgpOiBBcmd1bWVudCAjMSAoJGNhbGxiYWNrKSBtdXN0IGJlIGEgdmFsaWQgY2FsbGJhY2ssIGZ1bmN0aW9uICJtaXNzaW5nIiBub3QgZm91bmQgb3IgaW52YWxpZCBmdW5jdGlvbiBuYW1l",
+    "stderr_base64": "",
+    "exit": 0
+  },
+  {
+    "id": "direct-null-cuf",
+    "command": [
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\callback-order-observation\\004.php"
+    ],
+    "stdout_base64": "VHlwZUVycm9yOmNhbGxfdXNlcl9mdW5jKCk6IEFyZ3VtZW50ICMxICgkY2FsbGJhY2spIG11c3QgYmUgYSB2YWxpZCBjYWxsYmFjaywgbm8gYXJyYXkgb3Igc3RyaW5nIGdpdmVu",
+    "stderr_base64": "",
+    "exit": 0
+  },
+  {
+    "id": "direct-null-cufa",
+    "command": [
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\callback-order-observation\\005.php"
+    ],
+    "stdout_base64": "VHlwZUVycm9yOmNhbGxfdXNlcl9mdW5jX2FycmF5KCk6IEFyZ3VtZW50ICMxICgkY2FsbGJhY2spIG11c3QgYmUgYSB2YWxpZCBjYWxsYmFjaywgbm8gYXJyYXkgb3Igc3RyaW5nIGdpdmVu",
+    "stderr_base64": "",
+    "exit": 0
+  },
+  {
+    "id": "callback-expression",
+    "command": [
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\callback-order-observation\\006.php"
+    ],
+    "stdout_base64": "Q0JUeXBlRXJyb3I6Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBmdW5jdGlvbiAibWlzc2luZyIgbm90IGZvdW5kIG9yIGludmFsaWQgZnVuY3Rpb24gbmFtZQ==",
+    "stderr_base64": "",
+    "exit": 0
+  },
+  {
+    "id": "namespace-fallback",
+    "command": [
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\callback-order-observation\\007.php"
+    ],
+    "stdout_base64": "",
+    "stderr_base64": "UGFyc2UgZXJyb3I6IHN5bnRheCBlcnJvciwgdW5leHBlY3RlZCB0b2tlbiAibmFtZXNwYWNlIiBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1keW5hbWljLWNhbGwtMjAyNjExMTNcY2FsbGJhY2stb3JkZXItb2JzZXJ2YXRpb25cMDA3LnBocCBvbiBsaW5lIDEK",
+    "exit": 255
+  },
+  {
+    "id": "namespace-qualified",
+    "command": [
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\callback-order-observation\\008.php"
+    ],
+    "stdout_base64": "",
+    "stderr_base64": "UGFyc2UgZXJyb3I6IHN5bnRheCBlcnJvciwgdW5leHBlY3RlZCB0b2tlbiAibmFtZXNwYWNlIiBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1keW5hbWljLWNhbGwtMjAyNjExMTNcY2FsbGJhY2stb3JkZXItb2JzZXJ2YXRpb25cMDA4LnBocCBvbiBsaW5lIDEK",
+    "exit": 255
+  },
+  {
+    "id": "namespace-alias",
+    "command": [
+      "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\callback-order-observation\\009.php"
+    ],
+    "stdout_base64": "",
+    "stderr_base64": "UGFyc2UgZXJyb3I6IHN5bnRheCBlcnJvciwgdW5leHBlY3RlZCB0b2tlbiAibmFtZXNwYWNlIiBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1keW5hbWljLWNhbGwtMjAyNjExMTNcY2FsbGJhY2stb3JkZXItb2JzZXJ2YXRpb25cMDA5LnBocCBvbiBsaW5lIDEK",
+    "exit": 255
+  }
+]

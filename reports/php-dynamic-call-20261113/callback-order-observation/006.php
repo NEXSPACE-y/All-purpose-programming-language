@@ -1,0 +1,1 @@
+<?php try{function c(){echo 'CB';return 'missing';}function s(){echo 'SIDE';return 1;}call_user_func(c(),s());}catch(Throwable $e){echo get_class($e).":".$e->getMessage();}

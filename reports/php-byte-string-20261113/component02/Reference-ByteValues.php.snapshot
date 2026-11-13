@@ -1,0 +1,37 @@
+<?php
+// Oracle-only component protocol. This is not an ALL execution backend.
+$cases=json_decode(file_get_contents($argv[1]),true,512,JSON_THROW_ON_ERROR);
+function b(string $s): string { return base64_encode($s); }
+function key_wire(int|string $key): string { return is_int($key)?'i:'.$key:'s:'.b($key); }
+foreach($cases as $case) {
+    $id=$case['id'];$op=$case['op'];$fields=[$id,$op];$warnings=[];
+    set_error_handler(function(int $level,string $message)use(&$warnings){$warnings[]=$level.':'.b($message);return true;});
+    try {
+        $s=isset($case['data'])?base64_decode($case['data'],true):'';
+        switch($op) {
+            case 'facts':$fields[]=(string)strlen($s);$fields[]=$s?'1':'0';$fields[]=preg_match('//u',$s)===1?'1':'0';$fields[]=b($s);break;
+            case 'concat':$v=base64_decode($case['left'],true).base64_decode($case['right'],true);$fields[]=(string)strlen($v);$fields[]=b($v);break;
+            case 'slice':$v=array_key_exists('length',$case)?substr($s,(int)$case['offset'],(int)$case['length']):substr($s,(int)$case['offset']);$fields[]=b($v);break;
+            case 'read':$v=$s[(int)$case['offset']];$fields[]=b($v);$fields[]=implode(',',$warnings);break;
+            case 'write':
+                $old=$s;$error='';$message='';
+                try{$s[(int)$case['offset']]=base64_decode($case['replacement'],true);}catch(Throwable $e){$error=get_class($e);$message=$e->getMessage();}
+                $fields[]=$error;$fields[]=b($s);$fields[]=b($old);$fields[]=b($message);$fields[]=implode(',',$warnings);break;
+            case 'compare':$fields[]=(string)strcmp(base64_decode($case['left'],true),base64_decode($case['right'],true));break;
+            case 'lower':$fields[]=b(strtolower($s));break;
+            case 'not':$fields[]=b(~$s);break;
+            case 'bitwise':
+                $a=base64_decode($case['left'],true);$r=base64_decode($case['right'],true);
+                $v=match($case['operator']){'&'=>$a&$r,'^'=>$a^$r,'|'=>$a|$r};$fields[]=b($v);break;
+            case 'key':$map=[$s=>1];$fields[]=key_wire(array_key_first($map));break;
+            case 'order':
+                $map=[];foreach($case['entries']as$entry){$key=isset($entry['integer'])?(int)$entry['integer']:base64_decode($entry['key'],true);$map[$key]=base64_decode($entry['value'],true);}
+                $parts=[];foreach($map as$key=>$value){$parts[]=key_wire($key).'='.$value;}$fields[]=b(implode('|',$parts));break;
+            case 'immutable':
+                $old=$s;$copy=$s;if(strlen($copy)>0){$copy[0]=chr(ord($copy[0])^255);}
+                $fields[]=b($old);$fields[]=b($copy);break;
+            default:throw new RuntimeException('Unknown component operation');
+        }
+    } finally {restore_error_handler();}
+    echo implode("\t",$fields),"\n";
+}

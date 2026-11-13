@@ -1,0 +1,102 @@
+{
+  "scope": "Oracle-only probes of actual error precedence, not candidate PASS evidence",
+  "php_sha256": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+  "results": [
+    {
+      "id": "plain-first",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\mixed-indent-oracle\\00.php"
+      ],
+      "source_sha256": "41d6c59912bf5faa9655db96df114458b9d1510fca17e28cde449317c8a4933d",
+      "exit": 255,
+      "stdout_base64": "",
+      "stderr_base64": "UGFyc2UgZXJyb3I6IEludmFsaWQgYm9keSBpbmRlbnRhdGlvbiBsZXZlbCAoZXhwZWN0aW5nIGFuIGluZGVudGF0aW9uIGxldmVsIG9mIGF0IGxlYXN0IDIpIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLXN0cmluZy1saXRlcmFscy0yMDI2MTExM1xtaXhlZC1pbmRlbnQtb3JhY2xlXDAwLnBocCBvbiBsaW5lIDIK"
+    },
+    {
+      "id": "space-prefix",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\mixed-indent-oracle\\01.php"
+      ],
+      "source_sha256": "4c550e0418a19eeef0b9cc599268b9cda88eb2a1ccf8e04dbc7cc3b207111aa2",
+      "exit": 255,
+      "stdout_base64": "",
+      "stderr_base64": "UGFyc2UgZXJyb3I6IEludmFsaWQgaW5kZW50YXRpb24gLSB0YWJzIGFuZCBzcGFjZXMgY2Fubm90IGJlIG1peGVkIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLXN0cmluZy1saXRlcmFscy0yMDI2MTExM1xtaXhlZC1pbmRlbnQtb3JhY2xlXDAxLnBocCBvbiBsaW5lIDIK"
+    },
+    {
+      "id": "tab-prefix",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\mixed-indent-oracle\\02.php"
+      ],
+      "source_sha256": "c6327a31cd514e20ab08557faa5f3037a8b9d7eebbed32dac73ee19e249f1fc2",
+      "exit": 255,
+      "stdout_base64": "",
+      "stderr_base64": "UGFyc2UgZXJyb3I6IEludmFsaWQgaW5kZW50YXRpb24gLSB0YWJzIGFuZCBzcGFjZXMgY2Fubm90IGJlIG1peGVkIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLXN0cmluZy1saXRlcmFscy0yMDI2MTExM1xtaXhlZC1pbmRlbnQtb3JhY2xlXDAyLnBocCBvbiBsaW5lIDMK"
+    },
+    {
+      "id": "tab-space-tail",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\mixed-indent-oracle\\03.php"
+      ],
+      "source_sha256": "4757b1fdbeb67dd3132b33bc7705b9e2116645a1b54569795a08b375f7c0f567",
+      "exit": 255,
+      "stdout_base64": "",
+      "stderr_base64": "UGFyc2UgZXJyb3I6IEludmFsaWQgaW5kZW50YXRpb24gLSB0YWJzIGFuZCBzcGFjZXMgY2Fubm90IGJlIG1peGVkIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLXN0cmluZy1saXRlcmFscy0yMDI2MTExM1xtaXhlZC1pbmRlbnQtb3JhY2xlXDAzLnBocCBvbiBsaW5lIDMK"
+    },
+    {
+      "id": "space-then-unindented",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\mixed-indent-oracle\\04.php"
+      ],
+      "source_sha256": "9dd7146a21d928074aaff83151731e45aead5115fca28af3064e0cee768f5e11",
+      "exit": 255,
+      "stdout_base64": "",
+      "stderr_base64": "UGFyc2UgZXJyb3I6IEludmFsaWQgaW5kZW50YXRpb24gLSB0YWJzIGFuZCBzcGFjZXMgY2Fubm90IGJlIG1peGVkIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLXN0cmluZy1saXRlcmFscy0yMDI2MTExM1xtaXhlZC1pbmRlbnQtb3JhY2xlXDA0LnBocCBvbiBsaW5lIDIK"
+    },
+    {
+      "id": "normal-space-end",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-string-literals-20261113\\mixed-indent-oracle\\05.php"
+      ],
+      "source_sha256": "2563f19b7589024e78ce32feea807e3cd3bbcd571c2464a0db43061a436e3fa6",
+      "exit": 255,
+      "stdout_base64": "",
+      "stderr_base64": "UGFyc2UgZXJyb3I6IEludmFsaWQgYm9keSBpbmRlbnRhdGlvbiBsZXZlbCAoZXhwZWN0aW5nIGFuIGluZGVudGF0aW9uIGxldmVsIG9mIGF0IGxlYXN0IDIpIGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLXN0cmluZy1saXRlcmFscy0yMDI2MTExM1xtaXhlZC1pbmRlbnQtb3JhY2xlXDA1LnBocCBvbiBsaW5lIDIK"
+    }
+  ]
+}

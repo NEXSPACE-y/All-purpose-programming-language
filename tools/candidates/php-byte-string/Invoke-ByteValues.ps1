@@ -1,0 +1,34 @@
+[CmdletBinding()]
+param([Parameter(Mandatory=$true)][string]$CasesPath,[Parameter(Mandatory=$true)][string]$AssemblyPath)
+$ErrorActionPreference='Stop'
+Import-Module (Join-Path $PSHOME 'Modules\Microsoft.PowerShell.Utility\Microsoft.PowerShell.Utility.psd1') -ErrorAction Stop
+[Console]::OutputEncoding=[Text.UTF8Encoding]::new($false)
+Add-Type -Path $AssemblyPath
+$cases=ConvertFrom-Json -InputObject ([IO.File]::ReadAllText((Resolve-Path -LiteralPath $CasesPath).ProviderPath))
+function Value([string]$base64){return [AllPhp.ByteValues.PhpBytes]::FromBase64($base64)}
+function B64Text([string]$text){return [Convert]::ToBase64String([Text.UTF8Encoding]::new($false,$true).GetBytes($text))}
+foreach($case in $cases) {
+    $fields=[Collections.Generic.List[string]]::new();[void]$fields.Add($case.id);[void]$fields.Add($case.op)
+    $s=if($null-ne$case.data){Value $case.data}else{[AllPhp.ByteValues.PhpBytes]::Empty}
+    switch -CaseSensitive ($case.op) {
+        'facts' {$text=$null;[void]$fields.Add($s.Length.ToString([Globalization.CultureInfo]::InvariantCulture));[void]$fields.Add($(if($s.Truthy){'1'}else{'0'}));[void]$fields.Add($(if($s.TryDecodeUtf8([ref]$text)){'1'}else{'0'}));[void]$fields.Add($s.ToBase64());break}
+        'concat' {$v=(Value $case.left).Concat((Value $case.right));[void]$fields.Add($v.Length.ToString([Globalization.CultureInfo]::InvariantCulture));[void]$fields.Add($v.ToBase64());break}
+        'slice' {$length=$null;if($case.PSObject.Properties['length']){$length=[Nullable[long]]([long]$case.length)};$v=$s.Slice([long]$case.offset,$length);[void]$fields.Add($v.ToBase64());break}
+        'read' {$r=$s.ReadOffset([long]$case.offset);[void]$fields.Add($r.Value.ToBase64());[void]$fields.Add($(if($r.WarningLevel){$r.WarningLevel.ToString()+':'+(B64Text $r.Message)}else{''}));break}
+        'write' {$r=$s.WithOffset([long]$case.offset,(Value $case.replacement));[void]$fields.Add($r.ErrorClass);[void]$fields.Add($r.Value.ToBase64());[void]$fields.Add($s.ToBase64());[void]$fields.Add($(if($r.ErrorClass){B64Text $r.Message}else{''}));[void]$fields.Add($(if($r.WarningLevel){$r.WarningLevel.ToString()+':'+(B64Text $r.Message)}else{''}));break}
+        'compare' {[void]$fields.Add((Value $case.left).CompareBinary((Value $case.right)).ToString([Globalization.CultureInfo]::InvariantCulture));break}
+        'equal' {[void]$fields.Add($(if((Value $case.left).Equals((Value $case.right))){'1'}else{'0'}));break}
+        'lower' {[void]$fields.Add($s.LowerAscii().ToBase64());break}
+        'not' {[void]$fields.Add($s.BitwiseNot().ToBase64());break}
+        'bitwise' {[void]$fields.Add((Value $case.left).Bitwise((Value $case.right),[char]$case.operator).ToBase64());break}
+        'key' {[void]$fields.Add([AllPhp.ByteValues.PhpKey]::FromString($s).Protocol);break}
+        'order' {
+            $map=New-Object AllPhp.ByteValues.OrderedByteMap
+            foreach($entry in $case.entries){$key=if($entry.PSObject.Properties['integer']){[AllPhp.ByteValues.PhpKey]::FromInteger([long]$entry.integer)}else{[AllPhp.ByteValues.PhpKey]::FromString((Value $entry.key))};$map.Set($key,(Value $entry.value))}
+            $parts=[Collections.Generic.List[string]]::new();foreach($entry in $map.Snapshot()){[void]$parts.Add($entry.Key.Protocol+'='+[Text.UTF8Encoding]::new($false,$true).GetString($entry.Value.ToArray()))};[void]$fields.Add((B64Text ([string]::Join('|',$parts.ToArray()))));break
+        }
+        'immutable' {$bytes=[Convert]::FromBase64String($case.data);$v=[AllPhp.ByteValues.PhpBytes]::FromBytes($bytes);if($bytes.Length){$bytes[0]=$bytes[0]-bxor255};$copy=$v.ToArray();if($copy.Length){$copy[0]=$copy[0]-bxor255};[void]$fields.Add($v.ToBase64());[void]$fields.Add([Convert]::ToBase64String($copy));break}
+        default {throw 'Unknown component operation'}
+    }
+    [Console]::Write([string]::Join("`t",$fields.ToArray())+"`n")
+}

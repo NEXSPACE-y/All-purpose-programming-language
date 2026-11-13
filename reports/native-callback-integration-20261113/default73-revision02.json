@@ -1,0 +1,684 @@
+{
+    "status":  "PASS",
+    "scope":  "Selected original21 diagnostics/27 namespaces/25 runtime namespace fixtures, original expected values, no CliContext. Full965 not rerun here.",
+    "total":  73,
+    "passed":  73,
+    "results":  [
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "handler receives undefined variable warning",
+                        "passed":  true,
+                        "stdout":  "a[2] Undefined variable $missing @ 4\nb",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "undefined variable evaluates to null",
+                        "passed":  true,
+                        "stdout":  "\u003cUndefined variable $nope\u003eNULL\n\u003cUndefined variable $nope2\u003e\u003cUndefined variable $nope3\u003eint(1)\nstring(1) \"s\"\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "handler receives undefined array key warnings",
+                        "passed":  true,
+                        "stdout":  "[2] Undefined array key 5\nNULL\n[2] Undefined array key \"missing\"\nNULL\nint(1)\nint(2)\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "handler receives undefined property warning",
+                        "passed":  true,
+                        "stdout":  "[2] Undefined property: P::$nope\nNULL\n[2] Undefined property: stdClass::$gone\nNULL\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "null coalescing and isset stay silent",
+                        "passed":  true,
+                        "stdout":  "d1|d2|unset|empty|assigned",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "silence operator still calls handler",
+                        "passed":  true,
+                        "stdout":  "handler:Undefined variable $undefined\nNULL\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "trigger_error levels reach handler",
+                        "passed":  true,
+                        "stdout":  "1024:note:2\n512:warn:3\n16384:dep:4\n1024:alias:5\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "trigger_error invalid level",
+                        "passed":  true,
+                        "stdout":  "trigger_error(): Argument #2 ($error_level) must be one of E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE, or E_USER_DEPRECATED",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "handler mask filters levels",
+                        "passed":  true,
+                        "stdout":  "got w\ndone",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "set_error_handler returns previous and restore works",
+                        "passed":  true,
+                        "stdout":  "NULL\nbool(true)\nh2:a\nh1:b\nend",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "handler with fewer parameters",
+                        "passed":  true,
+                        "stdout":  "level 512\nno params\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "handler as function name and method",
+                        "passed":  true,
+                        "stdout":  "fn:1\nmethod:2\nstatic:3\nstatic:4\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "handler converting warnings to exceptions",
+                        "passed":  true,
+                        "stdout":  "caught: Undefined variable $undefined_thing",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "handler not re-entered for errors inside itself",
+                        "passed":  true,
+                        "stdout":  "outer:first\nafter",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "error_reporting get and set",
+                        "passed":  true,
+                        "stdout":  "int(-1)\nint(-1)\nint(29695)\nint(0)\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "error_reporting zero silences without handler",
+                        "passed":  true,
+                        "stdout":  "silent ok",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "silence operator without handler",
+                        "passed":  true,
+                        "stdout":  "NULL\nNULL\nok",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "ini_set and ini_get round trip",
+                        "passed":  true,
+                        "stdout":  "bool(true)\nstring(2) \"10\"\nint(0)\nfine",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "define twice warns through handler",
+                        "passed":  true,
+                        "stdout":  "[2] Constant ONCE already defined, this will be an error in PHP 9\nbool(false)\n1",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "list destructuring missing key warns",
+                        "passed":  true,
+                        "stdout":  "[Undefined array key 1]int(1)\nNULL\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_15_diagnostics_oracle_cases.json",
+                        "id":  "warning inside function reports function line",
+                        "passed":  true,
+                        "stdout":  "Undefined variable $undefinedInside on 5\nUndefined variable $topLevel on 8\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "fully qualified builtin function and constant",
+                        "passed":  true,
+                        "stdout":  "3|8|X|2",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "fully qualified builtin class",
+                        "passed":  true,
+                        "stdout":  "RuntimeException:boombool(true)\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "namespaced class name",
+                        "passed":  true,
+                        "stdout":  "App\\Models\\User|u|App\\Models\\User|App\\Models",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "class constant on namespaced class and static call",
+                        "passed":  true,
+                        "stdout":  "5|10|2|5|10",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "namespaced function and constant",
+                        "passed":  true,
+                        "stdout":  "6|2|4|3|3",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "global function and constant fallback inside namespace",
+                        "passed":  true,
+                        "stdout":  "4|A|8|1|samebool(true)\nNULL\nbool(true)\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "namespaced function shadows global one",
+                        "passed":  true,
+                        "stdout":  "mine:3|3",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "namespaced constant shadows global lookup",
+                        "passed":  true,
+                        "stdout":  "\u003ceol\u003e|8",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "braced namespaces and use class",
+                        "passed":  true,
+                        "stdout":  "A\\B\\Thing|k|A\\B\\Thing",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "use with alias",
+                        "passed":  true,
+                        "stdout":  "Vendor\\Pkg\\LongName|7|Vendor\\Pkg\\LongName|y|y",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "use namespace prefix",
+                        "passed":  true,
+                        "stdout":  "Vendor\\Pkg\\One|Vendor\\Pkg\\Two",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "use function and use const",
+                        "passed":  true,
+                        "stdout":  "h1|1.2|h2",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "group use",
+                        "passed":  true,
+                        "stdout":  "Lib\\A|Lib\\B|f|c",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "global namespace block",
+                        "passed":  true,
+                        "stdout":  "global|First|First|First\\K|empty",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "type declarations resolve in namespace",
+                        "passed":  true,
+                        "stdout":  "Geo\\Sq:9|NULL\nGeo\\Sq",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "inheritance across namespaces",
+                        "passed":  true,
+                        "stdout":  "Pets\\Dog says woof|Pets\\Puppy says woof|bool(true)\nbool(true)\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "interfaces and traits in namespace",
+                        "passed":  true,
+                        "stdout":  "hi p|bool(true)\nbool(true)\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "exceptions in namespace",
+                        "passed":  true,
+                        "stdout":  "Errs\\AppError:bad|InvalidArgumentException",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "enum in namespace",
+                        "passed":  true,
+                        "stdout":  "H|Spades|Hearts!|Cards\\Suit|enum(Cards\\Suit::Hearts)\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "var_dump and print_r show qualified class names",
+                        "passed":  true,
+                        "stdout":  "object(Out\\Item)#1 (2) {\n  [\"id\"]=\u003e\n  int(1)\n  [\"secret\":\"Out\\Item\":private]=\u003e\n  string(1) \"s\"\n}\nOut\\Item Object\n(\n    [id] =\u003e 1\n    [secret:Out\\Item:private] =\u003e s\n)\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "class name strings and callables with namespaces",
+                        "passed":  true,
+                        "stdout":  "fn1|ran2|ran3|fn4|go",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "class constant class keyword forms",
+                        "passed":  true,
+                        "stdout":  "K\\Foo|K\\Foo|K\\Bar|K\\Foo|stdClass|Exception",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "closures and use clause unaffected",
+                        "passed":  true,
+                        "stdout":  "11|20|11",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "static properties and methods through alias",
+                        "passed":  true,
+                        "stdout":  "12|2",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "define and constant with namespace names",
+                        "passed":  true,
+                        "stdout":  "l|l|l|d|bool(true)\nbool(false)\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "ternary and expressions with constants in namespace",
+                        "passed":  true,
+                        "stdout":  "2|y|6|2|k|-2",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_16_namespaces_oracle_cases.json",
+                        "id":  "fully qualified names in global code",
+                        "passed":  true,
+                        "stdout":  "1|f|gf|gc|Plain|Plain",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "dynamic namespaced constant",
+                        "passed":  true,
+                        "stdout":  "7",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "dynamic constant over global constant",
+                        "passed":  true,
+                        "stdout":  "local",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "defined null constant does not fall back",
+                        "passed":  true,
+                        "stdout":  "NULL\n",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "constant fallback remains case sensitive",
+                        "passed":  true,
+                        "stdout":  "local|global",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "dynamic constant in function body",
+                        "passed":  true,
+                        "stdout":  "19",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "repeated constant expression after local definition",
+                        "passed":  true,
+                        "stdout":  "global|global",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "conditional local function not installed",
+                        "passed":  true,
+                        "stdout":  "3",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "conditional local function installed",
+                        "passed":  true,
+                        "stdout":  "9",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "two call sites bind independently",
+                        "passed":  true,
+                        "stdout":  "3|9",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "same call site after local function definition",
+                        "passed":  true,
+                        "stdout":  "3|3",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "nested declaration resolves at runtime",
+                        "passed":  true,
+                        "stdout":  "13",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "function fallback into global user function",
+                        "passed":  true,
+                        "stdout":  "17",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "local reference return selected at runtime",
+                        "passed":  true,
+                        "stdout":  "8",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "global reference return fallback",
+                        "passed":  true,
+                        "stdout":  "8",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "first class global fallback with unexecuted local declaration",
+                        "passed":  true,
+                        "stdout":  "3",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "first class local function binds when created",
+                        "passed":  true,
+                        "stdout":  "9",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "imported constant is resolved exactly",
+                        "passed":  true,
+                        "stdout":  "import",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "imported function is resolved exactly",
+                        "passed":  true,
+                        "stdout":  "import|local",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "qualified constant has no global fallback",
+                        "passed":  true,
+                        "stdout":  "qualified",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "relative function stays in current namespace",
+                        "passed":  true,
+                        "stdout":  "23",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "failed call lookup is retried after local declaration",
+                        "passed":  true,
+                        "stdout":  "first|local",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "failed first class lookup is retried after local declaration",
+                        "passed":  true,
+                        "stdout":  "local",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "first class unknown function rejected when created",
+                        "passed":  true,
+                        "stdout":  "caught",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "undefined call rejected before argument side effects",
+                        "passed":  true,
+                        "stdout":  "caught|finally",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    },
+                    {
+                        "fixture":  "PHP_v3_17_namespace_runtime_oracle_cases.json",
+                        "id":  "successful builtin binding survives argument exception",
+                        "passed":  true,
+                        "stdout":  "caught|1",
+                        "stderr":  "",
+                        "error":  null,
+                        "pipeline_count":  0
+                    }
+                ],
+    "fixture_inputs":  [
+                           {
+                               "path":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\PHP_v3_15_diagnostics_oracle_cases.json",
+                               "sha256_before":  "E3A6C541D98E9FF1820B8BEBFFFCF8DA0A507EDB7480379BC8F0A1C76ACC9FD9",
+                               "sha256_after":  "E3A6C541D98E9FF1820B8BEBFFFCF8DA0A507EDB7480379BC8F0A1C76ACC9FD9"
+                           },
+                           {
+                               "path":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\PHP_v3_16_namespaces_oracle_cases.json",
+                               "sha256_before":  "6EE35B0112DF5617028CA4B219D1094DE26847DAE36DB9DC638064CD9FD8E8DC",
+                               "sha256_after":  "6EE35B0112DF5617028CA4B219D1094DE26847DAE36DB9DC638064CD9FD8E8DC"
+                           },
+                           {
+                               "path":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\PHP_v3_17_namespace_runtime_oracle_cases.json",
+                               "sha256_before":  "00561FA0183BC7905638D67D06F68BEE26B873A600C7E438E05E8516B77BE341",
+                               "sha256_after":  "00561FA0183BC7905638D67D06F68BEE26B873A600C7E438E05E8516B77BE341"
+                           }
+                       ],
+    "adapter_sha256_before":  "907171B658EDB943A307F3DAE32945A0105391F652FA477A4275B586385CE0BD",
+    "adapter_sha256_after":  "907171B658EDB943A307F3DAE32945A0105391F652FA477A4275B586385CE0BD"
+}

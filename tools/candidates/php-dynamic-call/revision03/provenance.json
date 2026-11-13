@@ -1,0 +1,9 @@
+{
+  "status": "ISOLATED_NOT_COMPLETE",
+  "base": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
+  "base_sha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+  "candidate": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision03\\ALL_PHP_dynamic_call_candidate.ps1",
+  "candidate_sha256": "ca7f97ae7998569cdbbf662e199f811c87f0cb8522761d3b254aa80e50ccd0ec",
+  "helpers_sha256": "3bd7ae34d61ba2917fb2a7336fea858d793e736fc799d44d0c551540c73ba3f0",
+  "package_modified": false
+}

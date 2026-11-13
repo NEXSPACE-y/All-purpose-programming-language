@@ -1,0 +1,3693 @@
+{
+  "schema_version": 1,
+  "status": "NOT_COMPLETE",
+  "isolated_candidate": true,
+  "driver_argv": [
+    "C:\\Users\\rinpa\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "tools/candidates/php-v3_18/Compare-Cli.py",
+    "--adapter",
+    "tools/candidates/php-dynamic-call/revision06/ALL_PHP_dynamic_call_candidate.ps1",
+    "--cases",
+    "tools/candidates/php-dynamic-call/final73.cases.json",
+    "--output",
+    "reports/php-dynamic-call-20261113/revision06-final73",
+    "--timeout",
+    "30"
+  ],
+  "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112",
+  "timeout_seconds": 30.0,
+  "measurement": "exact stdout bytes, stderr bytes and actual process status; no normalization",
+  "scope": "Listed examples only; not full CLI/SAPI/PHP conformance.",
+  "inputs_before": {
+    "cases": "6de7264db8b07f5838bb28223af7bb533d34f7ced51e1353a85c171f2ded1954",
+    "adapter": "3ab4d48af3eb26a69ebb99b45b93202dba453f752b966de7b0414c3d5d1ae36b",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "worker": "471bcb240f0a29ea256ef1a5fc8f6ecdeb0094a323f19a8811d3f84e883e62ac",
+    "driver": "880a8a6461d010eade53ec55ddc9ef5f8bad8adf018bab65c9d8f7c7b524a8f0"
+  },
+  "inputs_after": {
+    "cases": "6de7264db8b07f5838bb28223af7bb533d34f7ced51e1353a85c171f2ded1954",
+    "adapter": "3ab4d48af3eb26a69ebb99b45b93202dba453f752b966de7b0414c3d5d1ae36b",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "worker": "471bcb240f0a29ea256ef1a5fc8f6ecdeb0094a323f19a8811d3f84e883e62ac",
+    "driver": "880a8a6461d010eade53ec55ddc9ef5f8bad8adf018bab65c9d8f7c7b524a8f0"
+  },
+  "inputs_unchanged": true,
+  "total": 73,
+  "passed": 73,
+  "different": 0,
+  "results": [
+    {
+      "id": "dynamic.absent-catch",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0000.php",
+      "source_sha256": "a774da06054d87d5511ed6557f1aff0306e5d74e14731d72be41b1f0ea52c419",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2713841000004322,
+        "stdout_base64": "RXJyb3I6Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gbWlzc2luZ19mbigp",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Error:Call to undefined function missing_fn()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0000.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.270400400000653,
+        "stdout_base64": "RXJyb3I6Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gbWlzc2luZ19mbigp",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Error:Call to undefined function missing_fn()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0000.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.absent-order",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0001.php",
+      "source_sha256": "370da52f9091f84b81a137085f6fe446b22c83cd0b76f8a4e2b830924278dda5",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.1964977000006911,
+        "stdout_base64": "Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gbWlzc2luZ19mbigp",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to undefined function missing_fn()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0001.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.644521500000337,
+        "stdout_base64": "Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gbWlzc2luZ19mbigp",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to undefined function missing_fn()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0001.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.leading-builtin",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0002.php",
+      "source_sha256": "e76541444b6ff2270c97dcb3c1b25c302c7a78592dce26d0dadb1eb461fa093c",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.24913720000040485,
+        "stdout_base64": "Mw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0002.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 5.956707400000596,
+        "stdout_base64": "Mw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0002.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.leading-user",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0003.php",
+      "source_sha256": "1121b461ef4493961438e0de4ae5ed3f40c1483b252f988faf9d48ec5b1f7bfd",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.1861817000008159,
+        "stdout_base64": "Mw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0003.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 5.152349799998774,
+        "stdout_base64": "Mw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0003.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.namespace-string-global",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0004.php",
+      "source_sha256": "74de2ff3b71da86d7bc99b4dbd9daee670c7a662a0d447dbe5a2f35c18093357",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.1720182000008208,
+        "stdout_base64": "Mw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0004.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 5.264233500000046,
+        "stdout_base64": "Mw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0004.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.namespace-explicit-string",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0005.php",
+      "source_sha256": "b6cb7f7d77616abbe961f3548f3cbb8cc4ab2bbb7c9cd916244f3fed6888cbbc",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.18624690000069677,
+        "stdout_base64": "OA==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "8",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0005.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 5.417901400000119,
+        "stdout_base64": "OA==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "8",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0005.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.later-definition",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0006.php",
+      "source_sha256": "da82d9f10b6f1de719740a30dcd040afdbb78605d515729fa4c1664055f5c3b4",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.20737180000105582,
+        "stdout_base64": "YmVmb3JlOm9r",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "before:ok",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0006.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.07827720000023,
+        "stdout_base64": "YmVmb3JlOm9r",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "before:ok",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0006.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.null",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0007.php",
+      "source_sha256": "8bd762263eb7fb08e31e05a7a861367b3ba522c0b8a41eb826a4396753f79afe",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.18739189999905648,
+        "stdout_base64": "RXJyb3I6VmFsdWUgb2YgdHlwZSBudWxsIGlzIG5vdCBjYWxsYWJsZQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Error:Value of type null is not callable",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0007.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.4208708999995,
+        "stdout_base64": "RXJyb3I6VmFsdWUgb2YgdHlwZSBudWxsIGlzIG5vdCBjYWxsYWJsZQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Error:Value of type null is not callable",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0007.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.int-order",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0008.php",
+      "source_sha256": "522a3a0acc7a0c77841daf95722a75e40b6646488488a5901c4ac2a1cd2762d5",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2007794000001013,
+        "stdout_base64": "RXJyb3I6VmFsdWUgb2YgdHlwZSBpbnQgaXMgbm90IGNhbGxhYmxl",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Error:Value of type int is not callable",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0008.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.814905299999737,
+        "stdout_base64": "RXJyb3I6VmFsdWUgb2YgdHlwZSBpbnQgaXMgbm90IGNhbGxhYmxl",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Error:Value of type int is not callable",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0008.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.bool",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0009.php",
+      "source_sha256": "a11de4f1a5c5c27f7c45e3d484c79be295c87961e5cb2b09e3d88bc93550b178",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.178583199998684,
+        "stdout_base64": "VmFsdWUgb2YgdHlwZSBib29sIGlzIG5vdCBjYWxsYWJsZQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Value of type bool is not callable",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0009.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.673959099998683,
+        "stdout_base64": "VmFsdWUgb2YgdHlwZSBib29sIGlzIG5vdCBjYWxsYWJsZQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Value of type bool is not callable",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0009.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.float",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0010.php",
+      "source_sha256": "8e73ef158150dd737eb060977687ae4cad86dc61785419959ed7231ea68eae83",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.203974099998959,
+        "stdout_base64": "VmFsdWUgb2YgdHlwZSBmbG9hdCBpcyBub3QgY2FsbGFibGU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Value of type float is not callable",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0010.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.430367499999193,
+        "stdout_base64": "VmFsdWUgb2YgdHlwZSBmbG9hdCBpcyBub3QgY2FsbGFibGU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Value of type float is not callable",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0010.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.empty-string",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0011.php",
+      "source_sha256": "0be57466e437ea2c3545173d47e04e614152e61445932ae1fe6d19ab56aece8e",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.18928109999978915,
+        "stdout_base64": "Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gKCk=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to undefined function ()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0011.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 10.060511199999382,
+        "stdout_base64": "Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gKCk=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to undefined function ()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0011.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.array-empty",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0012.php",
+      "source_sha256": "92e1d1c136ab480bc531c7258e2c16bca6f0edb4b8f1cc2ebb9db47a136259f7",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5259248000002117,
+        "stdout_base64": "QXJyYXkgY2FsbGJhY2sgbXVzdCBoYXZlIGV4YWN0bHkgdHdvIGVsZW1lbnRz",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Array callback must have exactly two elements",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0012.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 15.555733400000463,
+        "stdout_base64": "QXJyYXkgY2FsbGJhY2sgbXVzdCBoYXZlIGV4YWN0bHkgdHdvIGVsZW1lbnRz",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Array callback must have exactly two elements",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0012.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.array-one",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0013.php",
+      "source_sha256": "d6c831409bd467528a1cc0c4cc03af10aa68d6be10209c696296535a0221042b",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 1.034795399998984,
+        "stdout_base64": "QXJyYXkgY2FsbGJhY2sgbXVzdCBoYXZlIGV4YWN0bHkgdHdvIGVsZW1lbnRz",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Array callback must have exactly two elements",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0013.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 13.820433099999718,
+        "stdout_base64": "QXJyYXkgY2FsbGJhY2sgbXVzdCBoYXZlIGV4YWN0bHkgdHdvIGVsZW1lbnRz",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Array callback must have exactly two elements",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0013.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.array-method",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0014.php",
+      "source_sha256": "9869852fda68126321b5147a56f57d765b242c1a4a6d417ec5a6f938bedd2218",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.49697480000031646,
+        "stdout_base64": "NQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "5",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0014.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 7.39554759999919,
+        "stdout_base64": "NQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "5",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0014.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.array-static",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0015.php",
+      "source_sha256": "3ff93ede92bdee3b343d31dffba607702d6174c7ff908bad01816b0ffadf53f6",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5369279000005918,
+        "stdout_base64": "b2s=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "ok",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0015.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 10.29751589999978,
+        "stdout_base64": "b2s=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "ok",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0015.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.object-invalid",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0016.php",
+      "source_sha256": "acbb739312a7c7421a8d7e1dc482807581ef76f8755334356daacfb9f7224acc",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.7129393999985041,
+        "stdout_base64": "T2JqZWN0IG9mIHR5cGUgQyBpcyBub3QgY2FsbGFibGU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Object of type C is not callable",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0016.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 13.794407999999748,
+        "stdout_base64": "T2JqZWN0IG9mIHR5cGUgQyBpcyBub3QgY2FsbGFibGU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Object of type C is not callable",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0016.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.object-invoke",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0017.php",
+      "source_sha256": "db75e315b69dcd811b81fda39b2baca260abf7509736d58edaaf4b78dee41f91",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.4601390999996511,
+        "stdout_base64": "NQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "5",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0017.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 6.850975499999549,
+        "stdout_base64": "NQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "5",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0017.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.firstclass-absent",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0018.php",
+      "source_sha256": "7b10ce2eb11dbd744e693fedc420a91244b47665ddc9de1af777d2ebf4af4ece",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2852957000013703,
+        "stdout_base64": "Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gbWlzc2luZ19mbigp",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to undefined function missing_fn()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0018.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.92703530000108,
+        "stdout_base64": "Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gbWlzc2luZ19mbigp",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to undefined function missing_fn()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0018.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.cuf-absent-order",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0019.php",
+      "source_sha256": "1c5a27e2dbf5872c844b5baac87c6e822ffc4ac2785dcc65f596391f8823f487",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.24848049999854993,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBmdW5jdGlvbiAibWlzc2luZ19mbiIgbm90IGZvdW5kIG9yIGludmFsaWQgZnVuY3Rpb24gbmFtZQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, function \"missing_fn\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0019.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.135531800000535,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBmdW5jdGlvbiAibWlzc2luZ19mbiIgbm90IGZvdW5kIG9yIGludmFsaWQgZnVuY3Rpb24gbmFtZQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, function \"missing_fn\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0019.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.cuf-null",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0020.php",
+      "source_sha256": "ea6574a78131941308514a635019132f7a6e90789aa09ec55cceaf0899073209",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.21701369999937015,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBubyBhcnJheSBvciBzdHJpbmcgZ2l2ZW4=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, no array or string given",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0020.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.968618999999308,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBubyBhcnJheSBvciBzdHJpbmcgZ2l2ZW4=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, no array or string given",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0020.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.cuf-object-invalid",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0021.php",
+      "source_sha256": "a5e240e102238d10896bb31cfad383f8d239dc404d74bdd0dc49970b7594eba0",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5375134999994771,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBubyBhcnJheSBvciBzdHJpbmcgZ2l2ZW4=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, no array or string given",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0021.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 10.73139170000104,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBubyBhcnJheSBvciBzdHJpbmcgZ2l2ZW4=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, no array or string given",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0021.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.cufa-absent",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0022.php",
+      "source_sha256": "5589261392dd2081392419caa388a3a655b16b7e9de52f88c8253c29d6ccba09",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5390348000000813,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmNfYXJyYXkoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBmdW5jdGlvbiAibWlzc2luZ19mbiIgbm90IGZvdW5kIG9yIGludmFsaWQgZnVuY3Rpb24gbmFtZQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func_array(): Argument #1 ($callback) must be a valid callback, function \"missing_fn\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0022.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 12.463678000000073,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmNfYXJyYXkoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBmdW5jdGlvbiAibWlzc2luZ19mbiIgbm90IGZvdW5kIG9yIGludmFsaWQgZnVuY3Rpb24gbmFtZQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func_array(): Argument #1 ($callback) must be a valid callback, function \"missing_fn\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0022.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.cuf-leading",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0023.php",
+      "source_sha256": "a62bbceedd16f8042eace5a5f1fa12f7cdb6b48799c13fc1b8f0be9462cafdb3",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.28307889999996405,
+        "stdout_base64": "Mw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0023.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 5.269777699999395,
+        "stdout_base64": "Mw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "3",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0023.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.cuf-user-ref",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0024.php",
+      "source_sha256": "f5f7ba094ef18aa12c9b924566c69430a974717b0323524e7b0bd327118ad53f",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.24927630000092904,
+        "stdout_base64": "NDox",
+        "stderr_base64": "V2FybmluZzogZigpOiBBcmd1bWVudCAjMSAoJHgpIG11c3QgYmUgcGFzc2VkIGJ5IHJlZmVyZW5jZSwgdmFsdWUgZ2l2ZW4gaW4gQzpcVXNlcnNccmlucGFcQUxMLXBocC1jb21wYXQtMjAyNjExMTJccmVwb3J0c1xwaHAtZHluYW1pYy1jYWxsLTIwMjYxMTEzXHJldmlzaW9uMDYtZmluYWw3M1xjYXNlLTAwMjQucGhwIG9uIGxpbmUgMQo=",
+        "stdout_utf8_preview": "4:1",
+        "stderr_utf8_preview": "Warning: f(): Argument #1 ($x) must be passed by reference, value given in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0024.php on line 1\n",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0024.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 6.066191500000059,
+        "stdout_base64": "NDox",
+        "stderr_base64": "V2FybmluZzogZigpOiBBcmd1bWVudCAjMSAoJHgpIG11c3QgYmUgcGFzc2VkIGJ5IHJlZmVyZW5jZSwgdmFsdWUgZ2l2ZW4gaW4gQzpcVXNlcnNccmlucGFcQUxMLXBocC1jb21wYXQtMjAyNjExMTJccmVwb3J0c1xwaHAtZHluYW1pYy1jYWxsLTIwMjYxMTEzXHJldmlzaW9uMDYtZmluYWw3M1xjYXNlLTAwMjQucGhwIG9uIGxpbmUgMQo=",
+        "stdout_utf8_preview": "4:1",
+        "stderr_utf8_preview": "Warning: f(): Argument #1 ($x) must be passed by reference, value given in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0024.php on line 1\n",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0024.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.dynamic-ref",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0025.php",
+      "source_sha256": "7a27d0ffe2ecf2f6cf8170c1ad4f660210bb6cce2ee78da85122323aca17c145",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2685970000002271,
+        "stdout_base64": "NDo0",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "4:4",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0025.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 6.187715699999899,
+        "stdout_base64": "NDo0",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "4:4",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0025.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.array-bad-member",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0026.php",
+      "source_sha256": "7d257c7614d0df37c307564295def5d25fa8cef6e95f545f6efe1764887dae7b",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2268487000001187,
+        "stdout_base64": "U2Vjb25kIGFycmF5IG1lbWJlciBpcyBub3QgYSB2YWxpZCBtZXRob2Q=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Second array member is not a valid method",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0026.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.794824900000094,
+        "stdout_base64": "U2Vjb25kIGFycmF5IG1lbWJlciBpcyBub3QgYSB2YWxpZCBtZXRob2Q=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Second array member is not a valid method",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0026.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.array-bad-first",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0027.php",
+      "source_sha256": "f874f302a8cbdb63a3f5797d7f9035f2a101f1cf7754d3fb7d7ed2763709172b",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.23163709999971616,
+        "stdout_base64": "Rmlyc3QgYXJyYXkgbWVtYmVyIGlzIG5vdCBhIHZhbGlkIGNsYXNzIG5hbWUgb3Igb2JqZWN0",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "First array member is not a valid class name or object",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0027.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 11.27979679999953,
+        "stdout_base64": "Rmlyc3QgYXJyYXkgbWVtYmVyIGlzIG5vdCBhIHZhbGlkIGNsYXNzIG5hbWUgb3Igb2JqZWN0",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "First array member is not a valid class name or object",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0027.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.array-string-keys",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0028.php",
+      "source_sha256": "3e0d9dd0c8e35e00a194a206658368c3ef6d578fde198451db8060d4b00a34d5",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5514425000001211,
+        "stdout_base64": "QXJyYXkgY2FsbGJhY2sgaGFzIHRvIGNvbnRhaW4gaW5kaWNlcyAwIGFuZCAx",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Array callback has to contain indices 0 and 1",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0028.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 12.542600000000675,
+        "stdout_base64": "QXJyYXkgY2FsbGJhY2sgaGFzIHRvIGNvbnRhaW4gaW5kaWNlcyAwIGFuZCAx",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Array callback has to contain indices 0 and 1",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0028.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.absent-side-throw",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0029.php",
+      "source_sha256": "1d9a1095791c830ed8f36a5b97dc8b55f9e93bccd3c0cd228b4f2c681abfc463",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5531327999997302,
+        "stdout_base64": "RXJyb3I6Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gbWlzc2luZ19mbigp",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Error:Call to undefined function missing_fn()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0029.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 14.820987700000842,
+        "stdout_base64": "RXJyb3I6Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gbWlzc2luZ19mbigp",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Error:Call to undefined function missing_fn()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0029.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.cuf-dynamic-order",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0030.php",
+      "source_sha256": "b39e3801634b5e5a89cff4d5fcf7c5fa76774af34130cd53c45bb4551af85efa",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.38276500000029046,
+        "stdout_base64": "U0lERWNhbGxfdXNlcl9mdW5jKCk6IEFyZ3VtZW50ICMxICgkY2FsbGJhY2spIG11c3QgYmUgYSB2YWxpZCBjYWxsYmFjaywgZnVuY3Rpb24gIm1pc3NpbmciIG5vdCBmb3VuZCBvciBpbnZhbGlkIGZ1bmN0aW9uIG5hbWU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "SIDEcall_user_func(): Argument #1 ($callback) must be a valid callback, function \"missing\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0030.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 12.313809400000537,
+        "stdout_base64": "U0lERWNhbGxfdXNlcl9mdW5jKCk6IEFyZ3VtZW50ICMxICgkY2FsbGJhY2spIG11c3QgYmUgYSB2YWxpZCBjYWxsYmFjaywgZnVuY3Rpb24gIm1pc3NpbmciIG5vdCBmb3VuZCBvciBpbnZhbGlkIGZ1bmN0aW9uIG5hbWU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "SIDEcall_user_func(): Argument #1 ($callback) must be a valid callback, function \"missing\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0030.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.cufa-direct-order",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0031.php",
+      "source_sha256": "3cda31125dc06ad0ae936298cbf77af52f63e6f2f471c397d9463579b14d9621",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.4890579000002617,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmNfYXJyYXkoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBmdW5jdGlvbiAibWlzc2luZyIgbm90IGZvdW5kIG9yIGludmFsaWQgZnVuY3Rpb24gbmFtZQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func_array(): Argument #1 ($callback) must be a valid callback, function \"missing\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0031.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 12.510990599999786,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmNfYXJyYXkoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBmdW5jdGlvbiAibWlzc2luZyIgbm90IGZvdW5kIG9yIGludmFsaWQgZnVuY3Rpb24gbmFtZQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func_array(): Argument #1 ($callback) must be a valid callback, function \"missing\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0031.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.cufa-dynamic-order",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0032.php",
+      "source_sha256": "56380411c14563cf9055a293d75771950c76311344520eb42f1fbfcfcb1b5a96",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.48429480000049807,
+        "stdout_base64": "U0lERWNhbGxfdXNlcl9mdW5jX2FycmF5KCk6IEFyZ3VtZW50ICMxICgkY2FsbGJhY2spIG11c3QgYmUgYSB2YWxpZCBjYWxsYmFjaywgZnVuY3Rpb24gIm1pc3NpbmciIG5vdCBmb3VuZCBvciBpbnZhbGlkIGZ1bmN0aW9uIG5hbWU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "SIDEcall_user_func_array(): Argument #1 ($callback) must be a valid callback, function \"missing\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0032.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 12.510114499998963,
+        "stdout_base64": "U0lERWNhbGxfdXNlcl9mdW5jX2FycmF5KCk6IEFyZ3VtZW50ICMxICgkY2FsbGJhY2spIG11c3QgYmUgYSB2YWxpZCBjYWxsYmFjaywgZnVuY3Rpb24gIm1pc3NpbmciIG5vdCBmb3VuZCBvciBpbnZhbGlkIGZ1bmN0aW9uIG5hbWU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "SIDEcall_user_func_array(): Argument #1 ($callback) must be a valid callback, function \"missing\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0032.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.cuf-callback-expression",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0033.php",
+      "source_sha256": "180ef949fd3da27bbfb589e84eb58e7aed5d015bf0c51715fbb6197d5bc5848d",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.23693760000060138,
+        "stdout_base64": "Q0JjYWxsX3VzZXJfZnVuYygpOiBBcmd1bWVudCAjMSAoJGNhbGxiYWNrKSBtdXN0IGJlIGEgdmFsaWQgY2FsbGJhY2ssIGZ1bmN0aW9uICJtaXNzaW5nIiBub3QgZm91bmQgb3IgaW52YWxpZCBmdW5jdGlvbiBuYW1l",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "CBcall_user_func(): Argument #1 ($callback) must be a valid callback, function \"missing\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0033.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.696896400000696,
+        "stdout_base64": "Q0JjYWxsX3VzZXJfZnVuYygpOiBBcmd1bWVudCAjMSAoJGNhbGxiYWNrKSBtdXN0IGJlIGEgdmFsaWQgY2FsbGJhY2ssIGZ1bmN0aW9uICJtaXNzaW5nIiBub3QgZm91bmQgb3IgaW52YWxpZCBmdW5jdGlvbiBuYW1l",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "CBcall_user_func(): Argument #1 ($callback) must be a valid callback, function \"missing\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0033.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.cuf-namespace-fallback",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0034.php",
+      "source_sha256": "91405c6e1883ea66da1ebf2eff246f691178a2e00fc430202635c01e3d356172",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2533931999987544,
+        "stdout_base64": "U0lERWNhbGxfdXNlcl9mdW5jKCk6IEFyZ3VtZW50ICMxICgkY2FsbGJhY2spIG11c3QgYmUgYSB2YWxpZCBjYWxsYmFjaywgZnVuY3Rpb24gIm1pc3NpbmciIG5vdCBmb3VuZCBvciBpbnZhbGlkIGZ1bmN0aW9uIG5hbWU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "SIDEcall_user_func(): Argument #1 ($callback) must be a valid callback, function \"missing\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0034.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 11.635576599999695,
+        "stdout_base64": "U0lERWNhbGxfdXNlcl9mdW5jKCk6IEFyZ3VtZW50ICMxICgkY2FsbGJhY2spIG11c3QgYmUgYSB2YWxpZCBjYWxsYmFjaywgZnVuY3Rpb24gIm1pc3NpbmciIG5vdCBmb3VuZCBvciBpbnZhbGlkIGZ1bmN0aW9uIG5hbWU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "SIDEcall_user_func(): Argument #1 ($callback) must be a valid callback, function \"missing\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0034.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.cuf-namespace-qualified",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0035.php",
+      "source_sha256": "aaec612b5056f5c4bb16b17ebe17d577de1d09be6b3a894c9563ee629e46825a",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.23335819999920204,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBmdW5jdGlvbiAibWlzc2luZyIgbm90IGZvdW5kIG9yIGludmFsaWQgZnVuY3Rpb24gbmFtZQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, function \"missing\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0035.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.603139700000611,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBmdW5jdGlvbiAibWlzc2luZyIgbm90IGZvdW5kIG9yIGludmFsaWQgZnVuY3Rpb24gbmFtZQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, function \"missing\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0035.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.cuf-namespace-alias",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0036.php",
+      "source_sha256": "5735544a7662bfe0a88e2f0a1c4f41b8ea35fc8f9f68cd526ce37f19b91dc91b",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2385718999994424,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBmdW5jdGlvbiAibWlzc2luZyIgbm90IGZvdW5kIG9yIGludmFsaWQgZnVuY3Rpb24gbmFtZQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, function \"missing\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0036.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.912064399999508,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBmdW5jdGlvbiAibWlzc2luZyIgbm90IGZvdW5kIG9yIGludmFsaWQgZnVuY3Rpb24gbmFtZQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, function \"missing\" not found or invalid function name",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0036.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.array-capture-before-args",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0037.php",
+      "source_sha256": "69c7986849f27285702ec349606ca060a79f26b5de281067b02f179c8cd3477e",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2785273999998026,
+        "stdout_base64": "QQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "A",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0037.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 6.570523800000956,
+        "stdout_base64": "QQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "A",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0037.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.missing-class",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0038.php",
+      "source_sha256": "4640eab70fb5a743abd606a9e3ec1cb133beac28ff39c418f8ea53278ce9aaab",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.23413869999967574,
+        "stdout_base64": "Q2xhc3MgIk5vU3VjaENsYXNzIiBub3QgZm91bmQ=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Class \"NoSuchClass\" not found",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0038.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.678490899999815,
+        "stdout_base64": "Q2xhc3MgIk5vU3VjaENsYXNzIiBub3QgZm91bmQ=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Class \"NoSuchClass\" not found",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0038.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.missing-method",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0039.php",
+      "source_sha256": "79eff89a349c1341a74d98cbdd0b4820649feef5ab436ebffe9adb77bc695d1b",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.22647169999981998,
+        "stdout_base64": "Q2FsbCB0byB1bmRlZmluZWQgbWV0aG9kIEM6OmYoKQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to undefined method C::f()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0039.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 10.548877100000027,
+        "stdout_base64": "Q2FsbCB0byB1bmRlZmluZWQgbWV0aG9kIEM6OmYoKQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to undefined method C::f()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0039.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.nonstatic-as-static",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0040.php",
+      "source_sha256": "25f1fe422f09b46d03cd1b9b98469eeb613366203bce813530e4ac6e8f74c0d1",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.47963610000078916,
+        "stdout_base64": "Tm9uLXN0YXRpYyBtZXRob2QgQzo6ZigpIGNhbm5vdCBiZSBjYWxsZWQgc3RhdGljYWxseQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Non-static method C::f() cannot be called statically",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0040.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.969466999998986,
+        "stdout_base64": "Tm9uLXN0YXRpYyBtZXRob2QgQzo6ZigpIGNhbm5vdCBiZSBjYWxsZWQgc3RhdGljYWxseQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Non-static method C::f() cannot be called statically",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0040.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.cuf-missing-class",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0041.php",
+      "source_sha256": "b7d341e5d65f22d3cffff44f9ee362823abe2326a88649f0e861037e1b3bd3c9",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.22366329999931622,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBjbGFzcyAiTm9TdWNoQ2xhc3MiIG5vdCBmb3VuZA==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, class \"NoSuchClass\" not found",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0041.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.991270200000145,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBjbGFzcyAiTm9TdWNoQ2xhc3MiIG5vdCBmb3VuZA==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, class \"NoSuchClass\" not found",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0041.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.cuf-missing-method",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0042.php",
+      "source_sha256": "0cb85fd12e539dd843889e261442a71d047cbfbf2f71ca2ed8493279555fe3ab",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.22512450000067474,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBjbGFzcyBDIGRvZXMgbm90IGhhdmUgYSBtZXRob2QgImYi",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, class C does not have a method \"f\"",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0042.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 10.701295200000459,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBjbGFzcyBDIGRvZXMgbm90IGhhdmUgYSBtZXRob2QgImYi",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, class C does not have a method \"f\"",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0042.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.cuf-nonstatic",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0043.php",
+      "source_sha256": "1eedd9363b32f363b3637b8eb8f88efe6dcd6bd29ce8382dc6dab7972c01b353",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.25228430000061053,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBub24tc3RhdGljIG1ldGhvZCBDOjpmKCkgY2Fubm90IGJlIGNhbGxlZCBzdGF0aWNhbGx5",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, non-static method C::f() cannot be called statically",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0043.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 10.148009799999272,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBub24tc3RhdGljIG1ldGhvZCBDOjpmKCkgY2Fubm90IGJlIGNhbGxlZCBzdGF0aWNhbGx5",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, non-static method C::f() cannot be called statically",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0043.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.cuf-array-empty",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0044.php",
+      "source_sha256": "96d33d38f326a7fd538f03105399569a380320b9be25840e1839afcbe3f0a4c4",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.4113675000007788,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBhcnJheSBjYWxsYmFjayBtdXN0IGhhdmUgZXhhY3RseSB0d28gbWVtYmVycw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, array callback must have exactly two members",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0044.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.996084000000337,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBhcnJheSBjYWxsYmFjayBtdXN0IGhhdmUgZXhhY3RseSB0d28gbWVtYmVycw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, array callback must have exactly two members",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0044.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.firstclass-array-static",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0045.php",
+      "source_sha256": "ab8cf819384d08a8ff9010f82b7b93d5aa71e4cbe44fd836ceb3ae521542bf41",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.23744519999854674,
+        "stdout_base64": "Nw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "7",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0045.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 7.801052400000117,
+        "stdout_base64": "Nw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "7",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0045.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.firstclass-string-static",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0046.php",
+      "source_sha256": "32b98fc5c3f4616d715e733a6ece1eea3edf9065e2c04c7107983d3eafd869ec",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.48973170000135724,
+        "stdout_base64": "OA==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "8",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0046.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 6.221840500000326,
+        "stdout_base64": "OA==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "8",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0046.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.firstclass-rebind-source",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0047.php",
+      "source_sha256": "15b4384e3920f64cd489ec8caeaf5b1facfac11748bbb1c44466455ab3a3cefa",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.44321750000017346,
+        "stdout_base64": "Rg==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "F",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0047.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 7.639822099999947,
+        "stdout_base64": "Rg==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "F",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0047.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.cufa-named",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0048.php",
+      "source_sha256": "3ffcb43f20079a12c7c2b7c88f63e8f074d3c726f7d06145999d00b15aa1a58c",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.6634465000006458,
+        "stdout_base64": "MToy",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "1:2",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0048.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.985173199998826,
+        "stdout_base64": "MToy",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "1:2",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0048.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.cufa-reference",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0049.php",
+      "source_sha256": "d20cf641d93daa9c12433b62a6d84800d14fb8154acf910ff2fd7a951de51ec5",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.6224227000002429,
+        "stdout_base64": "OTo5",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "9:9",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0049.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.482744900000398,
+        "stdout_base64": "OTo5",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "9:9",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0049.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.private-method",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0050.php",
+      "source_sha256": "7cdce6da874c79da309c9a1ad24d56bb4c8af4c1726a38d7e1fe9f95bebe37c7",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 1.2028898999997182,
+        "stdout_base64": "Q2FsbCB0byBwcml2YXRlIG1ldGhvZCBDOjpmKCkgZnJvbSBnbG9iYWwgc2NvcGU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to private method C::f() from global scope",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0050.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 14.355735900000582,
+        "stdout_base64": "Q2FsbCB0byBwcml2YXRlIG1ldGhvZCBDOjpmKCkgZnJvbSBnbG9iYWwgc2NvcGU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to private method C::f() from global scope",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0050.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.cuf-private-method",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0051.php",
+      "source_sha256": "13940707df49e17f0327e2a70a76e040ded8dc808c719ee7a3192fc5f5901f0c",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.4510819999995874,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBjYW5ub3QgYWNjZXNzIHByaXZhdGUgbWV0aG9kIEM6OmYoKQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, cannot access private method C::f()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0051.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 12.98698190000141,
+        "stdout_base64": "Y2FsbF91c2VyX2Z1bmMoKTogQXJndW1lbnQgIzEgKCRjYWxsYmFjaykgbXVzdCBiZSBhIHZhbGlkIGNhbGxiYWNrLCBjYW5ub3QgYWNjZXNzIHByaXZhdGUgbWV0aG9kIEM6OmYoKQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "call_user_func(): Argument #1 ($callback) must be a valid callback, cannot access private method C::f()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0051.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.array-reference-updates",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0052.php",
+      "source_sha256": "e8c602bfc8eb1902ccdcbe23562067c6d60a07903b61dadc0be6614c0f257ef5",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.4073286000002554,
+        "stdout_base64": "MzU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "35",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0052.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 6.905544100000043,
+        "stdout_base64": "MzU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "35",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0052.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.array-keyed-reference",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0053.php",
+      "source_sha256": "8bfaa25a6c689aa64cb71bfbca6b160594ed1fde24ca756c2dc2b0113de079f9",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.3373210999998264,
+        "stdout_base64": "Ng==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "6",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0053.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 6.239490500000102,
+        "stdout_base64": "Ng==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "6",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0053.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.array-long-reference",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0054.php",
+      "source_sha256": "a780b11c59027ce00f59318a47213b483688c10f65a156c8ac9bd9c856eea7cf",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.3349824999986595,
+        "stdout_base64": "Nw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "7",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0054.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 6.367361399999936,
+        "stdout_base64": "Nw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "7",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0054.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.array-reference-copy",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0055.php",
+      "source_sha256": "efba87737f85ba23deff037376018dd6b7792b532508994e0fc583c6a8892cca",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.42423820000112755,
+        "stdout_base64": "ODg4",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "888",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0055.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 7.0815266000008705,
+        "stdout_base64": "ODg4",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "888",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0055.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.array-reference-uninitialized",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0056.php",
+      "source_sha256": "c3247468ad86244a1815962a6960871ab24a073fd12904b0b410b48b1b6ff49e",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.32906890000049316,
+        "stdout_base64": "TlVMTApib29sKGZhbHNlKQppbnQoMSkK",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "NULL\nbool(false)\nint(1)\n",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0056.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 6.14388340000005,
+        "stdout_base64": "TlVMTApib29sKGZhbHNlKQppbnQoMSkK",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "NULL\nbool(false)\nint(1)\n",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0056.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.cufa-named-reference",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0057.php",
+      "source_sha256": "7e77c2ce87bfc67fc4f90a6035b856f77a0cfea54b0da4179ed02cdbfd256911",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.3296571999999287,
+        "stdout_base64": "ODo4",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "8:8",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0057.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.257492000000639,
+        "stdout_base64": "ODo4",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "8:8",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0057.php"
+        ]
+      }
+    },
+    {
+      "id": "dynamic.ext.array-index-reference",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0058.php",
+      "source_sha256": "c6c896b4a7f4b0f09a3f2b3cb9fbf78d9d4fa88ca46f1f6c8586ad3ab4f2ecf8",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.22628230000009353,
+        "stdout_base64": "Nw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "7",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0058.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 5.791889600001014,
+        "stdout_base64": "Nw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "7",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0058.php"
+        ]
+      }
+    },
+    {
+      "id": "private-throwable.normal-exception",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0059.php",
+      "source_sha256": "58aa529a21cb3c902b09bc1fcee01e86c017d2553a609c67ad12c7f740c6a3db",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.32993729999907373,
+        "stdout_base64": "RXhjZXB0aW9uOiBub3JtYWwgaW4gQzpcVXNlcnNccmlucGFcQUxMLXBocC1jb21wYXQtMjAyNjExMTJccmVwb3J0c1xwaHAtZHluYW1pYy1jYWxsLTIwMjYxMTEzXHJldmlzaW9uMDYtZmluYWw3M1xjYXNlLTAwNTkucGhwOjEKU3RhY2sgdHJhY2U6CiMwIHttYWlufQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Exception: normal in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0059.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0059.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 11.87584539999989,
+        "stdout_base64": "RXhjZXB0aW9uOiBub3JtYWwgaW4gQzpcVXNlcnNccmlucGFcQUxMLXBocC1jb21wYXQtMjAyNjExMTJccmVwb3J0c1xwaHAtZHluYW1pYy1jYWxsLTIwMjYxMTEzXHJldmlzaW9uMDYtZmluYWw3M1xjYXNlLTAwNTkucGhwOjEKU3RhY2sgdHJhY2U6CiMwIHttYWlufQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Exception: normal in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0059.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0059.php"
+        ]
+      }
+    },
+    {
+      "id": "private-throwable.user-hijack-return",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0060.php",
+      "source_sha256": "e69f41c38eb527a4acceeac52b3fe5ece2b256d206db397e8fc5c18292e8b360",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.31058350000057544,
+        "stdout_base64": "RXhjZXB0aW9uOiB4IGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLWR5bmFtaWMtY2FsbC0yMDI2MTExM1xyZXZpc2lvbjA2LWZpbmFsNzNcY2FzZS0wMDYwLnBocDoxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Exception: x in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0060.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0060.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 11.445495500000106,
+        "stdout_base64": "RXhjZXB0aW9uOiB4IGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLWR5bmFtaWMtY2FsbC0yMDI2MTExM1xyZXZpc2lvbjA2LWZpbmFsNzNcY2FzZS0wMDYwLnBocDoxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Exception: x in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0060.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0060.php"
+        ]
+      }
+    },
+    {
+      "id": "private-throwable.user-hijack-throw",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0061.php",
+      "source_sha256": "b55afb90e43ae530b7e86c84cb7ff5e913e2447fcdd5034fb951d7dac7c764a0",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.25110049999966577,
+        "stdout_base64": "RXhjZXB0aW9uOiB4IGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLWR5bmFtaWMtY2FsbC0yMDI2MTExM1xyZXZpc2lvbjA2LWZpbmFsNzNcY2FzZS0wMDYxLnBocDoxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Exception: x in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0061.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0061.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.860692800000834,
+        "stdout_base64": "RXhjZXB0aW9uOiB4IGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLWR5bmFtaWMtY2FsbC0yMDI2MTExM1xyZXZpc2lvbjA2LWZpbmFsNzNcY2FzZS0wMDYxLnBocDoxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Exception: x in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0061.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0061.php"
+        ]
+      }
+    },
+    {
+      "id": "private-throwable.visibility-hidden",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0062.php",
+      "source_sha256": "91111545fcd3b30f208a988df51fae3d5b74c120cc1b3c94a836521bfb0542de",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.22648060000028636,
+        "stdout_base64": "Ym9vbChmYWxzZSkKYm9vbChmYWxzZSkK",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "bool(false)\nbool(false)\n",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0062.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 5.124829700000191,
+        "stdout_base64": "Ym9vbChmYWxzZSkKYm9vbChmYWxzZSkK",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "bool(false)\nbool(false)\n",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0062.php"
+        ]
+      }
+    },
+    {
+      "id": "private-throwable.user-name-allowed",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0063.php",
+      "source_sha256": "474cd91658c48e535bb8407e32d1e985dddf1b7c374ac5c77706cf5e62ceeff1",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.1893011000011029,
+        "stdout_base64": "Ym9vbCh0cnVlKQp1c2Vy",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "bool(true)\nuser",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0063.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 5.375829199998407,
+        "stdout_base64": "Ym9vbCh0cnVlKQp1c2Vy",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "bool(true)\nuser",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0063.php"
+        ]
+      }
+    },
+    {
+      "id": "private-throwable.dynamic-absent",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0064.php",
+      "source_sha256": "2ace0bfa802e3bfd1d572b69332c4cf21d416501fbfc383736910da42ece31d4",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.19332890000077896,
+        "stdout_base64": "Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gX19hbGxfdGhyb3dhYmxlX3N0cmluZygp",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to undefined function __all_throwable_string()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0064.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.707956399999603,
+        "stdout_base64": "Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gX19hbGxfdGhyb3dhYmxlX3N0cmluZygp",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to undefined function __all_throwable_string()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0064.php"
+        ]
+      }
+    },
+    {
+      "id": "private-throwable.dynamic-user",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0065.php",
+      "source_sha256": "92b9a41c0ca1cbdfef5720afcc11dfe66dc492af66fd4149c4cc141f0ca0a8ef",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.19763849999981176,
+        "stdout_base64": "ZHluYW1pYy11c2Vy",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "dynamic-user",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0065.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.414450500000385,
+        "stdout_base64": "ZHluYW1pYy11c2Vy",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "dynamic-user",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0065.php"
+        ]
+      }
+    },
+    {
+      "id": "private-throwable.direct-absent",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0066.php",
+      "source_sha256": "ea6b5be1af758f17b611c1a01455b356e2e132b498de414046fb42ce24dea606",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2021154000012757,
+        "stdout_base64": "Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gX19hbGxfdGhyb3dhYmxlX3N0cmluZygp",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to undefined function __all_throwable_string()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0066.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.280467299999145,
+        "stdout_base64": "Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gX19hbGxfdGhyb3dhYmxlX3N0cmluZygp",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to undefined function __all_throwable_string()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0066.php"
+        ]
+      }
+    },
+    {
+      "id": "private-throwable.first-class-absent",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0067.php",
+      "source_sha256": "6231f1484ad13fb20399c6b33137adb9c0ba820e3e08e084b319e5c57280872f",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.275562800001353,
+        "stdout_base64": "Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gX19hbGxfdGhyb3dhYmxlX3N0cmluZygp",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to undefined function __all_throwable_string()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0067.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.226647499999672,
+        "stdout_base64": "Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gX19hbGxfdGhyb3dhYmxlX3N0cmluZygp",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to undefined function __all_throwable_string()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0067.php"
+        ]
+      }
+    },
+    {
+      "id": "private-throwable.normal-error",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0068.php",
+      "source_sha256": "be8ed573c74d00790cb72a780e5a1674dde1092c6e5708cc1264b5962d406b1e",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.17684880000160774,
+        "stdout_base64": "RXJyb3I6IG5vcm1hbCBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1keW5hbWljLWNhbGwtMjAyNjExMTNccmV2aXNpb24wNi1maW5hbDczXGNhc2UtMDA2OC5waHA6MQpTdGFjayB0cmFjZToKIzAge21haW59",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Error: normal in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0068.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0068.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 7.784434499999406,
+        "stdout_base64": "RXJyb3I6IG5vcm1hbCBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1keW5hbWljLWNhbGwtMjAyNjExMTNccmV2aXNpb24wNi1maW5hbDczXGNhc2UtMDA2OC5waHA6MQpTdGFjayB0cmFjZToKIzAge21haW59",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Error: normal in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0068.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0068.php"
+        ]
+      }
+    },
+    {
+      "id": "private-throwable.string-cast",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0069.php",
+      "source_sha256": "778ffe8f934888b949f399068ada2d9a73d6a129ee1bca4add49d27f4ce41d15",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.16904470000008587,
+        "stdout_base64": "RXhjZXB0aW9uOiBjYXN0IGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLWR5bmFtaWMtY2FsbC0yMDI2MTExM1xyZXZpc2lvbjA2LWZpbmFsNzNcY2FzZS0wMDY5LnBocDoxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Exception: cast in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0069.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0069.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.158821200000602,
+        "stdout_base64": "RXhjZXB0aW9uOiBjYXN0IGluIEM6XFVzZXJzXHJpbnBhXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXHJlcG9ydHNccGhwLWR5bmFtaWMtY2FsbC0yMDI2MTExM1xyZXZpc2lvbjA2LWZpbmFsNzNcY2FzZS0wMDY5LnBocDoxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Exception: cast in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0069.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0069.php"
+        ]
+      }
+    },
+    {
+      "id": "private-throwable.subclass-override",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0070.php",
+      "source_sha256": "b6312ae954d85474542d3447e39f4bca80e6e1e70d161073b1945e91fa58bcfc",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.22077449999960663,
+        "stdout_base64": "b3ZlcnJpZGU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "override",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0070.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.280177300001014,
+        "stdout_base64": "b3ZlcnJpZGU=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "override",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0070.php"
+        ]
+      }
+    },
+    {
+      "id": "private-throwable.previous-chain",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0071.php",
+      "source_sha256": "b76111bb8ec4b7a0ba39b37df71c4f31c8eda73fcbe5a91a0b219352fdf500f1",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.17410389999895415,
+        "stdout_base64": "RXhjZXB0aW9uOiBpbm5lciBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1keW5hbWljLWNhbGwtMjAyNjExMTNccmV2aXNpb24wNi1maW5hbDczXGNhc2UtMDA3MS5waHA6MQpTdGFjayB0cmFjZToKIzAge21haW59CgpOZXh0IEV4Y2VwdGlvbjogb3V0ZXIgaW4gQzpcVXNlcnNccmlucGFcQUxMLXBocC1jb21wYXQtMjAyNjExMTJccmVwb3J0c1xwaHAtZHluYW1pYy1jYWxsLTIwMjYxMTEzXHJldmlzaW9uMDYtZmluYWw3M1xjYXNlLTAwNzEucGhwOjEKU3RhY2sgdHJhY2U6CiMwIHttYWlufQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Exception: inner in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0071.php:1\nStack trace:\n#0 {main}\n\nNext Exception: outer in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0071.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0071.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.179728199998863,
+        "stdout_base64": "RXhjZXB0aW9uOiBpbm5lciBpbiBDOlxVc2Vyc1xyaW5wYVxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxyZXBvcnRzXHBocC1keW5hbWljLWNhbGwtMjAyNjExMTNccmV2aXNpb24wNi1maW5hbDczXGNhc2UtMDA3MS5waHA6MQpTdGFjayB0cmFjZToKIzAge21haW59CgpOZXh0IEV4Y2VwdGlvbjogb3V0ZXIgaW4gQzpcVXNlcnNccmlucGFcQUxMLXBocC1jb21wYXQtMjAyNjExMTJccmVwb3J0c1xwaHAtZHluYW1pYy1jYWxsLTIwMjYxMTEzXHJldmlzaW9uMDYtZmluYWw3M1xjYXNlLTAwNzEucGhwOjEKU3RhY2sgdHJhY2U6CiMwIHttYWlufQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Exception: inner in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0071.php:1\nStack trace:\n#0 {main}\n\nNext Exception: outer in C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0071.php:1\nStack trace:\n#0 {main}",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0071.php"
+        ]
+      }
+    },
+    {
+      "id": "private-throwable.unrelated-dynamic-absent-control",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0072.php",
+      "source_sha256": "6ef585ce3c3d793e08382e0e53bc9f505499aa307a654d113bb8bb3e8c20e2ec",
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.23063870000078168,
+        "stdout_base64": "Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gX191bnJlZ2lzdGVyZWRfZHluYW1pY19jb250cm9sKCk=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to undefined function __unregistered_dynamic_control()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0072.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 10.083424300000843,
+        "stdout_base64": "Q2FsbCB0byB1bmRlZmluZWQgZnVuY3Rpb24gX191bnJlZ2lzdGVyZWRfZHluYW1pY19jb250cm9sKCk=",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "Call to undefined function __unregistered_dynamic_control()",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-dynamic-call\\revision06\\ALL_PHP_dynamic_call_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-dynamic-call-20261113\\revision06-final73\\case-0072.php"
+        ]
+      }
+    }
+  ]
+}

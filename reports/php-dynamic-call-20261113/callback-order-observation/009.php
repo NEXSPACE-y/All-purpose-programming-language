@@ -1,0 +1,1 @@
+<?php try{namespace N;use function call_user_func as cf;function s(){echo 'SIDE';return 1;}cf('missing',s());}catch(Throwable $e){echo get_class($e).":".$e->getMessage();}

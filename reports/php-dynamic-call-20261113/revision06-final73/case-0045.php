@@ -1,0 +1,1 @@
+<?php class C{static function f(){return 7;}}$a=['C','f'];$f=$a(...);echo $f();

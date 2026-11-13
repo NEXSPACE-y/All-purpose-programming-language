@@ -1,0 +1,3757 @@
+{
+  "status": "STATIC_DEPENDENCY_REVIEW_ONLY",
+  "base_adapter_sha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+  "method": "Line-pattern inventory; function labels are a heuristic, not full AST/dataflow analysis. Identifiers and user string values must be reviewed separately.",
+  "files": [
+    {
+      "path": "package/ALL_PHP_v3_12_adapter.ps1",
+      "sha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+      "lines": 6595,
+      "occurrences": [
+        {
+          "line": 6,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "param([string]$Code, [switch]$PhpDiagnostics, [System.Collections.IDictionary]$CliContext = $null, [object]$NativeContext = $null)"
+        },
+        {
+          "line": 24,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$source = $source.Substring(0, $source.Length - 2)"
+        },
+        {
+          "line": 28,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "Tokens = [System.Collections.Generic.List[string]]::new()"
+        },
+        {
+          "line": 31,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 33,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 35,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 37,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 39,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 45,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "MagicGetActive = [System.Collections.Generic.HashSet[string]]::new("
+        },
+        {
+          "line": 46,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 47,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "MagicSetActive = [System.Collections.Generic.HashSet[string]]::new("
+        },
+        {
+          "line": 48,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 49,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "PropertyHookActive = [System.Collections.Generic.HashSet[string]]::new("
+        },
+        {
+          "line": 50,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 52,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "GlobalBindings = [System.Collections.Generic.HashSet[string]]::new("
+        },
+        {
+          "line": 53,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 54,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "StaticBindings = [System.Collections.Generic.HashSet[string]]::new("
+        },
+        {
+          "line": 55,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 57,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 71,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 91,
+          "enclosing_function_heuristic": "Test-PhpRegisteredPublicFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Test-PhpRegisteredPublicFunction([string]$name) {"
+        },
+        {
+          "line": 113,
+          "enclosing_function_heuristic": "Get-PhpNativeName",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Get-PhpNativeName([string]$name) {"
+        },
+        {
+          "line": 114,
+          "enclosing_function_heuristic": "Get-PhpNativeName",
+          "kinds": [
+            "string_type_or_cast",
+            "text_operations"
+          ],
+          "source": "if ($name.StartsWith([string][char]92)) { return $name.Substring(1) }"
+        },
+        {
+          "line": 117,
+          "enclosing_function_heuristic": "Test-PhpNativeFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Test-PhpNativeFunction([string]$name) {"
+        },
+        {
+          "line": 121,
+          "enclosing_function_heuristic": "Throw-PhpNativeUnsupported",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Throw-PhpNativeUnsupported([string]$reason) {"
+        },
+        {
+          "line": 126,
+          "enclosing_function_heuristic": "Invoke-PhpNativeFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Invoke-PhpNativeFunction([string]$name, $values) {"
+        },
+        {
+          "line": 154,
+          "enclosing_function_heuristic": "Invoke-PhpNativeFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "Write-PhpDiagnostic ([long]$event.Level) ([string]$event.Message)"
+        },
+        {
+          "line": 158,
+          "enclosing_function_heuristic": "Invoke-PhpNativeFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "Throw-PhpNativeUnsupported ([string]$nativeResult.ErrorMessage)"
+        },
+        {
+          "line": 160,
+          "enclosing_function_heuristic": "Invoke-PhpNativeFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "Throw-PhpError ([string]$nativeResult.ErrorClass) ([string]$nativeResult.ErrorMessage)"
+        },
+        {
+          "line": 166,
+          "enclosing_function_heuristic": "Invoke-PhpNativeFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "-not [string]::IsNullOrEmpty([string]$CliContext['SourcePath'])) {"
+        },
+        {
+          "line": 167,
+          "enclosing_function_heuristic": "Invoke-PhpNativeFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$state.ScriptName = [string]$CliContext['SourcePath']"
+        },
+        {
+          "line": 184,
+          "enclosing_function_heuristic": "Test-PhpCliExit",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 224,
+          "enclosing_function_heuristic": "Test-PhpCliExit",
+          "kinds": [
+            "string_type_or_cast",
+            "text_operations"
+          ],
+          "source": "$phpBuiltinNames = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 248,
+          "enclosing_function_heuristic": "ConvertTo-PhpTokens",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function ConvertTo-PhpTokens([string]$text, $tokens, $lines) {"
+        },
+        {
+          "line": 256,
+          "enclosing_function_heuristic": "ConvertTo-PhpTokens",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if (-not [string]::IsNullOrWhiteSpace($token) -and"
+        },
+        {
+          "line": 263,
+          "enclosing_function_heuristic": "ConvertTo-PhpTokens",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "if ($token.IndexOf([char]10) -ge 0) { $line += ($token.Split([char]10).Count - 1) }"
+        },
+        {
+          "line": 274,
+          "enclosing_function_heuristic": "ConvertTo-PhpTokens",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$phpReservedNames = [System.Collections.Generic.HashSet[string]]::new("
+        },
+        {
+          "line": 275,
+          "enclosing_function_heuristic": "ConvertTo-PhpTokens",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 286,
+          "enclosing_function_heuristic": "Resolve-PhpNamespaceTokens",
+          "kinds": [
+            "string_type_or_cast",
+            "text_operations"
+          ],
+          "source": "$declFunctions = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 287,
+          "enclosing_function_heuristic": "Resolve-PhpNamespaceTokens",
+          "kinds": [
+            "string_type_or_cast",
+            "text_operations"
+          ],
+          "source": "$declConsts = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 288,
+          "enclosing_function_heuristic": "Resolve-PhpNamespaceTokens",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$outTokens = [System.Collections.Generic.List[string]]::new()"
+        },
+        {
+          "line": 298,
+          "enclosing_function_heuristic": "Resolve-PhpNamespaceTokens",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$useClass = [System.Collections.Generic.Dictionary[string,string]]::new([System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 299,
+          "enclosing_function_heuristic": "Resolve-PhpNamespaceTokens",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$useFunc = [System.Collections.Generic.Dictionary[string,string]]::new([System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 300,
+          "enclosing_function_heuristic": "Resolve-PhpNamespaceTokens",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$useConst = [System.Collections.Generic.Dictionary[string,string]]::new([System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 304,
+          "enclosing_function_heuristic": "Resolve-PhpNamespaceTokens",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "if ($name.StartsWith('\\')) { return $name.Substring(1) }"
+        },
+        {
+          "line": 305,
+          "enclosing_function_heuristic": "Resolve-PhpNamespaceTokens",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "if ($name.StartsWith('namespace\\', [System.StringComparison]::OrdinalIgnoreCase)) {"
+        },
+        {
+          "line": 306,
+          "enclosing_function_heuristic": "Resolve-PhpNamespaceTokens",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "return (& $prefix $name.Substring(10))"
+        },
+        {
+          "line": 308,
+          "enclosing_function_heuristic": "Resolve-PhpNamespaceTokens",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$cut = $name.IndexOf('\\')"
+        },
+        {
+          "line": 310,
+          "enclosing_function_heuristic": "Resolve-PhpNamespaceTokens",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$head = $name.Substring(0, $cut)"
+        },
+        {
+          "line": 311,
+          "enclosing_function_heuristic": "Resolve-PhpNamespaceTokens",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "if ($useClass.ContainsKey($head)) { return ($useClass[$head] + $name.Substring($cut)) }"
+        },
+        {
+          "line": 362,
+          "enclosing_function_heuristic": "Resolve-PhpNamespaceTokens",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$lower = $t.ToLowerInvariant()"
+        },
+        {
+          "line": 405,
+          "enclosing_function_heuristic": "Resolve-PhpNamespaceTokens",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$alias = $target.Substring($target.LastIndexOf('\\') + 1)"
+        },
+        {
+          "line": 570,
+          "enclosing_function_heuristic": "Expect-Token",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Expect-Token([string]$expected) {"
+        },
+        {
+          "line": 576,
+          "enclosing_function_heuristic": "Expect-Token",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$tokenContent = $unexpected.Substring(1, $unexpected.Length - 2)"
+        },
+        {
+          "line": 592,
+          "enclosing_function_heuristic": "Decode-PhpString",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Decode-PhpString([string]$text) {"
+        },
+        {
+          "line": 611,
+          "enclosing_function_heuristic": "Decode-PhpString",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "switch ([string]$next) {"
+        },
+        {
+          "line": 632,
+          "enclosing_function_heuristic": "Expand-PhpDoubleString",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Expand-PhpDoubleString([string]$token) {"
+        },
+        {
+          "line": 633,
+          "enclosing_function_heuristic": "Expand-PhpDoubleString",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$body = $token.Substring(1, $token.Length - 2)"
+        },
+        {
+          "line": 643,
+          "enclosing_function_heuristic": "Expand-PhpDoubleString",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ([string]$next -cmatch '[0-7xu]') {"
+        },
+        {
+          "line": 647,
+          "enclosing_function_heuristic": "Expand-PhpDoubleString",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "switch ([string]$next) {"
+        },
+        {
+          "line": 677,
+          "enclosing_function_heuristic": "Expand-PhpDoubleString",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "-not ([string]$body[$start + 1] -cmatch '[A-Za-z_]')) {"
+        },
+        {
+          "line": 683,
+          "enclosing_function_heuristic": "Expand-PhpDoubleString",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "([string]$body[$end] -cmatch '[A-Za-z_0-9]')) { $end++ }"
+        },
+        {
+          "line": 691,
+          "enclosing_function_heuristic": "Expand-PhpDoubleString",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$body.Substring($end, 2) -ceq '->'))) {"
+        },
+        {
+          "line": 694,
+          "enclosing_function_heuristic": "Expand-PhpDoubleString",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$name = $body.Substring($start + 1, $end - $start - 1)"
+        },
+        {
+          "line": 696,
+          "enclosing_function_heuristic": "Expand-PhpDoubleString",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "[void]$output.Append((To-PhpText (Get-PhpVariableValue $name)))"
+        },
+        {
+          "line": 763,
+          "enclosing_function_heuristic": "ConvertFrom-PhpNumberLiteral",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function ConvertFrom-PhpNumberLiteral([string]$token) {"
+        },
+        {
+          "line": 768,
+          "enclosing_function_heuristic": "ConvertFrom-PhpNumberLiteral",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "if ($text -match '^0[xX]') { $radix = 16; $body = $text.Substring(2) }"
+        },
+        {
+          "line": 769,
+          "enclosing_function_heuristic": "ConvertFrom-PhpNumberLiteral",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "elseif ($text -match '^0[bB]') { $radix = 2; $body = $text.Substring(2) }"
+        },
+        {
+          "line": 770,
+          "enclosing_function_heuristic": "ConvertFrom-PhpNumberLiteral",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "elseif ($text -match '^0[oO]') { $radix = 8; $body = $text.Substring(2) }"
+        },
+        {
+          "line": 771,
+          "enclosing_function_heuristic": "ConvertFrom-PhpNumberLiteral",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "elseif ($text -match '^0[0-7]+$') { $radix = 8; $body = $text.Substring(1) }"
+        },
+        {
+          "line": 775,
+          "enclosing_function_heuristic": "ConvertFrom-PhpNumberLiteral",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$digit = [Convert]::ToInt32([string]$ch, 16)"
+        },
+        {
+          "line": 793,
+          "enclosing_function_heuristic": "Read-Array",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Read-Array([string]$close) {"
+        },
+        {
+          "line": 856,
+          "enclosing_function_heuristic": "Read-Primary",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "Kind='variable'; Name=$token.Substring(2)"
+        },
+        {
+          "line": 871,
+          "enclosing_function_heuristic": "Read-Primary",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "return [pscustomobject]@{ Kind='variable'; Name=$token.Substring(1) }"
+        },
+        {
+          "line": 943,
+          "enclosing_function_heuristic": "Read-Primary",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "Name=$name.Substring(1); ByRef=$byRef"
+        },
+        {
+          "line": 1050,
+          "enclosing_function_heuristic": "Read-Postfix",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "Kind='static_property'; Base=$expr; Name=$member.Substring(1)"
+        },
+        {
+          "line": 1143,
+          "enclosing_function_heuristic": "Read-Unary",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$castType = (Next-Token).ToLowerInvariant()"
+        },
+        {
+          "line": 1165,
+          "enclosing_function_heuristic": "Operator-Priority",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Operator-Priority([string]$op) {"
+        },
+        {
+          "line": 1257,
+          "enclosing_function_heuristic": "Read-ForMutations",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Read-ForMutations([string]$endToken) {"
+        },
+        {
+          "line": 1325,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$names = [System.Collections.Generic.List[string]]::new()"
+        },
+        {
+          "line": 1331,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[void]$names.Add($name.Substring(1))"
+        },
+        {
+          "line": 1351,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[void]$decls.Add([pscustomobject]@{ Name=$name.Substring(1); Init=$init })"
+        },
+        {
+          "line": 1364,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$parents = [System.Collections.Generic.List[string]]::new()"
+        },
+        {
+          "line": 1383,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$modifiers=[System.Collections.Generic.HashSet[string]]::new("
+        },
+        {
+          "line": 1384,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 1436,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$enumInterfaces=[System.Collections.Generic.List[string]]::new()"
+        },
+        {
+          "line": 1517,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$interfaces=[System.Collections.Generic.List[string]]::new()"
+        },
+        {
+          "line": 1534,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$traits = [System.Collections.Generic.List[string]]::new()"
+        },
+        {
+          "line": 1540,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$usedNames=[System.Collections.Generic.List[string]]::new()"
+        },
+        {
+          "line": 1573,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$excluded=[System.Collections.Generic.List[string]]::new()"
+        },
+        {
+          "line": 1624,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$modifiers=[System.Collections.Generic.HashSet[string]]::new("
+        },
+        {
+          "line": 1625,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 1664,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($isReadonlyClass -and [string]::IsNullOrEmpty($parameter.TypeName)) {"
+        },
+        {
+          "line": 1709,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($isReadOnly -and [string]::IsNullOrEmpty($propertyType)) {"
+        },
+        {
+          "line": 1712,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$propName = (Next-Token).Substring(1)"
+        },
+        {
+          "line": 1725,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$seenHookNames=[System.Collections.Generic.HashSet[string]]::new("
+        },
+        {
+          "line": 1726,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 1925,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$valueName = $first.Substring(1)"
+        },
+        {
+          "line": 1938,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$valueName = $second.Substring(1)"
+        },
+        {
+          "line": 1973,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$types = [System.Collections.Generic.List[string]]::new()"
+        },
+        {
+          "line": 1985,
+          "enclosing_function_heuristic": "Read-StatementCore",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$varName = (Next-Token).Substring(1)"
+        },
+        {
+          "line": 2085,
+          "enclosing_function_heuristic": "Read-Parameters",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "} elseif (-not [string]::IsNullOrEmpty($visibility)) {"
+        },
+        {
+          "line": 2089,
+          "enclosing_function_heuristic": "Read-Parameters",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($promotedReadonly -and [string]::IsNullOrEmpty($visibility)) {"
+        },
+        {
+          "line": 2116,
+          "enclosing_function_heuristic": "Read-Parameters",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if (-not [string]::IsNullOrEmpty($visibility) -and"
+        },
+        {
+          "line": 2117,
+          "enclosing_function_heuristic": "Read-Parameters",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "[string]::IsNullOrEmpty($typeName) -and $promotedReadonly) {"
+        },
+        {
+          "line": 2120,
+          "enclosing_function_heuristic": "Read-Parameters",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if (-not [string]::IsNullOrEmpty($visibility) -and $variadic) {"
+        },
+        {
+          "line": 2130,
+          "enclosing_function_heuristic": "Read-Parameters",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "if ($previous.Name -ceq $param.Substring(1)) {"
+        },
+        {
+          "line": 2135,
+          "enclosing_function_heuristic": "Read-Parameters",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "Name=$param.Substring(1); Default=$default; Variadic=$variadic"
+        },
+        {
+          "line": 2137,
+          "enclosing_function_heuristic": "Read-Parameters",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "Promoted=(-not [string]::IsNullOrEmpty($visibility))"
+        },
+        {
+          "line": 2251,
+          "enclosing_function_heuristic": "Read-Function",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$phpPreludeTriggers = [System.Collections.Generic.HashSet[string]]::new("
+        },
+        {
+          "line": 2252,
+          "enclosing_function_heuristic": "Read-Function",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 2271,
+          "enclosing_function_heuristic": "Ensure-PhpPrelude",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$state.Tokens = [System.Collections.Generic.List[string]]::new()"
+        },
+        {
+          "line": 2304,
+          "enclosing_function_heuristic": "Format-PhpTraceArgument",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($value -is [string]) {"
+        },
+        {
+          "line": 2305,
+          "enclosing_function_heuristic": "Format-PhpTraceArgument",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "if ($value.Length -gt 15) { return (\"'\" + $value.Substring(0, 15) + \"...'\") }"
+        },
+        {
+          "line": 2317,
+          "enclosing_function_heuristic": "Format-PhpStackTrace",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$parts = [System.Collections.Generic.List[string]]::new()"
+        },
+        {
+          "line": 2320,
+          "enclosing_function_heuristic": "Format-PhpStackTrace",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$frame.Name + '(' + [string]::Join(', ', $parts.ToArray()) + \")`n\")"
+        },
+        {
+          "line": 2333,
+          "enclosing_function_heuristic": "Get-PhpThrowableString",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$text = $object.Class + ': ' + (To-PhpText $object.Props['message']) + ' in ' +"
+        },
+        {
+          "line": 2334,
+          "enclosing_function_heuristic": "Get-PhpThrowableString",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "(To-PhpText $object.Props['file']) + ':' + (To-PhpText $object.Props['line']) +"
+        },
+        {
+          "line": 2335,
+          "enclosing_function_heuristic": "Get-PhpThrowableString",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "\"`nStack trace:`n\" + (To-PhpText $object.Props['__trace'])"
+        },
+        {
+          "line": 2342,
+          "enclosing_function_heuristic": "Throw-PhpObject",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Throw-PhpObject($object, [string]$legacyText = '') {"
+        },
+        {
+          "line": 2344,
+          "enclosing_function_heuristic": "Throw-PhpObject",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$legacyText = 'ALL PHP: Uncaught ' + $object.Class + ': ' + (To-PhpText $object.Props['message'])"
+        },
+        {
+          "line": 2347,
+          "enclosing_function_heuristic": "Throw-PhpObject",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$id = [string]$state.ThrownSeq"
+        },
+        {
+          "line": 2357,
+          "enclosing_function_heuristic": "Get-PhpThrown",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$id = [string]$ex.Data['PhpThrowableId']"
+        },
+        {
+          "line": 2365,
+          "enclosing_function_heuristic": "Throw-PhpError",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Throw-PhpError([string]$className, [string]$message, [string]$legacyText = '') {"
+        },
+        {
+          "line": 2379,
+          "enclosing_function_heuristic": "Format-PhpMatchValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($value -is [string]) { return (\"'\" + $value.Replace('\\', '\\\\').Replace(\"'\", \"\\'\") + \"'\") }"
+        },
+        {
+          "line": 2412,
+          "enclosing_function_heuristic": "Invoke-PhpValueCallable",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($pair.Count -eq 2 -and $pair[1] -is [string]) {"
+        },
+        {
+          "line": 2414,
+          "enclosing_function_heuristic": "Invoke-PhpValueCallable",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($pair[0] -is [string]) { return (Invoke-PhpStaticMethod $pair[0] $pair[1] $values) }"
+        },
+        {
+          "line": 2418,
+          "enclosing_function_heuristic": "Invoke-PhpValueCallable",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($callee -is [string]) {"
+        },
+        {
+          "line": 2419,
+          "enclosing_function_heuristic": "Invoke-PhpValueCallable",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$split = $callee.IndexOf('::')"
+        },
+        {
+          "line": 2421,
+          "enclosing_function_heuristic": "Invoke-PhpValueCallable",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "return (Invoke-PhpStaticMethod $callee.Substring(0, $split) $callee.Substring($split + 2) $values)"
+        },
+        {
+          "line": 2434,
+          "enclosing_function_heuristic": "Get-PhpCallableArity",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($callee -is [string] -and $state.Functions.ContainsKey($callee)) {"
+        },
+        {
+          "line": 2442,
+          "enclosing_function_heuristic": "Write-PhpDiagnostic",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Write-PhpDiagnostic([long]$level, [string]$message) {"
+        },
+        {
+          "line": 2445,
+          "enclosing_function_heuristic": "Write-PhpDiagnostic",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$handlerArgs = @($level, $message, [string]$state.ScriptName, [long]$state.Line)"
+        },
+        {
+          "line": 2466,
+          "enclosing_function_heuristic": "Write-PhpDiagnostic",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "else { [Console]::Write(\"`n\" + $diagnostic) }"
+        },
+        {
+          "line": 2468,
+          "enclosing_function_heuristic": "Test-PhpObjectHasProp",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Test-PhpObjectHasProp($object, [string]$name) {"
+        },
+        {
+          "line": 2469,
+          "enclosing_function_heuristic": "Test-PhpObjectHasProp",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "if ($object.Props -is [System.Collections.Specialized.OrderedDictionary]) {"
+        },
+        {
+          "line": 2477,
+          "enclosing_function_heuristic": "Get-PhpObjectDumpEntries",
+          "kinds": [
+            "string_type_or_cast",
+            "text_operations"
+          ],
+          "source": "$seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 2483,
+          "enclosing_function_heuristic": "Get-PhpObjectDumpEntries",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if (-not $seen.Add([string]$prop.Name)) { continue }"
+        },
+        {
+          "line": 2495,
+          "enclosing_function_heuristic": "Get-PhpObjectDumpEntries",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "Name=[string]$prop.Name; Suffix=$suffix; PlainSuffix=$plain; Present=$present"
+        },
+        {
+          "line": 2496,
+          "enclosing_function_heuristic": "Get-PhpObjectDumpEntries",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "TypeName=[string]$declared.TypeName"
+        },
+        {
+          "line": 2503,
+          "enclosing_function_heuristic": "Get-PhpObjectDumpEntries",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if (-not $seen.Add([string]$key)) { continue }"
+        },
+        {
+          "line": 2505,
+          "enclosing_function_heuristic": "Get-PhpObjectDumpEntries",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "Name=[string]$key; Suffix=''; PlainSuffix=''; Present=$true; TypeName=''"
+        },
+        {
+          "line": 2518,
+          "enclosing_function_heuristic": "Format-PhpPrintR",
+          "kinds": [
+            "string_type_or_cast",
+            "text_operations"
+          ],
+          "source": "[void]$sb.Append($pad + '    [' + ([string]$key).Substring(2) + '] => ' +"
+        },
+        {
+          "line": 2544,
+          "enclosing_function_heuristic": "Format-PhpPrintR",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "return (To-PhpText $value)"
+        },
+        {
+          "line": 2549,
+          "enclosing_function_heuristic": "New-PhpArray",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "Items=[System.Collections.Specialized.OrderedDictionary]::new()"
+        },
+        {
+          "line": 2570,
+          "enclosing_function_heuristic": "Copy-PhpValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$copy.Items[[string]$key] = Copy-PhpValue $value.Items[$key] ($depth + 1)"
+        },
+        {
+          "line": 2575,
+          "enclosing_function_heuristic": "Get-PhpVariableSlot",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Get-PhpVariableSlot([string]$name) {"
+        },
+        {
+          "line": 2590,
+          "enclosing_function_heuristic": "Get-PhpVariableValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Get-PhpVariableValue([string]$name) {"
+        },
+        {
+          "line": 2597,
+          "enclosing_function_heuristic": "Get-PhpVariableValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "Set-PhpArrayItem $snapshot ([string]$globalName) $globalValue $false"
+        },
+        {
+          "line": 2614,
+          "enclosing_function_heuristic": "Set-PhpVariableValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Set-PhpVariableValue([string]$name, $value) {"
+        },
+        {
+          "line": 2623,
+          "enclosing_function_heuristic": "Get-PhpVariableCell",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Get-PhpVariableCell([string]$name) {"
+        },
+        {
+          "line": 2633,
+          "enclosing_function_heuristic": "Set-PhpVariableReference",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Set-PhpVariableReference([string]$target, [string]$source) {"
+        },
+        {
+          "line": 2664,
+          "enclosing_function_heuristic": "Resolve-PhpLValueSlot",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$key='i:' + [string]$array.NextIndex"
+        },
+        {
+          "line": 2667,
+          "enclosing_function_heuristic": "Resolve-PhpLValueSlot",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$key=To-PhpKey (Invoke-PhpExpr $node.Key)"
+        },
+        {
+          "line": 2669,
+          "enclosing_function_heuristic": "Resolve-PhpLValueSlot",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$numeric=[long]$key.Substring(2)"
+        },
+        {
+          "line": 2686,
+          "enclosing_function_heuristic": "Resolve-PhpLValueSlot",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($declared.Readonly -or -not [string]::IsNullOrEmpty([string]$declared.TypeName)) {"
+        },
+        {
+          "line": 2691,
+          "enclosing_function_heuristic": "Resolve-PhpLValueSlot",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$present=if ($object.Props -is [System.Collections.Specialized.OrderedDictionary]) {"
+        },
+        {
+          "line": 2701,
+          "enclosing_function_heuristic": "Resolve-PhpLValueSlot",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$klass=Resolve-PhpClass ([string](Invoke-PhpExpr $node.Base))"
+        },
+        {
+          "line": 2705,
+          "enclosing_function_heuristic": "Resolve-PhpLValueSlot",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if (-not [string]::IsNullOrEmpty([string]$prop.TypeName)) {"
+        },
+        {
+          "line": 2716,
+          "enclosing_function_heuristic": "Get-PhpLValueCell",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$present=if ($slot.Store -is [System.Collections.Specialized.OrderedDictionary]) {"
+        },
+        {
+          "line": 2776,
+          "enclosing_function_heuristic": "Encode-JsonQuoted",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Encode-JsonQuoted([string]$value) {"
+        },
+        {
+          "line": 2822,
+          "enclosing_function_heuristic": "Encode-PhpJson",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($value -is [string]) { return (Encode-JsonQuoted $value) }"
+        },
+        {
+          "line": 2827,
+          "enclosing_function_heuristic": "Encode-PhpJson",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ([string]$key -cne \"i:$index\") { $isList = $false; break }"
+        },
+        {
+          "line": 2830,
+          "enclosing_function_heuristic": "Encode-PhpJson",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$parts = [System.Collections.Generic.List[string]]::new()"
+        },
+        {
+          "line": 2836,
+          "enclosing_function_heuristic": "Encode-PhpJson",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$name = if (([string]$key).StartsWith('i:')) {"
+        },
+        {
+          "line": 2837,
+          "enclosing_function_heuristic": "Encode-PhpJson",
+          "kinds": [
+            "string_type_or_cast",
+            "text_operations"
+          ],
+          "source": "([string]$key).Substring(2)"
+        },
+        {
+          "line": 2838,
+          "enclosing_function_heuristic": "Encode-PhpJson",
+          "kinds": [
+            "string_type_or_cast",
+            "text_operations"
+          ],
+          "source": "} else { ([string]$key).Substring(2) }"
+        },
+        {
+          "line": 2842,
+          "enclosing_function_heuristic": "Encode-PhpJson",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($isList) { return ('[' + [string]::Join(',', $parts.ToArray()) + ']') }"
+        },
+        {
+          "line": 2843,
+          "enclosing_function_heuristic": "Encode-PhpJson",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "return ('{' + [string]::Join(',', $parts.ToArray()) + '}')"
+        },
+        {
+          "line": 2846,
+          "enclosing_function_heuristic": "Encode-PhpJson",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$parts = [System.Collections.Generic.List[string]]::new()"
+        },
+        {
+          "line": 2849,
+          "enclosing_function_heuristic": "Encode-PhpJson",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "[void]$parts.Add((Encode-JsonQuoted ([string]$key)) + ':' + $encoded)"
+        },
+        {
+          "line": 2851,
+          "enclosing_function_heuristic": "Encode-PhpJson",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "return ('{' + [string]::Join(',', $parts.ToArray()) + '}')"
+        },
+        {
+          "line": 2858,
+          "enclosing_function_heuristic": "New-PhpStdObject",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "Props=[System.Collections.Specialized.OrderedDictionary]::new("
+        },
+        {
+          "line": 2859,
+          "enclosing_function_heuristic": "New-PhpStdObject",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 2865,
+          "enclosing_function_heuristic": "Convert-JsonToPhp",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($value -is [bool] -or $value -is [string]) { return $value }"
+        },
+        {
+          "line": 2897,
+          "enclosing_function_heuristic": "Convert-JsonToPhp",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($assoc) { Set-PhpArrayItem $result ([string]$key) $converted $false }"
+        },
+        {
+          "line": 2898,
+          "enclosing_function_heuristic": "Convert-JsonToPhp",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "else { $result.Props[[string]$key] = Copy-PhpValue $converted }"
+        },
+        {
+          "line": 2904,
+          "enclosing_function_heuristic": "Convert-JsonToPhp",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($assoc) { Set-PhpArrayItem $result ([string]$pair.Name) $converted $false }"
+        },
+        {
+          "line": 2905,
+          "enclosing_function_heuristic": "Convert-JsonToPhp",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "else { $result.Props[[string]$pair.Name] = Copy-PhpValue $converted }"
+        },
+        {
+          "line": 2939,
+          "enclosing_function_heuristic": "Round-PhpDigits",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Round-PhpDigits([string]$digits, [int]$point, [int]$count) {"
+        },
+        {
+          "line": 2941,
+          "enclosing_function_heuristic": "Round-PhpDigits",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$head = $digits.Substring(0, $count)"
+        },
+        {
+          "line": 2942,
+          "enclosing_function_heuristic": "Round-PhpDigits",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$rest = $digits.Substring($count)"
+        },
+        {
+          "line": 2947,
+          "enclosing_function_heuristic": "Round-PhpDigits",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "if ($rest.Substring(1).Trim([char]'0').Length -gt 0) { $up = $true }"
+        },
+        {
+          "line": 2957,
+          "enclosing_function_heuristic": "Round-PhpDigits",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$head = [string]::new($chars)"
+        },
+        {
+          "line": 2967,
+          "enclosing_function_heuristic": "Test-PhpFloatRoundTrip",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Test-PhpFloatRoundTrip($parts, [string]$digits, [int]$point) {"
+        },
+        {
+          "line": 3009,
+          "enclosing_function_heuristic": "Format-PhpFloat",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$mant = $dg.Substring(0, 1) + '.'"
+        },
+        {
+          "line": 3010,
+          "enclosing_function_heuristic": "Format-PhpFloat",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "if ($dg.Length -gt 1) { $mant += $dg.Substring(1) } else { $mant += '0' }"
+        },
+        {
+          "line": 3011,
+          "enclosing_function_heuristic": "Format-PhpFloat",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($e -lt 0) { return ($sign + $mant + 'E-' + [string](-$e)) }"
+        },
+        {
+          "line": 3012,
+          "enclosing_function_heuristic": "Format-PhpFloat",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "return ($sign + $mant + 'E+' + [string]$e)"
+        },
+        {
+          "line": 3016,
+          "enclosing_function_heuristic": "Format-PhpFloat",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "return ($sign + $dg.Substring(0, $pt) + '.' + $dg.Substring($pt))"
+        },
+        {
+          "line": 3019,
+          "enclosing_function_heuristic": "ConvertFrom-PhpNumericString",
+          "kinds": [
+            "string_type_or_cast",
+            "string_key_encoding"
+          ],
+          "source": "function ConvertFrom-PhpNumericString([string]$text, [bool]$leadingOnly) {"
+        },
+        {
+          "line": 3151,
+          "enclosing_function_heuristic": "Convert-PhpCast",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Convert-PhpCast($value, [string]$type) {"
+        },
+        {
+          "line": 3158,
+          "enclosing_function_heuristic": "Convert-PhpCast",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($value -is [string]) {"
+        },
+        {
+          "line": 3159,
+          "enclosing_function_heuristic": "Convert-PhpCast",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$parsed = ConvertFrom-PhpNumericString $value $true"
+        },
+        {
+          "line": 3176,
+          "enclosing_function_heuristic": "Convert-PhpCast",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($value -is [string]) {"
+        },
+        {
+          "line": 3177,
+          "enclosing_function_heuristic": "Convert-PhpCast",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$parsed = ConvertFrom-PhpNumericString $value $true"
+        },
+        {
+          "line": 3187,
+          "enclosing_function_heuristic": "Convert-PhpCast",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "'string' { return (To-PhpText $value) }"
+        },
+        {
+          "line": 3191,
+          "enclosing_function_heuristic": "Format-PhpVarDump",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Format-PhpVarDump($value, [string]$pad) {"
+        },
+        {
+          "line": 3202,
+          "enclosing_function_heuristic": "Format-PhpVarDump",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($value -is [string]) {"
+        },
+        {
+          "line": 3203,
+          "enclosing_function_heuristic": "Format-PhpVarDump",
+          "kinds": [
+            "text_codec"
+          ],
+          "source": "$length = [System.Text.Encoding]::UTF8.GetByteCount($value)"
+        },
+        {
+          "line": 3210,
+          "enclosing_function_heuristic": "Format-PhpVarDump",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$name = [string]$key"
+        },
+        {
+          "line": 3211,
+          "enclosing_function_heuristic": "Format-PhpVarDump",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "if ($name.StartsWith('i:')) { [void]$sb.Append($pad + '  [' + $name.Substring(2) + \"]=>`n\") }"
+        },
+        {
+          "line": 3212,
+          "enclosing_function_heuristic": "Format-PhpVarDump",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "else { [void]$sb.Append($pad + '  [\"' + $name.Substring(2) + \"`\"]=>`n\") }"
+        },
+        {
+          "line": 3222,
+          "enclosing_function_heuristic": "Format-PhpVarDump",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "return ($pad + 'enum(' + $value.Class + '::' + (To-PhpText $value.Props['name']) + \")`n\")"
+        },
+        {
+          "line": 3247,
+          "enclosing_function_heuristic": "To-PhpText",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "function To-PhpText($value) {"
+        },
+        {
+          "line": 3263,
+          "enclosing_function_heuristic": "To-PhpText",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($converted -is [string]) { return $converted }"
+        },
+        {
+          "line": 3265,
+          "enclosing_function_heuristic": "To-PhpText",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "return (To-PhpText $converted)"
+        },
+        {
+          "line": 3271,
+          "enclosing_function_heuristic": "To-PhpText",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "return [string]$value"
+        },
+        {
+          "line": 3281,
+          "enclosing_function_heuristic": "To-Number",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($value -is [string]) {"
+        },
+        {
+          "line": 3282,
+          "enclosing_function_heuristic": "To-Number",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$parsed = ConvertFrom-PhpNumericString $value $false"
+        },
+        {
+          "line": 3292,
+          "enclosing_function_heuristic": "Is-Truthy",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($value -is [string]) {"
+        },
+        {
+          "line": 3298,
+          "enclosing_function_heuristic": "To-PhpKey",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "function To-PhpKey($value) {"
+        },
+        {
+          "line": 3303,
+          "enclosing_function_heuristic": "To-PhpKey",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "if ($null -eq $value) { return 's:' }"
+        },
+        {
+          "line": 3309,
+          "enclosing_function_heuristic": "To-PhpKey",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($value -is [string]) {"
+        },
+        {
+          "line": 3314,
+          "enclosing_function_heuristic": "To-PhpKey",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "return ('s:' + $value)"
+        },
+        {
+          "line": 3324,
+          "enclosing_function_heuristic": "Set-PhpArrayItem",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$keyString = To-PhpKey $key"
+        },
+        {
+          "line": 3326,
+          "enclosing_function_heuristic": "Set-PhpArrayItem",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$intKey = [long]$keyString.Substring(2)"
+        },
+        {
+          "line": 3339,
+          "enclosing_function_heuristic": "Get-PhpArrayItem",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$keyString = To-PhpKey $key"
+        },
+        {
+          "line": 3342,
+          "enclosing_function_heuristic": "Get-PhpArrayItem",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "if ($keyString.StartsWith('i:')) { Write-PhpDiagnostic 2 ('Undefined array key ' + $keyString.Substring(2)) }"
+        },
+        {
+          "line": 3343,
+          "enclosing_function_heuristic": "Get-PhpArrayItem",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "else { Write-PhpDiagnostic 2 ('Undefined array key \"' + $keyString.Substring(2) + '\"') }"
+        },
+        {
+          "line": 3359,
+          "enclosing_function_heuristic": "Compare-PhpArrays",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ([string]$aKeys[$i] -cne [string]$bKeys[$i]) { return $false }"
+        },
+        {
+          "line": 3388,
+          "enclosing_function_heuristic": "Php-Equal",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$exists=if ($b.Props -is [System.Collections.Specialized.OrderedDictionary]) {"
+        },
+        {
+          "line": 3390,
+          "enclosing_function_heuristic": "Php-Equal",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "} else { $b.Props.ContainsKey([string]$key) }"
+        },
+        {
+          "line": 3403,
+          "enclosing_function_heuristic": "Php-Equal",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($a -is [string]) { return ($a -ceq $b) }"
+        },
+        {
+          "line": 3421,
+          "enclosing_function_heuristic": "Compare-Values",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($a -is [string] -and $b -is [string]) {"
+        },
+        {
+          "line": 3422,
+          "enclosing_function_heuristic": "Compare-Values",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$x = ConvertFrom-PhpNumericString $a $false"
+        },
+        {
+          "line": 3424,
+          "enclosing_function_heuristic": "Compare-Values",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$y = ConvertFrom-PhpNumericString $b $false"
+        },
+        {
+          "line": 3427,
+          "enclosing_function_heuristic": "Compare-Values",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "return [Math]::Sign([string]::CompareOrdinal($a, $b))"
+        },
+        {
+          "line": 3429,
+          "enclosing_function_heuristic": "Compare-Values",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if (($aNum -and $b -is [string]) -or ($a -is [string] -and $bNum)) {"
+        },
+        {
+          "line": 3430,
+          "enclosing_function_heuristic": "Compare-Values",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($a -is [string]) {"
+        },
+        {
+          "line": 3431,
+          "enclosing_function_heuristic": "Compare-Values",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$x = ConvertFrom-PhpNumericString $a $false"
+        },
+        {
+          "line": 3434,
+          "enclosing_function_heuristic": "Compare-Values",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$y = ConvertFrom-PhpNumericString $b $false"
+        },
+        {
+          "line": 3437,
+          "enclosing_function_heuristic": "Compare-Values",
+          "kinds": [
+            "string_type_or_cast",
+            "text_output"
+          ],
+          "source": "return [Math]::Sign([string]::CompareOrdinal((To-PhpText $a),(To-PhpText $b)))"
+        },
+        {
+          "line": 3441,
+          "enclosing_function_heuristic": "Test-PhpRelation",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Test-PhpRelation($a, $b, [string]$op) {"
+        },
+        {
+          "line": 3454,
+          "enclosing_function_heuristic": "Resolve-PhpClass",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Resolve-PhpClass([string]$name) {"
+        },
+        {
+          "line": 3472,
+          "enclosing_function_heuristic": "Test-PhpTypeAtom",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Test-PhpTypeAtom($value, [string]$type) {"
+        },
+        {
+          "line": 3474,
+          "enclosing_function_heuristic": "Test-PhpTypeAtom",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "switch ($type.ToLowerInvariant()) {"
+        },
+        {
+          "line": 3480,
+          "enclosing_function_heuristic": "Test-PhpTypeAtom",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "'string' { return ($value -is [string]) }"
+        },
+        {
+          "line": 3489,
+          "enclosing_function_heuristic": "Test-PhpTypeAtom",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($value -is [string]) { return ($state.Functions.ContainsKey($value) -or (Test-PhpNativeFunction $value)) }"
+        },
+        {
+          "line": 3511,
+          "enclosing_function_heuristic": "Convert-PhpTypedValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Convert-PhpTypedValue($value, [string]$typeName, [string]$location) {"
+        },
+        {
+          "line": 3512,
+          "enclosing_function_heuristic": "Convert-PhpTypedValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ([string]::IsNullOrEmpty($typeName)) { return $value }"
+        },
+        {
+          "line": 3515,
+          "enclosing_function_heuristic": "Convert-PhpTypedValue",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$typeName=$typeName.Substring(1)"
+        },
+        {
+          "line": 3536,
+          "enclosing_function_heuristic": "Convert-PhpTypedValue",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "switch ($variant.ToLowerInvariant()) {"
+        },
+        {
+          "line": 3549,
+          "enclosing_function_heuristic": "Convert-PhpTypedValue",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "if ($hasString) { return (To-PhpText $value) }"
+        },
+        {
+          "line": 3552,
+          "enclosing_function_heuristic": "Convert-PhpTypedValue",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "if ($hasString) { return (To-PhpText $value) }"
+        },
+        {
+          "line": 3554,
+          "enclosing_function_heuristic": "Convert-PhpTypedValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "} elseif ($value -is [string]) {"
+        },
+        {
+          "line": 3555,
+          "enclosing_function_heuristic": "Convert-PhpTypedValue",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$parsed = ConvertFrom-PhpNumericString $value $false"
+        },
+        {
+          "line": 3566,
+          "enclosing_function_heuristic": "Convert-PhpTypedValue",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "if ($hasString) { return (To-PhpText $value) }"
+        },
+        {
+          "line": 3572,
+          "enclosing_function_heuristic": "Convert-PhpTypedValue",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "switch ($typeName.ToLowerInvariant()) {"
+        },
+        {
+          "line": 3575,
+          "enclosing_function_heuristic": "Convert-PhpTypedValue",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "return (To-PhpText $value)"
+        },
+        {
+          "line": 3579,
+          "enclosing_function_heuristic": "Convert-PhpTypedValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ((Is-PhpNum $value) -or $value -is [string]) {"
+        },
+        {
+          "line": 3592,
+          "enclosing_function_heuristic": "Convert-PhpTypedValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($value -is [string]) {"
+        },
+        {
+          "line": 3593,
+          "enclosing_function_heuristic": "Convert-PhpTypedValue",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$parsed = ConvertFrom-PhpNumericString $value $false"
+        },
+        {
+          "line": 3602,
+          "enclosing_function_heuristic": "Convert-PhpTypedValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($value -is [string]) {"
+        },
+        {
+          "line": 3603,
+          "enclosing_function_heuristic": "Convert-PhpTypedValue",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$parsed = ConvertFrom-PhpNumericString $value $false"
+        },
+        {
+          "line": 3611,
+          "enclosing_function_heuristic": "Assert-PhpPropertyDefault",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Assert-PhpPropertyDefault($value, [string]$typeName, [string]$propertyName) {"
+        },
+        {
+          "line": 3612,
+          "enclosing_function_heuristic": "Assert-PhpPropertyDefault",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ([string]::IsNullOrEmpty($typeName)) { return }"
+        },
+        {
+          "line": 3614,
+          "enclosing_function_heuristic": "Assert-PhpPropertyDefault",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "if ($typeName.StartsWith('?')) { $typeName=$typeName.Substring(1) }"
+        },
+        {
+          "line": 3625,
+          "enclosing_function_heuristic": "Copy-PhpTraitMethod",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Copy-PhpTraitMethod($method, [string]$newName, [string]$visibility) {"
+        },
+        {
+          "line": 3626,
+          "enclosing_function_heuristic": "Copy-PhpTraitMethod",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ([string]::IsNullOrEmpty($visibility)) { $visibility=$method.Visibility }"
+        },
+        {
+          "line": 3637,
+          "enclosing_function_heuristic": "Get-PhpTraitComposition",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 3641,
+          "enclosing_function_heuristic": "Get-PhpTraitComposition",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 3642,
+          "enclosing_function_heuristic": "Get-PhpTraitComposition",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$excluded=[System.Collections.Generic.HashSet[string]]::new("
+        },
+        {
+          "line": 3643,
+          "enclosing_function_heuristic": "Get-PhpTraitComposition",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 3716,
+          "enclosing_function_heuristic": "Get-PhpClassChain",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Get-PhpClassChain([string]$className) {"
+        },
+        {
+          "line": 3733,
+          "enclosing_function_heuristic": "Get-PhpInterfaceChain",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Get-PhpInterfaceChain([string]$name) {"
+        },
+        {
+          "line": 3735,
+          "enclosing_function_heuristic": "Get-PhpInterfaceChain",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$pending=[System.Collections.Generic.Queue[string]]::new()"
+        },
+        {
+          "line": 3736,
+          "enclosing_function_heuristic": "Get-PhpInterfaceChain",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$seen=[System.Collections.Generic.HashSet[string]]::new("
+        },
+        {
+          "line": 3737,
+          "enclosing_function_heuristic": "Get-PhpInterfaceChain",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 3751,
+          "enclosing_function_heuristic": "Test-PhpImplements",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Test-PhpImplements([string]$className, [string]$interfaceName) {"
+        },
+        {
+          "line": 3761,
+          "enclosing_function_heuristic": "Assert-PhpMethodSignature",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Assert-PhpMethodSignature($implementation, $required, [string]$context) {"
+        },
+        {
+          "line": 3793,
+          "enclosing_function_heuristic": "Test-PhpInstanceOf",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Test-PhpInstanceOf([string]$actual, [string]$target) {"
+        },
+        {
+          "line": 3812,
+          "enclosing_function_heuristic": "Find-PhpMethod",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Find-PhpMethod([string]$className, [string]$methodName) {"
+        },
+        {
+          "line": 3820,
+          "enclosing_function_heuristic": "Find-OptionalPhpMethod",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Find-OptionalPhpMethod([string]$className, [string]$methodName) {"
+        },
+        {
+          "line": 3829,
+          "enclosing_function_heuristic": "Find-PhpProperty",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Find-PhpProperty([string]$className, [string]$propertyName, [bool]$staticOnly) {"
+        },
+        {
+          "line": 3839,
+          "enclosing_function_heuristic": "Assert-PhpVisibility",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Assert-PhpVisibility([string]$visibility, [string]$owner) {"
+        },
+        {
+          "line": 3855,
+          "enclosing_function_heuristic": "Get-PhpStaticProperty",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$klass = Resolve-PhpClass ([string](Invoke-PhpExpr $node.Base))"
+        },
+        {
+          "line": 3868,
+          "enclosing_function_heuristic": "Set-PhpStaticProperty",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$klass = Resolve-PhpClass ([string](Invoke-PhpExpr $node.Base))"
+        },
+        {
+          "line": 3873,
+          "enclosing_function_heuristic": "Set-PhpStaticProperty",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$value=Convert-PhpTypedValue $value ([string]$prop.TypeName) ('property ' + $node.Name)"
+        },
+        {
+          "line": 3881,
+          "enclosing_function_heuristic": "Resolve-PhpDynamicVariableName",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($value -isnot [string] -and -not (Is-PhpNum $value) -and"
+        },
+        {
+          "line": 3885,
+          "enclosing_function_heuristic": "Resolve-PhpDynamicVariableName",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$name=To-PhpText $value"
+        },
+        {
+          "line": 3891,
+          "enclosing_function_heuristic": "Invoke-PhpPropertyHook",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Invoke-PhpPropertyHook($object, $declared, [string]$mode, $value=$null) {"
+        },
+        {
+          "line": 3894,
+          "enclosing_function_heuristic": "Invoke-PhpPropertyHook",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$hookKey=([string]$object.GetHashCode() + ':' + [string]$declared.Name)"
+        },
+        {
+          "line": 3918,
+          "enclosing_function_heuristic": "Invoke-PhpPropertyHook",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "return (Convert-PhpTypedValue $result ([string]$declared.TypeName) ('property ' + $declared.Name))"
+        },
+        {
+          "line": 3962,
+          "enclosing_function_heuristic": "Get-PhpCliQuietPath",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$encoded = To-PhpKey $key"
+        },
+        {
+          "line": 4020,
+          "enclosing_function_heuristic": "Get-LValue",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$present = if ($base.Props -is [System.Collections.Specialized.OrderedDictionary]) {"
+        },
+        {
+          "line": 4026,
+          "enclosing_function_heuristic": "Get-LValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "([string]$base.GetHashCode() + ':' + $node.Name))) {"
+        },
+        {
+          "line": 4033,
+          "enclosing_function_heuristic": "Get-LValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "([string]$base.GetHashCode() + ':' + $node.Name))) {"
+        },
+        {
+          "line": 4038,
+          "enclosing_function_heuristic": "Get-LValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "-not [string]::IsNullOrEmpty([string]$declared.TypeName)) {"
+        },
+        {
+          "line": 4043,
+          "enclosing_function_heuristic": "Get-LValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$guardKey=([string]$base.GetHashCode() + ':' + $node.Name)"
+        },
+        {
+          "line": 4062,
+          "enclosing_function_heuristic": "Set-LValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Set-LValue($node, $value, [string]$op) {"
+        },
+        {
+          "line": 4096,
+          "enclosing_function_heuristic": "Set-LValue",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "'.=' { $value = (To-PhpText $previous) + (To-PhpText $value) }"
+        },
+        {
+          "line": 4158,
+          "enclosing_function_heuristic": "Set-LValue",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$present=if ($base.Props -is [System.Collections.Specialized.OrderedDictionary]) {"
+        },
+        {
+          "line": 4164,
+          "enclosing_function_heuristic": "Set-LValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$guardKey=([string]$base.GetHashCode() + ':' + $node.Name)"
+        },
+        {
+          "line": 4177,
+          "enclosing_function_heuristic": "Set-LValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "([string]$base.GetHashCode() + ':' + $node.Name))) {"
+        },
+        {
+          "line": 4178,
+          "enclosing_function_heuristic": "Set-LValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$value=Convert-PhpTypedValue $value ([string]$declared.TypeName) ('property ' + $node.Name)"
+        },
+        {
+          "line": 4186,
+          "enclosing_function_heuristic": "Set-LValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "([string]$base.GetHashCode() + ':' + $node.Name))) {"
+        },
+        {
+          "line": 4195,
+          "enclosing_function_heuristic": "Set-LValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$value=Convert-PhpTypedValue $value ([string]$declared.TypeName) ('property ' + $node.Name)"
+        },
+        {
+          "line": 4206,
+          "enclosing_function_heuristic": "Invoke-PhpCallable",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Invoke-PhpCallable($definition, $callArgs, $object, [string]$owner = '', $closure = $null, [bool]$referenceContext = $false) {"
+        },
+        {
+          "line": 4222,
+          "enclosing_function_heuristic": "Invoke-PhpCallable",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 4224,
+          "enclosing_function_heuristic": "Invoke-PhpCallable",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$state.GlobalBindings = [System.Collections.Generic.HashSet[string]]::new("
+        },
+        {
+          "line": 4225,
+          "enclosing_function_heuristic": "Invoke-PhpCallable",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 4226,
+          "enclosing_function_heuristic": "Invoke-PhpCallable",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$state.StaticBindings = [System.Collections.Generic.HashSet[string]]::new("
+        },
+        {
+          "line": 4227,
+          "enclosing_function_heuristic": "Invoke-PhpCallable",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 4234,
+          "enclosing_function_heuristic": "Invoke-PhpCallable",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$frameName = [string]$definition.Name"
+        },
+        {
+          "line": 4256,
+          "enclosing_function_heuristic": "Invoke-PhpCallable",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 4346,
+          "enclosing_function_heuristic": "Invoke-PhpCallable",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "[string]::IsNullOrEmpty($param.TypeName)) { continue }"
+        },
+        {
+          "line": 4347,
+          "enclosing_function_heuristic": "Invoke-PhpCallable",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$name=[string]$param.Name"
+        },
+        {
+          "line": 4386,
+          "enclosing_function_heuristic": "Invoke-PhpCallable",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$returnType=[string]$definition.ReturnType"
+        },
+        {
+          "line": 4440,
+          "enclosing_function_heuristic": "KeyString-ToValue",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function KeyString-ToValue([string]$encoded) {"
+        },
+        {
+          "line": 4441,
+          "enclosing_function_heuristic": "KeyString-ToValue",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "if ($encoded.StartsWith('i:')) { return [long]$encoded.Substring(2) }"
+        },
+        {
+          "line": 4442,
+          "enclosing_function_heuristic": "KeyString-ToValue",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "return $encoded.Substring(2)"
+        },
+        {
+          "line": 4458,
+          "enclosing_function_heuristic": "Invoke-PhpCliExit",
+          "kinds": [
+            "string_type_or_cast",
+            "text_output"
+          ],
+          "source": "elseif ($argument -is [string]) { [Console]::Write($argument) }"
+        },
+        {
+          "line": 4466,
+          "enclosing_function_heuristic": "Invoke-PhpCliExit",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "[Console]::Write('NAN')"
+        },
+        {
+          "line": 4469,
+          "enclosing_function_heuristic": "Invoke-PhpCliExit",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "[Console]::Write((To-PhpText $argument))"
+        },
+        {
+          "line": 4473,
+          "enclosing_function_heuristic": "Invoke-PhpCliExit",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "Write-PhpDiagnostic 8192 ('Implicit conversion from float ' + (To-PhpText $argument) + ' to int loses precision')"
+        },
+        {
+          "line": 4478,
+          "enclosing_function_heuristic": "Invoke-PhpCliExit",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "[Console]::Write((To-PhpText $argument))"
+        },
+        {
+          "line": 4494,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Invoke-PhpFunction([string]$name, $callArgs) {"
+        },
+        {
+          "line": 4506,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "switch ($name.ToLowerInvariant()) {"
+        },
+        {
+          "line": 4520,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$json = To-PhpText $callArgs[0]"
+        },
+        {
+          "line": 4563,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_codec",
+            "text_output"
+          ],
+          "source": "return [long]([System.Text.Encoding]::UTF8.GetByteCount((To-PhpText $callArgs[0])))"
+        },
+        {
+          "line": 4567,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_operations",
+            "text_output"
+          ],
+          "source": "return (To-PhpText $callArgs[0]).ToUpperInvariant()"
+        },
+        {
+          "line": 4571,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_operations",
+            "text_output"
+          ],
+          "source": "return (To-PhpText $callArgs[0]).ToLowerInvariant()"
+        },
+        {
+          "line": 4575,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "return (To-PhpText $callArgs[0]).Trim(@([char]32,[char]9,[char]10,[char]13,[char]0,[char]11))"
+        },
+        {
+          "line": 4600,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$key = To-PhpKey $callArgs[0]"
+        },
+        {
+          "line": 4609,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "return ($callArgs[0] -is [string])"
+        },
+        {
+          "line": 4631,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$lastKey = [string]$keys[$arr.Items.Count - 1]"
+        },
+        {
+          "line": 4638,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$number = [long]$k.Substring(2)"
+        },
+        {
+          "line": 4653,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$firstKey = [string]$keys[0]"
+        },
+        {
+          "line": 4662,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "Set-PhpArrayItem $replacement (KeyString-ToValue ([string]$k)) $v $false"
+        },
+        {
+          "line": 4684,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "Set-PhpArrayItem $replacement (KeyString-ToValue ([string]$k)) $v $false"
+        },
+        {
+          "line": 4701,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$k = [string]$keys[$i]"
+        },
+        {
+          "line": 4722,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "Set-PhpArrayItem $out (KeyString-ToValue ([string]$k)) $v $false"
+        },
+        {
+          "line": 4749,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$k = [string]$keys[$i]"
+        },
+        {
+          "line": 4765,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "Set-PhpArrayItem $output $null (KeyString-ToValue ([string]$key)) $true"
+        },
+        {
+          "line": 4784,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "return (KeyString-ToValue ([string]$key))"
+        },
+        {
+          "line": 4793,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "foreach ($key in $callArgs[0].Items.Keys) { $last = [string]$key }"
+        },
+        {
+          "line": 4838,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$haystack = To-PhpText $callArgs[0]"
+        },
+        {
+          "line": 4839,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$needle = To-PhpText $callArgs[1]"
+        },
+        {
+          "line": 4840,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "return ($haystack.IndexOf($needle, [StringComparison]::Ordinal) -ge 0)"
+        },
+        {
+          "line": 4844,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "return (To-PhpText $callArgs[0]).StartsWith("
+        },
+        {
+          "line": 4845,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_operations",
+            "text_output"
+          ],
+          "source": "(To-PhpText $callArgs[1]), [StringComparison]::Ordinal)"
+        },
+        {
+          "line": 4849,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "return (To-PhpText $callArgs[0]).EndsWith("
+        },
+        {
+          "line": 4850,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_operations",
+            "text_output"
+          ],
+          "source": "(To-PhpText $callArgs[1]), [StringComparison]::Ordinal)"
+        },
+        {
+          "line": 4856,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$haystack = To-PhpText $callArgs[0]"
+        },
+        {
+          "line": 4857,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$needle = To-PhpText $callArgs[1]"
+        },
+        {
+          "line": 4862,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "$pos = $haystack.IndexOf($needle, $offset, [StringComparison]::Ordinal)"
+        },
+        {
+          "line": 4870,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$s = To-PhpText $callArgs[0]"
+        },
+        {
+          "line": 4880,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "return $s.Substring($start, [Math]::Max(0, $end - $start))"
+        },
+        {
+          "line": 4884,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$needle = To-PhpText $callArgs[0]"
+        },
+        {
+          "line": 4885,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$replacement = To-PhpText $callArgs[1]"
+        },
+        {
+          "line": 4886,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$subject = To-PhpText $callArgs[2]"
+        },
+        {
+          "line": 4891,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$separator = To-PhpText $callArgs[0]"
+        },
+        {
+          "line": 4893,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$subject = To-PhpText $callArgs[1]"
+        },
+        {
+          "line": 4903,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$separator = To-PhpText $callArgs[0]"
+        },
+        {
+          "line": 4904,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$items = [System.Collections.Generic.List[string]]::new()"
+        },
+        {
+          "line": 4906,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "[void]$items.Add((To-PhpText $callArgs[1].Items[$key]))"
+        },
+        {
+          "line": 4908,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "return [string]::Join($separator, $items.ToArray())"
+        },
+        {
+          "line": 4914,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "[Console]::Write($printed)"
+        },
+        {
+          "line": 4919,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$constName = To-PhpText $callArgs[0]"
+        },
+        {
+          "line": 4929,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$constName = To-PhpText $callArgs[0]"
+        },
+        {
+          "line": 4934,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$constName = To-PhpText $callArgs[0]"
+        },
+        {
+          "line": 4946,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$iniName = To-PhpText $callArgs[0]"
+        },
+        {
+          "line": 4949,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$state.Ini[$iniName] = To-PhpText $callArgs[1]"
+        },
+        {
+          "line": 4955,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$iniName = To-PhpText $callArgs[0]"
+        },
+        {
+          "line": 4998,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "Write-PhpDiagnostic $level (To-PhpText $callArgs[0])"
+        },
+        {
+          "line": 5007,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "return ((To-PhpText $callArgs[0]) * [int]$times)"
+        },
+        {
+          "line": 5011,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "$functionName = To-PhpText $callArgs[0]"
+        },
+        {
+          "line": 5030,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "return [string]$callArgs[0].Class"
+        },
+        {
+          "line": 5034,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "foreach ($item in $callArgs) { [Console]::Write((Format-PhpVarDump $item '')) }"
+        },
+        {
+          "line": 5044,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($item -is [string]) { return 'string' }"
+        },
+        {
+          "line": 5063,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($callArgs[0] -is [string]) {"
+        },
+        {
+          "line": 5064,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "return ($null -ne (ConvertFrom-PhpNumericString $callArgs[0] $false))"
+        },
+        {
+          "line": 5128,
+          "enclosing_function_heuristic": "Invoke-PhpFunction",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "return (To-PhpText $callArgs[0])"
+        },
+        {
+          "line": 5137,
+          "enclosing_function_heuristic": "Invoke-PhpMethod",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Invoke-PhpMethod($object, [string]$name, $callArgs) {"
+        },
+        {
+          "line": 5147,
+          "enclosing_function_heuristic": "Invoke-PhpStaticMethod",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Invoke-PhpStaticMethod([string]$className, [string]$methodName, $callArgs) {"
+        },
+        {
+          "line": 5160,
+          "enclosing_function_heuristic": "Get-PhpClassConstant",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "function Get-PhpClassConstant([string]$className, [string]$constName) {"
+        },
+        {
+          "line": 5240,
+          "enclosing_function_heuristic": "Invoke-PhpReferenceCall",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$klass=Resolve-PhpClass ([string](Invoke-PhpExpr $node.Base))"
+        },
+        {
+          "line": 5260,
+          "enclosing_function_heuristic": "Invoke-PhpReferenceCall",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($callee -is [string] -and $state.Functions.ContainsKey($callee)) {"
+        },
+        {
+          "line": 5298,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 5342,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$klass=Resolve-PhpClass ([string](Invoke-PhpExpr $node.Base))"
+        },
+        {
+          "line": 5353,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($null -ne $callable -and $callable -is [string]) {"
+        },
+        {
+          "line": 5415,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($callee -is [string] -and $state.Functions.ContainsKey($callee)) {"
+        },
+        {
+          "line": 5419,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($callee -is [string]) {"
+        },
+        {
+          "line": 5435,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$klass=[string](Invoke-PhpExpr $node.Base)"
+        },
+        {
+          "line": 5439,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$klass=[string](Invoke-PhpExpr $node.Base)"
+        },
+        {
+          "line": 5462,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($enum.BackingType -eq 'string' -and $needle -is [string] -and"
+        },
+        {
+          "line": 5468,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_type_or_cast",
+            "text_output"
+          ],
+          "source": "$shown = if ($needle -is [string]) { '\"' + $needle + '\"' } else { To-PhpText $needle }"
+        },
+        {
+          "line": 5495,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "if ($original.Props -is [System.Collections.Specialized.OrderedDictionary]) {"
+        },
+        {
+          "line": 5496,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$props=[System.Collections.Specialized.OrderedDictionary]::new("
+        },
+        {
+          "line": 5497,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 5500,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 5571,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if (([string]$key).StartsWith('i:')) {"
+        },
+        {
+          "line": 5574,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "Set-PhpArrayItem $array (KeyString-ToValue ([string]$key)) $value.Items[$key] $false"
+        },
+        {
+          "line": 5602,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$present=if ($object.Props -is [System.Collections.Specialized.OrderedDictionary]) {"
+        },
+        {
+          "line": 5611,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "-not [string]::IsNullOrEmpty([string]$typedProperty.TypeName)) {"
+        },
+        {
+          "line": 5663,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$key = To-PhpKey (Invoke-PhpExpr $arg.Key)"
+        },
+        {
+          "line": 5671,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$present=if ($object.Props -is [System.Collections.Specialized.OrderedDictionary]) {"
+        },
+        {
+          "line": 5756,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 5763,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "-not [string]::IsNullOrEmpty([string]$prop.TypeName)) {"
+        },
+        {
+          "line": 5768,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$object.Props[$prop.Name]=Copy-PhpValue (Convert-PhpTypedValue $val ([string]$prop.TypeName) ('property ' + $prop.Name))"
+        },
+        {
+          "line": 5847,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "'.' { return ((To-PhpText $a) + (To-PhpText $b)) }"
+        },
+        {
+          "line": 5853,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "Set-PhpArrayItem $union (KeyString-ToValue ([string]$key)) $b.Items[$key] $false"
+        },
+        {
+          "line": 5880,
+          "enclosing_function_heuristic": "Invoke-PhpExpr",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($b -isnot [string]) { throw 'ALL PHP: instanceof class name required' }"
+        },
+        {
+          "line": 6013,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 6022,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 6024,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$usedValues=[System.Collections.Generic.HashSet[string]]::new("
+        },
+        {
+          "line": 6025,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 6030,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "string_key_encoding"
+          ],
+          "source": "$props=[System.Collections.Specialized.OrderedDictionary]::new("
+        },
+        {
+          "line": 6031,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 6035,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($node.BackingType -eq 'string' -and $backedValue -isnot [string]) {"
+        },
+        {
+          "line": 6042,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$uniqueValue=$node.BackingType + ':' + [string]$backedValue"
+        },
+        {
+          "line": 6060,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 6074,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 6082,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 6112,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$names=[System.Collections.Generic.HashSet[string]]::new("
+        },
+        {
+          "line": 6113,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 6156,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 6182,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "string_type_or_cast",
+            "text_operations"
+          ],
+          "source": "$declaredNames=[System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 6189,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$traitMethods=[System.Collections.Generic.HashSet[string]]::new("
+        },
+        {
+          "line": 6190,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::OrdinalIgnoreCase)"
+        },
+        {
+          "line": 6244,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ($node.Readonly -and [string]::IsNullOrEmpty([string]$prop.TypeName)) {"
+        },
+        {
+          "line": 6252,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "Assert-PhpPropertyDefault $defaultValue ([string]$prop.TypeName) $prop.Name"
+        },
+        {
+          "line": 6256,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 6260,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "-not [string]::IsNullOrEmpty([string]$prop.TypeName)) {"
+        },
+        {
+          "line": 6265,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "$statics[$prop.Name]=Copy-PhpValue (Convert-PhpTypedValue $default ([string]$prop.TypeName) ('property ' + $prop.Name))"
+        },
+        {
+          "line": 6269,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "[System.StringComparer]::Ordinal)"
+        },
+        {
+          "line": 6375,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "[Console]::Write((To-PhpText (Invoke-PhpExpr $e)))"
+        },
+        {
+          "line": 6380,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "[Console]::Write((To-PhpText (Invoke-PhpExpr $node.Expr)))"
+        },
+        {
+          "line": 6516,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "Set-PhpVariableValue $node.KeyName ([long]$key.Substring(2))"
+        },
+        {
+          "line": 6518,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "Set-PhpVariableValue $node.KeyName ($key.Substring(2))"
+        },
+        {
+          "line": 6585,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "\"`n  thrown in \" + (To-PhpText $uncaught.Props['file']) +"
+        },
+        {
+          "line": 6586,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "' on line ' + (To-PhpText $uncaught.Props['line']) + \"`n\""
+        },
+        {
+          "line": 6592,
+          "enclosing_function_heuristic": "Invoke-PhpStatement",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "} else { [Console]::Write(\"`n\" + $fatal) }"
+        }
+      ],
+      "counts": {
+        "string_type_or_cast": 234,
+        "text_codec": 2,
+        "text_operations": 119,
+        "text_output": 63,
+        "string_key_encoding": 34
+      }
+    },
+    {
+      "path": "tools/abi/AllNativeBridge.cs",
+      "sha256": "32692504898a77063bcbad631c48d40d8fa1f7c17fcf3f5d837c6f77479ec077",
+      "lines": 169,
+      "occurrences": [
+        {
+          "line": 55,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_codec"
+          ],
+          "source": "[UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CallDelegate([MarshalAs(UnmanagedType.LPUTF8Str)] string scope,[MarshalAs(UnmanagedType.LPUTF8Str)] string name,[In] NativeValue[] args,UInt32 count,int strict,out NativeValue result);"
+        },
+        {
+          "line": 56,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_codec"
+          ],
+          "source": "[UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int FastCallDelegate([MarshalAs(UnmanagedType.LPUTF8Str)] string name,ref NativeValue arg,int strict,out NativeValue result);"
+        },
+        {
+          "line": 57,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_codec"
+          ],
+          "source": "[UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate IntPtr GetDelegate([MarshalAs(UnmanagedType.LPUTF8Str)] string name);"
+        },
+        {
+          "line": 58,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_codec"
+          ],
+          "source": "[UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int SetDelegate([MarshalAs(UnmanagedType.LPUTF8Str)] string name,[MarshalAs(UnmanagedType.LPUTF8Str)] string value);"
+        },
+        {
+          "line": 59,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_codec"
+          ],
+          "source": "[UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int ConstantDelegate([MarshalAs(UnmanagedType.LPUTF8Str)] string name,out NativeValue result);"
+        },
+        {
+          "line": 60,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_codec"
+          ],
+          "source": "[UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int PropertyDelegate([MarshalAs(UnmanagedType.LPUTF8Str)] string cls,[MarshalAs(UnmanagedType.LPUTF8Str)] string name,out UInt32 flags,out UInt32 type,out int initialized);"
+        },
+        {
+          "line": 61,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_codec"
+          ],
+          "source": "[UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int HasFunctionDelegate([MarshalAs(UnmanagedType.LPUTF8Str)] string name);"
+        },
+        {
+          "line": 79,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_codec",
+            "text_operations"
+          ],
+          "source": "private static bool IsCString(string value,bool allowEmpty){if(value==null||(!allowEmpty&&value.Length==0)||value.IndexOf('\\0')>=0)return false;try{new UTF8Encoding(false,true).GetByteCount(value);return true;}catch(EncoderFallbackException){return false;}}"
+        },
+        {
+          "line": 90,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "if(String.Equals(existing.ModuleName,\"php8ts.dll\",StringComparison.OrdinalIgnoreCase))"
+        },
+        {
+          "line": 102,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "if(!String.Equals(CorePath,full,StringComparison.OrdinalIgnoreCase))throw new InvalidOperationException(\"Loaded ALL core path differs from selected candidate\");"
+        },
+        {
+          "line": 104,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_codec"
+          ],
+          "source": "private static string Ansi(IntPtr p){if(p==IntPtr.Zero)return null;int n=0;while(Marshal.ReadByte(p,n)!=0){if(++n>16777216)throw new InvalidOperationException(\"Native UTF-8 string lacks a bounded terminator\");}byte[] b=new byte[n];if(n>0)Marshal.Copy(p,b,0,n);return new UTF8Encoding(false,true).GetString(b);}"
+        },
+        {
+          "line": 113,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_codec"
+          ],
+          "source": "public NativeDiagnosticEvent[] DiagnosticEvents {get{UInt32 count=diagnosticCount();var result=new NativeDiagnosticEvent[count];for(UInt32 i=0;i<count;++i){int level;UIntPtr n;IntPtr p=diagnosticGet(i,out level,out n);result[i]=new NativeDiagnosticEvent{Level=level,Message=new UTF8Encoding(false,true).GetString(Convert.FromBase64String(Base64(p,n)))};}return result;}}"
+        },
+        {
+          "line": 115,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_operations"
+          ],
+          "source": "get {var list=new List<string>();foreach(ProcessModule m in Process.GetCurrentProcess().Modules)if(m.ModuleName.StartsWith(\"php\",StringComparison.OrdinalIgnoreCase))list.Add(m.FileName);return list.ToArray();}"
+        },
+        {
+          "line": 145,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_codec"
+          ],
+          "source": "var encoding=new UTF8Encoding(false,true);var args=new Argument[arguments.Length];"
+        },
+        {
+          "line": 152,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "string_type_or_cast",
+            "text_codec"
+          ],
+          "source": "else if(value is string){a.Type=6;a.Base64=Convert.ToBase64String(encoding.GetBytes((string)value));}"
+        },
+        {
+          "line": 156,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_codec"
+          ],
+          "source": "if(call.Ok&&call.Type==\"string\")result=encoding.GetString(Convert.FromBase64String((string)call.Value));"
+        },
+        {
+          "line": 160,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_codec"
+          ],
+          "source": "encoding.GetString(outputBytes);encoding.GetString(diagnosticBytes);"
+        },
+        {
+          "line": 165,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_codec"
+          ],
+          "source": "for(int i=0;i<2;++i){int index=i;threads[i]=new Thread(delegate(){var r=new ThreadResult();result[index]=r;try{Start();r.Before=Ini(\"dl_test.long\");SetIni(\"dl_test.long\",(100+index).ToString());ready.Signal();go.Wait();r.Value=Ini(\"dl_test.long\");r.Call=Call(\"\",\"dl_test_test2\",new Argument[]{new Argument{Type=6,Base64=Convert.ToBase64String(Encoding.UTF8.GetBytes(\"thread\"+index))}},false,false);End();Start();r.After=Ini(\"dl_test.long\");End();}catch(Exception e){r.Error=e.ToString();if(ready.CurrentCount>0)ready.Signal();}});threads[i].IsBackground=true;threads[i].Start();}"
+        }
+      ],
+      "counts": {
+        "string_type_or_cast": 1,
+        "text_codec": 15,
+        "text_operations": 4,
+        "text_output": 0,
+        "string_key_encoding": 0
+      }
+    },
+    {
+      "path": "package/ALL_cli.ps1",
+      "sha256": "8f32a54194d6d8395eaf087579ebee02d8ead36f309339793904b5591be960e9",
+      "lines": 41,
+      "occurrences": [
+        {
+          "line": 4,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "[string]$Command = 'help',"
+        },
+        {
+          "line": 5,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "[string]$File,"
+        },
+        {
+          "line": 7,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "[string]$Language = 'ALL',"
+        },
+        {
+          "line": 13,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "[Console]::WriteLine('ALL CLI v1.1')"
+        },
+        {
+          "line": 14,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "[Console]::WriteLine('Usage: ALL_cli.ps1 -Command run -File program.all [-Language ALL] [-ScriptArgs @(\"a\",\"b\")]')"
+        },
+        {
+          "line": 15,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "[Console]::WriteLine('       ALL_cli.ps1 -Command version | help')"
+        },
+        {
+          "line": 19,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "text_output"
+          ],
+          "source": "[Console]::WriteLine('ALL CLI v1.1 (ALL interpreter compatibility extension)')"
+        },
+        {
+          "line": 25,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "if ([string]::IsNullOrWhiteSpace($File)) { throw 'ALL CLI: -File is required for run' }"
+        },
+        {
+          "line": 37,
+          "enclosing_function_heuristic": "(top level)",
+          "kinds": [
+            "string_type_or_cast"
+          ],
+          "source": "[Environment]::SetEnvironmentVariable('ALL_SCRIPT_ARGS_JSON',[string]$payload,'Process')"
+        }
+      ],
+      "counts": {
+        "string_type_or_cast": 5,
+        "text_codec": 0,
+        "text_operations": 0,
+        "text_output": 4,
+        "string_key_encoding": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+--- package-v3_19-113d
++++ v3_20-callback-integration
+@@ -126,7 +126,7 @@
+         function Invoke-PhpNativeFunction([string]$name, $values) {
+             # Deferred events cannot reproduce synchronous user-handler callbacks.
+             # Refuse before invoking native code while any user handler is installed.
+-            if ($null -ne $state.ErrorHandler) {
++            if ($null -ne $state.ErrorHandler -and -not $NativeContext.SynchronousCallbacksEnabled) {
+                 Throw-PhpNativeUnsupported 'native calls with an installed PHP error handler require synchronous callbacks'
+             }
+             $nativeName = Get-PhpNativeName $name
+@@ -141,6 +141,9 @@
+                 # This candidate's selected source execution is weak/positional only.
+                 $nativeResult = $NativeContext.InvokeScalar($nativeName, [object[]]@($values), $false)
+             } catch {
++                if ($isCli -and (Test-PhpCliExit $_)) { throw }
++                $callbackThrowable = Get-PhpThrown $_
++                if ($null -ne $callbackThrowable) { Throw-PhpObject $callbackThrowable }
+                 Throw-PhpNativeUnsupported ('scalar boundary: ' + $_.Exception.Message)
+             }
+             # The native call has happened exactly once. Even an unsupported result
+@@ -151,7 +154,7 @@
+                 $nativeStdout.Flush()
+             }
+             foreach ($event in $nativeResult.DiagnosticEvents) {
+-                Write-PhpDiagnostic ([long]$event.Level) ([string]$event.Message)
++                if (-not $event.Delivered) { Write-PhpDiagnostic ([long]$event.Level) ([string]$event.Message) }
+             }
+             if (-not $nativeResult.Ok) {
+                 if ($nativeResult.Status -lt 0 -or $nativeResult.ErrorClass -ceq 'ALLNativeUnsupported') {
+@@ -6539,6 +6542,20 @@
+         foreach ($programToken in $state.Tokens) {
+             if ($phpPreludeTriggers.Contains($programToken)) { Ensure-PhpPrelude; break }
+         }
++        # Same-thread Action delegate: managed reverse-P/Invoke catches exceptions.
++        # Older NativeContext hosts retain deferred diagnostics and their prior
++        # installed-handler rejection. Do not call an absent optional interface.
++        $nativeCallbackInstalled = $false
++        if ($null -ne $NativeContext -and
++            $null -ne $NativeContext.PSObject.Methods['SetDiagnosticHandler'] -and
++            $null -ne $NativeContext.PSObject.Methods['ClearDiagnosticHandler']) {
++            $nativeDiagnosticAction = [System.Action[long,string]] {
++                param([long]$nativeLevel, [string]$nativeMessage)
++                Write-PhpDiagnostic $nativeLevel $nativeMessage
++            }
++            $NativeContext.SetDiagnosticHandler($nativeDiagnosticAction)
++            $nativeCallbackInstalled = $true
++        }
+         try {
+ 
+             # Direct global declarations are checked before any program output. Conditional
+@@ -6590,6 +6607,8 @@
+                 $CliContext['Terminated'] = $true
+                 $CliContext['TerminationReason'] = 'uncaught_php_throwable'
+             } else { [Console]::Write("`n" + $fatal) }
++        } finally {
++            if ($nativeCallbackInstalled) { $NativeContext.ClearDiagnosticHandler() }
+         }
+     }
+ }

@@ -1,0 +1,6 @@
+[
+  {
+    "id": "native.direct_scalar",
+    "code": "<?php echo dl_test_test2('ALL');"
+  }
+]

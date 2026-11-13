@@ -1,0 +1,49 @@
+{
+    "status":  "BUILT_NOT_RUNTIME_VERIFIED",
+    "scope":  "Own outer Main and returned worker status; no stock PHP invocation",
+    "powerShell":  "5.1.26100.9818",
+    "architecture":  "x64",
+    "compiler_options":  "/platform:x64 /optimize+ /langversion:5",
+    "inputs_before":  {
+                          "host_source":  "dab3c8b7131f653619f8f2676fa57810873b8c7d7822888627770adcb780ce8e",
+                          "callback_worker":  "107be1d7af38a87b882d35642909f53e740233216a44013a635055211f3a0071",
+                          "legacy_worker":  "555c4a6c5ac6898fad2076f66b0b465a9d174f91f585f8871756049d32055d18",
+                          "callback_bridge":  "8c37470ecafa4c00a41dbf8917295f88f76b7d2fbbd57645a91313bc833efda8",
+                          "legacy_bridge":  "32692504898a77063bcbad631c48d40d8fa1f7c17fcf3f5d837c6f77479ec077"
+                      },
+    "inputs_after":  {
+                         "host_source":  "dab3c8b7131f653619f8f2676fa57810873b8c7d7822888627770adcb780ce8e",
+                         "callback_worker":  "107be1d7af38a87b882d35642909f53e740233216a44013a635055211f3a0071",
+                         "legacy_worker":  "555c4a6c5ac6898fad2076f66b0b465a9d174f91f585f8871756049d32055d18",
+                         "callback_bridge":  "8c37470ecafa4c00a41dbf8917295f88f76b7d2fbbd57645a91313bc833efda8",
+                         "legacy_bridge":  "32692504898a77063bcbad631c48d40d8fa1f7c17fcf3f5d837c6f77479ec077"
+                     },
+    "files":  [
+                  {
+                      "path":  "all-native-php-host.exe",
+                      "bytes":  5632,
+                      "sha256":  "32ca20b8ab4c7138b90d2274ff8fbb00645b22d9a71985f8fff4f76441aa1ac7"
+                  },
+                  {
+                      "path":  "AllNativeBridge.cs",
+                      "bytes":  16360,
+                      "sha256":  "32692504898a77063bcbad631c48d40d8fa1f7c17fcf3f5d837c6f77479ec077"
+                  },
+                  {
+                      "path":  "AllNativeCallbackBridge.cs",
+                      "bytes":  24114,
+                      "sha256":  "8c37470ecafa4c00a41dbf8917295f88f76b7d2fbbd57645a91313bc833efda8"
+                  },
+                  {
+                      "path":  "callback-return-worker.ps1",
+                      "bytes":  4594,
+                      "sha256":  "a57b6edffe946152df91c87098422ef0ee0785c6e8c0ae452023d5a5ada339de"
+                  },
+                  {
+                      "path":  "legacy-return-worker.ps1",
+                      "bytes":  4432,
+                      "sha256":  "08fc45aeb707bef9f2aeef4eadfcce6ae8ea8fa6a360db020f326caec2ad16d5"
+                  }
+              ],
+    "worker_change":  "Only final Environment.Exit replaced by returned ExitCode object; original source workers unchanged"
+}

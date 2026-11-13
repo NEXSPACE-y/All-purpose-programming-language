@@ -1,0 +1,119 @@
+{
+  "scope": "synthetic own-native safety/output contracts, not PHP compatibility",
+  "results": [
+    {
+      "mode": "continue",
+      "state": "EXITED",
+      "exit": 0,
+      "stdout_hex": "4e2d6265666f7265484e2d616674657245",
+      "expected_stdout_hex": "4e2d6265666f7265484e2d616674657245",
+      "stderr_hex": "",
+      "metadata_pass": true,
+      "own_core_verified": true,
+      "exact_output": true,
+      "command": [
+        "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-callback-v3_20\\Invoke-CallbackContractWorker.ps1",
+        "-Core",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+        "-Extension",
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll",
+        "-Output",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-integration-20261113\\contract3-run01\\continue.json",
+        "-Mode",
+        "continue"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "throw",
+      "state": "EXITED",
+      "exit": 0,
+      "stdout_hex": "4e2d6265666f726548436175676874",
+      "expected_stdout_hex": "4e2d6265666f726548436175676874",
+      "stderr_hex": "",
+      "metadata_pass": true,
+      "own_core_verified": true,
+      "exact_output": true,
+      "command": [
+        "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-callback-v3_20\\Invoke-CallbackContractWorker.ps1",
+        "-Core",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+        "-Extension",
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll",
+        "-Output",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-integration-20261113\\contract3-run01\\throw.json",
+        "-Mode",
+        "throw"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "reenter",
+      "state": "EXITED",
+      "exit": 0,
+      "stdout_hex": "4e2d6265666f72654848656c6c6f20696e6e65724e2d616674657245",
+      "expected_stdout_hex": "4e2d6265666f72654848656c6c6f20696e6e65724e2d616674657245",
+      "stderr_hex": "",
+      "metadata_pass": true,
+      "own_core_verified": true,
+      "exact_output": true,
+      "command": [
+        "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-callback-v3_20\\Invoke-CallbackContractWorker.ps1",
+        "-Core",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+        "-Extension",
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll",
+        "-Output",
+        "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\native-callback-integration-20261113\\contract3-run01\\reenter.json",
+        "-Mode",
+        "reenter"
+      ],
+      "passed": true
+    }
+  ],
+  "passed": 3,
+  "total": 3,
+  "driver_argv": [
+    "C:\\Users\\rinpa\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "tools/candidates/php-callback-v3_20/Compare-CallbackContract.py",
+    "--output",
+    "reports/native-callback-integration-20261113/contract3-run01"
+  ],
+  "timeout_seconds": 30,
+  "inputs_before": {
+    "core": "88117b8f38dc77d20e638ce573bb83fc6f959c1ad6821f8803c5499969fe234b",
+    "extension": "532b9f0944d482a704eb81ac1cb9af3b59aa0f54c753c53a5709c17f57d4e938",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "worker": "34e7e21fd783fa7868fe20811520d185f85d0bb0c45c7bec55564bd1beb32baf",
+    "bridge": "8c37470ecafa4c00a41dbf8917295f88f76b7d2fbbd57645a91313bc833efda8",
+    "runner": "f004eb02ea086e5ad45d9848092e6fe31b8ee1a88e6fc7d99c06544d032bf293"
+  },
+  "inputs_after": {
+    "core": "88117b8f38dc77d20e638ce573bb83fc6f959c1ad6821f8803c5499969fe234b",
+    "extension": "532b9f0944d482a704eb81ac1cb9af3b59aa0f54c753c53a5709c17f57d4e938",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d",
+    "worker": "34e7e21fd783fa7868fe20811520d185f85d0bb0c45c7bec55564bd1beb32baf",
+    "bridge": "8c37470ecafa4c00a41dbf8917295f88f76b7d2fbbd57645a91313bc833efda8",
+    "runner": "f004eb02ea086e5ad45d9848092e6fe31b8ee1a88e6fc7d99c06544d032bf293"
+  },
+  "inputs_unchanged": true,
+  "all_pass": true
+}

@@ -1,0 +1,1 @@
+<?php $f='__unregistered_dynamic_control'; try {$f();} catch(Error $e){echo $e->getMessage();}

@@ -1,0 +1,50 @@
+{
+    "status":  "ISOLATED_COMPONENT_BOUNDARY_CONTRACTS",
+    "full_php_compatibility":  false,
+    "assembly_sha256":  "f5297c6522d4aa702424879c4d733c5de495b4fc18f040e0c88865771fba816f",
+    "powerShell":  "5.1.26100.9818",
+    "clr":  "4.0.30319.42000",
+    "checks":  [
+                   {
+                       "id":  "input_and_export_defensive_copy",
+                       "passed":  true
+                   },
+                   {
+                       "id":  "strict_utf8_boundary_no_replacement",
+                       "passed":  true
+                   },
+                   {
+                       "id":  "implicit_text_conversion_refused",
+                       "passed":  true
+                   },
+                   {
+                       "id":  "prototype_capacity_is_explicit_not_wrapped",
+                       "passed":  true
+                   }
+               ],
+    "negative_controls":  {
+                              "latin1_reencoded_ff":  {
+                                                          "input":  "/w==",
+                                                          "actual_utf8_base64":  "w78=",
+                                                          "preserves_php_bytes":  false
+                                                      },
+                              "latin1_unicode_casefold":  {
+                                                              "input":  "w4A=",
+                                                              "actual_carrier_lower_base64":  "44A=",
+                                                              "preserves_ascii_only_php_casefold":  false
+                                                          },
+                              "normal_unicode_casefold":  {
+                                                              "input":  "w4A=",
+                                                              "actual_lower_base64":  "w6A=",
+                                                              "preserves_ascii_only_php_casefold":  false
+                                                          },
+                              "unicode_order":  {
+                                                    "left":  "8JCAgA==",
+                                                    "right":  "7oCA",
+                                                    "utf16_ordinal_sign":  -1,
+                                                    "byte_ordinal_sign":  1,
+                                                    "same_order":  false
+                                                }
+                          },
+    "meaning":  "Synthetic component/alternative counterexamples only; not PHP interpreter or Linux/native ABI validation"
+}

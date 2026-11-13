@@ -1,0 +1,1 @@
+<?php namespace N;function f(){return 8;}$g='N\f';echo $g();

@@ -1,0 +1,365 @@
+--- base113d
++++ string-literals
+@@ -80,6 +80,8 @@
+                 ExceptionHandlerStack = [System.Collections.Generic.List[object]]::new()
+                 Ini = @{}
+                 NamespaceFallbacks = [System.Collections.Generic.Dictionary[int,string]]::new()
++                DocStrings = [System.Collections.Generic.Dictionary[string,object]]::new([StringComparer]::Ordinal)
++                LiteralWarnings = [System.Collections.Generic.List[object]]::new()
+                 ParsingInternalPrelude = $false
+         }
+ 
+@@ -245,9 +247,124 @@
+         # Tokenize before parsing. Unknown characters produce an error, never disappear.
+         $pattern = '(?:\s+|//[^\r\n]*|\#[^\r\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|''(?:\\.|[^''\\])*''|\$\$[A-Za-z_][A-Za-z_0-9]*|\$[A-Za-z_][A-Za-z_0-9]*|\$(?=\{)|0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|(?:\d[\d_]*(?:\.[\d_]*)?|\.\d[\d_]*)(?:[eE][+-]?\d[\d_]*)?|\\?[A-Za-z_][A-Za-z_0-9]*(?:\\[A-Za-z_][A-Za-z_0-9]*)*\\?|<=>|::|\.\.\.|<<=|>>=|<<|>>|===|!==|==|!=|<=|>=|&&|\|\||=>|->|\*\*=|\*\*|\?\?=|\?\?|\?->|\+\+|--|\*=|/=|%=|&=|\|=|\^=|\+=|-=|\.=|[+\-*/%.=<>!?:;{},()\[\]&|^~@])'
+         $rx = [regex]::new($pattern)
++        $phpLiteralUtf8 = [Text.UTF8Encoding]::new($false,$true)
++        function Throw-PhpLiteralParseError([string]$message,[long]$line) {
++            if ($isCli) {
++                $CliContext['CompileError']=[pscustomobject]@{
++                    Type='ParseError'; Reason='string_literal'; Message=$message
++                    SourcePath=$state.ScriptName; Line=$line
++                }
++            }
++            throw ('ALL PHP: '+$message)
++        }
++        function Add-PhpLiteralText($bytes,[string]$text) {
++            foreach ($b in $phpLiteralUtf8.GetBytes($text)) { [void]$bytes.Add($b) }
++        }
++        function Read-PhpDocToken([string]$text,[int]$offset,[long]$line) {
++            $start=$offset
++            if ($offset -ge $text.Length) { return $null }
++            if (($text[$offset] -ceq 'b' -or $text[$offset] -ceq 'B') -and $offset+1 -lt $text.Length) {
++                if ($text[$offset+1] -ceq '"' -or $text[$offset+1] -ceq "'") {
++                    $quoted=$rx.Match($text,$offset+1)
++                    if ($quoted.Success -and $quoted.Index -eq $offset+1) {
++                        return [pscustomobject]@{Token=$quoted.Value;Length=$quoted.Length+1;Newlines=[regex]::Matches($quoted.Value,"`r`n|`r|`n").Count}
++                    }
++                }
++                $offset++
++            }
++            if ($offset+3 -gt $text.Length -or $text.Substring($offset,3) -cne '<<<') { return $null }
++            $headerRx=[regex]::new('\G<<<[ \t]*(?:''(?<nowdoc>[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*)''|"(?<quoted>[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*)"|(?<bare>[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*))(?:\r\n|\n|\r)')
++            $header=$headerRx.Match($text,$offset)
++            if (-not $header.Success -or $header.Index -ne $offset) { return $null }
++            $nowdoc=$header.Groups['nowdoc'].Success
++            $label=if($nowdoc){$header.Groups['nowdoc'].Value}elseif($header.Groups['quoted'].Success){$header.Groups['quoted'].Value}else{$header.Groups['bare'].Value}
++            $bodyStart=$offset+$header.Length
++            $closingRx=[regex]::new('^(?<indent>[ \t]*)'+[regex]::Escape($label)+'(?![A-Za-z_0-9\x80-\uffff])')
++            $position=$bodyStart;$closing=$null;$closingLine=$line+1
++            while ($position -le $text.Length) {
++                $end=$text.IndexOfAny([char[]]@([char]13,[char]10),$position)
++                if ($end -lt 0) { $end=$text.Length }
++                $closing=$closingRx.Match($text.Substring($position,$end-$position))
++                if ($closing.Success) { break }
++                if ($end -eq $text.Length) { $closing=$null;break }
++                $position=$end+1
++                if ($text[$end] -ceq [char]13 -and $position -lt $text.Length -and $text[$position] -ceq [char]10) { $position++ }
++                $closingLine++
++            }
++            if ($null -eq $closing) { throw 'ALL PHP: Unterminated heredoc/nowdoc literal' }
++            $indent=$closing.Groups['indent'].Value
++            $body=$text.Substring($bodyStart,$position-$bodyStart)
++            if ($indent.Contains(' ') -and $indent.Contains("`t")) {
++                # The PHP scanner detects this before committing the current
++                # text token's newline count. Interpolations commit earlier
++                # segments; nowdoc and a plain heredoc stay at body-start line.
++                $errorLine=$line+1;$lastInterpolation=-1
++                if(-not$nowdoc) {
++                    for($k=0;$k-lt$body.Length;$k++) {
++                        if($body[$k]-ceq'\'){$k++;continue}
++                        if($body[$k]-ceq'$'-and$k+1-lt$body.Length-and[string]$body[$k+1]-cmatch'[A-Za-z_\x80-\uffff{]') {
++                            $lastInterpolation=$k
++                            $errorLine=$line+1+[regex]::Matches($body.Substring(0,$k),"`r`n|`r|`n").Count
++                        }
++                    }
++                }
++                if($lastInterpolation-ge0) {
++                    # Earlier literal segments are indentation-checked before
++                    # the scanner reaches the malformed closing marker. A
++                    # mixed closing prefix selects the tab indentation branch.
++                    $prefixLines=[regex]::Split($body.Substring(0,$lastInterpolation+1),"`r`n|`r|`n")
++                    for($partIndex=0;$partIndex-lt$prefixLines.Length;$partIndex++) {
++                        $prefixLine=$prefixLines[$partIndex]
++                        for($column=0;$column-lt$indent.Length-and$column-lt$prefixLine.Length;$column++) {
++                            if($prefixLine[$column]-cne' '-and$prefixLine[$column]-cne[char]9) {
++                                Throw-PhpLiteralParseError ('Invalid body indentation level (expecting an indentation level of at least '+$indent.Length+')') ($line+1+$partIndex)
++                            }
++                            if($prefixLine[$column]-cne[char]9) {
++                                Throw-PhpLiteralParseError 'Invalid indentation - tabs and spaces cannot be mixed' ($line+1+$partIndex)
++                            }
++                        }
++                    }
++                }
++                Throw-PhpLiteralParseError 'Invalid indentation - tabs and spaces cannot be mixed' $errorLine
++            }
++            if ($body.EndsWith("`r`n")) { $body=$body.Substring(0,$body.Length-2) }
++            elseif ($body.EndsWith("`r") -or $body.EndsWith("`n")) { $body=$body.Substring(0,$body.Length-1) }
++            if ($indent.Length -gt 0) {
++                $clean=[Text.StringBuilder]::new();$bodyPosition=0;$bodyLine=$line+1
++                while ($bodyPosition -lt $body.Length) {
++                    $end=$body.IndexOfAny([char[]]@([char]13,[char]10),$bodyPosition)
++                    if ($end -lt 0) { $end=$body.Length }
++                    $part=$body.Substring($bodyPosition,$end-$bodyPosition);$skip=0
++                    while ($skip -lt $indent.Length -and $skip -lt $part.Length) {
++                        if ($part[$skip] -cne ' ' -and $part[$skip] -cne [char]9) {
++                            Throw-PhpLiteralParseError ('Invalid body indentation level (expecting an indentation level of at least '+$indent.Length+')') $bodyLine
++                        }
++                        if ($part[$skip] -cne $indent[0]) { Throw-PhpLiteralParseError 'Invalid indentation - tabs and spaces cannot be mixed' $bodyLine }
++                        $skip++
++                    }
++                    [void]$clean.Append($part.Substring($skip))
++                    if ($end -lt $body.Length) {
++                        [void]$clean.Append($body[$end]);$end++
++                        if ($body[$end-1] -ceq [char]13 -and $end -lt $body.Length -and $body[$end] -ceq [char]10) { [void]$clean.Append($body[$end]);$end++ }
++                    }
++                    $bodyPosition=$end;$bodyLine++
++                }
++                $body=$clean.ToString()
++            }
++            $id=[string][char]29+'DOC:'+$state.DocStrings.Count
++            $state.DocStrings[$id]=[pscustomobject]@{Body=$body;Nowdoc=$nowdoc;BodyLine=$line+1}
++            $length=$position+$closing.Length-$start
++            return [pscustomobject]@{Token=$id;Length=$length;Newlines=[regex]::Matches($text.Substring($start,$length),"`r`n|`r|`n").Count}
++        }
+         function ConvertTo-PhpTokens([string]$text, $tokens, $lines) {
+             $line = 1
+             for ($offset = 0; $offset -lt $text.Length;) {
++                $doc = Read-PhpDocToken $text $offset $line
++                if ($null -ne $doc) {
++                    [void]$tokens.Add($doc.Token);[void]$lines.Add($line)
++                    $offset += $doc.Length;$line += $doc.Newlines
++                    continue
++                }
+                 $match = $rx.Match($text, $offset)
+                 if (-not $match.Success -or $match.Index -ne $offset) {
+                     throw "ALL PHP: Unknown character at offset $offset"
+@@ -527,7 +644,14 @@
+             }
+             return [pscustomobject]@{ Tokens=$outTokens; Lines=$outLines; Fallbacks=$outFallbacks }
+         }
+-        ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines
++        try { ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines }
++        catch {
++            if (-not $isCli -or -not ($CliContext.Keys -contains 'CompileError')) { throw }
++            $literalError=$CliContext['CompileError']
++            [Console]::Error.Write('Parse error: '+$literalError.Message+' in '+$literalError.SourcePath+' on line '+$literalError.Line+"`n")
++            $CliContext['ExitCode']=[long]255;$CliContext['Terminated']=$true;$CliContext['TerminationReason']='compile_error'
++            return
++        }
+         # Only programs that actually use namespaces, imports or qualified names take this pass.
+         $needsNameResolution = $false
+         for ($scan = 0; $scan -lt $state.Tokens.Count; $scan++) {
+@@ -629,76 +753,97 @@
+             }
+             return $sb.ToString()
+         }
+-        function Expand-PhpDoubleString([string]$token) {
+-            $body = $token.Substring(1, $token.Length - 2)
+-            $output = [System.Text.StringBuilder]::new()
+-            for ($i=0; $i -lt $body.Length; $i++) {
+-                $ch = $body[$i]
+-                if ($ch -eq '\') {
+-                    if ($i + 1 -ge $body.Length) {
+-                        [void]$output.Append('\')
+-                        continue
+-                    }
+-                    $next = $body[$i + 1]
+-                    if ([string]$next -cmatch '[0-7xu]') {
+-                        throw 'ALL PHP: Hexadecimal, octal and Unicode string escapes are not implemented'
+-                    }
+-                    $recognized = $true
+-                    switch ([string]$next) {
+-                        'n' { [void]$output.Append("`n") }
+-                        'r' { [void]$output.Append("`r") }
+-                        't' { [void]$output.Append("`t") }
+-                        'v' { [void]$output.Append([char]11) }
+-                        'e' { [void]$output.Append([char]27) }
+-                        'f' { [void]$output.Append([char]12) }
+-                        '\' { [void]$output.Append('\') }
+-                        '"' { [void]$output.Append('"') }
+-                        '$' { [void]$output.Append('$') }
+-                        default { $recognized = $false }
+-                    }
+-                    if ($recognized) { $i++; continue }
+-                    [void]$output.Append('\')
+-                    continue
+-                }
+-                if ($ch -eq '$' -and $i + 1 -lt $body.Length -and
+-                    $body[$i + 1] -eq '{') {
+-                    throw 'ALL PHP: Legacy ${...} interpolation is not implemented'
+-                }
+-                $braced = $false
+-                $start = $i
+-                if ($ch -eq '{' -and $i + 1 -lt $body.Length -and $body[$i + 1] -eq '$') {
+-                    $braced = $true
+-                    $start++
+-                } elseif ($ch -ne '$') {
+-                    [void]$output.Append($ch)
+-                    continue
+-                }
+-                if ($start + 1 -ge $body.Length -or
+-                    -not ([string]$body[$start + 1] -cmatch '[A-Za-z_]')) {
+-                    [void]$output.Append($ch)
+-                    continue
+-                }
+-                $end = $start + 2
+-                while ($end -lt $body.Length -and
+-                    ([string]$body[$end] -cmatch '[A-Za-z_0-9]')) { $end++ }
+-                if ($braced) {
+-                    if ($end -ge $body.Length -or $body[$end] -ne '}') {
+-                        throw 'ALL PHP: Complex braced string interpolation is not implemented'
+-                    }
+-                } elseif ($end -lt $body.Length -and
+-                         ($body[$end] -eq '[' -or
+-                         ($end + 1 -lt $body.Length -and
+-                          $body.Substring($end, 2) -ceq '->'))) {
+-                    throw 'ALL PHP: Complex string interpolation is not implemented'
+-                }
+-                $name = $body.Substring($start + 1, $end - $start - 1)
+-                if ($state.Vars.ContainsKey($name)) {
+-                    [void]$output.Append((To-PhpText (Get-PhpVariableValue $name)))
+-                }
+-                if ($braced) { $i = $end }
+-                else { $i = $end - 1 }
+-            }
+-            return $output.ToString()
++        function Expand-PhpDoubleString([string]$token,[bool]$IsBody=$false,[bool]$Heredoc=$false,[bool]$ValidateOnly=$false,[long]$LineBase=0) {
++            $body=if($IsBody){$token}else{$token.Substring(1,$token.Length-2)}
++            $output=[Collections.Generic.List[byte]]::new()
++            if($LineBase-le0){$LineBase=[long]$state.Line}
++            for($i=0;$i-lt$body.Length;$i++) {
++                $ch=$body[$i]
++                if($ch-ceq'\') {
++                    if($i+1-ge$body.Length){[void]$output.Add([byte]92);continue}
++                    $next=$body[$i+1]
++                    if($next-ceq'x'-or$next-ceq'X') {
++                        $hex='';$j=$i+2
++                        while($j-lt$body.Length-and$hex.Length-lt2-and[string]$body[$j]-cmatch'^[0-9A-Fa-f]$'){$hex+=$body[$j];$j++}
++                        if($hex.Length-gt0){[void]$output.Add([Convert]::ToByte($hex,16));$i=$j-1;continue}
++                    }
++                    if([string]$next-cmatch'^[0-7]$') {
++                        $octal='';$j=$i+1
++                        while($j-lt$body.Length-and$octal.Length-lt3-and[string]$body[$j]-cmatch'^[0-7]$'){$octal+=$body[$j];$j++}
++                        $value=[Convert]::ToInt32($octal,8)
++                        if($value-gt255-and$ValidateOnly){
++                            [void]$state.LiteralWarnings.Add([pscustomobject]@{Level=[long]2;Message=('Octal escape sequence overflow \'+$octal+' is greater than \377');Line=($LineBase+[regex]::Matches($body.Substring(0,$i),"`r`n|`r|`n").Count)})
++                        }
++                        [void]$output.Add([byte]($value-band255));$i=$j-1;continue
++                    }
++                    if($next-ceq'u'-and$i+2-lt$body.Length-and$body[$i+2]-ceq'{') {
++                        $end=$body.IndexOf('}',$i+3)
++                        $errorLine=$LineBase+[regex]::Matches($body.Substring(0,$i),"`r`n|`r|`n").Count
++                        if($end-lt0){Throw-PhpLiteralParseError 'Invalid UTF-8 codepoint escape sequence' $errorLine}
++                        $hex=$body.Substring($i+3,$end-$i-3)
++                        if($hex-cnotmatch'\A[0-9A-Fa-f]+\z'){Throw-PhpLiteralParseError 'Invalid UTF-8 codepoint escape sequence' $errorLine}
++                        $point=[long]0
++                        foreach($digit in $hex.ToCharArray()) {
++                            if($point-le0x10ffff){$point=$point*16+[Convert]::ToInt32([string]$digit,16)}
++                        }
++                        if($point-gt0x10ffff){Throw-PhpLiteralParseError 'Invalid UTF-8 codepoint escape sequence: Codepoint too large' $errorLine}
++                        if($point-ge0xd800-and$point-le0xdfff){
++                            if($ValidateOnly){$i=$end;continue}
++                            throw 'ALL PHP: Binary string containing a non-scalar UTF-8 codepoint is not supported'
++                        }
++                        Add-PhpLiteralText $output ([char]::ConvertFromUtf32([int]$point));$i=$end;continue
++                    }
++                    $recognized=$true
++                    switch -CaseSensitive ([string]$next) {
++                        'n' {[void]$output.Add([byte]10)}
++                        'r' {[void]$output.Add([byte]13)}
++                        't' {[void]$output.Add([byte]9)}
++                        'v' {[void]$output.Add([byte]11)}
++                        'e' {[void]$output.Add([byte]27)}
++                        'f' {[void]$output.Add([byte]12)}
++                        '\' {[void]$output.Add([byte]92)}
++                        '"' {if($Heredoc){$recognized=$false}else{[void]$output.Add([byte]34)}}
++                        '$' {[void]$output.Add([byte]36)}
++                        default {$recognized=$false}
++                    }
++                    if($recognized){$i++;continue}
++                    [void]$output.Add([byte]92);continue
++                }
++                # Compilation validates escape syntax but must not evaluate or
++                # reject valid, presently unsupported interpolation in dead code.
++                if($ValidateOnly){continue}
++                if($ch-ceq'$'-and$i+1-lt$body.Length-and$body[$i+1]-ceq'{'){throw 'ALL PHP: Legacy ${...} interpolation is not implemented'}
++                $braced=$false;$start=$i
++                if($ch-ceq'{'-and$i+1-lt$body.Length-and$body[$i+1]-ceq'$'){$braced=$true;$start++}
++                elseif($ch-cne'$') {
++                    $length=1
++                    if([char]::IsHighSurrogate($ch)-and$i+1-lt$body.Length-and[char]::IsLowSurrogate($body[$i+1])){$length=2}
++                    Add-PhpLiteralText $output $body.Substring($i,$length);$i+=$length-1;continue
++                }
++                if($start+1-ge$body.Length-or-not([string]$body[$start+1]-cmatch'[A-Za-z_]')) {Add-PhpLiteralText $output ([string]$ch);continue}
++                $end=$start+2
++                while($end-lt$body.Length-and[string]$body[$end]-cmatch'[A-Za-z_0-9]'){$end++}
++                if($braced){if($end-ge$body.Length-or$body[$end]-cne'}'){throw 'ALL PHP: Complex braced string interpolation is not implemented'}}
++                elseif($end-lt$body.Length-and($body[$end]-ceq'['-or($end+1-lt$body.Length-and$body.Substring($end,2)-ceq'->'))){throw 'ALL PHP: Complex string interpolation is not implemented'}
++                $name=$body.Substring($start+1,$end-$start-1)
++                if(-not$ValidateOnly) {
++                    $savedLine=$state.Line
++                    try{
++                        $state.Line=$LineBase+[regex]::Matches($body.Substring(0,$start),"`r`n|`r|`n").Count
++                        $slot=Get-PhpVariableSlot $name
++                        # The existing default API intentionally omits the PHP
++                        # notice/warning while CLI and PhpDiagnostics expose it.
++                        if($slot.Store.ContainsKey($slot.Key)-or$PhpDiagnostics-or$isCli){
++                            Add-PhpLiteralText $output (To-PhpText (Get-PhpVariableValue $name))
++                        }
++                    }
++                    finally{$state.Line=$savedLine}
++                }
++                if($braced){$i=$end}else{$i=$end-1}
++            }
++            if($ValidateOnly){return ''}
++            try{return $phpLiteralUtf8.GetString($output.ToArray())}
++            catch [Text.DecoderFallbackException]{throw 'ALL PHP: Arbitrary non-UTF8 PHP byte strings are not supported'}
+         }
+         function Take-PhpFirstClassCallableArgs {
+             if ((Peek-Token) -cne '(' -or $state.Pos + 2 -ge $state.Tokens.Count) {
+@@ -839,9 +984,18 @@
+                     Kind='literal'; Value=(ConvertFrom-PhpNumberLiteral $token)
+                 }
+             }
++            if ($state.DocStrings.ContainsKey($token)) {
++                $doc=$state.DocStrings[$token]
++                [void](Next-Token)
++                if ($doc.Nowdoc) { return [pscustomobject]@{Kind='literal';Value=$doc.Body} }
++                [void](Expand-PhpDoubleString $doc.Body $true $true $true $doc.BodyLine)
++                return [pscustomobject]@{Kind='double_string';Raw=$doc.Body;IsBody=$true;Heredoc=$true;StringLine=$doc.BodyLine}
++            }
+             if ($token.StartsWith('"')) {
++                $literalLine=[long]$state.TokenLines[$state.Pos]
++                [void](Expand-PhpDoubleString $token $false $false $true $literalLine)
+                 [void](Next-Token)
+-                return [pscustomobject]@{ Kind='double_string'; Raw=$token }
++                return [pscustomobject]@{ Kind='double_string'; Raw=$token;IsBody=$false;Heredoc=$false;StringLine=$literalLine }
+             }
+             if ($token.StartsWith("'")) {
+                 [void](Next-Token)
+@@ -5554,7 +5708,11 @@
+                     }
+                     return (Get-LValue $node.Target)
+                 }
+-                'double_string' { return (Expand-PhpDoubleString $node.Raw) }
++                'double_string' {
++                    $isBody=$false;$heredoc=$false;$stringLine=[long]$state.Line
++                    if($node.PSObject.Properties['IsBody']){$isBody=[bool]$node.IsBody;$heredoc=[bool]$node.Heredoc;$stringLine=[long]$node.StringLine}
++                    return (Expand-PhpDoubleString $node.Raw $isBody $heredoc $false $stringLine)
++                }
+                 'variable' { return (Get-LValue $node) }
+                 'dynamic_variable' { return (Get-LValue $node) }
+                 'index' { return (Get-LValue $node) }
+@@ -6534,6 +6692,11 @@
+             }
+             throw 'ALL PHP: Internal statement error'
+         }
++        foreach($literalWarning in $state.LiteralWarnings) {
++            $savedLine=$state.Line
++            try{$state.Line=$literalWarning.Line;Write-PhpDiagnostic $literalWarning.Level $literalWarning.Message}
++            finally{$state.Line=$savedLine}
++        }
+         # Load the built-in exception classes up front when the program mentions any of them, so
+         # that user classes can extend them.
+         foreach ($programToken in $state.Tokens) {

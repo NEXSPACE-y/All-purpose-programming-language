@@ -1,0 +1,10 @@
+{
+  "status": "fulfilled",
+  "value": {
+    "chunk_id": "6f9628",
+    "wall_time_seconds": 5.0183456,
+    "session_id": 82491,
+    "original_token_count": 84,
+    "output": "DIFFERENT: dynamic.ext.array-capture-before-args\r\nDIFFERENT: dynamic.ext.missing-class\r\nDIFFERENT: dynamic.ext.missing-method\r\nDIFFERENT: dynamic.ext.nonstatic-as-static\r\nDIFFERENT: dynamic.ext.cuf-missing-class\r\nDIFFERENT: dynamic.ext.cuf-missing-method\r\nDIFFERENT: dynamic.ext.cuf-nonstatic\r\nDIFFERENT: dynamic.ext.cuf-array-empty\r\n"
+  }
+}
