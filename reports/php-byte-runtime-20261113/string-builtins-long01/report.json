@@ -1,0 +1,92 @@
+{
+  "status": "SYNTHETIC_BUILTIN_HELPER_CONTRACT_NOT_PHP_INTERPRETER_OR_ORACLE",
+  "scope": "Same generated builtin arms/helpers with scalar/array harness adapters. Long storage byte samples are real; PHP argument binding, memory limit and full multiGB output are not measured by this harness. Full stream is separately validated by storage64.",
+  "command": [
+    "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-runtime-20261113\\string-builtins-long01\\worker.ps1"
+  ],
+  "state": "EXITED",
+  "exit_code": 0,
+  "timeout_seconds": 30,
+  "elapsed_seconds": 5.096241399998689,
+  "inputs_before": {
+    "module": "db1bcb7de55fe08c1f9d6504d27feec1836f122228b7eca9152fb7fc4a849fae",
+    "runtime": "18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b",
+    "worker": "95582a19cbcd83a85e482baa9fa6bd5314da97906179375de8eb438628ccb215"
+  },
+  "inputs_after": {
+    "module": "db1bcb7de55fe08c1f9d6504d27feec1836f122228b7eca9152fb7fc4a849fae",
+    "runtime": "18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b",
+    "worker": "95582a19cbcd83a85e482baa9fa6bd5314da97906179375de8eb438628ccb215"
+  },
+  "inputs_unchanged": true,
+  "stdout_base64": "Ww0KICAgIHsNCiAgICAgICAgImlkIjogICJyZXBlYXRfbG9uZ19yZWFsX3ZhbHVlIiwNCiAgICAgICAgInBhc3NlZCI6ICB0cnVlLA0KICAgICAgICAiZXJyb3IiOiAgbnVsbA0KICAgIH0sDQogICAgew0KICAgICAgICAiaWQiOiAgInN0cmxlbl9sb25nX2ludDY0IiwNCiAgICAgICAgInBhc3NlZCI6ICB0cnVlLA0KICAgICAgICAiZXJyb3IiOiAgbnVsbA0KICAgIH0sDQogICAgew0KICAgICAgICAiaWQiOiAgInN0cnBvc19sb25nX29mZnNldCIsDQogICAgICAgICJwYXNzZWQiOiAgdHJ1ZSwNCiAgICAgICAgImVycm9yIjogIG51bGwNCiAgICB9LA0KICAgIHsNCiAgICAgICAgImlkIjogICJzdWJzdHJfbG9uZ19vZmZzZXQiLA0KICAgICAgICAicGFzc2VkIjogIHRydWUsDQogICAgICAgICJlcnJvciI6ICBudWxsDQogICAgfSwNCiAgICB7DQogICAgICAgICJpZCI6ICAic3Vic3RyX2xvbmdfbmVnYXRpdmVfbGVuZ3RoIiwNCiAgICAgICAgInBhc3NlZCI6ICB0cnVlLA0KICAgICAgICAiZXJyb3IiOiAgbnVsbA0KICAgIH0sDQogICAgew0KICAgICAgICAiaWQiOiAgImxvd2VyX3ByZXNlcnZlc19sb25nX2xlbmd0aCIsDQogICAgICAgICJwYXNzZWQiOiAgdHJ1ZSwNCiAgICAgICAgImVycm9yIjogIG51bGwNCiAgICB9LA0KICAgIHsNCiAgICAgICAgImlkIjogICJ1cHBlcl9wcmVzZXJ2ZXNfbG9uZ19sZW5ndGgiLA0KICAgICAgICAicGFzc2VkIjogIHRydWUsDQogICAgICAgICJlcnJvciI6ICBudWxsDQogICAgfSwNCiAgICB7DQogICAgICAgICJpZCI6ICAic3RhcnRzX2VuZHNfY29udGFpbnNfbG9uZ192YWx1ZXMiLA0KICAgICAgICAicGFzc2VkIjogIHRydWUsDQogICAgICAgICJlcnJvciI6ICBudWxsDQogICAgfSwNCiAgICB7DQogICAgICAgICJpZCI6ICAidHJpbV9sb25nX3NsaWNlX25vX2ZsYXR0ZW5pbmciLA0KICAgICAgICAicGFzc2VkIjogIHRydWUsDQogICAgICAgICJlcnJvciI6ICBudWxsDQogICAgfSwNCiAgICB7DQogICAgICAgICJpZCI6ICAiZXhwbG9kZV9saW1pdF9vbmVfa2VlcHNfbG9uZ19zbGljZSIsDQogICAgICAgICJwYXNzZWQiOiAgdHJ1ZSwNCiAgICAgICAgImVycm9yIjogIG51bGwNCiAgICB9LA0KICAgIHsNCiAgICAgICAgImlkIjogICJpbXBsb2RlX2J1aWxkZXJfbG9uZ192YWx1ZXMiLA0KICAgICAgICAicGFzc2VkIjogIHRydWUsDQogICAgICAgICJlcnJvciI6ICBudWxsDQogICAgfSwNCiAgICB7DQogICAgICAgICJpZCI6ICAic3RydmFsX3JldGFpbnNfbG9uZ192YWx1ZSIsDQogICAgICAgICJwYXNzZWQiOiAgdHJ1ZSwNCiAgICAgICAgImVycm9yIjogIG51bGwNCiAgICB9DQpdDQo=",
+  "stderr_base64": "",
+  "checks": [
+    {
+      "id": "repeat_long_real_value",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "strlen_long_int64",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "strpos_long_offset",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "substr_long_offset",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "substr_long_negative_length",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "lower_preserves_long_length",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "upper_preserves_long_length",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "starts_ends_contains_long_values",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "trim_long_slice_no_flattening",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "explode_limit_one_keeps_long_slice",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "implode_builder_long_values",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "strval_retains_long_value",
+      "passed": true,
+      "error": null
+    }
+  ]
+}

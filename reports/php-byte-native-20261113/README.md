@@ -1,0 +1,15 @@
+# Byte native bridge: selected component evidence
+
+The copied legacy and synchronous callback bridges add canonical `AllPhp.ByteValues.PhpBytes` input, copied native string results, raw output and structured byte diagnostic messages. Sources are in `tools/candidates/php-byte-native/generated04/`; measured assemblies are the fresh `out/build05/`. Both use the frozen production runtime01 DLL `18d50efb...89466b`. Original bridges, native DLLs, package585 and the original 37/75 fixtures were unchanged; this task did not rerun or replace those fixtures.
+
+The new `InvokeScalarBytes` accepts PhpBytes for PHP strings, copies inputs in 64 KiB chunks, and synchronously copies borrowed native results before another native call or teardown can destroy them. Returned bytes remain identical after End/Shutdown. It adds ByteDiagnosticEvents, SetByteDiagnosticHandler with raw output callback, ConstantBytes, ModuleInfoBytes, and the existing C-string-limited IniBytes/SetIniBytes. Old InvokeScalar/SetDiagnosticHandler remain available. Names retain their old text identifier contract; PHP values are never decoded to UTF-8 as a return boundary.
+
+`run02/report.json`: **34 scalar/API comparisons pass**, including FF, NUL, 80, malformed/truncated/overlong/surrogate UTF-8, all256, 64 KiB copy seams, int64 bounds, errors, diagnostics and legacy APIs. Four explicit managed-string rejection guards are counted separately. Same native function arguments/results/errors/diagnostic bytes and actual stdout/stderr/status were compared against separate stock PHP8.5.12 processes, without normalization. Each case invokes its own extension function once, or zero times for a guard; there is no fallback/retry.
+
+**Two added complete module-info output comparisons remain failed.** Own output is335 bytes, PHP385. Both preserve the exact raw nonzero255-byte INI payload, but PHP additionally prints its module and INI table headings. The two insertion differences remain in `module-info-differences.json`; no heading was cut from reference output. This is neither a compatibility pass nor a reason to weaken the byte comparison.
+
+`callback-contract01/`: **12 controlled checks pass**, separately from compatibility counts. They cover full byte copying after NUL, synthetic raw diagnostic/output thunk transport, ownership, lease cleanup, and a real unchanged dl_test null call aborting once with the original managed exception identity. Synthetic bytes do not establish that the extension emits arbitrary binary diagnostics or general memory safety.
+
+`run01/` retains the initial **40 failed harness cases**: the probe incorrectly cast JavaScriptSerializer ArrayList to object[]. No own extension function was invoked. Only that parser cast changed in probe revision02 before run02; bridge, fixtures, expected values and30s timeout were unchanged. Its sources and build04 remain preserved.
+
+No package adoption occurred. Embedded-NUL error-message/INI limits, raw byte identifiers, arbitrary native extensions, Linux and Web remain outside this evidence. See `assessment.json`, `ERROR_MESSAGE_LENGTH_LIMIT.md` and the exact artifact index.

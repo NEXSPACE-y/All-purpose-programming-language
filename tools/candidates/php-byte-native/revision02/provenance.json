@@ -1,0 +1,6 @@
+{
+  "status": "PROBE_FIX_NOT_BRIDGE_OR_FIXTURE_CHANGE",
+  "previous_probe_sha256": "571b3e1a326113d38a1461588093826e5dd1231b4ff4db7ac84e34c8b48b8f3f",
+  "new_probe_sha256": "3c9a6e4f42b721181c4a478a3fdc92cb5896ac0a3bdc46b6623e5b4e6c31b3db",
+  "change": "Use IList for JavaScriptSerializer ArrayList fixture args; previous run native invocation counts were zero; no native fallback/retry added."
+}

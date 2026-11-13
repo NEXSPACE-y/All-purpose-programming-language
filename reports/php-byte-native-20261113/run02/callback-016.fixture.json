@@ -1,0 +1,12 @@
+{
+  "id": "old_api_diagnostic_handler",
+  "function": "dl_test_test2",
+  "args": [
+    {
+      "type": "null"
+    }
+  ],
+  "strict": false,
+  "api": "InvokeScalar",
+  "callback_behavior": "legacy_capture"
+}

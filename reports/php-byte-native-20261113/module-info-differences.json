@@ -1,0 +1,77 @@
+{
+  "status": "TWO_UNNORMALIZED_OUTPUT_DIFFERENCES_REMAIN",
+  "results": [
+    {
+      "id": "legacy.raw_ini_module_output",
+      "compatibility_verdict": "FAIL",
+      "own_stdout_bytes": 335,
+      "php_stdout_bytes": 385,
+      "all_nonzero_255_payload_preserved_in_both": true,
+      "native_ini_bytes_equal_reference": true,
+      "raw_difference_operations": [
+        {
+          "operation": "insert",
+          "own_range": [
+            0,
+            0
+          ],
+          "php_range": [
+            0,
+            9
+          ],
+          "own_bytes_base64": "",
+          "php_bytes_base64": "CmRsX3Rlc3QK"
+        },
+        {
+          "operation": "insert",
+          "own_range": [
+            28,
+            28
+          ],
+          "php_range": [
+            37,
+            78
+          ],
+          "own_bytes_base64": "",
+          "php_bytes_base64": "CkRpcmVjdGl2ZSA9PiBMb2NhbCBWYWx1ZSA9PiBNYXN0ZXIgVmFsdWU="
+        }
+      ]
+    },
+    {
+      "id": "callback.raw_ini_module_output",
+      "compatibility_verdict": "FAIL",
+      "own_stdout_bytes": 335,
+      "php_stdout_bytes": 385,
+      "all_nonzero_255_payload_preserved_in_both": true,
+      "native_ini_bytes_equal_reference": true,
+      "raw_difference_operations": [
+        {
+          "operation": "insert",
+          "own_range": [
+            0,
+            0
+          ],
+          "php_range": [
+            0,
+            9
+          ],
+          "own_bytes_base64": "",
+          "php_bytes_base64": "CmRsX3Rlc3QK"
+        },
+        {
+          "operation": "insert",
+          "own_range": [
+            28,
+            28
+          ],
+          "php_range": [
+            37,
+            78
+          ],
+          "own_bytes_base64": "",
+          "php_bytes_base64": "CkRpcmVjdGl2ZSA9PiBMb2NhbCBWYWx1ZSA9PiBNYXN0ZXIgVmFsdWU="
+        }
+      ]
+    }
+  ]
+}

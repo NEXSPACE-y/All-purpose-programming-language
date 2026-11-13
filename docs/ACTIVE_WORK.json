@@ -82,40 +82,41 @@
       "package_hashes": "216 unchanged files before/after default regression and after strict comparisons",
       "installed_runtime": "45 files unchanged by file list/length/SHA256",
       "report": "reports/v3_19-validation-20261112/INTEGRATION_REVIEW.md"
+    },
+    {
+      "component": "PHP v3.20 callable/literal/CLI/native integration",
+      "commit": "542f304",
+      "source_sha256": "5856687f7abd1471b4af7af9827ca2d17a011e836ad2852bf1d7993298fddc9f",
+      "default_regression": "965/965; original940 unchanged; package219 unchanged",
+      "cli": "191/197, known3 nonUTF8 differences and3 TIMEOUT retained; separate same30s examination3/3, cause not established",
+      "native": "selected callback15/15 and legacy23/23 plus4 separate guards",
+      "report": "reports/v3_20-validation-20261113/README.md"
     }
   ],
   "in_progress": [
     {
-      "component": "PHP v3.20 combined package",
-      "source_sha256": "5856687f7abd1471b4af7af9827ca2d17a011e836ad2852bf1d7993298fddc9f",
-      "state": "Actual package integrated and frozen. Default965 PASS, preflight102/218/C#2, package219 unchanged. Native outer-Main callback15 and legacy23 match plus4 explicit guards. CLI197 comparison still running; known3 binary differences and timeout observations must be preserved.",
-      "report": "reports/v3_20-validation-20261113/",
-      "last_cli_process_session": 94518,
-      "liveness_policy": "Poll handle/report/authoritative OS; this file alone is not evidence of a live process."
-    },
-    {
       "component": "Approved production immutable byte runtime",
       "owner": "string_literals_v320",
       "path": "tools/candidates/php-byte-runtime/",
-      "state": "Implementation in separate candidate only; existing75-proof retained. Long storage/PhpBytes/PhpKey/bytebuilder API under development, not applied to package."
+      "state": "Frozen runtime01: protocol75/75, raw4/4, storage20/20 and independent8/8 including full2147549311-byte WriteTo digest match. Windows component only; not full source/operator/IO compatibility."
     },
     {
       "component": "Byte symbol registry semantics",
       "owner": "dynamic_call_v320",
       "path": "tools/candidates/php-symbol-runtime/",
-      "state": "Identifier audit fixed on113d: UTF8 accept/casefold/constant namespace semantics expose gaps. Context-specific byte key component under development, no core application yet."
+      "state": "Frozen component: actual PHP lookup218 plus8 component contracts matched; invariants22/22. Interpreter ASCII-only/extended UTF8 identifier edits under isolated measurement."
     },
     {
       "component": "Lossless native byte boundary",
       "owner": "callback_integration_v320",
       "path": "tools/candidates/php-byte-native/",
-      "state": "Separate bridge prototype planned with byte input/return/output/diagnostic, legacy API maintained; original DLL/bridge/package frozen."
+      "state": "Separate bridge: scalar/API34 match,4 separate guards,12 separate contracts. ModuleInfo2 raw comparisons differ by50 header bytes; retained. Interpreter byte wiring built, integration execution pending."
     },
     {
       "component": "PS interpreter migration to approved byte values and keys",
       "owner": "root",
       "path": "tools/candidates/php-byte-interpreter/",
-      "state": "Preparation against latest585; current package remains the pre-byte checkpoint. Must update all value/host boundaries, not literals alone."
+      "state": "Core01 scalar12/12; typed02 array10/12, reference display and argument snapshot differences retained. By-value builtin argument snapshot fix in new combined03. Core+TypedKey+StringBuiltin+Native compiled as isolated candidate, not package-applied or fully runtime-verified."
     },
     {
       "component": "Remaining core/stdlib/general ABI/Web/Linux",
@@ -132,7 +133,7 @@
     "do_not_start_other_languages_or_ALL_stage2_early": true,
     "keep_real_failed_and_partial_measurements": true
   },
-  "latest_package_checkpoint_commit": "19cc200",
+  "latest_package_checkpoint_commit": "542f304",
   "active_goal": "PHP完全互換が完了するまで動いてね",
   "goal_status": "active"
 }

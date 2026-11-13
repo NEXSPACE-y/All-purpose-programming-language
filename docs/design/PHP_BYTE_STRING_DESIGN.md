@@ -1,6 +1,6 @@
 # PHP byte-string値モデルの具体設計
 
-文書状態：**設計提案・隔離component実測済み／PHP core未適用／採用判断待ち**。PHP完全互換は未完了。
+文書状態：**方式1は2026-11-13に所有者承認済み。隔離候補でproduction部品・本体への段階的適用を実装・検証中**。PHP完全互換は未完了。承認記録は [PHP_BYTE_MODEL_APPROVAL_20261113.md](../decisions/PHP_BYTE_MODEL_APPROVAL_20261113.md)。以下の提案時の根拠・代案・復旧方法は保存し、最新の測定状況は `docs/ACTIVE_WORK.json` と各reportで区別する。
 
 ## 1. 判断してほしい内容
 

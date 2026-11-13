@@ -1,0 +1,12 @@
+{
+  "id": "old_api_utf8",
+  "function": "dl_test_test2",
+  "args": [
+    {
+      "type": "managed_text",
+      "value": "\u65e5\u672c\u8a9e"
+    }
+  ],
+  "strict": false,
+  "api": "InvokeScalar"
+}

@@ -1,0 +1,179 @@
+{
+  "status": "DIFFERENT",
+  "scope": "Symbol component only; no PHP interpreter/lexer/registry adoption or PHP full-conformance claim",
+  "inputs_before": {
+    "byte": "18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b",
+    "symbol": "8625dfc0b402ac1aa265ea2373d11e9d858d8fa5ef9e7bdac7df497a7ba8a6ff",
+    "driver": "5fc948d965cdc4be7bf908e847c4eb8f22a7b3f9e7947062102830b2a40dd5ce",
+    "probe": "b465c3ccdb46c844716c769a43e538753b2df2f4f31e4a43f219bdd2e57edb60",
+    "helper": "f9d7c8161d000dde5b4314998a053ca8b2333d2e93edc630b6243058a13f60cd",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d"
+  },
+  "inputs_after": {
+    "byte": "18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b",
+    "symbol": "8625dfc0b402ac1aa265ea2373d11e9d858d8fa5ef9e7bdac7df497a7ba8a6ff",
+    "driver": "5fc948d965cdc4be7bf908e847c4eb8f22a7b3f9e7947062102830b2a40dd5ce",
+    "probe": "b465c3ccdb46c844716c769a43e538753b2df2f4f31e4a43f219bdd2e57edb60",
+    "helper": "f9d7c8161d000dde5b4314998a053ca8b2333d2e93edc630b6243058a13f60cd",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d"
+  },
+  "inputs_unchanged": true,
+  "process": {
+    "state": "EXITED",
+    "exit_code": 1,
+    "elapsed_seconds": 2.3681398000007903,
+    "stdout_base64": "eyJzdGF0dXMiOiJJU09MQVRFRF9DT01QT05FTlRfSU5WQVJJQU5UU19OT1RfUEhQX0NPTkZPUk1BTkNFIiwic2NvcGUiOiJSZWFsIGNvbXBvbmVudCBzdG9yYWdlL2lkZW50aXR5IHRlc3RzOyBcdTAwM2VJbnQzMiBjaGVja3MgcmVhZCByZWFsIGJvdW5kYXJ5IGJ5dGVzIGJ1dCBkbyBub3QgaGFzaCBvciBzZXJpYWxpemUgdGhlIGVudGlyZSBodWdlIHZhbHVlIiwidG90YWwiOjIxLCJwYXNzZWQiOjE4LCJjaGVja3MiOlt7ImlkIjoiYWxsLWRvbWFpbnMtZGlzdGluY3QiLCJwYXNzIjp0cnVlLCJvYnNlcnZhdGlvbiI6Nzh9LHsiaWQiOiJpbXBsaWNpdC1hbmQtZXhwbGljaXQtY29udGFpbmVyLWRpc3RpbmN0IiwicGFzcyI6dHJ1ZSwib2JzZXJ2YXRpb24iOltmYWxzZSx0cnVlXX0seyJpZCI6InN0cnVjdHVyZWQtcGFydHMtZG8tbm90LWpvaW4tY29sb25zIiwicGFzcyI6dHJ1ZSwib2JzZXJ2YXRpb24iOiJObyBkZWxpbWl0ZXIgc2VyaWFsaXphdGlvbiBpbiBlcXVhbGl0eSJ9LHsiaWQiOiJzdHJ1Y3R1cmVkLXBhcnRzLWRvLW5vdC1qb2luLW51bCIsInBhc3MiOnRydWUsIm9ic2VydmF0aW9uIjoiT3BhcXVlIE5VTC1jb250YWluaW5nIHBhcnRzIHJldGFpbmVkIn0seyJpZCI6ImRlY2xhcmF0aW9uLXNwZWxsaW5nLXJldGFpbmVkIiwicGFzcyI6dHJ1ZSwib2JzZXJ2YXRpb24iOiJUV2xZWlVRPSJ9LHsiaWQiOiJsb29rdXAtbm9ybWFsaXplZC1ieXRlcyIsInBhc3MiOnRydWUsIm9ic2VydmF0aW9uIjoiYldsNFpXUT0ifSx7ImlkIjoib3JpZ2luYWwtcGFydHMtcmVhZG9ubHkiLCJwYXNzIjpmYWxzZSwib2JzZXJ2YXRpb24iOiJTeXN0ZW0uTWFuYWdlbWVudC5BdXRvbWF0aW9uLlJ1bnRpbWVFeGNlcHRpb24ifSx7ImlkIjoibm9ybWFsaXplZC1wYXJ0cy1yZWFkb25seSIsInBhc3MiOmZhbHNlLCJvYnNlcnZhdGlvbiI6IlN5c3RlbS5NYW5hZ2VtZW50LkF1dG9tYXRpb24uUnVudGltZUV4Y2VwdGlvbiJ9LHsiaWQiOiJzb3VyY2UtYXJyYXktbXV0YXRpb24tZG9lcy1ub3QtY2hhbmdlLWtleSIsInBhc3MiOnRydWUsIm9ic2VydmF0aW9uIjoiUWY4QSJ9LHsiaWQiOiJlcXVhbC1rZXktZGljdGlvbmFyeS1yZXBsYWNlbWVudCIsInBhc3MiOnRydWUsIm9ic2VydmF0aW9uIjpbMSwyXX0seyJpZCI6ImRpY3Rpb25hcnkta2VlcHMtaW5pdGlhbC1rZXktc3BlbGxpbmciLCJwYXNzIjp0cnVlLCJvYnNlcnZhdGlvbiI6IlRXbFlaVVE9In0seyJpZCI6ImNvbnRlbnQtaGFzaC1lcXVhbC1hY3Jvc3MtcmVhbC1zdG9yYWdlLXNoYXBlcyIsInBhc3MiOnRydWUsIm9ic2VydmF0aW9uIjpbMjEyMDg2NDUzNCwyMTIwODY0NTM0LDIxMjA4NjQ1MzQsMjEyMDg2NDUzNF19LHsiaWQiOiJmdW5jdGlvbi1uYW1lLWxlbmd0aC1iZXlvbmQtaW50MzIiLCJwYXNzIjp0cnVlLCJvYnNlcnZhdGlvbiI6eyJsZW5ndGgiOjIxNDc0ODM2NjQsImxhc3QiOjk3fX0seyJpZCI6ImNvbnN0YW50LXByZWZpeC1ib3VuZGFyeS1iZXlvbmQtaW50MzIiLCJwYXNzIjp0cnVlLCJvYnNlcnZhdGlvbiI6eyJwcmVmaXhfbGVuZ3RoIjoyMTQ3NDgzNjY0LCJsZWFmX2Jhc2U2NCI6IlRHVmhaZz09IiwiaGFzaF9jb21wdXRlZCI6ZmFsc2V9fSx7ImlkIjoibnVsbC1uYW1lIiwicGFzcyI6dHJ1ZSwib2JzZXJ2YXRpb24iOiJTeXN0ZW0uQXJndW1lbnROdWxsRXhjZXB0aW9uIn0seyJpZCI6ImludmFsaWQtZG9tYWluIiwicGFzcyI6ZmFsc2UsIm9ic2VydmF0aW9uIjoiU3lzdGVtLk1hbmFnZW1lbnQuQXV0b21hdGlvbi5QU0ludmFsaWRDYXN0RXhjZXB0aW9uIn0seyJpZCI6ImludmFsaWQtbWVtYmVyLWRvbWFpbiIsInBhc3MiOnRydWUsIm9ic2VydmF0aW9uIjoiU3lzdGVtLkFyZ3VtZW50RXhjZXB0aW9uIn0seyJpZCI6Im51bGwtY29udGFpbmVyIiwicGFzcyI6dHJ1ZSwib2JzZXJ2YXRpb24iOiJTeXN0ZW0uQXJndW1lbnROdWxsRXhjZXB0aW9uIn0seyJpZCI6Im51bGwtbWVtYmVyIiwicGFzcyI6dHJ1ZSwib2JzZXJ2YXRpb24iOiJTeXN0ZW0uQXJndW1lbnROdWxsRXhjZXB0aW9uIn0seyJpZCI6Im51bGwtZXF1YWxpdHkiLCJwYXNzIjp0cnVlLCJvYnNlcnZhdGlvbiI6ZmFsc2V9LHsiaWQiOiJmb3JlaWduLXR5cGUtZXF1YWxpdHkiLCJwYXNzIjp0cnVlLCJvYnNlcnZhdGlvbiI6ZmFsc2V9XX0=",
+    "stderr_base64": "",
+    "stdout_utf8_preview": "{\"status\":\"ISOLATED_COMPONENT_INVARIANTS_NOT_PHP_CONFORMANCE\",\"scope\":\"Real component storage/identity tests; \\u003eInt32 checks read real boundary bytes but do not hash or serialize the entire huge value\",\"total\":21,\"passed\":18,\"checks\":[{\"id\":\"all-domains-distinct\",\"pass\":true,\"observation\":78},{\"id\":\"implicit-and-explicit-container-distinct\",\"pass\":true,\"observation\":[false,true]},{\"id\":\"structured-parts-do-not-join-colons\",\"pass\":true,\"observation\":\"No delimiter serialization in equality\"},{\"id\":\"structured-parts-do-not-join-nul\",\"pass\":true,\"observation\":\"Opaque NUL-containing parts retained\"},{\"id\":\"declaration-spelling-retained\",\"pass\":true,\"observation\":\"TWlYZUQ=\"},{\"id\":\"lookup-normalized-bytes\",\"pass\":true,\"observation\":\"bWl4ZWQ=\"},{\"id\":\"original-parts-readonly\",\"pass\":false,\"observation\":\"System.Management.Automation.RuntimeException\"},{\"id\":\"normalized-parts-readonly\",\"pass\":false,\"observation\":\"System.Management.Automation.RuntimeException\"},{\"id\":\"source-array-mutation-does-not-change-key\",\"pass\":true,\"observation\":\"Qf8A\"},{\"id\":\"equal-key-dictionary-replacement\",\"pass\":true,\"observation\":[1,2]},{\"id\":\"dictionary-keeps-initial-key-spelling\",\"pass\":true,\"observation\":\"TWlYZUQ=\"},{\"id\":\"content-hash-equal-across-real-storage-shapes\",\"pass\":true,\"observation\":[2120864534,2120864534,2120864534,2120864534]},{\"id\":\"function-name-length-beyond-int32\",\"pass\":true,\"observation\":{\"length\":2147483664,\"last\":97}},{\"id\":\"constant-prefix-boundary-beyond-int32\",\"pass\":true,\"observation\":{\"prefix_length\":2147483664,\"leaf_base64\":\"TGVhZg==\",\"hash_computed\":false}},{\"id\":\"null-name\",\"pass\":true,\"observation\":\"System.ArgumentNullException\"},{\"id\":\"invalid-domain\",\"pass\":false,\"observation\":\"System.Management.Automation.PSInvalidCastException\"},{\"id\":\"invalid-member-domain\",\"pass\":true,\"observation\":\"System.ArgumentException\"},{\"id\":\"null-container\",\"pass\":true,\"observation\":\"System.ArgumentNullException\"},{\"id\":\"null-member\",\"pass\":true,\"observation\":\"System.ArgumentNullException\"},{\"id\":\"null-equality\",\"pass\":true,\"observation\":false},{\"id\":\"foreign-type-equality\",\"pass\":true,\"observation\":false}]}",
+    "stderr_utf8_preview": "",
+    "command": [
+      "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-symbol-runtime\\Test-SymbolInvariants.ps1",
+      "-ByteRuntimePath",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-runtime\\out\\runtime01\\AllPhp.ByteValues.Runtime.dll",
+      "-ByteRuntimeSha256",
+      "18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b",
+      "-SymbolRuntimePath",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-symbol-runtime\\out\\runtime01\\AllPhp.Symbols.Runtime.dll",
+      "-SymbolRuntimeSha256",
+      "8625dfc0b402ac1aa265ea2373d11e9d858d8fa5ef9e7bdac7df497a7ba8a6ff"
+    ]
+  },
+  "detail": {
+    "status": "ISOLATED_COMPONENT_INVARIANTS_NOT_PHP_CONFORMANCE",
+    "scope": "Real component storage/identity tests; >Int32 checks read real boundary bytes but do not hash or serialize the entire huge value",
+    "total": 21,
+    "passed": 18,
+    "checks": [
+      {
+        "id": "all-domains-distinct",
+        "pass": true,
+        "observation": 78
+      },
+      {
+        "id": "implicit-and-explicit-container-distinct",
+        "pass": true,
+        "observation": [
+          false,
+          true
+        ]
+      },
+      {
+        "id": "structured-parts-do-not-join-colons",
+        "pass": true,
+        "observation": "No delimiter serialization in equality"
+      },
+      {
+        "id": "structured-parts-do-not-join-nul",
+        "pass": true,
+        "observation": "Opaque NUL-containing parts retained"
+      },
+      {
+        "id": "declaration-spelling-retained",
+        "pass": true,
+        "observation": "TWlYZUQ="
+      },
+      {
+        "id": "lookup-normalized-bytes",
+        "pass": true,
+        "observation": "bWl4ZWQ="
+      },
+      {
+        "id": "original-parts-readonly",
+        "pass": false,
+        "observation": "System.Management.Automation.RuntimeException"
+      },
+      {
+        "id": "normalized-parts-readonly",
+        "pass": false,
+        "observation": "System.Management.Automation.RuntimeException"
+      },
+      {
+        "id": "source-array-mutation-does-not-change-key",
+        "pass": true,
+        "observation": "Qf8A"
+      },
+      {
+        "id": "equal-key-dictionary-replacement",
+        "pass": true,
+        "observation": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "dictionary-keeps-initial-key-spelling",
+        "pass": true,
+        "observation": "TWlYZUQ="
+      },
+      {
+        "id": "content-hash-equal-across-real-storage-shapes",
+        "pass": true,
+        "observation": [
+          2120864534,
+          2120864534,
+          2120864534,
+          2120864534
+        ]
+      },
+      {
+        "id": "function-name-length-beyond-int32",
+        "pass": true,
+        "observation": {
+          "length": 2147483664,
+          "last": 97
+        }
+      },
+      {
+        "id": "constant-prefix-boundary-beyond-int32",
+        "pass": true,
+        "observation": {
+          "prefix_length": 2147483664,
+          "leaf_base64": "TGVhZg==",
+          "hash_computed": false
+        }
+      },
+      {
+        "id": "null-name",
+        "pass": true,
+        "observation": "System.ArgumentNullException"
+      },
+      {
+        "id": "invalid-domain",
+        "pass": false,
+        "observation": "System.Management.Automation.PSInvalidCastException"
+      },
+      {
+        "id": "invalid-member-domain",
+        "pass": true,
+        "observation": "System.ArgumentException"
+      },
+      {
+        "id": "null-container",
+        "pass": true,
+        "observation": "System.ArgumentNullException"
+      },
+      {
+        "id": "null-member",
+        "pass": true,
+        "observation": "System.ArgumentNullException"
+      },
+      {
+        "id": "null-equality",
+        "pass": true,
+        "observation": false
+      },
+      {
+        "id": "foreign-type-equality",
+        "pass": true,
+        "observation": false
+      }
+    ]
+  }
+}

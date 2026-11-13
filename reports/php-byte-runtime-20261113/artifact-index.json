@@ -1,0 +1,167 @@
+{
+  "status": "FINAL_COMPONENT_CANDIDATE_NOT_PHP_COMPLETE",
+  "runtime_revision": "runtime01",
+  "files": [
+    {
+      "path": "tools/candidates/php-byte-runtime/.gitignore",
+      "bytes": 12,
+      "sha256": "c583cde1b270e7638a9e1c0ac3263b6640a69d07828c13832982b0fc8612cb7f"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/API.md",
+      "bytes": 6380,
+      "sha256": "15262f5c90b6c751607290e82cc31611d87f5f25096f0ff5c04fb8d3d218f7c3"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/Build-ByteRuntime.ps1",
+      "bytes": 1975,
+      "sha256": "fa622ede50077b2c32d4485f9a6418032d522699d4bc07e88c3865f7eb3f7b10"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/Build-StorageContracts.ps1",
+      "bytes": 2232,
+      "sha256": "63cf33996e40fcb039fc5e2409cd63279891968812b7be3d6feff2cb66aa0621"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/Compare-ByteRuntime.py",
+      "bytes": 5221,
+      "sha256": "84f22f772b34c30c3b2fff47b3fb79076d6b540e28911cfbb68f28a2ff3621ee"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/input-provenance.json",
+      "bytes": 1715,
+      "sha256": "55ba8374d87f91e5026a58b25375c82c6ec1b9d1cc3fd7a3054fea3ab84c9679"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/Invoke-StorageContracts.ps1",
+      "bytes": 990,
+      "sha256": "e7367543768ad604a2168bf9cd9c8565b54095fd21b1e22639262f8e4fe19d7b"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/PhpByteRuntime.cs",
+      "bytes": 27638,
+      "sha256": "334f24c9f714c707f81923abfcb9aae8a94a9c38a7aa77f9c8e0fd996424ca42"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/StorageContracts.cs",
+      "bytes": 14881,
+      "sha256": "afbdcff72b97b965404ba39484cd0e01bf76a53438552ac2215fc909364ad5f7"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/Validate-StorageContracts.py",
+      "bytes": 4672,
+      "sha256": "3ace67df8fbac9deb683b3880352f1779d892455f333663ade35fe293013560c"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/Inputs/component-extended.cases.json",
+      "bytes": 9087,
+      "sha256": "2a8b7ed386cec4d173cc45c9dded20a920f396dcd5a4b78e8f6335385fa149a7"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/Inputs/component.cases.json",
+      "bytes": 8343,
+      "sha256": "34f1a09d35bbeb1940710e38aa16458c5cb291ba4f2674dd06d93a01f47e45f4"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/Inputs/Invoke-ByteValues.ps1",
+      "bytes": 3887,
+      "sha256": "bc9eac5fab85e83846fe6b3298529cb5a3bf2a72d0d324cdc0a5ccd40cf129d2"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/Inputs/Invoke-RawBytes.ps1",
+      "bytes": 381,
+      "sha256": "7d6cd05d078357a21e5c59fb32567eea55f20705346c6bbb4f7867fab9acd070"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/Inputs/Reference-ByteValues.php",
+      "bytes": 2916,
+      "sha256": "84aaf3eec2591a7fbf80b26b9c4779f162e995e0819e97f689d00741136151c5"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/Inputs/Reference-RawBytes.php",
+      "bytes": 103,
+      "sha256": "65fbef655ea77ef593ac00281f435b9ce4dfb1a672f4230d858b467005b90b57"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/out/runtime01/AllPhp.ByteValues.Runtime.dll",
+      "bytes": 16384,
+      "sha256": "18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/out/runtime01/build.json",
+      "bytes": 654,
+      "sha256": "cbd081e519212f79a3b9ecbec579fcc64d035cc18224dbbbe0a4c38ae8ab753d"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/out/runtime01/PhpByteRuntime.cs.snapshot",
+      "bytes": 27638,
+      "sha256": "334f24c9f714c707f81923abfcb9aae8a94a9c38a7aa77f9c8e0fd996424ca42"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/out/storage-contract01/AllPhp.ByteValues.StorageProof.dll",
+      "bytes": 16384,
+      "sha256": "e352ab085840f5c252c89b46559cb92ad413ad5df8a9745fe0c0cbf7d908bc4e"
+    },
+    {
+      "path": "tools/candidates/php-byte-runtime/out/storage-contract01/build.json",
+      "bytes": 908,
+      "sha256": "76aa0d1317548a52956119cca8309dc1bd486887043466e4b74cad21c4ccbd14"
+    },
+    {
+      "path": "reports/php-byte-runtime-20261113/runtime01-protocol75/component.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-byte-runtime-20261113/runtime01-protocol75/component.stdout.bin",
+      "bytes": 3905,
+      "sha256": "d6b8f3e0af77fe6c88f9dac3dcc3a406b62d5e0c6e39a096d39ef57914d4aab7"
+    },
+    {
+      "path": "reports/php-byte-runtime-20261113/runtime01-protocol75/oracle.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-byte-runtime-20261113/runtime01-protocol75/oracle.stdout.bin",
+      "bytes": 3905,
+      "sha256": "d6b8f3e0af77fe6c88f9dac3dcc3a406b62d5e0c6e39a096d39ef57914d4aab7"
+    },
+    {
+      "path": "reports/php-byte-runtime-20261113/runtime01-protocol75/report.json",
+      "bytes": 42884,
+      "sha256": "dbbaf9cc68130f9b217fd9da17a4eb2776803adb864212db314217364efb7e0f"
+    },
+    {
+      "path": "reports/php-byte-runtime-20261113/runtime01-storage64/report.json",
+      "bytes": 6365,
+      "sha256": "a9eb8d594ff1367ce3a5fc7a2afe86c70be0827abff0225c37fed23626be6d4e"
+    },
+    {
+      "path": "reports/php-byte-runtime-20261113/runtime01-storage64/storage.cases.json",
+      "bytes": 652,
+      "sha256": "2b9ceefa71c615b6b36c145aad8733f64bf7b710abd4f95b1033abdc144a36f8"
+    },
+    {
+      "path": "reports/php-byte-runtime-20261113/runtime01-storage64/worker.json",
+      "bytes": 5135,
+      "sha256": "5d5266484c478b1f9590d08c8649b88200ec4221b603db4cabd2050b9b3d3d00"
+    },
+    {
+      "path": "reports/php-byte-runtime-20261113/runtime01-storage64/worker.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-byte-runtime-20261113/runtime01-storage64/worker.stdout.bin",
+      "bytes": 109,
+      "sha256": "d972131558166be7e301507e44794e592a00362aa1c42d627c4201be711fe673"
+    }
+  ],
+  "runtime_dll_sha256": "18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b",
+  "protocol": "75/75 exact",
+  "raw_output": "4/4 exact",
+  "storage_contracts": "20/20",
+  "independent_storage_comparisons": "8/8",
+  "linux_executed": false
+}

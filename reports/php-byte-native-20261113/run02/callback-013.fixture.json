@@ -1,0 +1,11 @@
+{
+  "id": "int64_minimum",
+  "function": "dl_test_frameless",
+  "args": [
+    {
+      "type": "int",
+      "value": "-9223372036854775808"
+    }
+  ],
+  "strict": false
+}
