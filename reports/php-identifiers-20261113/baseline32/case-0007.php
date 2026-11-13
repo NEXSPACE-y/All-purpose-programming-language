@@ -1,0 +1,1 @@
+<?php const 値=8;echo 値;

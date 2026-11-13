@@ -1,0 +1,25 @@
+{
+  "command": [
+    "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+    "-n",
+    "-d",
+    "display_errors=stderr",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-identifiers-20261113\\registry-rules\\rules.php"
+  ],
+  "source_sha256": "d5f7f5f66cd90abd386cedf4054ca7ab0acef3edb825ddaac02770c14335c960",
+  "php_sha256": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+  "actual_exit": 0,
+  "stdout_base64": "eyJjb25zdGFudF9leGFjdCI6dHJ1ZSwiY29uc3RhbnRfbmFtZXNwYWNlX2FzY2lpX2Nhc2UiOnRydWUsImNvbnN0YW50X2xlYWZfYXNjaWlfY2FzZSI6ZmFsc2UsImZ1bmN0aW9uX25hbWVzcGFjZV9hc2NpaV9jYXNlIjp0cnVlLCJjbGFzc19uYW1lc3BhY2VfYXNjaWlfY2FzZSI6dHJ1ZSwibWV0aG9kX2FzY2lpX2Nhc2UiOnRydWUsInByb3BlcnR5X2FzY2lpX2Nhc2UiOmZhbHNlLCJjbGFzc19jb25zdGFudF9jbGFzc19jYXNlIjp0cnVlLCJjbGFzc19jb25zdGFudF9sZWFmX2Nhc2UiOmZhbHNlfQ==",
+  "stderr_base64": "",
+  "observed": {
+    "constant_exact": true,
+    "constant_namespace_ascii_case": true,
+    "constant_leaf_ascii_case": false,
+    "function_namespace_ascii_case": true,
+    "class_namespace_ascii_case": true,
+    "method_ascii_case": true,
+    "property_ascii_case": false,
+    "class_constant_class_case": true,
+    "class_constant_leaf_case": false
+  }
+}

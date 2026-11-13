@@ -28,7 +28,13 @@
     "option_A": true,
     "description": "ALL-owned native ABI layer, pinned SDK types, existing MSVC/SDK and reviewed value/call boundary integration; no stock PHP execution delegation",
     "broader_native_execution_core_option_B": false,
-    "additional_PHP_source_component_adoption_option_C": false
+    "additional_PHP_source_component_adoption_option_C": false,
+    "byte_value_option_1": {
+      "approved": true,
+      "decision": "docs/decisions/PHP_BYTE_MODEL_APPROVAL_20261113.md",
+      "design": "docs/design/PHP_BYTE_STRING_DESIGN.md",
+      "scope": "Immutable byte values, typed array keys and phasewise value/operation/IO/native boundary migration; full64bit target retained; not native execution-core optionB or stock PHP delegation"
+    }
   },
   "workspace": {
     "worktree": "C:\\Users\\rinpa\\ALL-php-compat-20261112",
@@ -80,38 +86,40 @@
   ],
   "in_progress": [
     {
-      "component": "Standalone independent PHP CLI and file source lexing",
-      "owner": "root",
-      "path": "tools/cli/",
-      "candidate": "tools/candidates/php-cli-host/revision07/ALL_PHP_cli_host_candidate.ps1",
-      "source_sha256": "42c17b474209afced61ee99c18b0b064d700041e5fd2ed0c69919b257754003a",
-      "state": "Isolated standalone CLI prototype07 matched52/52 exact same-input process comparisons, including source tags/shebang/BOM/argv/body/stdin/error exits. Earlier failures and incomplete observation retained. Not adopted into package. Full965 and cross-candidate integration still required.",
-      "report": "reports/php-cli-host-20261113/README.md"
+      "component": "PHP v3.20 combined package",
+      "source_sha256": "5856687f7abd1471b4af7af9827ca2d17a011e836ad2852bf1d7993298fddc9f",
+      "state": "Actual package integrated and frozen. Default965 PASS, preflight102/218/C#2, package219 unchanged. Native outer-Main callback15 and legacy23 match plus4 explicit guards. CLI197 comparison still running; known3 binary differences and timeout observations must be preserved.",
+      "report": "reports/v3_20-validation-20261113/",
+      "last_cli_process_session": 94518,
+      "liveness_policy": "Poll handle/report/authoritative OS; this file alone is not evidence of a live process."
     },
     {
-      "component": "Dynamic callable semantics",
-      "owner": "dynamic_call_v320",
-      "path": "tools/candidates/php-dynamic-call/",
-      "state": "113d-based independent revisions. Baseline30 4/30; known early draft escaping defect was deliberately stopped with interruption record. Corrected critical4 matched; new52-case sequential measurement underway. Must inspect authoritative report/handle, not this state string.",
-      "report": "reports/php-dynamic-call-20261113/"
-    },
-    {
-      "component": "Heredoc/nowdoc and byte-accurate escape decoding",
+      "component": "Approved production immutable byte runtime",
       "owner": "string_literals_v320",
-      "path": "tools/candidates/php-string-literals/",
-      "state": "113d-based independent candidatee207; default52 passed. Strict42-case measurement underway; arbitrary nonUTF8 bytes remain explicit unsupported. Whole-token doc scanner and state DocStrings sentinel for eventual file lexer integration.",
-      "report": "reports/php-string-literals-20261113/"
+      "path": "tools/candidates/php-byte-runtime/",
+      "state": "Implementation in separate candidate only; existing75-proof retained. Long storage/PhpBytes/PhpKey/bytebuilder API under development, not applied to package."
     },
     {
-      "component": "Synchronous native diagnostic callback integration",
+      "component": "Byte symbol registry semantics",
+      "owner": "dynamic_call_v320",
+      "path": "tools/candidates/php-symbol-runtime/",
+      "state": "Identifier audit fixed on113d: UTF8 accept/casefold/constant namespace semantics expose gaps. Context-specific byte key component under development, no core application yet."
+    },
+    {
+      "component": "Lossless native byte boundary",
       "owner": "callback_integration_v320",
-      "path": "tools/candidates/php-callback-v3_20/",
-      "state": "113d rebase, separate prototype only. Old native74/bridge24/consistency20 and synthetic27 passed. Existing-context capability bug fixed in separate revision. Timeout-heavy first strict runs retained; phase trace singleton matched, repeat measurement underway. No package or frozen DLL/bridge changed.",
-      "report": "reports/native-callback-integration-20261113/"
+      "path": "tools/candidates/php-byte-native/",
+      "state": "Separate bridge prototype planned with byte input/return/output/diagnostic, legacy API maintained; original DLL/bridge/package frozen."
     },
     {
-      "component": "Remaining PHP language/stdlib/native ABI and Windows Web/Linux",
-      "state": "Full requirement scope remains incomplete. General binary strings, generators/fibers/attributes/Reflection/full standard library, general native ABI values/identity/callback/lifecycle and all Web SAPIs remain. Linux environment decision pending; not a reason to stop independent Windows work."
+      "component": "PS interpreter migration to approved byte values and keys",
+      "owner": "root",
+      "path": "tools/candidates/php-byte-interpreter/",
+      "state": "Preparation against latest585; current package remains the pre-byte checkpoint. Must update all value/host boundaries, not literals alone."
+    },
+    {
+      "component": "Remaining core/stdlib/general ABI/Web/Linux",
+      "state": "Full PHP compatibility incomplete. Linux environment decision remains pending; other independent work continues. Stage2 not started."
     }
   ],
   "pending_owner_input": [

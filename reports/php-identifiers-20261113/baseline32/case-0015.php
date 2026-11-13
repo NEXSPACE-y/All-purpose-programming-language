@@ -1,0 +1,1 @@
+<?php function ́x(){return 5;}echo ́x();

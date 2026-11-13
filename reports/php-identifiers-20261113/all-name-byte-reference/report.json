@@ -1,0 +1,23 @@
+{
+  "meaning": "Pinned official reference tokenizer only; no candidate or production lexer changed",
+  "command": [
+    "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+    "-n",
+    "-d",
+    "display_errors=stderr",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-identifiers\\Probe-PhpNameBytes.php"
+  ],
+  "php_sha256": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+  "source_sha256": "b467b590efd23cea337b128b182270dc6c6824218d724abef1c6e8031668edb4",
+  "actual_exit": 0,
+  "stdout_sha256": "a0565ddfc3e9a224e84bb84e4a144e3ff2ce86cf9ccd6123e4c1a72b7ab6cadc",
+  "stderr_base64": "",
+  "positions": 2,
+  "byte_values_per_position": 256,
+  "matching_label_classifications": 512,
+  "valid_counts": {
+    "start": 181,
+    "continue": 191
+  },
+  "mismatches": []
+}

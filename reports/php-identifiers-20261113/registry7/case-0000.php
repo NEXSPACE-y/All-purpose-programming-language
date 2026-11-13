@@ -1,0 +1,1 @@
+<?php namespace MiXeD;const VaL=1;var_dump(defined('mixed\VaL'),defined('MiXeD\val'));

@@ -1,0 +1,1 @@
+<?php function Σ(){return 1;}function σ(){return 2;}echo Σ().σ();

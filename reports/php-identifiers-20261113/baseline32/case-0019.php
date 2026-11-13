@@ -1,0 +1,1 @@
+<?php define('é',1);define('é',2);echo constant('é').constant('é');

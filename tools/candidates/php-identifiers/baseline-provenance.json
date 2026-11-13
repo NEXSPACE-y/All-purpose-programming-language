@@ -1,0 +1,7 @@
+{
+  "mode": "Read-only exact snapshot, no core modification",
+  "copied_from": "tools\\candidates\\php-cli-host\\base113d.snapshot.ps1",
+  "sha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
+  "reason": "Parent integrates new package concurrently; keep this starting baseline immutable",
+  "case_count": 32
+}

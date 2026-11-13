@@ -1,0 +1,1 @@
+<?php function é(){return 1;}function é(){return 2;}echo é().é();

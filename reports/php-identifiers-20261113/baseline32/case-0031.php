@@ -1,0 +1,1 @@
+<?php function raw_ÿ(){return 1;}echo raw_ÿ();

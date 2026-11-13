@@ -1,0 +1,77 @@
+[
+  {
+    "id": "ascii",
+    "left": "Foo",
+    "right": "foo"
+  },
+  {
+    "id": "latin-e-acute",
+    "left": "É",
+    "right": "é"
+  },
+  {
+    "id": "long-s",
+    "left": "S",
+    "right": "ſ"
+  },
+  {
+    "id": "kelvin",
+    "left": "K",
+    "right": "K"
+  },
+  {
+    "id": "sigma",
+    "left": "Σ",
+    "right": "σ"
+  },
+  {
+    "id": "final-sigma",
+    "left": "Σ",
+    "right": "ς"
+  },
+  {
+    "id": "dotless-i",
+    "left": "I",
+    "right": "ı"
+  },
+  {
+    "id": "dotted-i",
+    "left": "i",
+    "right": "İ"
+  },
+  {
+    "id": "sharp-s",
+    "left": "ẞ",
+    "right": "ß"
+  },
+  {
+    "id": "normalization",
+    "left": "é",
+    "right": "é"
+  },
+  {
+    "id": "deseret",
+    "left": "𐐀",
+    "right": "𐐨"
+  },
+  {
+    "id": "confusable-cyrillic",
+    "left": "A",
+    "right": "А"
+  },
+  {
+    "id": "japanese-same",
+    "left": "猫",
+    "right": "猫"
+  },
+  {
+    "id": "japanese-distinct",
+    "left": "猫",
+    "right": "犬"
+  },
+  {
+    "id": "ligature",
+    "left": "FF",
+    "right": "ﬀ"
+  }
+]
