@@ -1,0 +1,1 @@
+$a=[-5=>'x',-3=>'y'];array_shift($a);$a[]='z';var_dump($a);

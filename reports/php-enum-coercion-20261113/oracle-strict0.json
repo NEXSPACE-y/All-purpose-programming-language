@@ -1,0 +1,1539 @@
+{
+  "command": [
+    "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+    "-n",
+    "-d",
+    "display_errors=stderr",
+    "-d",
+    "error_reporting=-1",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-enum-coercion-20261113\\oracle-strict0.php"
+  ],
+  "actual_exit": 0,
+  "source_sha256": "912b5ad69de3e3c9bd1b26f5231224e4738719950989e85e66cd7b5e734096a0",
+  "template_sha256": "8bfccf47549111cc0bc89b12106a6e59b3dce02d9f06e722ddb009a1feece55d",
+  "php_sha256": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+  "stdout_base64": "W3sic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJudWxsIiwiaW5wdXRfdHlwZSI6Im51bGwiLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJaZXJvIiwiYmFja2luZ190eXBlIjoic3RyaW5nIiwidmFsdWVfYmFzZTY0IjoiTUE9PSIsImludGVnZXJfdmFsdWUiOm51bGx9LCJ3YXJuaW5ncyI6W3sibGV2ZWwiOjgxOTIsIm1lc3NhZ2VfYmFzZTY0IjoiVTBVNk9tWnliMjBvS1RvZ1VHRnpjMmx1WnlCdWRXeHNJSFJ2SUhCaGNtRnRaWFJsY2lBak1TQW9KSFpoYkhWbEtTQnZaaUIwZVhCbElITjBjbWx1WjN4cGJuUWdhWE1nWkdWd2NtVmpZWFJsWkE9PSJ9XX0seyJzdHJpY3QiOjAsImVudW0iOiJTRSIsIm1ldGhvZCI6ImZyb20iLCJpZCI6ImZhbHNlIiwiaW5wdXRfdHlwZSI6ImJvb2wiLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJaZXJvIiwiYmFja2luZ190eXBlIjoic3RyaW5nIiwidmFsdWVfYmFzZTY0IjoiTUE9PSIsImludGVnZXJfdmFsdWUiOm51bGx9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJ0cnVlIiwiaW5wdXRfdHlwZSI6ImJvb2wiLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJPbmUiLCJiYWNraW5nX3R5cGUiOiJzdHJpbmciLCJ2YWx1ZV9iYXNlNjQiOiJNUT09IiwiaW50ZWdlcl92YWx1ZSI6bnVsbH0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJTRSIsIm1ldGhvZCI6ImZyb20iLCJpZCI6ImludDAiLCJpbnB1dF90eXBlIjoiaW50IiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiWmVybyIsImJhY2tpbmdfdHlwZSI6InN0cmluZyIsInZhbHVlX2Jhc2U2NCI6Ik1BPT0iLCJpbnRlZ2VyX3ZhbHVlIjpudWxsfSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IlNFIiwibWV0aG9kIjoiZnJvbSIsImlkIjoiaW50NyIsImlucHV0X3R5cGUiOiJpbnQiLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJTZXZlbiIsImJhY2tpbmdfdHlwZSI6InN0cmluZyIsInZhbHVlX2Jhc2U2NCI6Ik53PT0iLCJpbnRlZ2VyX3ZhbHVlIjpudWxsfSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IlNFIiwibWV0aG9kIjoiZnJvbSIsImlkIjoiaW50OCIsImlucHV0X3R5cGUiOiJpbnQiLCJyZXN1bHQiOnsic3RhdHVzIjoiZXJyb3IiLCJjbGFzcyI6IlZhbHVlRXJyb3IiLCJtZXNzYWdlX2Jhc2U2NCI6IklqZ2lJR2x6SUc1dmRDQmhJSFpoYkdsa0lHSmhZMnRwYm1jZ2RtRnNkV1VnWm05eUlHVnVkVzBnVTBVPSJ9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJmbG9hdDciLCJpbnB1dF90eXBlIjoiZmxvYXQiLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJTZXZlbiIsImJhY2tpbmdfdHlwZSI6InN0cmluZyIsInZhbHVlX2Jhc2U2NCI6Ik53PT0iLCJpbnRlZ2VyX3ZhbHVlIjpudWxsfSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IlNFIiwibWV0aG9kIjoiZnJvbSIsImlkIjoiZmxvYXQ3XzUiLCJpbnB1dF90eXBlIjoiZmxvYXQiLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJTZXZlbiIsImJhY2tpbmdfdHlwZSI6InN0cmluZyIsInZhbHVlX2Jhc2U2NCI6Ik53PT0iLCJpbnRlZ2VyX3ZhbHVlIjpudWxsfSwid2FybmluZ3MiOlt7ImxldmVsIjo4MTkyLCJtZXNzYWdlX2Jhc2U2NCI6IlNXMXdiR2xqYVhRZ1kyOXVkbVZ5YzJsdmJpQm1jbTl0SUdac2IyRjBJRGN1TlNCMGJ5QnBiblFnYkc5elpYTWdjSEpsWTJsemFXOXUifV19LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJuZWdhdGl2ZTdfNSIsImlucHV0X3R5cGUiOiJmbG9hdCIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6Ik5lZ2F0aXZlIiwiYmFja2luZ190eXBlIjoic3RyaW5nIiwidmFsdWVfYmFzZTY0IjoiTFRjPSIsImludGVnZXJfdmFsdWUiOm51bGx9LCJ3YXJuaW5ncyI6W3sibGV2ZWwiOjgxOTIsIm1lc3NhZ2VfYmFzZTY0IjoiU1cxd2JHbGphWFFnWTI5dWRtVnljMmx2YmlCbWNtOXRJR1pzYjJGMElDMDNMalVnZEc4Z2FXNTBJR3h2YzJWeklIQnlaV05wYzJsdmJnPT0ifV19LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJpbmZpbml0eSIsImlucHV0X3R5cGUiOiJmbG9hdCIsInJlc3VsdCI6eyJzdGF0dXMiOiJlcnJvciIsImNsYXNzIjoiVmFsdWVFcnJvciIsIm1lc3NhZ2VfYmFzZTY0IjoiSWtsT1JpSWdhWE1nYm05MElHRWdkbUZzYVdRZ1ltRmphMmx1WnlCMllXeDFaU0JtYjNJZ1pXNTFiU0JUUlE9PSJ9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJuYW4iLCJpbnB1dF90eXBlIjoiZmxvYXQiLCJyZXN1bHQiOnsic3RhdHVzIjoiZXJyb3IiLCJjbGFzcyI6IlZhbHVlRXJyb3IiLCJtZXNzYWdlX2Jhc2U2NCI6IklrNUJUaUlnYVhNZ2JtOTBJR0VnZG1Gc2FXUWdZbUZqYTJsdVp5QjJZV3gxWlNCbWIzSWdaVzUxYlNCVFJRPT0ifSwid2FybmluZ3MiOlt7ImxldmVsIjoyLCJtZXNzYWdlX2Jhc2U2NCI6ImRXNWxlSEJsWTNSbFpDQk9RVTRnZG1Gc2RXVWdkMkZ6SUdOdlpYSmpaV1FnZEc4Z2MzUnlhVzVuIn1dfSx7InN0cmljdCI6MCwiZW51bSI6IlNFIiwibWV0aG9kIjoiZnJvbSIsImlkIjoiZW1wdHkiLCJpbnB1dF90eXBlIjoic3RyaW5nIiwicmVzdWx0Ijp7InN0YXR1cyI6ImVycm9yIiwiY2xhc3MiOiJWYWx1ZUVycm9yIiwibWVzc2FnZV9iYXNlNjQiOiJJaUlnYVhNZ2JtOTBJR0VnZG1Gc2FXUWdZbUZqYTJsdVp5QjJZV3gxWlNCbWIzSWdaVzUxYlNCVFJRPT0ifSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IlNFIiwibWV0aG9kIjoiZnJvbSIsImlkIjoiemVybyIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJaZXJvIiwiYmFja2luZ190eXBlIjoic3RyaW5nIiwidmFsdWVfYmFzZTY0IjoiTUE9PSIsImludGVnZXJfdmFsdWUiOm51bGx9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJzZXZlbiIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJTZXZlbiIsImJhY2tpbmdfdHlwZSI6InN0cmluZyIsInZhbHVlX2Jhc2U2NCI6Ik53PT0iLCJpbnRlZ2VyX3ZhbHVlIjpudWxsfSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IlNFIiwibWV0aG9kIjoiZnJvbSIsImlkIjoiZGVjaW1hbCIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoiZXJyb3IiLCJjbGFzcyI6IlZhbHVlRXJyb3IiLCJtZXNzYWdlX2Jhc2U2NCI6IklqY3VNQ0lnYVhNZ2JtOTBJR0VnZG1Gc2FXUWdZbUZqYTJsdVp5QjJZV3gxWlNCbWIzSWdaVzUxYlNCVFJRPT0ifSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IlNFIiwibWV0aG9kIjoiZnJvbSIsImlkIjoibGVhZGluZ196ZXJvIiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJlcnJvciIsImNsYXNzIjoiVmFsdWVFcnJvciIsIm1lc3NhZ2VfYmFzZTY0IjoiSWpBM0lpQnBjeUJ1YjNRZ1lTQjJZV3hwWkNCaVlXTnJhVzVuSUhaaGJIVmxJR1p2Y2lCbGJuVnRJRk5GIn0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJTRSIsIm1ldGhvZCI6ImZyb20iLCJpZCI6ImV4cG9uZW50IiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJlcnJvciIsImNsYXNzIjoiVmFsdWVFcnJvciIsIm1lc3NhZ2VfYmFzZTY0IjoiSWpkbE1DSWdhWE1nYm05MElHRWdkbUZzYVdRZ1ltRmphMmx1WnlCMllXeDFaU0JtYjNJZ1pXNTFiU0JUUlE9PSJ9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJ3aGl0ZXNwYWNlIiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJlcnJvciIsImNsYXNzIjoiVmFsdWVFcnJvciIsIm1lc3NhZ2VfYmFzZTY0IjoiSWlBM0lDSWdhWE1nYm05MElHRWdkbUZzYVdRZ1ltRmphMmx1WnlCMllXeDFaU0JtYjNJZ1pXNTFiU0JUUlE9PSJ9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJub25udW1lcmljIiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJlcnJvciIsImNsYXNzIjoiVmFsdWVFcnJvciIsIm1lc3NhZ2VfYmFzZTY0IjoiSWpkNElpQnBjeUJ1YjNRZ1lTQjJZV3hwWkNCaVlXTnJhVzVuSUhaaGJIVmxJR1p2Y2lCbGJuVnRJRk5GIn0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJTRSIsIm1ldGhvZCI6ImZyb20iLCJpZCI6Im5lZ2F0aXZlX3plcm8iLCJpbnB1dF90eXBlIjoic3RyaW5nIiwicmVzdWx0Ijp7InN0YXR1cyI6ImVycm9yIiwiY2xhc3MiOiJWYWx1ZUVycm9yIiwibWVzc2FnZV9iYXNlNjQiOiJJaTB3SWlCcGN5QnViM1FnWVNCMllXeHBaQ0JpWVdOcmFXNW5JSFpoYkhWbElHWnZjaUJsYm5WdElGTkYifSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IlNFIiwibWV0aG9kIjoiZnJvbSIsImlkIjoibmVnYXRpdmUiLCJpbnB1dF90eXBlIjoic3RyaW5nIiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiTmVnYXRpdmUiLCJiYWNraW5nX3R5cGUiOiJzdHJpbmciLCJ2YWx1ZV9iYXNlNjQiOiJMVGM9IiwiaW50ZWdlcl92YWx1ZSI6bnVsbH0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJTRSIsIm1ldGhvZCI6ImZyb20iLCJpZCI6Im51bCIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoiZXJyb3IiLCJjbGFzcyI6IlZhbHVlRXJyb3IiLCJtZXNzYWdlX2Jhc2U2NCI6IklpSWdhWE1nYm05MElHRWdkbUZzYVdRZ1ltRmphMmx1WnlCMllXeDFaU0JtYjNJZ1pXNTFiU0JUUlE9PSJ9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJyYXciLCJpbnB1dF90eXBlIjoic3RyaW5nIiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiUmF3IiwiYmFja2luZ190eXBlIjoic3RyaW5nIiwidmFsdWVfYmFzZTY0IjoiL3c9PSIsImludGVnZXJfdmFsdWUiOm51bGx9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJhcnJheSIsImlucHV0X3R5cGUiOiJhcnJheSIsInJlc3VsdCI6eyJzdGF0dXMiOiJlcnJvciIsImNsYXNzIjoiVHlwZUVycm9yIiwibWVzc2FnZV9iYXNlNjQiOiJVMFU2T21aeWIyMG9LVG9nUVhKbmRXMWxiblFnSXpFZ0tDUjJZV3gxWlNrZ2JYVnpkQ0JpWlNCdlppQjBlWEJsSUhOMGNtbHVaM3hwYm5Rc0lHRnljbUY1SUdkcGRtVnUifSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IlNFIiwibWV0aG9kIjoiZnJvbSIsImlkIjoib2JqZWN0IiwiaW5wdXRfdHlwZSI6InN0ZENsYXNzIiwicmVzdWx0Ijp7InN0YXR1cyI6ImVycm9yIiwiY2xhc3MiOiJUeXBlRXJyb3IiLCJtZXNzYWdlX2Jhc2U2NCI6IlUwVTZPbVp5YjIwb0tUb2dRWEpuZFcxbGJuUWdJekVnS0NSMllXeDFaU2tnYlhWemRDQmlaU0J2WmlCMGVYQmxJSE4wY21sdVozeHBiblFzSUhOMFpFTnNZWE56SUdkcGRtVnUifSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IlNFIiwibWV0aG9kIjoiZnJvbSIsImlkIjoic3RyaW5nYWJsZSIsImlucHV0X3R5cGUiOiJTdHJpbmdWYWx1ZSIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6IlNldmVuIiwiYmFja2luZ190eXBlIjoic3RyaW5nIiwidmFsdWVfYmFzZTY0IjoiTnc9PSIsImludGVnZXJfdmFsdWUiOm51bGx9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJ0cnlGcm9tIiwiaWQiOiJudWxsIiwiaW5wdXRfdHlwZSI6Im51bGwiLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJaZXJvIiwiYmFja2luZ190eXBlIjoic3RyaW5nIiwidmFsdWVfYmFzZTY0IjoiTUE9PSIsImludGVnZXJfdmFsdWUiOm51bGx9LCJ3YXJuaW5ncyI6W3sibGV2ZWwiOjgxOTIsIm1lc3NhZ2VfYmFzZTY0IjoiVTBVNk9uUnllVVp5YjIwb0tUb2dVR0Z6YzJsdVp5QnVkV3hzSUhSdklIQmhjbUZ0WlhSbGNpQWpNU0FvSkhaaGJIVmxLU0J2WmlCMGVYQmxJSE4wY21sdVozeHBiblFnYVhNZ1pHVndjbVZqWVhSbFpBPT0ifV19LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJ0cnlGcm9tIiwiaWQiOiJmYWxzZSIsImlucHV0X3R5cGUiOiJib29sIiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiWmVybyIsImJhY2tpbmdfdHlwZSI6InN0cmluZyIsInZhbHVlX2Jhc2U2NCI6Ik1BPT0iLCJpbnRlZ2VyX3ZhbHVlIjpudWxsfSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IlNFIiwibWV0aG9kIjoidHJ5RnJvbSIsImlkIjoidHJ1ZSIsImlucHV0X3R5cGUiOiJib29sIiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiT25lIiwiYmFja2luZ190eXBlIjoic3RyaW5nIiwidmFsdWVfYmFzZTY0IjoiTVE9PSIsImludGVnZXJfdmFsdWUiOm51bGx9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJ0cnlGcm9tIiwiaWQiOiJpbnQwIiwiaW5wdXRfdHlwZSI6ImludCIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6Ilplcm8iLCJiYWNraW5nX3R5cGUiOiJzdHJpbmciLCJ2YWx1ZV9iYXNlNjQiOiJNQT09IiwiaW50ZWdlcl92YWx1ZSI6bnVsbH0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJTRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6ImludDciLCJpbnB1dF90eXBlIjoiaW50IiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiU2V2ZW4iLCJiYWNraW5nX3R5cGUiOiJzdHJpbmciLCJ2YWx1ZV9iYXNlNjQiOiJOdz09IiwiaW50ZWdlcl92YWx1ZSI6bnVsbH0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJTRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6ImludDgiLCJpbnB1dF90eXBlIjoiaW50IiwicmVzdWx0Ijp7InN0YXR1cyI6Im51bGwifSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IlNFIiwibWV0aG9kIjoidHJ5RnJvbSIsImlkIjoiZmxvYXQ3IiwiaW5wdXRfdHlwZSI6ImZsb2F0IiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiU2V2ZW4iLCJiYWNraW5nX3R5cGUiOiJzdHJpbmciLCJ2YWx1ZV9iYXNlNjQiOiJOdz09IiwiaW50ZWdlcl92YWx1ZSI6bnVsbH0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJTRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6ImZsb2F0N181IiwiaW5wdXRfdHlwZSI6ImZsb2F0IiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiU2V2ZW4iLCJiYWNraW5nX3R5cGUiOiJzdHJpbmciLCJ2YWx1ZV9iYXNlNjQiOiJOdz09IiwiaW50ZWdlcl92YWx1ZSI6bnVsbH0sIndhcm5pbmdzIjpbeyJsZXZlbCI6ODE5MiwibWVzc2FnZV9iYXNlNjQiOiJTVzF3YkdsamFYUWdZMjl1ZG1WeWMybHZiaUJtY205dElHWnNiMkYwSURjdU5TQjBieUJwYm5RZ2JHOXpaWE1nY0hKbFkybHphVzl1In1dfSx7InN0cmljdCI6MCwiZW51bSI6IlNFIiwibWV0aG9kIjoidHJ5RnJvbSIsImlkIjoibmVnYXRpdmU3XzUiLCJpbnB1dF90eXBlIjoiZmxvYXQiLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJOZWdhdGl2ZSIsImJhY2tpbmdfdHlwZSI6InN0cmluZyIsInZhbHVlX2Jhc2U2NCI6IkxUYz0iLCJpbnRlZ2VyX3ZhbHVlIjpudWxsfSwid2FybmluZ3MiOlt7ImxldmVsIjo4MTkyLCJtZXNzYWdlX2Jhc2U2NCI6IlNXMXdiR2xqYVhRZ1kyOXVkbVZ5YzJsdmJpQm1jbTl0SUdac2IyRjBJQzAzTGpVZ2RHOGdhVzUwSUd4dmMyVnpJSEJ5WldOcGMybHZiZz09In1dfSx7InN0cmljdCI6MCwiZW51bSI6IlNFIiwibWV0aG9kIjoidHJ5RnJvbSIsImlkIjoiaW5maW5pdHkiLCJpbnB1dF90eXBlIjoiZmxvYXQiLCJyZXN1bHQiOnsic3RhdHVzIjoibnVsbCJ9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJ0cnlGcm9tIiwiaWQiOiJuYW4iLCJpbnB1dF90eXBlIjoiZmxvYXQiLCJyZXN1bHQiOnsic3RhdHVzIjoibnVsbCJ9LCJ3YXJuaW5ncyI6W3sibGV2ZWwiOjIsIm1lc3NhZ2VfYmFzZTY0IjoiZFc1bGVIQmxZM1JsWkNCT1FVNGdkbUZzZFdVZ2QyRnpJR052WlhKalpXUWdkRzhnYzNSeWFXNW4ifV19LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJ0cnlGcm9tIiwiaWQiOiJlbXB0eSIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoibnVsbCJ9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJ0cnlGcm9tIiwiaWQiOiJ6ZXJvIiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6Ilplcm8iLCJiYWNraW5nX3R5cGUiOiJzdHJpbmciLCJ2YWx1ZV9iYXNlNjQiOiJNQT09IiwiaW50ZWdlcl92YWx1ZSI6bnVsbH0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJTRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6InNldmVuIiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6IlNldmVuIiwiYmFja2luZ190eXBlIjoic3RyaW5nIiwidmFsdWVfYmFzZTY0IjoiTnc9PSIsImludGVnZXJfdmFsdWUiOm51bGx9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJ0cnlGcm9tIiwiaWQiOiJkZWNpbWFsIiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJudWxsIn0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJTRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6ImxlYWRpbmdfemVybyIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoibnVsbCJ9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJ0cnlGcm9tIiwiaWQiOiJleHBvbmVudCIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoibnVsbCJ9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJ0cnlGcm9tIiwiaWQiOiJ3aGl0ZXNwYWNlIiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJudWxsIn0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJTRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6Im5vbm51bWVyaWMiLCJpbnB1dF90eXBlIjoic3RyaW5nIiwicmVzdWx0Ijp7InN0YXR1cyI6Im51bGwifSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IlNFIiwibWV0aG9kIjoidHJ5RnJvbSIsImlkIjoibmVnYXRpdmVfemVybyIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoibnVsbCJ9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiU0UiLCJtZXRob2QiOiJ0cnlGcm9tIiwiaWQiOiJuZWdhdGl2ZSIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJOZWdhdGl2ZSIsImJhY2tpbmdfdHlwZSI6InN0cmluZyIsInZhbHVlX2Jhc2U2NCI6IkxUYz0iLCJpbnRlZ2VyX3ZhbHVlIjpudWxsfSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IlNFIiwibWV0aG9kIjoidHJ5RnJvbSIsImlkIjoibnVsIiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJudWxsIn0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJTRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6InJhdyIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJSYXciLCJiYWNraW5nX3R5cGUiOiJzdHJpbmciLCJ2YWx1ZV9iYXNlNjQiOiIvdz09IiwiaW50ZWdlcl92YWx1ZSI6bnVsbH0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJTRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6ImFycmF5IiwiaW5wdXRfdHlwZSI6ImFycmF5IiwicmVzdWx0Ijp7InN0YXR1cyI6ImVycm9yIiwiY2xhc3MiOiJUeXBlRXJyb3IiLCJtZXNzYWdlX2Jhc2U2NCI6IlUwVTZPblJ5ZVVaeWIyMG9LVG9nUVhKbmRXMWxiblFnSXpFZ0tDUjJZV3gxWlNrZ2JYVnpkQ0JpWlNCdlppQjBlWEJsSUhOMGNtbHVaM3hwYm5Rc0lHRnljbUY1SUdkcGRtVnUifSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IlNFIiwibWV0aG9kIjoidHJ5RnJvbSIsImlkIjoib2JqZWN0IiwiaW5wdXRfdHlwZSI6InN0ZENsYXNzIiwicmVzdWx0Ijp7InN0YXR1cyI6ImVycm9yIiwiY2xhc3MiOiJUeXBlRXJyb3IiLCJtZXNzYWdlX2Jhc2U2NCI6IlUwVTZPblJ5ZVVaeWIyMG9LVG9nUVhKbmRXMWxiblFnSXpFZ0tDUjJZV3gxWlNrZ2JYVnpkQ0JpWlNCdlppQjBlWEJsSUhOMGNtbHVaM3hwYm5Rc0lITjBaRU5zWVhOeklHZHBkbVZ1In0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJTRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6InN0cmluZ2FibGUiLCJpbnB1dF90eXBlIjoiU3RyaW5nVmFsdWUiLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJTZXZlbiIsImJhY2tpbmdfdHlwZSI6InN0cmluZyIsInZhbHVlX2Jhc2U2NCI6Ik53PT0iLCJpbnRlZ2VyX3ZhbHVlIjpudWxsfSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IklFIiwibWV0aG9kIjoiZnJvbSIsImlkIjoibnVsbCIsImlucHV0X3R5cGUiOiJudWxsIiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiWmVybyIsImJhY2tpbmdfdHlwZSI6ImludGVnZXIiLCJ2YWx1ZV9iYXNlNjQiOm51bGwsImludGVnZXJfdmFsdWUiOjB9LCJ3YXJuaW5ncyI6W3sibGV2ZWwiOjgxOTIsIm1lc3NhZ2VfYmFzZTY0IjoiU1VVNk9tWnliMjBvS1RvZ1VHRnpjMmx1WnlCdWRXeHNJSFJ2SUhCaGNtRnRaWFJsY2lBak1TQW9KSFpoYkhWbEtTQnZaaUIwZVhCbElITjBjbWx1WjN4cGJuUWdhWE1nWkdWd2NtVmpZWFJsWkE9PSJ9XX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6ImZyb20iLCJpZCI6ImZhbHNlIiwiaW5wdXRfdHlwZSI6ImJvb2wiLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJaZXJvIiwiYmFja2luZ190eXBlIjoiaW50ZWdlciIsInZhbHVlX2Jhc2U2NCI6bnVsbCwiaW50ZWdlcl92YWx1ZSI6MH0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6ImZyb20iLCJpZCI6InRydWUiLCJpbnB1dF90eXBlIjoiYm9vbCIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6Ik9uZSIsImJhY2tpbmdfdHlwZSI6ImludGVnZXIiLCJ2YWx1ZV9iYXNlNjQiOm51bGwsImludGVnZXJfdmFsdWUiOjF9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiSUUiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJpbnQwIiwiaW5wdXRfdHlwZSI6ImludCIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6Ilplcm8iLCJiYWNraW5nX3R5cGUiOiJpbnRlZ2VyIiwidmFsdWVfYmFzZTY0IjpudWxsLCJpbnRlZ2VyX3ZhbHVlIjowfSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IklFIiwibWV0aG9kIjoiZnJvbSIsImlkIjoiaW50NyIsImlucHV0X3R5cGUiOiJpbnQiLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJTZXZlbiIsImJhY2tpbmdfdHlwZSI6ImludGVnZXIiLCJ2YWx1ZV9iYXNlNjQiOm51bGwsImludGVnZXJfdmFsdWUiOjd9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiSUUiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJpbnQ4IiwiaW5wdXRfdHlwZSI6ImludCIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6IkVpZ2h0IiwiYmFja2luZ190eXBlIjoiaW50ZWdlciIsInZhbHVlX2Jhc2U2NCI6bnVsbCwiaW50ZWdlcl92YWx1ZSI6OH0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6ImZyb20iLCJpZCI6ImZsb2F0NyIsImlucHV0X3R5cGUiOiJmbG9hdCIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6IlNldmVuIiwiYmFja2luZ190eXBlIjoiaW50ZWdlciIsInZhbHVlX2Jhc2U2NCI6bnVsbCwiaW50ZWdlcl92YWx1ZSI6N30sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6ImZyb20iLCJpZCI6ImZsb2F0N181IiwiaW5wdXRfdHlwZSI6ImZsb2F0IiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiU2V2ZW4iLCJiYWNraW5nX3R5cGUiOiJpbnRlZ2VyIiwidmFsdWVfYmFzZTY0IjpudWxsLCJpbnRlZ2VyX3ZhbHVlIjo3fSwid2FybmluZ3MiOlt7ImxldmVsIjo4MTkyLCJtZXNzYWdlX2Jhc2U2NCI6IlNXMXdiR2xqYVhRZ1kyOXVkbVZ5YzJsdmJpQm1jbTl0SUdac2IyRjBJRGN1TlNCMGJ5QnBiblFnYkc5elpYTWdjSEpsWTJsemFXOXUifV19LHsic3RyaWN0IjowLCJlbnVtIjoiSUUiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJuZWdhdGl2ZTdfNSIsImlucHV0X3R5cGUiOiJmbG9hdCIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6Ik5lZ2F0aXZlIiwiYmFja2luZ190eXBlIjoiaW50ZWdlciIsInZhbHVlX2Jhc2U2NCI6bnVsbCwiaW50ZWdlcl92YWx1ZSI6LTd9LCJ3YXJuaW5ncyI6W3sibGV2ZWwiOjgxOTIsIm1lc3NhZ2VfYmFzZTY0IjoiU1cxd2JHbGphWFFnWTI5dWRtVnljMmx2YmlCbWNtOXRJR1pzYjJGMElDMDNMalVnZEc4Z2FXNTBJR3h2YzJWeklIQnlaV05wYzJsdmJnPT0ifV19LHsic3RyaWN0IjowLCJlbnVtIjoiSUUiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJpbmZpbml0eSIsImlucHV0X3R5cGUiOiJmbG9hdCIsInJlc3VsdCI6eyJzdGF0dXMiOiJlcnJvciIsImNsYXNzIjoiVHlwZUVycm9yIiwibWVzc2FnZV9iYXNlNjQiOiJTVVU2T21aeWIyMG9LVG9nUVhKbmRXMWxiblFnSXpFZ0tDUjJZV3gxWlNrZ2JYVnpkQ0JpWlNCdlppQjBlWEJsSUdsdWRDd2dabXh2WVhRZ1oybDJaVzQ9In0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6ImZyb20iLCJpZCI6Im5hbiIsImlucHV0X3R5cGUiOiJmbG9hdCIsInJlc3VsdCI6eyJzdGF0dXMiOiJlcnJvciIsImNsYXNzIjoiVHlwZUVycm9yIiwibWVzc2FnZV9iYXNlNjQiOiJTVVU2T21aeWIyMG9LVG9nUVhKbmRXMWxiblFnSXpFZ0tDUjJZV3gxWlNrZ2JYVnpkQ0JpWlNCdlppQjBlWEJsSUdsdWRDd2dabXh2WVhRZ1oybDJaVzQ9In0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6ImZyb20iLCJpZCI6ImVtcHR5IiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJlcnJvciIsImNsYXNzIjoiVHlwZUVycm9yIiwibWVzc2FnZV9iYXNlNjQiOiJTVVU2T21aeWIyMG9LVG9nUVhKbmRXMWxiblFnSXpFZ0tDUjJZV3gxWlNrZ2JYVnpkQ0JpWlNCdlppQjBlWEJsSUdsdWRDd2djM1J5YVc1bklHZHBkbVZ1In0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6ImZyb20iLCJpZCI6Inplcm8iLCJpbnB1dF90eXBlIjoic3RyaW5nIiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiWmVybyIsImJhY2tpbmdfdHlwZSI6ImludGVnZXIiLCJ2YWx1ZV9iYXNlNjQiOm51bGwsImludGVnZXJfdmFsdWUiOjB9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiSUUiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJzZXZlbiIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJTZXZlbiIsImJhY2tpbmdfdHlwZSI6ImludGVnZXIiLCJ2YWx1ZV9iYXNlNjQiOm51bGwsImludGVnZXJfdmFsdWUiOjd9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiSUUiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJkZWNpbWFsIiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6IlNldmVuIiwiYmFja2luZ190eXBlIjoiaW50ZWdlciIsInZhbHVlX2Jhc2U2NCI6bnVsbCwiaW50ZWdlcl92YWx1ZSI6N30sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6ImZyb20iLCJpZCI6ImxlYWRpbmdfemVybyIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJTZXZlbiIsImJhY2tpbmdfdHlwZSI6ImludGVnZXIiLCJ2YWx1ZV9iYXNlNjQiOm51bGwsImludGVnZXJfdmFsdWUiOjd9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiSUUiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJleHBvbmVudCIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJTZXZlbiIsImJhY2tpbmdfdHlwZSI6ImludGVnZXIiLCJ2YWx1ZV9iYXNlNjQiOm51bGwsImludGVnZXJfdmFsdWUiOjd9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiSUUiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJ3aGl0ZXNwYWNlIiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6IlNldmVuIiwiYmFja2luZ190eXBlIjoiaW50ZWdlciIsInZhbHVlX2Jhc2U2NCI6bnVsbCwiaW50ZWdlcl92YWx1ZSI6N30sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6ImZyb20iLCJpZCI6Im5vbm51bWVyaWMiLCJpbnB1dF90eXBlIjoic3RyaW5nIiwicmVzdWx0Ijp7InN0YXR1cyI6ImVycm9yIiwiY2xhc3MiOiJUeXBlRXJyb3IiLCJtZXNzYWdlX2Jhc2U2NCI6IlNVVTZPbVp5YjIwb0tUb2dRWEpuZFcxbGJuUWdJekVnS0NSMllXeDFaU2tnYlhWemRDQmlaU0J2WmlCMGVYQmxJR2x1ZEN3Z2MzUnlhVzVuSUdkcGRtVnUifSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IklFIiwibWV0aG9kIjoiZnJvbSIsImlkIjoibmVnYXRpdmVfemVybyIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJaZXJvIiwiYmFja2luZ190eXBlIjoiaW50ZWdlciIsInZhbHVlX2Jhc2U2NCI6bnVsbCwiaW50ZWdlcl92YWx1ZSI6MH0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6ImZyb20iLCJpZCI6Im5lZ2F0aXZlIiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6Ik5lZ2F0aXZlIiwiYmFja2luZ190eXBlIjoiaW50ZWdlciIsInZhbHVlX2Jhc2U2NCI6bnVsbCwiaW50ZWdlcl92YWx1ZSI6LTd9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiSUUiLCJtZXRob2QiOiJmcm9tIiwiaWQiOiJudWwiLCJpbnB1dF90eXBlIjoic3RyaW5nIiwicmVzdWx0Ijp7InN0YXR1cyI6ImVycm9yIiwiY2xhc3MiOiJUeXBlRXJyb3IiLCJtZXNzYWdlX2Jhc2U2NCI6IlNVVTZPbVp5YjIwb0tUb2dRWEpuZFcxbGJuUWdJekVnS0NSMllXeDFaU2tnYlhWemRDQmlaU0J2WmlCMGVYQmxJR2x1ZEN3Z2MzUnlhVzVuSUdkcGRtVnUifSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IklFIiwibWV0aG9kIjoiZnJvbSIsImlkIjoicmF3IiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJlcnJvciIsImNsYXNzIjoiVHlwZUVycm9yIiwibWVzc2FnZV9iYXNlNjQiOiJTVVU2T21aeWIyMG9LVG9nUVhKbmRXMWxiblFnSXpFZ0tDUjJZV3gxWlNrZ2JYVnpkQ0JpWlNCdlppQjBlWEJsSUdsdWRDd2djM1J5YVc1bklHZHBkbVZ1In0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6ImZyb20iLCJpZCI6ImFycmF5IiwiaW5wdXRfdHlwZSI6ImFycmF5IiwicmVzdWx0Ijp7InN0YXR1cyI6ImVycm9yIiwiY2xhc3MiOiJUeXBlRXJyb3IiLCJtZXNzYWdlX2Jhc2U2NCI6IlNVVTZPbVp5YjIwb0tUb2dRWEpuZFcxbGJuUWdJekVnS0NSMllXeDFaU2tnYlhWemRDQmlaU0J2WmlCMGVYQmxJR2x1ZEN3Z1lYSnlZWGtnWjJsMlpXND0ifSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IklFIiwibWV0aG9kIjoiZnJvbSIsImlkIjoib2JqZWN0IiwiaW5wdXRfdHlwZSI6InN0ZENsYXNzIiwicmVzdWx0Ijp7InN0YXR1cyI6ImVycm9yIiwiY2xhc3MiOiJUeXBlRXJyb3IiLCJtZXNzYWdlX2Jhc2U2NCI6IlNVVTZPbVp5YjIwb0tUb2dRWEpuZFcxbGJuUWdJekVnS0NSMllXeDFaU2tnYlhWemRDQmlaU0J2WmlCMGVYQmxJR2x1ZEN3Z2MzUmtRMnhoYzNNZ1oybDJaVzQ9In0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6ImZyb20iLCJpZCI6InN0cmluZ2FibGUiLCJpbnB1dF90eXBlIjoiU3RyaW5nVmFsdWUiLCJyZXN1bHQiOnsic3RhdHVzIjoiZXJyb3IiLCJjbGFzcyI6IlR5cGVFcnJvciIsIm1lc3NhZ2VfYmFzZTY0IjoiU1VVNk9tWnliMjBvS1RvZ1FYSm5kVzFsYm5RZ0l6RWdLQ1IyWVd4MVpTa2diWFZ6ZENCaVpTQnZaaUIwZVhCbElHbHVkQ3dnVTNSeWFXNW5WbUZzZFdVZ1oybDJaVzQ9In0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6Im51bGwiLCJpbnB1dF90eXBlIjoibnVsbCIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6Ilplcm8iLCJiYWNraW5nX3R5cGUiOiJpbnRlZ2VyIiwidmFsdWVfYmFzZTY0IjpudWxsLCJpbnRlZ2VyX3ZhbHVlIjowfSwid2FybmluZ3MiOlt7ImxldmVsIjo4MTkyLCJtZXNzYWdlX2Jhc2U2NCI6IlNVVTZPblJ5ZVVaeWIyMG9LVG9nVUdGemMybHVaeUJ1ZFd4c0lIUnZJSEJoY21GdFpYUmxjaUFqTVNBb0pIWmhiSFZsS1NCdlppQjBlWEJsSUhOMGNtbHVaM3hwYm5RZ2FYTWdaR1Z3Y21WallYUmxaQT09In1dfSx7InN0cmljdCI6MCwiZW51bSI6IklFIiwibWV0aG9kIjoidHJ5RnJvbSIsImlkIjoiZmFsc2UiLCJpbnB1dF90eXBlIjoiYm9vbCIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6Ilplcm8iLCJiYWNraW5nX3R5cGUiOiJpbnRlZ2VyIiwidmFsdWVfYmFzZTY0IjpudWxsLCJpbnRlZ2VyX3ZhbHVlIjowfSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IklFIiwibWV0aG9kIjoidHJ5RnJvbSIsImlkIjoidHJ1ZSIsImlucHV0X3R5cGUiOiJib29sIiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiT25lIiwiYmFja2luZ190eXBlIjoiaW50ZWdlciIsInZhbHVlX2Jhc2U2NCI6bnVsbCwiaW50ZWdlcl92YWx1ZSI6MX0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6ImludDAiLCJpbnB1dF90eXBlIjoiaW50IiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiWmVybyIsImJhY2tpbmdfdHlwZSI6ImludGVnZXIiLCJ2YWx1ZV9iYXNlNjQiOm51bGwsImludGVnZXJfdmFsdWUiOjB9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiSUUiLCJtZXRob2QiOiJ0cnlGcm9tIiwiaWQiOiJpbnQ3IiwiaW5wdXRfdHlwZSI6ImludCIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6IlNldmVuIiwiYmFja2luZ190eXBlIjoiaW50ZWdlciIsInZhbHVlX2Jhc2U2NCI6bnVsbCwiaW50ZWdlcl92YWx1ZSI6N30sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6ImludDgiLCJpbnB1dF90eXBlIjoiaW50IiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiRWlnaHQiLCJiYWNraW5nX3R5cGUiOiJpbnRlZ2VyIiwidmFsdWVfYmFzZTY0IjpudWxsLCJpbnRlZ2VyX3ZhbHVlIjo4fSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IklFIiwibWV0aG9kIjoidHJ5RnJvbSIsImlkIjoiZmxvYXQ3IiwiaW5wdXRfdHlwZSI6ImZsb2F0IiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiU2V2ZW4iLCJiYWNraW5nX3R5cGUiOiJpbnRlZ2VyIiwidmFsdWVfYmFzZTY0IjpudWxsLCJpbnRlZ2VyX3ZhbHVlIjo3fSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IklFIiwibWV0aG9kIjoidHJ5RnJvbSIsImlkIjoiZmxvYXQ3XzUiLCJpbnB1dF90eXBlIjoiZmxvYXQiLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJTZXZlbiIsImJhY2tpbmdfdHlwZSI6ImludGVnZXIiLCJ2YWx1ZV9iYXNlNjQiOm51bGwsImludGVnZXJfdmFsdWUiOjd9LCJ3YXJuaW5ncyI6W3sibGV2ZWwiOjgxOTIsIm1lc3NhZ2VfYmFzZTY0IjoiU1cxd2JHbGphWFFnWTI5dWRtVnljMmx2YmlCbWNtOXRJR1pzYjJGMElEY3VOU0IwYnlCcGJuUWdiRzl6WlhNZ2NISmxZMmx6YVc5dSJ9XX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6Im5lZ2F0aXZlN181IiwiaW5wdXRfdHlwZSI6ImZsb2F0IiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiTmVnYXRpdmUiLCJiYWNraW5nX3R5cGUiOiJpbnRlZ2VyIiwidmFsdWVfYmFzZTY0IjpudWxsLCJpbnRlZ2VyX3ZhbHVlIjotN30sIndhcm5pbmdzIjpbeyJsZXZlbCI6ODE5MiwibWVzc2FnZV9iYXNlNjQiOiJTVzF3YkdsamFYUWdZMjl1ZG1WeWMybHZiaUJtY205dElHWnNiMkYwSUMwM0xqVWdkRzhnYVc1MElHeHZjMlZ6SUhCeVpXTnBjMmx2Ymc9PSJ9XX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6ImluZmluaXR5IiwiaW5wdXRfdHlwZSI6ImZsb2F0IiwicmVzdWx0Ijp7InN0YXR1cyI6ImVycm9yIiwiY2xhc3MiOiJUeXBlRXJyb3IiLCJtZXNzYWdlX2Jhc2U2NCI6IlNVVTZPblJ5ZVVaeWIyMG9LVG9nUVhKbmRXMWxiblFnSXpFZ0tDUjJZV3gxWlNrZ2JYVnpkQ0JpWlNCdlppQjBlWEJsSUdsdWRDd2dabXh2WVhRZ1oybDJaVzQ9In0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6Im5hbiIsImlucHV0X3R5cGUiOiJmbG9hdCIsInJlc3VsdCI6eyJzdGF0dXMiOiJlcnJvciIsImNsYXNzIjoiVHlwZUVycm9yIiwibWVzc2FnZV9iYXNlNjQiOiJTVVU2T25SeWVVWnliMjBvS1RvZ1FYSm5kVzFsYm5RZ0l6RWdLQ1IyWVd4MVpTa2diWFZ6ZENCaVpTQnZaaUIwZVhCbElHbHVkQ3dnWm14dllYUWdaMmwyWlc0PSJ9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiSUUiLCJtZXRob2QiOiJ0cnlGcm9tIiwiaWQiOiJlbXB0eSIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoiZXJyb3IiLCJjbGFzcyI6IlR5cGVFcnJvciIsIm1lc3NhZ2VfYmFzZTY0IjoiU1VVNk9uUnllVVp5YjIwb0tUb2dRWEpuZFcxbGJuUWdJekVnS0NSMllXeDFaU2tnYlhWemRDQmlaU0J2WmlCMGVYQmxJR2x1ZEN3Z2MzUnlhVzVuSUdkcGRtVnUifSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IklFIiwibWV0aG9kIjoidHJ5RnJvbSIsImlkIjoiemVybyIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJaZXJvIiwiYmFja2luZ190eXBlIjoiaW50ZWdlciIsInZhbHVlX2Jhc2U2NCI6bnVsbCwiaW50ZWdlcl92YWx1ZSI6MH0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6InNldmVuIiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6IlNldmVuIiwiYmFja2luZ190eXBlIjoiaW50ZWdlciIsInZhbHVlX2Jhc2U2NCI6bnVsbCwiaW50ZWdlcl92YWx1ZSI6N30sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6ImRlY2ltYWwiLCJpbnB1dF90eXBlIjoic3RyaW5nIiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiU2V2ZW4iLCJiYWNraW5nX3R5cGUiOiJpbnRlZ2VyIiwidmFsdWVfYmFzZTY0IjpudWxsLCJpbnRlZ2VyX3ZhbHVlIjo3fSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IklFIiwibWV0aG9kIjoidHJ5RnJvbSIsImlkIjoibGVhZGluZ196ZXJvIiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6IlNldmVuIiwiYmFja2luZ190eXBlIjoiaW50ZWdlciIsInZhbHVlX2Jhc2U2NCI6bnVsbCwiaW50ZWdlcl92YWx1ZSI6N30sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6ImV4cG9uZW50IiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6IlNldmVuIiwiYmFja2luZ190eXBlIjoiaW50ZWdlciIsInZhbHVlX2Jhc2U2NCI6bnVsbCwiaW50ZWdlcl92YWx1ZSI6N30sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6IndoaXRlc3BhY2UiLCJpbnB1dF90eXBlIjoic3RyaW5nIiwicmVzdWx0Ijp7InN0YXR1cyI6ImNhc2UiLCJuYW1lIjoiU2V2ZW4iLCJiYWNraW5nX3R5cGUiOiJpbnRlZ2VyIiwidmFsdWVfYmFzZTY0IjpudWxsLCJpbnRlZ2VyX3ZhbHVlIjo3fSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IklFIiwibWV0aG9kIjoidHJ5RnJvbSIsImlkIjoibm9ubnVtZXJpYyIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoiZXJyb3IiLCJjbGFzcyI6IlR5cGVFcnJvciIsIm1lc3NhZ2VfYmFzZTY0IjoiU1VVNk9uUnllVVp5YjIwb0tUb2dRWEpuZFcxbGJuUWdJekVnS0NSMllXeDFaU2tnYlhWemRDQmlaU0J2WmlCMGVYQmxJR2x1ZEN3Z2MzUnlhVzVuSUdkcGRtVnUifSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IklFIiwibWV0aG9kIjoidHJ5RnJvbSIsImlkIjoibmVnYXRpdmVfemVybyIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoiY2FzZSIsIm5hbWUiOiJaZXJvIiwiYmFja2luZ190eXBlIjoiaW50ZWdlciIsInZhbHVlX2Jhc2U2NCI6bnVsbCwiaW50ZWdlcl92YWx1ZSI6MH0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6Im5lZ2F0aXZlIiwiaW5wdXRfdHlwZSI6InN0cmluZyIsInJlc3VsdCI6eyJzdGF0dXMiOiJjYXNlIiwibmFtZSI6Ik5lZ2F0aXZlIiwiYmFja2luZ190eXBlIjoiaW50ZWdlciIsInZhbHVlX2Jhc2U2NCI6bnVsbCwiaW50ZWdlcl92YWx1ZSI6LTd9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiSUUiLCJtZXRob2QiOiJ0cnlGcm9tIiwiaWQiOiJudWwiLCJpbnB1dF90eXBlIjoic3RyaW5nIiwicmVzdWx0Ijp7InN0YXR1cyI6ImVycm9yIiwiY2xhc3MiOiJUeXBlRXJyb3IiLCJtZXNzYWdlX2Jhc2U2NCI6IlNVVTZPblJ5ZVVaeWIyMG9LVG9nUVhKbmRXMWxiblFnSXpFZ0tDUjJZV3gxWlNrZ2JYVnpkQ0JpWlNCdlppQjBlWEJsSUdsdWRDd2djM1J5YVc1bklHZHBkbVZ1In0sIndhcm5pbmdzIjpbXX0seyJzdHJpY3QiOjAsImVudW0iOiJJRSIsIm1ldGhvZCI6InRyeUZyb20iLCJpZCI6InJhdyIsImlucHV0X3R5cGUiOiJzdHJpbmciLCJyZXN1bHQiOnsic3RhdHVzIjoiZXJyb3IiLCJjbGFzcyI6IlR5cGVFcnJvciIsIm1lc3NhZ2VfYmFzZTY0IjoiU1VVNk9uUnllVVp5YjIwb0tUb2dRWEpuZFcxbGJuUWdJekVnS0NSMllXeDFaU2tnYlhWemRDQmlaU0J2WmlCMGVYQmxJR2x1ZEN3Z2MzUnlhVzVuSUdkcGRtVnUifSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IklFIiwibWV0aG9kIjoidHJ5RnJvbSIsImlkIjoiYXJyYXkiLCJpbnB1dF90eXBlIjoiYXJyYXkiLCJyZXN1bHQiOnsic3RhdHVzIjoiZXJyb3IiLCJjbGFzcyI6IlR5cGVFcnJvciIsIm1lc3NhZ2VfYmFzZTY0IjoiU1VVNk9uUnllVVp5YjIwb0tUb2dRWEpuZFcxbGJuUWdJekVnS0NSMllXeDFaU2tnYlhWemRDQmlaU0J2WmlCMGVYQmxJR2x1ZEN3Z1lYSnlZWGtnWjJsMlpXND0ifSwid2FybmluZ3MiOltdfSx7InN0cmljdCI6MCwiZW51bSI6IklFIiwibWV0aG9kIjoidHJ5RnJvbSIsImlkIjoib2JqZWN0IiwiaW5wdXRfdHlwZSI6InN0ZENsYXNzIiwicmVzdWx0Ijp7InN0YXR1cyI6ImVycm9yIiwiY2xhc3MiOiJUeXBlRXJyb3IiLCJtZXNzYWdlX2Jhc2U2NCI6IlNVVTZPblJ5ZVVaeWIyMG9LVG9nUVhKbmRXMWxiblFnSXpFZ0tDUjJZV3gxWlNrZ2JYVnpkQ0JpWlNCdlppQjBlWEJsSUdsdWRDd2djM1JrUTJ4aGMzTWdaMmwyWlc0PSJ9LCJ3YXJuaW5ncyI6W119LHsic3RyaWN0IjowLCJlbnVtIjoiSUUiLCJtZXRob2QiOiJ0cnlGcm9tIiwiaWQiOiJzdHJpbmdhYmxlIiwiaW5wdXRfdHlwZSI6IlN0cmluZ1ZhbHVlIiwicmVzdWx0Ijp7InN0YXR1cyI6ImVycm9yIiwiY2xhc3MiOiJUeXBlRXJyb3IiLCJtZXNzYWdlX2Jhc2U2NCI6IlNVVTZPblJ5ZVVaeWIyMG9LVG9nUVhKbmRXMWxiblFnSXpFZ0tDUjJZV3gxWlNrZ2JYVnpkQ0JpWlNCdlppQjBlWEJsSUdsdWRDd2dVM1J5YVc1blZtRnNkV1VnWjJsMlpXND0ifSwid2FybmluZ3MiOltdfV0=",
+  "stderr_base64": "",
+  "observed": [
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "null",
+      "input_type": "null",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "string",
+        "value_base64": "MA==",
+        "integer_value": null
+      },
+      "warnings": [
+        {
+          "level": 8192,
+          "message_base64": "U0U6OmZyb20oKTogUGFzc2luZyBudWxsIHRvIHBhcmFtZXRlciAjMSAoJHZhbHVlKSBvZiB0eXBlIHN0cmluZ3xpbnQgaXMgZGVwcmVjYXRlZA=="
+        }
+      ]
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "false",
+      "input_type": "bool",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "string",
+        "value_base64": "MA==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "true",
+      "input_type": "bool",
+      "result": {
+        "status": "case",
+        "name": "One",
+        "backing_type": "string",
+        "value_base64": "MQ==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "int0",
+      "input_type": "int",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "string",
+        "value_base64": "MA==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "int7",
+      "input_type": "int",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "string",
+        "value_base64": "Nw==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "int8",
+      "input_type": "int",
+      "result": {
+        "status": "error",
+        "class": "ValueError",
+        "message_base64": "IjgiIGlzIG5vdCBhIHZhbGlkIGJhY2tpbmcgdmFsdWUgZm9yIGVudW0gU0U="
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "float7",
+      "input_type": "float",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "string",
+        "value_base64": "Nw==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "float7_5",
+      "input_type": "float",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "string",
+        "value_base64": "Nw==",
+        "integer_value": null
+      },
+      "warnings": [
+        {
+          "level": 8192,
+          "message_base64": "SW1wbGljaXQgY29udmVyc2lvbiBmcm9tIGZsb2F0IDcuNSB0byBpbnQgbG9zZXMgcHJlY2lzaW9u"
+        }
+      ]
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "negative7_5",
+      "input_type": "float",
+      "result": {
+        "status": "case",
+        "name": "Negative",
+        "backing_type": "string",
+        "value_base64": "LTc=",
+        "integer_value": null
+      },
+      "warnings": [
+        {
+          "level": 8192,
+          "message_base64": "SW1wbGljaXQgY29udmVyc2lvbiBmcm9tIGZsb2F0IC03LjUgdG8gaW50IGxvc2VzIHByZWNpc2lvbg=="
+        }
+      ]
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "infinity",
+      "input_type": "float",
+      "result": {
+        "status": "error",
+        "class": "ValueError",
+        "message_base64": "IklORiIgaXMgbm90IGEgdmFsaWQgYmFja2luZyB2YWx1ZSBmb3IgZW51bSBTRQ=="
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "nan",
+      "input_type": "float",
+      "result": {
+        "status": "error",
+        "class": "ValueError",
+        "message_base64": "Ik5BTiIgaXMgbm90IGEgdmFsaWQgYmFja2luZyB2YWx1ZSBmb3IgZW51bSBTRQ=="
+      },
+      "warnings": [
+        {
+          "level": 2,
+          "message_base64": "dW5leHBlY3RlZCBOQU4gdmFsdWUgd2FzIGNvZXJjZWQgdG8gc3RyaW5n"
+        }
+      ]
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "empty",
+      "input_type": "string",
+      "result": {
+        "status": "error",
+        "class": "ValueError",
+        "message_base64": "IiIgaXMgbm90IGEgdmFsaWQgYmFja2luZyB2YWx1ZSBmb3IgZW51bSBTRQ=="
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "zero",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "string",
+        "value_base64": "MA==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "seven",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "string",
+        "value_base64": "Nw==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "decimal",
+      "input_type": "string",
+      "result": {
+        "status": "error",
+        "class": "ValueError",
+        "message_base64": "IjcuMCIgaXMgbm90IGEgdmFsaWQgYmFja2luZyB2YWx1ZSBmb3IgZW51bSBTRQ=="
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "leading_zero",
+      "input_type": "string",
+      "result": {
+        "status": "error",
+        "class": "ValueError",
+        "message_base64": "IjA3IiBpcyBub3QgYSB2YWxpZCBiYWNraW5nIHZhbHVlIGZvciBlbnVtIFNF"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "exponent",
+      "input_type": "string",
+      "result": {
+        "status": "error",
+        "class": "ValueError",
+        "message_base64": "IjdlMCIgaXMgbm90IGEgdmFsaWQgYmFja2luZyB2YWx1ZSBmb3IgZW51bSBTRQ=="
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "whitespace",
+      "input_type": "string",
+      "result": {
+        "status": "error",
+        "class": "ValueError",
+        "message_base64": "IiA3ICIgaXMgbm90IGEgdmFsaWQgYmFja2luZyB2YWx1ZSBmb3IgZW51bSBTRQ=="
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "nonnumeric",
+      "input_type": "string",
+      "result": {
+        "status": "error",
+        "class": "ValueError",
+        "message_base64": "Ijd4IiBpcyBub3QgYSB2YWxpZCBiYWNraW5nIHZhbHVlIGZvciBlbnVtIFNF"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "negative_zero",
+      "input_type": "string",
+      "result": {
+        "status": "error",
+        "class": "ValueError",
+        "message_base64": "Ii0wIiBpcyBub3QgYSB2YWxpZCBiYWNraW5nIHZhbHVlIGZvciBlbnVtIFNF"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "negative",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Negative",
+        "backing_type": "string",
+        "value_base64": "LTc=",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "nul",
+      "input_type": "string",
+      "result": {
+        "status": "error",
+        "class": "ValueError",
+        "message_base64": "IiIgaXMgbm90IGEgdmFsaWQgYmFja2luZyB2YWx1ZSBmb3IgZW51bSBTRQ=="
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "raw",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Raw",
+        "backing_type": "string",
+        "value_base64": "/w==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "array",
+      "input_type": "array",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "U0U6OmZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIHN0cmluZ3xpbnQsIGFycmF5IGdpdmVu"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "object",
+      "input_type": "stdClass",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "U0U6OmZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIHN0cmluZ3xpbnQsIHN0ZENsYXNzIGdpdmVu"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "from",
+      "id": "stringable",
+      "input_type": "StringValue",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "string",
+        "value_base64": "Nw==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "null",
+      "input_type": "null",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "string",
+        "value_base64": "MA==",
+        "integer_value": null
+      },
+      "warnings": [
+        {
+          "level": 8192,
+          "message_base64": "U0U6OnRyeUZyb20oKTogUGFzc2luZyBudWxsIHRvIHBhcmFtZXRlciAjMSAoJHZhbHVlKSBvZiB0eXBlIHN0cmluZ3xpbnQgaXMgZGVwcmVjYXRlZA=="
+        }
+      ]
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "false",
+      "input_type": "bool",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "string",
+        "value_base64": "MA==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "true",
+      "input_type": "bool",
+      "result": {
+        "status": "case",
+        "name": "One",
+        "backing_type": "string",
+        "value_base64": "MQ==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "int0",
+      "input_type": "int",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "string",
+        "value_base64": "MA==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "int7",
+      "input_type": "int",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "string",
+        "value_base64": "Nw==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "int8",
+      "input_type": "int",
+      "result": {
+        "status": "null"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "float7",
+      "input_type": "float",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "string",
+        "value_base64": "Nw==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "float7_5",
+      "input_type": "float",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "string",
+        "value_base64": "Nw==",
+        "integer_value": null
+      },
+      "warnings": [
+        {
+          "level": 8192,
+          "message_base64": "SW1wbGljaXQgY29udmVyc2lvbiBmcm9tIGZsb2F0IDcuNSB0byBpbnQgbG9zZXMgcHJlY2lzaW9u"
+        }
+      ]
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "negative7_5",
+      "input_type": "float",
+      "result": {
+        "status": "case",
+        "name": "Negative",
+        "backing_type": "string",
+        "value_base64": "LTc=",
+        "integer_value": null
+      },
+      "warnings": [
+        {
+          "level": 8192,
+          "message_base64": "SW1wbGljaXQgY29udmVyc2lvbiBmcm9tIGZsb2F0IC03LjUgdG8gaW50IGxvc2VzIHByZWNpc2lvbg=="
+        }
+      ]
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "infinity",
+      "input_type": "float",
+      "result": {
+        "status": "null"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "nan",
+      "input_type": "float",
+      "result": {
+        "status": "null"
+      },
+      "warnings": [
+        {
+          "level": 2,
+          "message_base64": "dW5leHBlY3RlZCBOQU4gdmFsdWUgd2FzIGNvZXJjZWQgdG8gc3RyaW5n"
+        }
+      ]
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "empty",
+      "input_type": "string",
+      "result": {
+        "status": "null"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "zero",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "string",
+        "value_base64": "MA==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "seven",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "string",
+        "value_base64": "Nw==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "decimal",
+      "input_type": "string",
+      "result": {
+        "status": "null"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "leading_zero",
+      "input_type": "string",
+      "result": {
+        "status": "null"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "exponent",
+      "input_type": "string",
+      "result": {
+        "status": "null"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "whitespace",
+      "input_type": "string",
+      "result": {
+        "status": "null"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "nonnumeric",
+      "input_type": "string",
+      "result": {
+        "status": "null"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "negative_zero",
+      "input_type": "string",
+      "result": {
+        "status": "null"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "negative",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Negative",
+        "backing_type": "string",
+        "value_base64": "LTc=",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "nul",
+      "input_type": "string",
+      "result": {
+        "status": "null"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "raw",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Raw",
+        "backing_type": "string",
+        "value_base64": "/w==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "array",
+      "input_type": "array",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "U0U6OnRyeUZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIHN0cmluZ3xpbnQsIGFycmF5IGdpdmVu"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "object",
+      "input_type": "stdClass",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "U0U6OnRyeUZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIHN0cmluZ3xpbnQsIHN0ZENsYXNzIGdpdmVu"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "SE",
+      "method": "tryFrom",
+      "id": "stringable",
+      "input_type": "StringValue",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "string",
+        "value_base64": "Nw==",
+        "integer_value": null
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "null",
+      "input_type": "null",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 0
+      },
+      "warnings": [
+        {
+          "level": 8192,
+          "message_base64": "SUU6OmZyb20oKTogUGFzc2luZyBudWxsIHRvIHBhcmFtZXRlciAjMSAoJHZhbHVlKSBvZiB0eXBlIHN0cmluZ3xpbnQgaXMgZGVwcmVjYXRlZA=="
+        }
+      ]
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "false",
+      "input_type": "bool",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 0
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "true",
+      "input_type": "bool",
+      "result": {
+        "status": "case",
+        "name": "One",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 1
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "int0",
+      "input_type": "int",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 0
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "int7",
+      "input_type": "int",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 7
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "int8",
+      "input_type": "int",
+      "result": {
+        "status": "case",
+        "name": "Eight",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 8
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "float7",
+      "input_type": "float",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 7
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "float7_5",
+      "input_type": "float",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 7
+      },
+      "warnings": [
+        {
+          "level": 8192,
+          "message_base64": "SW1wbGljaXQgY29udmVyc2lvbiBmcm9tIGZsb2F0IDcuNSB0byBpbnQgbG9zZXMgcHJlY2lzaW9u"
+        }
+      ]
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "negative7_5",
+      "input_type": "float",
+      "result": {
+        "status": "case",
+        "name": "Negative",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": -7
+      },
+      "warnings": [
+        {
+          "level": 8192,
+          "message_base64": "SW1wbGljaXQgY29udmVyc2lvbiBmcm9tIGZsb2F0IC03LjUgdG8gaW50IGxvc2VzIHByZWNpc2lvbg=="
+        }
+      ]
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "infinity",
+      "input_type": "float",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OmZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgZmxvYXQgZ2l2ZW4="
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "nan",
+      "input_type": "float",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OmZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgZmxvYXQgZ2l2ZW4="
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "empty",
+      "input_type": "string",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OmZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgc3RyaW5nIGdpdmVu"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "zero",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 0
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "seven",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 7
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "decimal",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 7
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "leading_zero",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 7
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "exponent",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 7
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "whitespace",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 7
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "nonnumeric",
+      "input_type": "string",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OmZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgc3RyaW5nIGdpdmVu"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "negative_zero",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 0
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "negative",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Negative",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": -7
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "nul",
+      "input_type": "string",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OmZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgc3RyaW5nIGdpdmVu"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "raw",
+      "input_type": "string",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OmZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgc3RyaW5nIGdpdmVu"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "array",
+      "input_type": "array",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OmZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgYXJyYXkgZ2l2ZW4="
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "object",
+      "input_type": "stdClass",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OmZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgc3RkQ2xhc3MgZ2l2ZW4="
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "from",
+      "id": "stringable",
+      "input_type": "StringValue",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OmZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgU3RyaW5nVmFsdWUgZ2l2ZW4="
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "null",
+      "input_type": "null",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 0
+      },
+      "warnings": [
+        {
+          "level": 8192,
+          "message_base64": "SUU6OnRyeUZyb20oKTogUGFzc2luZyBudWxsIHRvIHBhcmFtZXRlciAjMSAoJHZhbHVlKSBvZiB0eXBlIHN0cmluZ3xpbnQgaXMgZGVwcmVjYXRlZA=="
+        }
+      ]
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "false",
+      "input_type": "bool",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 0
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "true",
+      "input_type": "bool",
+      "result": {
+        "status": "case",
+        "name": "One",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 1
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "int0",
+      "input_type": "int",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 0
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "int7",
+      "input_type": "int",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 7
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "int8",
+      "input_type": "int",
+      "result": {
+        "status": "case",
+        "name": "Eight",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 8
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "float7",
+      "input_type": "float",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 7
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "float7_5",
+      "input_type": "float",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 7
+      },
+      "warnings": [
+        {
+          "level": 8192,
+          "message_base64": "SW1wbGljaXQgY29udmVyc2lvbiBmcm9tIGZsb2F0IDcuNSB0byBpbnQgbG9zZXMgcHJlY2lzaW9u"
+        }
+      ]
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "negative7_5",
+      "input_type": "float",
+      "result": {
+        "status": "case",
+        "name": "Negative",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": -7
+      },
+      "warnings": [
+        {
+          "level": 8192,
+          "message_base64": "SW1wbGljaXQgY29udmVyc2lvbiBmcm9tIGZsb2F0IC03LjUgdG8gaW50IGxvc2VzIHByZWNpc2lvbg=="
+        }
+      ]
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "infinity",
+      "input_type": "float",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OnRyeUZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgZmxvYXQgZ2l2ZW4="
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "nan",
+      "input_type": "float",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OnRyeUZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgZmxvYXQgZ2l2ZW4="
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "empty",
+      "input_type": "string",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OnRyeUZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgc3RyaW5nIGdpdmVu"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "zero",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 0
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "seven",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 7
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "decimal",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 7
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "leading_zero",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 7
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "exponent",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 7
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "whitespace",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Seven",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 7
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "nonnumeric",
+      "input_type": "string",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OnRyeUZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgc3RyaW5nIGdpdmVu"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "negative_zero",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Zero",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": 0
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "negative",
+      "input_type": "string",
+      "result": {
+        "status": "case",
+        "name": "Negative",
+        "backing_type": "integer",
+        "value_base64": null,
+        "integer_value": -7
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "nul",
+      "input_type": "string",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OnRyeUZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgc3RyaW5nIGdpdmVu"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "raw",
+      "input_type": "string",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OnRyeUZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgc3RyaW5nIGdpdmVu"
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "array",
+      "input_type": "array",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OnRyeUZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgYXJyYXkgZ2l2ZW4="
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "object",
+      "input_type": "stdClass",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OnRyeUZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgc3RkQ2xhc3MgZ2l2ZW4="
+      },
+      "warnings": []
+    },
+    {
+      "strict": 0,
+      "enum": "IE",
+      "method": "tryFrom",
+      "id": "stringable",
+      "input_type": "StringValue",
+      "result": {
+        "status": "error",
+        "class": "TypeError",
+        "message_base64": "SUU6OnRyeUZyb20oKTogQXJndW1lbnQgIzEgKCR2YWx1ZSkgbXVzdCBiZSBvZiB0eXBlIGludCwgU3RyaW5nVmFsdWUgZ2l2ZW4="
+      },
+      "warnings": []
+    }
+  ]
+}

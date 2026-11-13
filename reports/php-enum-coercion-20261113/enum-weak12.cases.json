@@ -1,0 +1,62 @@
+[
+  {
+    "id": "enum.weak.string-int",
+    "mode": "body",
+    "code": "enum E:string{case A=\"7\";}echo E::from(7)->name;"
+  },
+  {
+    "id": "enum.weak.string-bool-null",
+    "mode": "body",
+    "code": "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:string{case Z=\"0\";case O=\"1\";}echo E::from(false)->name,E::from(true)->name,E::from(null)->name;"
+  },
+  {
+    "id": "enum.weak.string-float",
+    "mode": "body",
+    "code": "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:string{case A=\"7\";case B=\"-7\";}echo E::from(7.0)->name,E::from(7.5)->name,E::from(-7.5)->name;"
+  },
+  {
+    "id": "enum.weak.integer-numeric-string",
+    "mode": "body",
+    "code": "enum E:int{case A=7;}echo E::from(\"07\")->name,E::from(\"7.0\")->name,E::from(\"7e0\")->name,E::from(\" 7 \")->name;"
+  },
+  {
+    "id": "enum.weak.integer-float-string",
+    "mode": "body",
+    "code": "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:int{case A=7;}echo E::from(\"7.5\")->name;"
+  },
+  {
+    "id": "enum.weak.integer-null-bool",
+    "mode": "body",
+    "code": "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:int{case Z=0;case O=1;}echo E::from(null)->name,E::from(false)->name,E::from(true)->name;"
+  },
+  {
+    "id": "enum.weak.stringable",
+    "mode": "body",
+    "code": "class S{function __toString(){return \"7\";}}enum E:string{case A=\"7\";}echo E::from(new S())->name;"
+  },
+  {
+    "id": "enum.weak.integer-stringable-reject",
+    "mode": "body",
+    "code": "class S{function __toString(){return \"7\";}}enum E:int{case A=7;}try{E::from(new S());}catch(TypeError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "enum.weak.string-reject-types",
+    "mode": "body",
+    "code": "enum E:string{case A=\"7\";}try{E::from([]);}catch(TypeError $e){echo $e->getMessage(),\"\\n\";}try{E::from(new stdClass());}catch(TypeError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "enum.weak.tryfrom-canonical",
+    "mode": "body",
+    "code": "enum E:int{case A=7;}var_dump(E::TRYFROM(\"8\"),count(E::CASES()));try{E::TRYFROM([]);}catch(TypeError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "enum.weak.bad-string-nul",
+    "mode": "body",
+    "code": "enum E:string{case A=\"a\";}try{E::from(\"x\\0y\");}catch(ValueError $e){echo bin2hex($e->getMessage());}"
+  },
+  {
+    "id": "enum.weak.nonfinite-string",
+    "mode": "body",
+    "code": "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:string{case A=\"INF\";case B=\"NAN\";}echo E::from(INF)->name,E::from(NAN)->name;"
+  }
+]

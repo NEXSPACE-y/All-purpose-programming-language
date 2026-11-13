@@ -1,0 +1,747 @@
+{
+  "original40_preserved_as_complete_entries": true,
+  "weak12_preserved": true,
+  "typecase2_preserved": true,
+  "array4_preserved": true,
+  "new_trigger8": 8,
+  "same_transports": true,
+  "strict_types_coverage_claimed": false,
+  "cases": [
+    {
+      "id": "callback.arguments.named-variadic",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "4bb06b4e6803a7bf8453feca57ead5dd3d1f72b2250a5605d553c59e43182f13",
+      "original_entry": {
+        "id": "callback.arguments.named-variadic",
+        "code": "<?php function h(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;}set_error_handler(\"h\");trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+        "mode": "file"
+      }
+    },
+    {
+      "id": "callback.arguments.closure-variadic",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "cbb19c863273877580ae991c3e00ac9da9555af1e949003803541bcf6f5b1229",
+      "original_entry": {
+        "id": "callback.arguments.closure-variadic",
+        "code": "<?php $h=function(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;};set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+        "mode": "file"
+      }
+    },
+    {
+      "id": "callback.arguments.named-one-plus-variadic",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "74c054654c1d5661f6a762759570d6ab8c0dc177b0a486ec8bc1b11e298983c6",
+      "original_entry": {
+        "id": "callback.arguments.named-one-plus-variadic",
+        "code": "<?php function h($level,...$rest){echo $level,\":\",count($rest),\":\",bin2hex($rest[0]),\":\",gettype($rest[1]),\":\",gettype($rest[2]);return true;}set_error_handler(\"h\");trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+        "mode": "file"
+      }
+    },
+    {
+      "id": "callback.arguments.closure-one-plus-variadic",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "c3f0c89be2454f564d3c59eb38c6815a08d0421c5789840b0484f418a52c32ba",
+      "original_entry": {
+        "id": "callback.arguments.closure-one-plus-variadic",
+        "code": "<?php $h=function($level,...$rest){echo $level,\":\",count($rest),\":\",bin2hex($rest[0]),\":\",gettype($rest[1]),\":\",gettype($rest[2]);return true;};set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+        "mode": "file"
+      }
+    },
+    {
+      "id": "callback.arguments.first-class",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "4110ec1ab00a7481702ac2bbfe600aaffe89e2e68b32b7306862c22e6fd84b08",
+      "original_entry": {
+        "id": "callback.arguments.first-class",
+        "code": "<?php function h(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;}$h=h(...);set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+        "mode": "file"
+      }
+    },
+    {
+      "id": "callback.arguments.array-static",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "3a8e75511ae1a26cb39e823026c7df180a8782772c7612f92f3db8f28b860288",
+      "original_entry": {
+        "id": "callback.arguments.array-static",
+        "code": "<?php class H{static function go(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;}}set_error_handler([\"H\",\"go\"]);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+        "mode": "file"
+      }
+    },
+    {
+      "id": "callback.arguments.array-instance",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "fe87e6f2f15e316052f077056b3f7092b28eb1de6289fc24cd801bff3355ad08",
+      "original_entry": {
+        "id": "callback.arguments.array-instance",
+        "code": "<?php class H{function go(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;}}$h=new H();set_error_handler([$h,\"go\"]);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+        "mode": "file"
+      }
+    },
+    {
+      "id": "callback.arguments.invokable",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "45eef4662d91132931a4f57cdf6a2d0b3edcab32b70efb3a8615af3be9631997",
+      "original_entry": {
+        "id": "callback.arguments.invokable",
+        "code": "<?php class H{function __invoke(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;}}$h=new H();set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+        "mode": "file"
+      }
+    },
+    {
+      "id": "callback.arguments.named-zero",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "9bd343a1db7e607ba8d89c79960463114a124561e487338b335ae4d99523bf5b",
+      "original_entry": {
+        "id": "callback.arguments.named-zero",
+        "code": "<?php function h(){echo \"zero\";return true;}set_error_handler(\"h\");trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+        "mode": "file"
+      }
+    },
+    {
+      "id": "callback.arguments.closure-zero",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "cadd073a13ad6ea2218519c7ac4df0fa95855aaf759dbd94e3aa5c625fbed0e0",
+      "original_entry": {
+        "id": "callback.arguments.closure-zero",
+        "code": "<?php $h=function(){echo \"zero\";return true;};set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+        "mode": "file"
+      }
+    },
+    {
+      "id": "callback.arguments.named-one",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "de329245a677df658a16c9110c234604ae020cb5a40257093059cfbeeca8801e",
+      "original_entry": {
+        "id": "callback.arguments.named-one",
+        "code": "<?php function h($level){echo $level;return true;}set_error_handler(\"h\");trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+        "mode": "file"
+      }
+    },
+    {
+      "id": "callback.arguments.closure-one",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "0556aec383e4fb7806fd8576395a0572120f872e721c2fc86384fac6109298b8",
+      "original_entry": {
+        "id": "callback.arguments.closure-one",
+        "code": "<?php $h=function($level){echo $level;return true;};set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+        "mode": "file"
+      }
+    },
+    {
+      "id": "callback.arguments.builtin-four",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "680b5e741b8ee1c10230abbf4bab0a87f683d7df25239d93a34fc45d88a9f5cc",
+      "original_entry": {
+        "id": "callback.arguments.builtin-four",
+        "code": "<?php set_error_handler(\"strlen\");try{trigger_error(\"payload\\xFF\",E_USER_WARNING);}catch(ArgumentCountError $e){echo $e->getMessage();}",
+        "mode": "file"
+      }
+    },
+    {
+      "id": "callback.arguments.closure-all-four",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "bb4534357d62965699f8b157f891c7496d1bd637a5822b0abf5ec76775c2757d",
+      "original_entry": {
+        "id": "callback.arguments.closure-all-four",
+        "code": "<?php $h=function($level,$message,$file,$line){echo $level,\":\",bin2hex($message),\":\",gettype($file),\":\",gettype($line);return true;};set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+        "mode": "file"
+      }
+    },
+    {
+      "id": "callback.arguments.raw-closure",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "32232f42b6e3e8b367c35175a464f0bb2db0d28e2428b07a9ba38a09f4155272",
+      "original_entry": {
+        "id": "callback.arguments.raw-closure",
+        "code": "<?php $h=function(...$args){echo count($args),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;};set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+        "mode": "file"
+      }
+    },
+    {
+      "id": "callback.arguments.raw-array-method",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "a9a52417e91bbf0b9be62ed42fe9fec9dd112c285d591d2724190446def0b267",
+      "original_entry": {
+        "id": "callback.arguments.raw-array-method",
+        "code": "<?php class H{function go(...$args){echo count($args),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;}}$h=new H();set_error_handler([$h,\"go\"]);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+        "mode": "file"
+      }
+    },
+    {
+      "id": "byte.hex.empty",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "c60526ec71533b8e1b62b439c17cc78c2eb9fda60ddbc0f96f2d39063946a83b",
+      "original_entry": {
+        "id": "byte.hex.empty",
+        "mode": "body",
+        "code": "var_dump(bin2hex(''),function_exists('bin2hex'),is_string(bin2hex('a')));"
+      }
+    },
+    {
+      "id": "byte.hex.raw",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "aca48e0a78931495bf1b311315c2f1b97203700b7aa8a497f6b1c2ee9ade9879",
+      "original_entry": {
+        "id": "byte.hex.raw",
+        "mode": "body",
+        "code": "var_dump(bin2hex(\"\\0\\xFF\\x80\\u{D800}\"));"
+      }
+    },
+    {
+      "id": "byte.hex.ascii-lookup",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "d42f30a694861e4a42dc36df692ebe17ac642b59a103eb54142b030d034cbaef",
+      "original_entry": {
+        "id": "byte.hex.ascii-lookup",
+        "mode": "body",
+        "code": "echo BIN2HEX(\"\\xFE\\xDC\");"
+      }
+    },
+    {
+      "id": "byte.hex.null",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "0e78fe1aaad132801957eaca79bd99031aa484d404f22ff02e1cbab1bedf2b2b",
+      "original_entry": {
+        "id": "byte.hex.null",
+        "mode": "body",
+        "code": "var_dump(bin2hex(null));"
+      }
+    },
+    {
+      "id": "byte.hex.scalars",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "db0747d782e154ad04411d10252caad820613371abab13da185e33a96254ce46",
+      "original_entry": {
+        "id": "byte.hex.scalars",
+        "mode": "body",
+        "code": "var_dump(bin2hex(12),bin2hex(2.5),bin2hex(true),bin2hex(false));"
+      }
+    },
+    {
+      "id": "byte.hex.object",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "a155a98556ac817fa079de41b779c982df77853c2050a1bbc8a648e103c008ea",
+      "original_entry": {
+        "id": "byte.hex.object",
+        "mode": "body",
+        "code": "class S{function __toString(){return \"\\xFF\";}}var_dump(bin2hex(new S()));"
+      }
+    },
+    {
+      "id": "byte.hex.type-and-count",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "c17481d9b9cb2cb29a2f5f87610f7378c9fb5e615d31992f7810ff67d99dd9d5",
+      "original_entry": {
+        "id": "byte.hex.type-and-count",
+        "mode": "body",
+        "code": "try{bin2hex([]);}catch(Throwable $e){echo get_class($e),':',$e->getMessage(),\"\\n\";}try{bin2hex();}catch(Throwable $e){echo get_class($e),':',$e->getMessage();}"
+      }
+    },
+    {
+      "id": "byte.hex.chunk-boundary",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "236e3d0544006270e32011f932c3666d2dfde33979eacc8372c6676456728440",
+      "original_entry": {
+        "id": "byte.hex.chunk-boundary",
+        "mode": "body",
+        "code": "echo bin2hex(str_repeat(\"\\0\\xFF\",32769));"
+      }
+    },
+    {
+      "id": "boundary.enum-string-raw",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "c550eac50dd29618fd08753ffdc182f7ceb29a74852cdfb92334799db297ef34",
+      "original_entry": {
+        "id": "boundary.enum-string-raw",
+        "mode": "body",
+        "code": "enum E:string{case A=\"\\xFF\";case B=\"\\0\";}echo E::from(\"\\xFF\")->name,\":\",bin2hex(E::from(\"\\0\")->value);"
+      }
+    },
+    {
+      "id": "boundary.enum-string-nfc",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "ea4639b786163cb53dc55a86167cf5becf913293dfd2ce019942841fcd8f4276",
+      "original_entry": {
+        "id": "boundary.enum-string-nfc",
+        "mode": "body",
+        "code": "enum E:string{case A=\"é\";case B=\"é\";}echo E::from(\"é\")->name,\":\",E::from(\"é\")->name;"
+      }
+    },
+    {
+      "id": "boundary.enum-string-valueerror",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "1676d67100c7cd25124df59d515af17a806b676d97719920e43082e0353aaf10",
+      "original_entry": {
+        "id": "boundary.enum-string-valueerror",
+        "mode": "body",
+        "code": "enum E:string{case A=\"a\";}try{E::from(\"\\xFE\");}catch(ValueError $e){echo bin2hex($e->getMessage());}"
+      }
+    },
+    {
+      "id": "boundary.enum-int-control",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "9a18518db45b380f559821c831c66f368d960bc148c083ce0333eb5ebc37321c",
+      "original_entry": {
+        "id": "boundary.enum-int-control",
+        "mode": "body",
+        "code": "enum E:int{case A=7;}echo E::from(7)->name;var_dump(E::tryFrom(8));"
+      }
+    },
+    {
+      "id": "boundary.enum-weak-scalar-known-gap",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "6424f2a289769cb53ca74ddcccd01b363cf124516704e4bf6ec7109c3adbf536",
+      "original_entry": {
+        "id": "boundary.enum-weak-scalar-known-gap",
+        "mode": "body",
+        "code": "enum E:string{case A=\"7\";}echo E::from(7)->name;"
+      }
+    },
+    {
+      "id": "boundary.firstclass-array-object",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "a9ddaf6905b2baffdd3a99a05be03c0ab6aac5f2879b47ddf6a6cccf1ac15e2a",
+      "original_entry": {
+        "id": "boundary.firstclass-array-object",
+        "mode": "body",
+        "code": "class C{function m($x){return $x+1;}}$c=new C();$f=[$c,\"m\"];$g=$f(...);echo $g(3);"
+      }
+    },
+    {
+      "id": "boundary.firstclass-array-static",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "09ae9b5c19a5d5b09c093c54cb4c30fe45a335256eea16c7c311c3760b1ff790",
+      "original_entry": {
+        "id": "boundary.firstclass-array-static",
+        "mode": "body",
+        "code": "class C{static function m($x){return $x+1;}}$f=[\"C\",\"m\"];$g=$f(...);echo $g(4);"
+      }
+    },
+    {
+      "id": "boundary.isnumeric-bytes",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "701c637f3eb35eb646f23fd7be8b24ec7a1debb47c24c0a86f432b946f14caee",
+      "original_entry": {
+        "id": "boundary.isnumeric-bytes",
+        "mode": "body",
+        "code": "var_dump(is_numeric(\"12\"),is_numeric(\"12.5\"),is_numeric(\"\\xFF\"),is_numeric(\"猫\"));"
+      }
+    },
+    {
+      "id": "boundary.instanceof-string",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "ce5992859d1dcb0799533ea436bf3b0805ae494c3442ff42e755a6a65f319e7b",
+      "original_entry": {
+        "id": "boundary.instanceof-string",
+        "mode": "body",
+        "code": "class C{}$x=new C();$name=\"c\";var_dump($x instanceof $name);"
+      }
+    },
+    {
+      "id": "boundary.getter-constants",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "2da0a8b589c43d1c2b35e8e5b509d2aeb866ab9ee27042f0359b046a8fe89593",
+      "original_entry": {
+        "id": "boundary.getter-constants",
+        "mode": "body",
+        "code": "define(\"X\",\"\\xFF\");class C{const Y=\"\\0\";}$c=new C();var_dump(is_string(get_class($c)),bin2hex(constant(\"X\")),bin2hex(C::Y),is_string(C::class));"
+      }
+    },
+    {
+      "id": "boundary.match-escaped-bytes",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "d7ac8ff643b0b75f0e83355837b370338ac34036750ba82d6fbf8c15b0c8d909",
+      "original_entry": {
+        "id": "boundary.match-escaped-bytes",
+        "mode": "body",
+        "code": "try{match(\"\\xFF\\0\\x27\\\\\\n\"){};}catch(UnhandledMatchError $e){echo $e->getMessage();}"
+      }
+    },
+    {
+      "id": "boundary.match-byte-limit",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "8b8ed7dcdf49e8e02b67fb76e3a628610e1ebfb32d77c7da25656032be2225e2",
+      "original_entry": {
+        "id": "boundary.match-byte-limit",
+        "mode": "body",
+        "code": "ini_set(\"zend.exception_string_param_max_len\",\"3\");try{match(\"A\\xFF\\nB\"){};}catch(UnhandledMatchError $e){echo $e->getMessage();}"
+      }
+    },
+    {
+      "id": "boundary.trace-escaped-bytes",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "cbd17765f1f869eceda4128f3ce84b546804b961adb0477e275d9bce556e28f5",
+      "original_entry": {
+        "id": "boundary.trace-escaped-bytes",
+        "mode": "body",
+        "code": "function f($x){throw new Exception(\"boom\");}try{f(\"\\xFF\\0\\x27\\\\\\n\");}catch(Throwable $e){echo $e->getTraceAsString();}"
+      }
+    },
+    {
+      "id": "boundary.trace-ignore-args",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "6dbce40bffbcf47a3f099738cc5ad8450c6b251adaba579730a9c5db7e4d1f3d",
+      "original_entry": {
+        "id": "boundary.trace-ignore-args",
+        "mode": "body",
+        "code": "ini_set(\"zend.exception_ignore_args\",\"1\");function f($x){throw new Exception(\"boom\");}try{f(\"\\xFF\");}catch(Throwable $e){echo $e->getTraceAsString();}"
+      }
+    },
+    {
+      "id": "boundary.trace-byte-limit",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "86a0a1462d239f4700376b02fe639058515ce1f254ec0a0e0f9418d0c95a96e0",
+      "original_entry": {
+        "id": "boundary.trace-byte-limit",
+        "mode": "body",
+        "code": "ini_set(\"zend.exception_string_param_max_len\",\"1\");function f($x){throw new Exception(\"boom\");}try{f(\"猫\");}catch(Throwable $e){echo $e->getTraceAsString();}"
+      }
+    },
+    {
+      "id": "boundary.static-reference-string",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed07-boundaries-preparation\\composed07-boundaries40.cases.json",
+      "definition_sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e",
+      "source_sha256": "e674d17d66f32a65f0998b1be3bcd3970275c4620f02a3bf08ef882acaf6708d",
+      "original_entry": {
+        "id": "boundary.static-reference-string",
+        "mode": "body",
+        "code": "class C{public static $v=\"A\";static function &get(){return self::$v;}}$n=\"C\";$x=&$n::get();$x.=\"\\xFF\";echo bin2hex(C::$v);"
+      }
+    },
+    {
+      "id": "enum.weak.string-int",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-enum-coercion-20261113\\enum-weak12.cases.json",
+      "definition_sha256": "52bc0a5ac2cb865d100e73fb5d7dfcd6258e1adce1629e7d1859c9e07a782831",
+      "source_sha256": "6424f2a289769cb53ca74ddcccd01b363cf124516704e4bf6ec7109c3adbf536",
+      "original_entry": {
+        "id": "enum.weak.string-int",
+        "mode": "body",
+        "code": "enum E:string{case A=\"7\";}echo E::from(7)->name;"
+      }
+    },
+    {
+      "id": "enum.weak.string-bool-null",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-enum-coercion-20261113\\enum-weak12.cases.json",
+      "definition_sha256": "52bc0a5ac2cb865d100e73fb5d7dfcd6258e1adce1629e7d1859c9e07a782831",
+      "source_sha256": "c29174bdaab57975cdaf3c8d508d9b341a543a1453b1e71d25c442bbb5702d90",
+      "original_entry": {
+        "id": "enum.weak.string-bool-null",
+        "mode": "body",
+        "code": "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:string{case Z=\"0\";case O=\"1\";}echo E::from(false)->name,E::from(true)->name,E::from(null)->name;"
+      }
+    },
+    {
+      "id": "enum.weak.string-float",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-enum-coercion-20261113\\enum-weak12.cases.json",
+      "definition_sha256": "52bc0a5ac2cb865d100e73fb5d7dfcd6258e1adce1629e7d1859c9e07a782831",
+      "source_sha256": "0983f89795e3c96bf33fc94b5419481f51129680d5d9aa9f5e61fdcbc9c99f5f",
+      "original_entry": {
+        "id": "enum.weak.string-float",
+        "mode": "body",
+        "code": "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:string{case A=\"7\";case B=\"-7\";}echo E::from(7.0)->name,E::from(7.5)->name,E::from(-7.5)->name;"
+      }
+    },
+    {
+      "id": "enum.weak.integer-numeric-string",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-enum-coercion-20261113\\enum-weak12.cases.json",
+      "definition_sha256": "52bc0a5ac2cb865d100e73fb5d7dfcd6258e1adce1629e7d1859c9e07a782831",
+      "source_sha256": "2057aca8374f3900a53d8e18b22204b3527efad7960776fed97841507df32dd5",
+      "original_entry": {
+        "id": "enum.weak.integer-numeric-string",
+        "mode": "body",
+        "code": "enum E:int{case A=7;}echo E::from(\"07\")->name,E::from(\"7.0\")->name,E::from(\"7e0\")->name,E::from(\" 7 \")->name;"
+      }
+    },
+    {
+      "id": "enum.weak.integer-float-string",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-enum-coercion-20261113\\enum-weak12.cases.json",
+      "definition_sha256": "52bc0a5ac2cb865d100e73fb5d7dfcd6258e1adce1629e7d1859c9e07a782831",
+      "source_sha256": "430447231b1c7ad24a7bade59849b5830508aa1870e83964e874421fec0a646d",
+      "original_entry": {
+        "id": "enum.weak.integer-float-string",
+        "mode": "body",
+        "code": "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:int{case A=7;}echo E::from(\"7.5\")->name;"
+      }
+    },
+    {
+      "id": "enum.weak.integer-null-bool",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-enum-coercion-20261113\\enum-weak12.cases.json",
+      "definition_sha256": "52bc0a5ac2cb865d100e73fb5d7dfcd6258e1adce1629e7d1859c9e07a782831",
+      "source_sha256": "927e0a668db8640c4979f26aa5b14673666091a680bc47467fb9d05bb6935b6c",
+      "original_entry": {
+        "id": "enum.weak.integer-null-bool",
+        "mode": "body",
+        "code": "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:int{case Z=0;case O=1;}echo E::from(null)->name,E::from(false)->name,E::from(true)->name;"
+      }
+    },
+    {
+      "id": "enum.weak.stringable",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-enum-coercion-20261113\\enum-weak12.cases.json",
+      "definition_sha256": "52bc0a5ac2cb865d100e73fb5d7dfcd6258e1adce1629e7d1859c9e07a782831",
+      "source_sha256": "81222f56fd4da48f8177479358592f1af5bd34dbcc633d2def3bfaf8cfa781f1",
+      "original_entry": {
+        "id": "enum.weak.stringable",
+        "mode": "body",
+        "code": "class S{function __toString(){return \"7\";}}enum E:string{case A=\"7\";}echo E::from(new S())->name;"
+      }
+    },
+    {
+      "id": "enum.weak.integer-stringable-reject",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-enum-coercion-20261113\\enum-weak12.cases.json",
+      "definition_sha256": "52bc0a5ac2cb865d100e73fb5d7dfcd6258e1adce1629e7d1859c9e07a782831",
+      "source_sha256": "3497ad2af9d486f5b93698773da2cd4b5f9398a213a61e8fd06b14f7a361c00f",
+      "original_entry": {
+        "id": "enum.weak.integer-stringable-reject",
+        "mode": "body",
+        "code": "class S{function __toString(){return \"7\";}}enum E:int{case A=7;}try{E::from(new S());}catch(TypeError $e){echo $e->getMessage();}"
+      }
+    },
+    {
+      "id": "enum.weak.string-reject-types",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-enum-coercion-20261113\\enum-weak12.cases.json",
+      "definition_sha256": "52bc0a5ac2cb865d100e73fb5d7dfcd6258e1adce1629e7d1859c9e07a782831",
+      "source_sha256": "dee187d0790ad88e9a5a0b01c6a85b455b10b4d9272759148caa3a071b110c28",
+      "original_entry": {
+        "id": "enum.weak.string-reject-types",
+        "mode": "body",
+        "code": "enum E:string{case A=\"7\";}try{E::from([]);}catch(TypeError $e){echo $e->getMessage(),\"\\n\";}try{E::from(new stdClass());}catch(TypeError $e){echo $e->getMessage();}"
+      }
+    },
+    {
+      "id": "enum.weak.tryfrom-canonical",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-enum-coercion-20261113\\enum-weak12.cases.json",
+      "definition_sha256": "52bc0a5ac2cb865d100e73fb5d7dfcd6258e1adce1629e7d1859c9e07a782831",
+      "source_sha256": "48cc887dc0257e0b6ea95d94b268ea6caa24514a3ae788eccadfd086be9e8c06",
+      "original_entry": {
+        "id": "enum.weak.tryfrom-canonical",
+        "mode": "body",
+        "code": "enum E:int{case A=7;}var_dump(E::TRYFROM(\"8\"),count(E::CASES()));try{E::TRYFROM([]);}catch(TypeError $e){echo $e->getMessage();}"
+      }
+    },
+    {
+      "id": "enum.weak.bad-string-nul",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-enum-coercion-20261113\\enum-weak12.cases.json",
+      "definition_sha256": "52bc0a5ac2cb865d100e73fb5d7dfcd6258e1adce1629e7d1859c9e07a782831",
+      "source_sha256": "b573c88ec9d07bb93604a775ed1df010bbe970fe6455045af49591ade865e54e",
+      "original_entry": {
+        "id": "enum.weak.bad-string-nul",
+        "mode": "body",
+        "code": "enum E:string{case A=\"a\";}try{E::from(\"x\\0y\");}catch(ValueError $e){echo bin2hex($e->getMessage());}"
+      }
+    },
+    {
+      "id": "enum.weak.nonfinite-string",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-enum-coercion-20261113\\enum-weak12.cases.json",
+      "definition_sha256": "52bc0a5ac2cb865d100e73fb5d7dfcd6258e1adce1629e7d1859c9e07a782831",
+      "source_sha256": "4ba01b30add7d9767b3a08e6f2e8410ee391ae1a3169d69bfd15ff391d5aff51",
+      "original_entry": {
+        "id": "enum.weak.nonfinite-string",
+        "mode": "body",
+        "code": "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:string{case A=\"INF\";case B=\"NAN\";}echo E::from(INF)->name,E::from(NAN)->name;"
+      }
+    },
+    {
+      "id": "enum.weak.uppercase-string-type",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-enum-coercion-20261113\\enum-typecase2.cases.json",
+      "definition_sha256": "dd8480f78a230c3b4b6c80a240b61f9e6109b1f137634cb1ab8334ed150bebc5",
+      "source_sha256": "2c23a2e64c0175361ef1e07b055f6585dfbd5f76f7878bdba393bdab3b6018b9",
+      "original_entry": {
+        "id": "enum.weak.uppercase-string-type",
+        "mode": "body",
+        "code": "enum E:STRING{case A=\"7\";}echo E::from(7)->name;"
+      }
+    },
+    {
+      "id": "enum.weak.uppercase-int-type",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-enum-coercion-20261113\\enum-typecase2.cases.json",
+      "definition_sha256": "dd8480f78a230c3b4b6c80a240b61f9e6109b1f137634cb1ab8334ed150bebc5",
+      "source_sha256": "cd1af63913209331ed25a4b219ec5b28b23ded0b263382ff6d7ad4f9459d9d83",
+      "original_entry": {
+        "id": "enum.weak.uppercase-int-type",
+        "mode": "body",
+        "code": "enum E:INT{case A=7;}echo E::from(\"7\")->name;"
+      }
+    },
+    {
+      "id": "byte.key-warning.ff",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\array-diagnostics.cases.json",
+      "definition_sha256": "c0dbecf267cf526492e00fefa2736f9978eeeb38bf8511e773fd489b947e9d6f",
+      "source_sha256": "403602f2fc52243d9c398820c2e23a61512e41cb6ed47b47bf8329d73e6119b1",
+      "original_entry": {
+        "id": "byte.key-warning.ff",
+        "mode": "body",
+        "code": "$a=[];var_dump($a[\"\\xFF\"]);"
+      }
+    },
+    {
+      "id": "byte.key-warning.nul",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\array-diagnostics.cases.json",
+      "definition_sha256": "c0dbecf267cf526492e00fefa2736f9978eeeb38bf8511e773fd489b947e9d6f",
+      "source_sha256": "d09b447e319e41db2beb9b3fb23225cc6abd9552fe00ed3fb15c5f3b9dd0a445",
+      "original_entry": {
+        "id": "byte.key-warning.nul",
+        "mode": "body",
+        "code": "$a=[];var_dump($a[\"a\\0b\\xFF\"]);"
+      }
+    },
+    {
+      "id": "byte.key-warning.handler",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\array-diagnostics.cases.json",
+      "definition_sha256": "c0dbecf267cf526492e00fefa2736f9978eeeb38bf8511e773fd489b947e9d6f",
+      "source_sha256": "8bc7f7edd755cd45d75dcd905610de6e6ca5f793ed80b04afc5b809e06557543",
+      "original_entry": {
+        "id": "byte.key-warning.handler",
+        "mode": "body",
+        "code": "set_error_handler(function($n,$m){echo $n,':',$m,\"\\n\";return true;});$a=[];var_dump($a[\"\\x80\\xFF\"],$a[\"a\\0b\"],$a[-3]);"
+      }
+    },
+    {
+      "id": "byte.key-warning.quiet",
+      "basis": "unchanged_prior_entry",
+      "definition_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\array-diagnostics.cases.json",
+      "definition_sha256": "c0dbecf267cf526492e00fefa2736f9978eeeb38bf8511e773fd489b947e9d6f",
+      "source_sha256": "eb969a9a5276e99343a465d70016e35963699ac86210f2127d37eb79cb84d29f",
+      "original_entry": {
+        "id": "byte.key-warning.quiet",
+        "mode": "body",
+        "code": "$a=[];var_dump(isset($a[\"\\xFF\"]),empty($a[\"\\xFF\"]),$a[\"\\xFF\"]??'fallback');"
+      }
+    },
+    {
+      "id": "trigger.coercion.null",
+      "basis": "new_weak_trigger_source",
+      "source_sha256": "2036250d55916e89c40a580e39ecb5ddacde68063c26a718d0ac30e620b8b3ba"
+    },
+    {
+      "id": "trigger.coercion.reject-array-object",
+      "basis": "new_weak_trigger_source",
+      "source_sha256": "309c03dd15fda316b71c93dd93d2d37d3aed771667a5c6fd17278db4a316ed76"
+    },
+    {
+      "id": "trigger.coercion.stringable-raw",
+      "basis": "new_weak_trigger_source",
+      "source_sha256": "66dce62a96fc0b1cbd70ac248fcb82a492733dc14b80f069cb357a55dbe24038"
+    },
+    {
+      "id": "trigger.coercion.alias-null",
+      "basis": "new_weak_trigger_source",
+      "source_sha256": "26da9574722410a1ac926f668c5e158e8ec182cb917ac98ac6f524816c443668"
+    },
+    {
+      "id": "trigger.coercion.arity-alias",
+      "basis": "new_weak_trigger_source",
+      "source_sha256": "12aed1387db47c859e1cf61bcf133647490c6e08b3c8fe307321983821b512b1"
+    },
+    {
+      "id": "trigger.coercion.null-level",
+      "basis": "new_weak_trigger_source",
+      "source_sha256": "f1dbc3b39e106e8471eb39edadf9d8e5ef94f81911afdbe8dbd2c0db792815b8"
+    },
+    {
+      "id": "trigger.coercion.array-level",
+      "basis": "new_weak_trigger_source",
+      "source_sha256": "685eda1d6ae486d1a0d55062c2b921b18ffdfbac40faefc12b5641568097b22a"
+    },
+    {
+      "id": "trigger.coercion.fraction-level",
+      "basis": "new_weak_trigger_source",
+      "source_sha256": "9d8b882c77ff8e50baffd3c594280ba8f799bfdf75f2c9d5561b754a52bdc404"
+    }
+  ]
+}

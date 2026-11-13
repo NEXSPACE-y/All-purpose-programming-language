@@ -1,0 +1,1 @@
+$a=[PHP_INT_MAX-1=>'x'];$a[]='y';try{$a[]='z';}catch(Throwable $e){echo get_class($e),':',$e->getMessage(),"\n";}var_dump($a);

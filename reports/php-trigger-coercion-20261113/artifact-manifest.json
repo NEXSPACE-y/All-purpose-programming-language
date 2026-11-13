@@ -1,0 +1,40 @@
+{
+  "status": "FROZEN_REFERENCE_ONLY_RECOMMENDATION",
+  "files": [
+    {
+      "path": "reports/php-trigger-coercion-20261113/oracle-strict0.json",
+      "size": 46260,
+      "sha256": "e9449242b3409d8e06a7606629189b032935493d5c9b51d980da9405b1523d95"
+    },
+    {
+      "path": "reports/php-trigger-coercion-20261113/oracle-strict0.php",
+      "size": 2141,
+      "sha256": "b3856729710fa53574124daeaf4004395831c14ef54527edb467f8e20a2e92fa"
+    },
+    {
+      "path": "reports/php-trigger-coercion-20261113/oracle-strict1.json",
+      "size": 49404,
+      "sha256": "f20542fff7fbeb07e1621f3fb048c65f8ee596dd10015f0ab04893170c70b6c2"
+    },
+    {
+      "path": "reports/php-trigger-coercion-20261113/oracle-strict1.php",
+      "size": 2141,
+      "sha256": "367234eb98be4912eae564ff905cb190fbaf959ea477e9b144d42672474e7b44"
+    },
+    {
+      "path": "reports/php-trigger-coercion-20261113/Oracle-TriggerTemplate.php",
+      "size": 2148,
+      "sha256": "5cb31f50e54c1980b49d4ecfeba7f8e2eb3032fe8d67339a72cd71d0331d5307"
+    },
+    {
+      "path": "reports/php-trigger-coercion-20261113/RECOMMENDATION.md",
+      "size": 2698,
+      "sha256": "238ac340eea3329cbe3235cfded321616e878372cffb5b746369c91e1bf80adb"
+    },
+    {
+      "path": "reports/php-trigger-coercion-20261113/Run-Oracle.py",
+      "size": 1539,
+      "sha256": "e06e83072935ca6105e7f74c87b7e9ea14300edb546d444df26065545712982c"
+    }
+  ]
+}

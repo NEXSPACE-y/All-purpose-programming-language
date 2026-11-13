@@ -1,0 +1,1 @@
+var_dump(bin2hex(12),bin2hex(2.5),bin2hex(true),bin2hex(false));

@@ -1,0 +1,1 @@
+enum E:string{case A="a";}try{E::from("x\0y");}catch(ValueError $e){echo bin2hex($e->getMessage());}

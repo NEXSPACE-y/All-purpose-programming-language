@@ -1,0 +1,1 @@
+define("X","\xFF");class C{const Y="\0";}$c=new C();var_dump(is_string(get_class($c)),bin2hex(constant("X")),bin2hex(C::Y),is_string(C::class));

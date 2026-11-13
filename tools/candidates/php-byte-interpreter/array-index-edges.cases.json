@@ -1,0 +1,16 @@
+[
+  {"id":"array.next.pop-zero-then-negative","mode":"body","code":"$a=[0=>'x'];array_pop($a);$a[-5]='y';$a[]='z';var_dump($a);"},
+  {"id":"array.next.shift-zero-then-negative","mode":"body","code":"$a=[0=>'x'];array_shift($a);$a[-5]='y';$a[]='z';var_dump($a);"},
+  {"id":"array.next.shift-string-then-negative","mode":"body","code":"$a=['s'=>'x'];array_shift($a);$a[-5]='y';$a[]='z';var_dump($a);"},
+  {"id":"array.next.unshift-empty-then-negative","mode":"body","code":"$a=[];array_unshift($a);$a[-5]='y';$a[]='z';var_dump($a);"},
+  {"id":"array.next.pop-string-retains-history","mode":"body","code":"$a=[8=>'x','s'=>'y'];unset($a[8]);array_pop($a);$a[]='z';var_dump($a);"},
+  {"id":"array.next.pop-non-next-retains-history","mode":"body","code":"$a=[7=>'x',9=>'y',3=>'z'];unset($a[9]);array_pop($a);$a[]='a';var_dump($a);"},
+  {"id":"array.next.pop-next-retreats-one","mode":"body","code":"$a=[2=>'x',9=>'y'];array_pop($a);$a[]='a';var_dump($a);"},
+  {"id":"array.next.shift-string-reindexes-next","mode":"body","code":"$a=['s'=>'x','t'=>'y'];array_shift($a);$a[-5]='z';$a[]='a';var_dump($a);"},
+  {"id":"array.next.unshift-string-reindexes-next","mode":"body","code":"$a=['s'=>'x'];array_unshift($a);$a[-5]='z';$a[]='a';var_dump($a);"},
+  {"id":"array.next.min-pop","mode":"body","code":"$a=[PHP_INT_MIN=>'x'];array_pop($a);$a[]='y';var_dump($a);"},
+  {"id":"array.next.min-reassign","mode":"body","code":"$a=[PHP_INT_MIN=>'x'];$a[PHP_INT_MIN]='z';$a[]='y';var_dump($a);"},
+  {"id":"array.next.max-minus-one-two-appends","mode":"body","code":"$a=[PHP_INT_MAX-1=>'x'];$a[]='y';try{$a[]='z';}catch(Throwable $e){echo get_class($e),':',$e->getMessage(),\"\\n\";}var_dump($a);"},
+  {"id":"array.next.max-string-pop-retains","mode":"body","code":"$a=[PHP_INT_MAX=>'x','s'=>'y'];unset($a[PHP_INT_MAX]);array_pop($a);$a[]='z';var_dump($a);"},
+  {"id":"array.next.pop-minus-one-lower","mode":"body","code":"$a=[-1=>'x'];array_pop($a);$a[-5]='y';$a[]='z';var_dump($a);"}
+]

@@ -1,0 +1,14 @@
+{
+  "scope": "Read-only own composed11 CLI and its direct compiler children only; no process control action",
+  "command": [
+    "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+    "-NoLogo",
+    "-NoProfile",
+    "-NonInteractive",
+    "-Command",
+    "$all=Get-CimInstance Win32_Process -Filter \"Name='all-php.exe' OR Name='csc.exe'\"; $target=@($all|Where-Object{$_.ExecutablePath -eq 'C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe'}); $ids=@($target|ForEach-Object{$_.ProcessId}); $children=@($all|Where-Object{$_.ParentProcessId -in $ids}); [ordered]@{Utc=[DateTime]::UtcNow.ToString('o');ProcessorCount=[Environment]::ProcessorCount;OwnCliAndDirectCompilerChildren=@($target+$children|Select-Object ProcessId,ParentProcessId,CreationDate,ExecutablePath,KernelModeTime,UserModeTime,WorkingSetSize,VirtualSize,CommandLine)}|ConvertTo-Json -Depth 5 -Compress"
+  ],
+  "actual_exit": 0,
+  "stdout_base64": "eyJVdGMiOiIyMDI2LTExLTEzVDA1OjU2OjQ5LjQ4MTU0MDBaIiwiUHJvY2Vzc29yQ291bnQiOjQsIk93bkNsaUFuZERpcmVjdENvbXBpbGVyQ2hpbGRyZW4iOlt7IlByb2Nlc3NJZCI6MTUwNjQsIlBhcmVudFByb2Nlc3NJZCI6MTI3NDQsIkNyZWF0aW9uRGF0ZSI6IlwvRGF0ZSgxNzk0NTQ5NDAzMTA2KVwvIiwiRXhlY3V0YWJsZVBhdGgiOiJDOlxcVXNlcnNcXHJpbnBhXFxBTEwtcGhwLWNvbXBhdC0yMDI2MTExMlxcdG9vbHNcXGNhbmRpZGF0ZXNcXHBocC1ieXRlLWludGVycHJldGVyXFxvdXRcXGNvbXBvc2VkMTEtY2xpXFxhbGwtcGhwLmV4ZSIsIktlcm5lbE1vZGVUaW1lIjo4MTI1MDAwLCJVc2VyTW9kZVRpbWUiOjI1MTU2MjUwLCJXb3JraW5nU2V0U2l6ZSI6OTg3ODczMjgsIlZpcnR1YWxTaXplIjo1MDY5NTI0OTkyLCJDb21tYW5kTGluZSI6IkM6XFxVc2Vyc1xccmlucGFcXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXFx0b29sc1xcY2FuZGlkYXRlc1xccGhwLWJ5dGUtaW50ZXJwcmV0ZXJcXG91dFxcY29tcG9zZWQxMS1jbGlcXGFsbC1waHAuZXhlIC1uIC1kIGRpc3BsYXlfZXJyb3JzPXN0ZGVyciAtZCBlcnJvcl9yZXBvcnRpbmc9LTEgLWQgZGF0ZS50aW1lem9uZT1VVEMgQzpcXFVzZXJzXFxyaW5wYVxcQUxMLXBocC1jb21wYXQtMjAyNjExMTJcXHJlcG9ydHNcXHBocC1ieXRlLWludGVycHJldGVyLTIwMjYxMTEzXFxjb21wb3NlZDExLWJvdW5kYXJpZXMtNjZcXGNhc2UtMDAxMlxcc2NyaXB0LnBocCJ9XX0NCg==",
+  "stderr_base64": ""
+}

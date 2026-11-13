@@ -1,0 +1,23 @@
+{
+  "status": "READ_ONLY_REVIEW_COMPLETED_WITH_ONE_CONFIRMED_DEFECT",
+  "reviewed_candidate_sha256": "79e39d1e05d2813e9c593b0761409075cb9bd87930907b5c560434e0c2f3f827",
+  "reviewed_arrayindex_snapshot_sha256": "32513c9b9ac645fa4d6e33b3872fa4ac2e684c47d6481f817e1f8c61d9fa5a97",
+  "official_archive_sha256": "9dac05f72f328afd0a2b0e795a519ae4cb3d056bc3f3b55147bd048bd64e45e8",
+  "candidate_executions": 0,
+  "candidate_source_modified": false,
+  "old_fixtures_modified": false,
+  "confirmed_defect": "array_unshift with zero values still rebuilds/reindexes and resets history; early count-only return is incorrect",
+  "new_official_counterexamples": 4,
+  "counterexamples_all_exit_zero_stderr_empty": true,
+  "counter_source_comparison": "MIN/negative/MAX/occupied append/pop conditional retreat/shift reset/copy history agree for reviewed formulae",
+  "remaining_scope": [
+    "active foreach iterators during shift/unshift",
+    "COW/shared/nested reference bookkeeping",
+    "reference append expression ordering",
+    "numeric byte-string/float key conversion integration",
+    "partial multi-value push at saturated MAX"
+  ],
+  "root_notified_before_any_repair": true,
+  "repairs_owned_by_root_in_separate_revision": true,
+  "full_php_compatibility_claimed": false
+}

@@ -1,0 +1,16 @@
+{
+  "status": "BUILT_PARSED_WEAK_ENUM_PATCH_NOT_RUNTIME_VERIFIED",
+  "base_sha256": "6ee5992ebe6226d470bc4bf643b4f0a08ccb6a32861114fa0b4fe3eb1405b3f0",
+  "base_unchanged": true,
+  "module_sha256": "4369aeeed0076f66c4dc250255922a1321496d0c7086b6f30c7705db2b45a2f5",
+  "candidate_sha256": "7efbb4000ec159cb43a087c267c99cfcadfe3ac78b57e5f5080d8aa9f305d695",
+  "builder_sha256": "969a0a695998ee9e20a41b6ee304b4976b5ce994a05f91e1a226efc687f33f38",
+  "crlf_retained": true,
+  "lf_composition_same": true,
+  "parser_exit": 0,
+  "second_apply_guard": "EnumCoercionEdits enum-case-method-name: expected 1 exact anchors, found 0",
+  "strict_types_implemented": false,
+  "new_nominal_strict_flag_added": false,
+  "package_modified": false,
+  "runtime_measurement_completed": false
+}

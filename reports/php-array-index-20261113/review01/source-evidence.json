@@ -1,0 +1,148 @@
+{
+  "scope": "Official source reading only; no implementation copied into the interpreter; no candidate execution",
+  "archive": "C:\\Users\\rinpa\\Downloads\\php-8.5.12-1-src.zip",
+  "archive_sha256": "9dac05f72f328afd0a2b0e795a519ae4cb3d056bc3f3b55147bd048bd64e45e8",
+  "reviewed_inputs": {
+    "candidate": {
+      "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\composed12-index\\ALL_PHP_byte_candidate.ps1",
+      "sha256": "79e39d1e05d2813e9c593b0761409075cb9bd87930907b5c560434e0c2f3f827"
+    },
+    "candidate_module_snapshot": {
+      "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\composed12-index\\module-snapshots\\ArrayIndexEdits.py",
+      "sha256": "32513c9b9ac645fa4d6e33b3872fa4ac2e684c47d6481f817e1f8c61d9fa5a97"
+    },
+    "original18": {
+      "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\array-index.cases.json",
+      "sha256": "5942c37ae7ef93a36c0585fb266a87260dba0a5ea7e57d06141040fc61b62911"
+    },
+    "original_edges14": {
+      "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\array-index-edges.cases.json",
+      "sha256": "6716fbf9a14b5540d7a5c46f4c83bec5441e2a38e3aec4b08e763631e9958fed"
+    },
+    "original18_observations": {
+      "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-array-index-20261113\\oracle01\\report.json",
+      "sha256": "44c61ff8c9347161e946fee9a5a54362178185272cbf5aa83116c419659d4539"
+    },
+    "original14_observations": {
+      "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-array-index-20261113\\oracle-edges01\\report.json",
+      "sha256": "b79fc9da7abc35616ad699982a4fadbb3b4c337bf5671b71018dfef3228f9368"
+    }
+  },
+  "evidence": [
+    {
+      "entry": "Zend/zend_hash.c",
+      "entry_sha256": "239d017e100adc8bc9a4c4277cc64b1ccd30e8635d5f45e1fd7802b19f7e1acf",
+      "excerpts": [
+        {
+          "start_line": 282,
+          "end_line": 307,
+          "text": "\t.gc.refcount = 2,\n\t.gc.u.type_info = IS_ARRAY | (GC_IMMUTABLE << GC_FLAGS_SHIFT),\n\t.u.flags = HASH_FLAG_UNINITIALIZED,\n\t.nTableMask = HT_MIN_MASK,\n\t{.arData = (Bucket*)&uninitialized_bucket[2]},\n\t.nNumUsed = 0,\n\t.nNumOfElements = 0,\n\t.nTableSize = HT_MIN_SIZE,\n\t.nInternalPointer = 0,\n\t.nNextFreeElement = ZEND_LONG_MIN,\n\t.pDestructor = ZVAL_PTR_DTOR\n};\n\nstatic zend_always_inline zend_result _zend_hash_finit_int(HashTable *ht, uint32_t nSize, dtor_func_t pDestructor, bool persistent, bool fallible)\n{\n\tGC_SET_REFCOUNT(ht, 1);\n\tGC_TYPE_INFO(ht) = GC_ARRAY | (persistent ? ((GC_PERSISTENT|GC_NOT_COLLECTABLE) << GC_FLAGS_SHIFT) : 0);\n\tHT_FLAGS(ht) = HASH_FLAG_UNINITIALIZED;\n\tht->nTableMask = HT_MIN_MASK;\n\tHT_SET_DATA_ADDR(ht, &uninitialized_bucket);\n\tht->nNumUsed = 0;\n\tht->nNumOfElements = 0;\n\tht->nInternalPointer = 0;\n\tht->nNextFreeElement = ZEND_LONG_MIN;\n\tht->pDestructor = pDestructor;\n\tht->nTableSize = zend_hash_check_size(nSize, fallible);"
+        },
+        {
+          "start_line": 1273,
+          "end_line": 1289,
+          "text": "\tHT_ASSERT_RC1(ht);\n\n\tif ((flag & HASH_ADD_NEXT) && h == ZEND_LONG_MIN) {\n\t\th = 0;\n\t}\n\n\tif (HT_IS_PACKED(ht)) {\n\t\tif ((flag & (HASH_ADD_NEW|HASH_ADD_NEXT)) != (HASH_ADD_NEW|HASH_ADD_NEXT)\n\t\t && h < ht->nNumUsed) {\n\t\t\tzv = ht->arPacked + h;\n\t\t\tif (Z_TYPE_P(zv) != IS_UNDEF) {\n\t\t\t\tif (flag & HASH_LOOKUP) {\n\t\t\t\t\treturn zv;\n\t\t\t\t}\nreplace:\n\t\t\t\tif (flag & HASH_ADD) {\n\t\t\t\t\treturn NULL;"
+        },
+        {
+          "start_line": 1370,
+          "end_line": 1379,
+          "text": "\tnIndex = h | ht->nTableMask;\n\tp = ht->arData + idx;\n\tZ_NEXT(p->val) = HT_HASH(ht, nIndex);\n\tHT_HASH(ht, nIndex) = HT_IDX_TO_HASH(idx);\n\tif ((zend_long)h >= ht->nNextFreeElement) {\n\t\tht->nNextFreeElement = (zend_long)h < ZEND_LONG_MAX ? h + 1 : ZEND_LONG_MAX;\n\t}\n\tht->nNumOfElements++;\n\tp->h = h;\n\tp->key = NULL;"
+        },
+        {
+          "start_line": 1427,
+          "end_line": 1445,
+          "text": "ZEND_API zval* ZEND_FASTCALL zend_hash_next_index_insert(HashTable *ht, zval *pData)\n{\n\treturn _zend_hash_index_add_or_update_i(ht, ht->nNextFreeElement, pData, HASH_ADD | HASH_ADD_NEXT);\n}\n\nZEND_API zval* ZEND_FASTCALL zend_hash_next_index_finsert(HashTable *ht, zval *pData)\n{\n\treturn _zend_hash_index_add_or_update_i(ht, ht->nNextFreeElement, pData, HASH_ADD | HASH_ADD_NEXT | HASH_FALLIBLE);\n}\n\nZEND_API zval* ZEND_FASTCALL zend_hash_next_index_insert_new(HashTable *ht, zval *pData)\n{\n\treturn _zend_hash_index_add_or_update_i(ht, ht->nNextFreeElement, pData, HASH_ADD | HASH_ADD_NEW | HASH_ADD_NEXT);\n}\n\nZEND_API zval* ZEND_FASTCALL zend_hash_next_index_finsert_new(HashTable *ht, zval *pData)\n{\n\treturn _zend_hash_index_add_or_update_i(ht, ht->nNextFreeElement, pData, HASH_ADD | HASH_ADD_NEW | HASH_ADD_NEXT | HASH_FALLIBLE);\n}"
+        },
+        {
+          "start_line": 2671,
+          "end_line": 2690,
+          "text": "\ttarget->pDestructor = ZVAL_PTR_DTOR;\n\n\tif (source->nNumOfElements == 0) {\n\t\tHT_FLAGS(target) = HASH_FLAG_UNINITIALIZED;\n\t\ttarget->nTableMask = HT_MIN_MASK;\n\t\ttarget->nNumUsed = 0;\n\t\ttarget->nNumOfElements = 0;\n\t\ttarget->nNextFreeElement = source->nNextFreeElement;\n\t\ttarget->nInternalPointer = 0;\n\t\ttarget->nTableSize = HT_MIN_SIZE;\n\t\tHT_SET_DATA_ADDR(target, &uninitialized_bucket);\n\t} else if (GC_FLAGS(source) & IS_ARRAY_IMMUTABLE) {\n\t\tZEND_ASSERT(!(HT_FLAGS(source) & HASH_FLAG_HAS_EMPTY_IND));\n\t\tHT_FLAGS(target) = HT_FLAGS(source) & HASH_FLAG_MASK;\n\t\ttarget->nTableMask = source->nTableMask;\n\t\ttarget->nNumUsed = source->nNumUsed;\n\t\ttarget->nNumOfElements = source->nNumOfElements;\n\t\ttarget->nNextFreeElement = source->nNextFreeElement;\n\t\ttarget->nTableSize = source->nTableSize;\n\t\tif (HT_IS_PACKED(source)) {"
+        },
+        {
+          "start_line": 2699,
+          "end_line": 2725,
+          "text": "\t} else if (HT_IS_PACKED(source)) {\n\t\tZEND_ASSERT(!(HT_FLAGS(source) & HASH_FLAG_HAS_EMPTY_IND));\n\t\tHT_FLAGS(target) = HT_FLAGS(source) & HASH_FLAG_MASK;\n\t\ttarget->nTableMask = HT_MIN_MASK;\n\t\ttarget->nNumUsed = source->nNumUsed;\n\t\ttarget->nNumOfElements = source->nNumOfElements;\n\t\ttarget->nNextFreeElement = source->nNextFreeElement;\n\t\ttarget->nTableSize = source->nTableSize;\n\t\tHT_SET_DATA_ADDR(target, emalloc(HT_PACKED_SIZE_EX(target->nTableSize, HT_MIN_MASK)));\n\t\ttarget->nInternalPointer =\n\t\t\t(source->nInternalPointer < source->nNumUsed) ?\n\t\t\t\tsource->nInternalPointer : 0;\n\n\t\tHT_HASH_RESET_PACKED(target);\n\n\t\tif (HT_IS_WITHOUT_HOLES(target)) {\n\t\t\tzend_array_dup_packed_elements(source, target, 0);\n\t\t} else {\n\t\t\tzend_array_dup_packed_elements(source, target, 1);\n\t\t}\n\t} else {\n\t\t/* Indirects are removed during duplication, remove HASH_FLAG_HAS_EMPTY_IND accordingly. */\n\t\tHT_FLAGS(target) = HT_FLAGS(source) & (HASH_FLAG_MASK & ~HASH_FLAG_HAS_EMPTY_IND);\n\t\ttarget->nTableMask = source->nTableMask;\n\t\ttarget->nNextFreeElement = source->nNextFreeElement;\n\t\ttarget->nInternalPointer =\n\t\t\t(source->nInternalPointer < source->nNumUsed) ?"
+        }
+      ]
+    },
+    {
+      "entry": "ext/standard/array.c",
+      "entry_sha256": "ceb94742d43efbd862447f5b59cd9be34f873d51d871c5f11ba4124ba836038a",
+      "excerpts": [
+        {
+          "start_line": 3604,
+          "end_line": 3609,
+          "text": "\tZEND_PARSE_PARAMETERS_START(1, 1)\n\t\tZ_PARAM_ARRAY_EX(stack, 0, 1)\n\tZEND_PARSE_PARAMETERS_END();\n\n\tif (zend_hash_num_elements(Z_ARRVAL_P(stack)) == 0) {\n\t\treturn;"
+        },
+        {
+          "start_line": 3625,
+          "end_line": 3634,
+          "text": "\t\tRETVAL_COPY_VALUE(val);\n\t\tZVAL_UNDEF(val);\n\n\t\tif (idx == (Z_ARRVAL_P(stack)->nNextFreeElement - 1)) {\n\t\t\tZ_ARRVAL_P(stack)->nNextFreeElement = Z_ARRVAL_P(stack)->nNextFreeElement - 1;\n\t\t}\n\n\t\t/* Delete the last value */\n\t\tzend_hash_packed_del_val(Z_ARRVAL_P(stack), val);\n\t} else {"
+        },
+        {
+          "start_line": 3650,
+          "end_line": 3664,
+          "text": "\t\tRETVAL_COPY_VALUE(val);\n\t\tZVAL_UNDEF(val);\n\n\t\tif (!p->key && (zend_long)p->h == (Z_ARRVAL_P(stack)->nNextFreeElement - 1)) {\n\t\t\tZ_ARRVAL_P(stack)->nNextFreeElement = Z_ARRVAL_P(stack)->nNextFreeElement - 1;\n\t\t}\n\n\t\t/* Delete the last value */\n\t\tzend_hash_del_bucket(Z_ARRVAL_P(stack), p);\n\t}\n\tzend_hash_internal_pointer_reset(Z_ARRVAL_P(stack));\n\n\tif (Z_ISREF_P(return_value)) {\n\t\tzend_unwrap_reference(return_value);\n\t}"
+        },
+        {
+          "start_line": 3675,
+          "end_line": 3681,
+          "text": "\tZEND_PARSE_PARAMETERS_START(1, 1)\n\t\tZ_PARAM_ARRAY_EX(stack, 0, 1)\n\tZEND_PARSE_PARAMETERS_END();\n\n\tif (zend_hash_num_elements(Z_ARRVAL_P(stack)) == 0) {\n\t\treturn;\n\t}"
+        },
+        {
+          "start_line": 3732,
+          "end_line": 3736,
+          "text": "\t\t\t}\n\t\t}\n\t\tZ_ARRVAL_P(stack)->nNumUsed = k;\n\t\tZ_ARRVAL_P(stack)->nNextFreeElement = k;\n\t} else {"
+        },
+        {
+          "start_line": 3760,
+          "end_line": 3782,
+          "text": "\t\tfor (idx = 0; idx < Z_ARRVAL_P(stack)->nNumUsed; idx++) {\n\t\t\tp = Z_ARRVAL_P(stack)->arData + idx;\n\t\t\tif (Z_TYPE(p->val) == IS_UNDEF) continue;\n\t\t\tif (p->key == NULL) {\n\t\t\t\tif (p->h != k) {\n\t\t\t\t\tp->h = k++;\n\t\t\t\t\tshould_rehash = 1;\n\t\t\t\t} else {\n\t\t\t\t\tk++;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\tZ_ARRVAL_P(stack)->nNextFreeElement = k;\n\t\tif (should_rehash) {\n\t\t\tzend_hash_rehash(Z_ARRVAL_P(stack));\n\t\t}\n\t}\n\n\tzend_hash_internal_pointer_reset(Z_ARRVAL_P(stack));\n\n\tif (Z_ISREF_P(return_value)) {\n\t\tzend_unwrap_reference(return_value);\n\t}"
+        },
+        {
+          "start_line": 3796,
+          "end_line": 3813,
+          "text": "\tZEND_PARSE_PARAMETERS_START(1, -1)\n\t\tZ_PARAM_ARRAY_EX(stack, 0, 1)\n\t\tZ_PARAM_VARIADIC('+', args, argc)\n\tZEND_PARSE_PARAMETERS_END();\n\n\tzend_hash_init(&new_hash, zend_hash_num_elements(Z_ARRVAL_P(stack)) + argc, NULL, ZVAL_PTR_DTOR, 0);\n\tfor (uint32_t i = 0; i < argc; i++) {\n\t\tZ_TRY_ADDREF(args[i]);\n\t\tzend_hash_next_index_insert_new(&new_hash, &args[i]);\n\t}\n\n\tZEND_HASH_FOREACH_STR_KEY_VAL(Z_ARRVAL_P(stack), key, value) {\n\t\tif (key) {\n\t\t\tzend_hash_add_new(&new_hash, key, value);\n\t\t} else {\n\t\t\tzend_hash_next_index_insert_new(&new_hash, value);\n\t\t}\n\t} ZEND_HASH_FOREACH_END();"
+        },
+        {
+          "start_line": 3815,
+          "end_line": 3837,
+          "text": "\tif (UNEXPECTED(HT_HAS_ITERATORS(Z_ARRVAL_P(stack)))) {\n\t\tzend_hash_iterators_advance(Z_ARRVAL_P(stack), argc);\n\t\tHT_SET_ITERATORS_COUNT(&new_hash, HT_ITERATORS_COUNT(Z_ARRVAL_P(stack)));\n\t\tHT_SET_ITERATORS_COUNT(Z_ARRVAL_P(stack), 0);\n\t}\n\n\t/* replace HashTable data */\n\tZ_ARRVAL_P(stack)->pDestructor = NULL;\n\tzend_hash_destroy(Z_ARRVAL_P(stack));\n\n\tHT_FLAGS(Z_ARRVAL_P(stack))          = HT_FLAGS(&new_hash);\n\tZ_ARRVAL_P(stack)->nTableSize        = new_hash.nTableSize;\n\tZ_ARRVAL_P(stack)->nTableMask        = new_hash.nTableMask;\n\tZ_ARRVAL_P(stack)->nNumUsed          = new_hash.nNumUsed;\n\tZ_ARRVAL_P(stack)->nNumOfElements    = new_hash.nNumOfElements;\n\tZ_ARRVAL_P(stack)->nNextFreeElement  = new_hash.nNextFreeElement;\n\tZ_ARRVAL_P(stack)->arData            = new_hash.arData;\n\tZ_ARRVAL_P(stack)->pDestructor       = new_hash.pDestructor;\n\n\tzend_hash_internal_pointer_reset(Z_ARRVAL_P(stack));\n\n\t/* Clean up and return the number of elements in the stack */\n\tRETVAL_LONG(zend_hash_num_elements(Z_ARRVAL_P(stack)));"
+        }
+      ]
+    },
+    {
+      "entry": "Zend/zend_API.h",
+      "entry_sha256": "ed9d8f2d31f64f25548a2c16dbb9ef12d591e9d8e324e3364d878c641df80470",
+      "excerpts": [
+        {
+          "start_line": 2168,
+          "end_line": 2187,
+          "text": "/* old \"+\" and \"*\" */\n#define Z_PARAM_VARIADIC_EX(spec, dest, dest_num, post_varargs) do { \\\n\t\tuint32_t _num_varargs = _num_args - _i - (post_varargs); \\\n\t\tif (EXPECTED(_num_varargs > 0)) { \\\n\t\t\tdest = _real_arg + 1; \\\n\t\t\tdest_num = _num_varargs; \\\n\t\t\t_i += _num_varargs; \\\n\t\t\t_real_arg += _num_varargs; \\\n\t\t} else { \\\n\t\t\tdest = NULL; \\\n\t\t\tdest_num = 0; \\\n\t\t} \\\n\t\tif (UNEXPECTED(ZEND_CALL_INFO(execute_data) & ZEND_CALL_HAS_EXTRA_NAMED_PARAMS)) { \\\n\t\t\t_error_code = ZPP_ERROR_UNEXPECTED_EXTRA_NAMED; \\\n\t\t\tbreak; \\\n\t\t} \\\n\t} while (0);\n\n#define Z_PARAM_VARIADIC(spec, dest, dest_num) \\\n\tZ_PARAM_VARIADIC_EX(spec, dest, dest_num, 0)"
+        }
+      ]
+    },
+    {
+      "entry": "Zend/zend_execute.c",
+      "entry_sha256": "5ca1aed88918f4f23a4386bd99461fd4166a5affb0df7539c7fc70510fe5398b",
+      "excerpts": [
+        {
+          "start_line": 2592,
+          "end_line": 2595,
+          "text": "ZEND_API zend_never_inline ZEND_COLD void ZEND_FASTCALL zend_cannot_add_element(void)\n{\n\tzend_throw_error(NULL, \"Cannot add element to the array as the next element is already occupied\");\n}"
+        }
+      ]
+    },
+    {
+      "entry": "Zend/zend_compile.c",
+      "entry_sha256": "2c0b14383e7e74a92e3e039127b5045eae6d1c943b358ea4f71e10c7e5b5ffe9",
+      "excerpts": [
+        {
+          "start_line": 3563,
+          "end_line": 3586,
+          "text": "\tzend_ensure_writable_variable(target_ast);\n\tzend_assert_not_short_circuited(source_ast);\n\tif (is_globals_fetch(source_ast)) {\n\t\tzend_error_noreturn(E_COMPILE_ERROR, \"Cannot acquire reference to $GLOBALS\");\n\t}\n\n\toffset = zend_delayed_compile_begin();\n\tzend_delayed_compile_var(&target_node, target_ast, BP_VAR_W, 1);\n\tzend_compile_var(&source_node, source_ast, BP_VAR_W, 1);\n\n\tif ((target_ast->kind != ZEND_AST_VAR\n\t  || target_ast->child[0]->kind != ZEND_AST_ZVAL)\n\t && source_ast->kind != ZEND_AST_ZNODE\n\t && source_node.op_type != IS_CV) {\n\t\t/* Both LHS and RHS expressions may modify the same data structure,\n\t\t * and the modification during RHS evaluation may dangle the pointer\n\t\t * to the result of the LHS evaluation.\n\t\t * Use MAKE_REF instruction to replace direct pointer with REFERENCE.\n\t\t * See: Bug #71539\n\t\t */\n\t\tzend_emit_op(&source_node, ZEND_MAKE_REF, &source_node, NULL);\n\t}\n\n\topline = zend_delayed_compile_end(offset);"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "trigger.coercion.null",
+    "mode": "body",
+    "code": "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});trigger_error(null,E_USER_WARNING);"
+  },
+  {
+    "id": "trigger.coercion.reject-array-object",
+    "mode": "body",
+    "code": "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});try{trigger_error([],E_USER_WARNING);}catch(TypeError $e){echo $e->getMessage(),\"\\n\";}try{trigger_error(new stdClass(),E_USER_WARNING);}catch(TypeError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "trigger.coercion.stringable-raw",
+    "mode": "body",
+    "code": "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});class S{function __toString(){return \"\\xFF\";}}trigger_error(new S(),E_USER_WARNING);"
+  },
+  {
+    "id": "trigger.coercion.alias-null",
+    "mode": "body",
+    "code": "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});USER_ERROR(null,E_USER_WARNING);"
+  },
+  {
+    "id": "trigger.coercion.arity-alias",
+    "mode": "body",
+    "code": "try{USER_ERROR();}catch(ArgumentCountError $e){echo $e->getMessage(),\"\\n\";}try{TRIGGER_ERROR(\"x\",E_USER_WARNING,99);}catch(ArgumentCountError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "trigger.coercion.null-level",
+    "mode": "body",
+    "code": "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});try{trigger_error(\"x\",null);}catch(ValueError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "trigger.coercion.array-level",
+    "mode": "body",
+    "code": "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});try{trigger_error(\"x\",[]);}catch(TypeError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "trigger.coercion.fraction-level",
+    "mode": "body",
+    "code": "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});trigger_error(\"\\xFF\",512.5);"
+  }
+]

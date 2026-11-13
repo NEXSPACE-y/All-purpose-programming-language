@@ -1,0 +1,1 @@
+set_error_handler(function($level,$message){echo $level,":",bin2hex($message),"\n";return true;});USER_ERROR(null,E_USER_WARNING);

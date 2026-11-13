@@ -1,0 +1,25 @@
+{
+  "state": "STARTED_NOT_COMPLETED",
+  "driver_argv": [
+    "C:\\Users\\rinpa\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "tools/cli/Compare-AllPhpCli.py",
+    "--executable",
+    "tools/candidates/php-byte-interpreter/out/composed14-array-cli/all-php.exe",
+    "--cases",
+    "reports/php-array-index-20261113/composed14-40.cases.json",
+    "--output",
+    "reports/php-array-index-20261113/composed14-run01",
+    "--timeout",
+    "30"
+  ],
+  "timeout_seconds": 30.0,
+  "inputs_before": {
+    "executable": "99a606605eeca8d7de5a1bdc366f786614425fe8652c583d3dc15fe81b49e48a",
+    "cases": "50aa5d573fcd2f97984752936a4d31d9b08b94786811e884b54076c301554907",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "driver": "2853f4f1affd0c945e5f726a1b14d5293674bb6cfa6940235d631d96e8553aaa",
+    "adapter": "e7ccae465117179f0a5cf55126e9b43a4f8f448b17f452650a945ab542a460d0",
+    "host": "c79fe3d384d2098796def5a21eddef871c431b8b295004484b6c6427cb2407bd"
+  },
+  "cases_planned": 40
+}

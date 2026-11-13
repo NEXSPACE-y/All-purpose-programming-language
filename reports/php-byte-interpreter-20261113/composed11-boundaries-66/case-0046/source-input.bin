@@ -1,0 +1,1 @@
+class S{function __toString(){return "7";}}enum E:string{case A="7";}echo E::from(new S())->name;

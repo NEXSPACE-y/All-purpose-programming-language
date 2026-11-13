@@ -1,0 +1,1 @@
+class C{}$x=new C();$name="c";var_dump($x instanceof $name);

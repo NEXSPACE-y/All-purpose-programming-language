@@ -1,0 +1,1 @@
+$a=[];var_dump(isset($a["\xFF"]),empty($a["\xFF"]),$a["\xFF"]??'fallback');

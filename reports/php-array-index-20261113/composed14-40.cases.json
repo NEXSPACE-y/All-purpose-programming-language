@@ -1,0 +1,202 @@
+[
+  {
+    "id": "byte.key-warning.ff",
+    "mode": "body",
+    "code": "$a=[];var_dump($a[\"\\xFF\"]);"
+  },
+  {
+    "id": "byte.key-warning.nul",
+    "mode": "body",
+    "code": "$a=[];var_dump($a[\"a\\0b\\xFF\"]);"
+  },
+  {
+    "id": "byte.key-warning.handler",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo $n,':',$m,\"\\n\";return true;});$a=[];var_dump($a[\"\\x80\\xFF\"],$a[\"a\\0b\"],$a[-3]);"
+  },
+  {
+    "id": "byte.key-warning.quiet",
+    "mode": "body",
+    "code": "$a=[];var_dump(isset($a[\"\\xFF\"]),empty($a[\"\\xFF\"]),$a[\"\\xFF\"]??'fallback');"
+  },
+  {
+    "id": "array.next.negative-first",
+    "mode": "body",
+    "code": "$a=[-5=>'x'];$a[]='y';var_dump($a);"
+  },
+  {
+    "id": "array.next.string-before-negative",
+    "mode": "body",
+    "code": "$a=['s'=>'x'];$a[-5]='y';$a[]='z';var_dump($a);"
+  },
+  {
+    "id": "array.next.minus-one-before-lower",
+    "mode": "body",
+    "code": "$a=[-1=>'x'];$a[-5]='y';$a[]='z';var_dump($a);"
+  },
+  {
+    "id": "array.next.unset-zero-history",
+    "mode": "body",
+    "code": "$a=[0=>'x'];unset($a[0]);$a[-5]='y';$a[]='z';var_dump($a);"
+  },
+  {
+    "id": "array.next.unset-negative-history",
+    "mode": "body",
+    "code": "$a=[-5=>'x'];unset($a[-5]);$a[-8]='y';$a[]='z';var_dump($a);"
+  },
+  {
+    "id": "array.next.increasing-negative",
+    "mode": "body",
+    "code": "$a=[-5=>'x',-10=>'y',-3=>'z'];$a[]='a';var_dump($a);"
+  },
+  {
+    "id": "array.next.pop-negative",
+    "mode": "body",
+    "code": "$a=[-5=>'x'];array_pop($a);$a[]='y';var_dump($a);"
+  },
+  {
+    "id": "array.next.pop-string-only",
+    "mode": "body",
+    "code": "$a=['s'=>'x'];array_pop($a);$a[-5]='y';$a[]='z';var_dump($a);"
+  },
+  {
+    "id": "array.next.shift-reset",
+    "mode": "body",
+    "code": "$a=[-5=>'x',-3=>'y'];array_shift($a);$a[]='z';var_dump($a);"
+  },
+  {
+    "id": "array.next.preserve-reverse",
+    "mode": "body",
+    "code": "$a=array_reverse([-5=>'x'],true);$a[]='y';var_dump($a);"
+  },
+  {
+    "id": "array.next.copy-history",
+    "mode": "body",
+    "code": "$a=[-5=>'x'];$b=$a;$a[]='a';$b[]='b';var_dump($a,$b);"
+  },
+  {
+    "id": "array.next.max-append-error",
+    "mode": "body",
+    "code": "$a=[PHP_INT_MAX=>'x'];try{$a[]='y';}catch(Throwable $e){echo get_class($e),':',$e->getMessage(),\"\\n\";}var_dump($a);"
+  },
+  {
+    "id": "array.next.max-unset-reuse",
+    "mode": "body",
+    "code": "$a=[PHP_INT_MAX=>'x'];unset($a[PHP_INT_MAX]);$a[]='y';try{$a[]='z';}catch(Throwable $e){echo get_class($e),':',$e->getMessage(),\"\\n\";}var_dump($a);"
+  },
+  {
+    "id": "array.next.max-pop-reuse",
+    "mode": "body",
+    "code": "$a=[PHP_INT_MAX=>'x'];array_pop($a);$a[]='y';var_dump($a);"
+  },
+  {
+    "id": "array.next.max-reference-error",
+    "mode": "body",
+    "code": "$a=[PHP_INT_MAX=>'x'];$v='y';try{$a[]=&$v;}catch(Throwable $e){echo get_class($e),':',$e->getMessage(),\"\\n\";}var_dump($a);"
+  },
+  {
+    "id": "array.next.min-negative",
+    "mode": "body",
+    "code": "$a=[PHP_INT_MIN=>'x'];$a[]='y';var_dump($a);"
+  },
+  {
+    "id": "array.next.negative-ref-append",
+    "mode": "body",
+    "code": "$a=[-5=>'x'];$v='y';$a[]=&$v;var_dump(array_keys($a));"
+  },
+  {
+    "id": "array.next.unset-last-minus-one",
+    "mode": "body",
+    "code": "$a=[-1=>'x'];unset($a[-1]);$a[-5]='y';$a[]='z';var_dump($a);"
+  },
+  {
+    "id": "array.next.pop-zero-then-negative",
+    "mode": "body",
+    "code": "$a=[0=>'x'];array_pop($a);$a[-5]='y';$a[]='z';var_dump($a);"
+  },
+  {
+    "id": "array.next.shift-zero-then-negative",
+    "mode": "body",
+    "code": "$a=[0=>'x'];array_shift($a);$a[-5]='y';$a[]='z';var_dump($a);"
+  },
+  {
+    "id": "array.next.shift-string-then-negative",
+    "mode": "body",
+    "code": "$a=['s'=>'x'];array_shift($a);$a[-5]='y';$a[]='z';var_dump($a);"
+  },
+  {
+    "id": "array.next.unshift-empty-then-negative",
+    "mode": "body",
+    "code": "$a=[];array_unshift($a);$a[-5]='y';$a[]='z';var_dump($a);"
+  },
+  {
+    "id": "array.next.pop-string-retains-history",
+    "mode": "body",
+    "code": "$a=[8=>'x','s'=>'y'];unset($a[8]);array_pop($a);$a[]='z';var_dump($a);"
+  },
+  {
+    "id": "array.next.pop-non-next-retains-history",
+    "mode": "body",
+    "code": "$a=[7=>'x',9=>'y',3=>'z'];unset($a[9]);array_pop($a);$a[]='a';var_dump($a);"
+  },
+  {
+    "id": "array.next.pop-next-retreats-one",
+    "mode": "body",
+    "code": "$a=[2=>'x',9=>'y'];array_pop($a);$a[]='a';var_dump($a);"
+  },
+  {
+    "id": "array.next.shift-string-reindexes-next",
+    "mode": "body",
+    "code": "$a=['s'=>'x','t'=>'y'];array_shift($a);$a[-5]='z';$a[]='a';var_dump($a);"
+  },
+  {
+    "id": "array.next.unshift-string-reindexes-next",
+    "mode": "body",
+    "code": "$a=['s'=>'x'];array_unshift($a);$a[-5]='z';$a[]='a';var_dump($a);"
+  },
+  {
+    "id": "array.next.min-pop",
+    "mode": "body",
+    "code": "$a=[PHP_INT_MIN=>'x'];array_pop($a);$a[]='y';var_dump($a);"
+  },
+  {
+    "id": "array.next.min-reassign",
+    "mode": "body",
+    "code": "$a=[PHP_INT_MIN=>'x'];$a[PHP_INT_MIN]='z';$a[]='y';var_dump($a);"
+  },
+  {
+    "id": "array.next.max-minus-one-two-appends",
+    "mode": "body",
+    "code": "$a=[PHP_INT_MAX-1=>'x'];$a[]='y';try{$a[]='z';}catch(Throwable $e){echo get_class($e),':',$e->getMessage(),\"\\n\";}var_dump($a);"
+  },
+  {
+    "id": "array.next.max-string-pop-retains",
+    "mode": "body",
+    "code": "$a=[PHP_INT_MAX=>'x','s'=>'y'];unset($a[PHP_INT_MAX]);array_pop($a);$a[]='z';var_dump($a);"
+  },
+  {
+    "id": "array.next.pop-minus-one-lower",
+    "mode": "body",
+    "code": "$a=[-1=>'x'];array_pop($a);$a[-5]='y';$a[]='z';var_dump($a);"
+  },
+  {
+    "id": "array.next.review-unshift.negative-numeric",
+    "mode": "body",
+    "code": "$a=[-5=>'x'];array_unshift($a);$a[]='y';var_dump($a);"
+  },
+  {
+    "id": "array.next.review-unshift.sparse-positive",
+    "mode": "body",
+    "code": "$a=[8=>'x'];array_unshift($a);$a[]='y';var_dump($a);"
+  },
+  {
+    "id": "array.next.review-unshift.string-with-history",
+    "mode": "body",
+    "code": "$a=[8=>'gone','s'=>'x'];unset($a[8]);array_unshift($a);$a[-5]='y';$a[]='z';var_dump($a);"
+  },
+  {
+    "id": "array.next.review-unshift.empty-with-history",
+    "mode": "body",
+    "code": "$a=[8=>'gone'];unset($a[8]);array_unshift($a);$a[-5]='y';$a[]='z';var_dump($a);"
+  }
+]

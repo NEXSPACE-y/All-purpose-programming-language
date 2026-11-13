@@ -1,0 +1,1 @@
+function f($x){throw new Exception("boom");}try{f("\xFF\0\x27\\\n");}catch(Throwable $e){echo $e->getTraceAsString();}

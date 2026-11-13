@@ -1,0 +1,79 @@
+{
+  "status": "OFFICIAL_REFERENCE_ONLY_NO_CANDIDATE_EXECUTION",
+  "php_sha256": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+  "probe_sha256": "c63e49d018d047b4124664fafb2ca1ec69e6128277bbc1d126b59abe7ef3b65c",
+  "rows": [
+    {
+      "id": "negative-numeric",
+      "source": "$a=[-5=>'x'];array_unshift($a);$a[]='y';var_dump($a);",
+      "source_sha256": "15dcc3183a59a7afd428787b177eab325a5166680ac03905a1cf08245accba28",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "$a=[-5=>'x'];array_unshift($a);$a[]='y';var_dump($a);"
+      ],
+      "actual_exit": 0,
+      "stdout_base64": "YXJyYXkoMikgewogIFswXT0+CiAgc3RyaW5nKDEpICJ4IgogIFsxXT0+CiAgc3RyaW5nKDEpICJ5Igp9Cg==",
+      "stderr_base64": ""
+    },
+    {
+      "id": "sparse-positive",
+      "source": "$a=[8=>'x'];array_unshift($a);$a[]='y';var_dump($a);",
+      "source_sha256": "246a1bfb8722343e1737ffaa03db4b6a745ddcfd4863f0903e99a0b86a24ff26",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "$a=[8=>'x'];array_unshift($a);$a[]='y';var_dump($a);"
+      ],
+      "actual_exit": 0,
+      "stdout_base64": "YXJyYXkoMikgewogIFswXT0+CiAgc3RyaW5nKDEpICJ4IgogIFsxXT0+CiAgc3RyaW5nKDEpICJ5Igp9Cg==",
+      "stderr_base64": ""
+    },
+    {
+      "id": "string-with-history",
+      "source": "$a=[8=>'gone','s'=>'x'];unset($a[8]);array_unshift($a);$a[-5]='y';$a[]='z';var_dump($a);",
+      "source_sha256": "d9dbf17e6ffb9e43fc11ab68789b8db9309724eda8689d0038bf316294af795a",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "$a=[8=>'gone','s'=>'x'];unset($a[8]);array_unshift($a);$a[-5]='y';$a[]='z';var_dump($a);"
+      ],
+      "actual_exit": 0,
+      "stdout_base64": "YXJyYXkoMykgewogIFsicyJdPT4KICBzdHJpbmcoMSkgIngiCiAgWy01XT0+CiAgc3RyaW5nKDEpICJ5IgogIFstNF09PgogIHN0cmluZygxKSAieiIKfQo=",
+      "stderr_base64": ""
+    },
+    {
+      "id": "empty-with-history",
+      "source": "$a=[8=>'gone'];unset($a[8]);array_unshift($a);$a[-5]='y';$a[]='z';var_dump($a);",
+      "source_sha256": "07c9fcddc14de0530f6ae79a0a0748ab259e69d22fd983c7ddd339e5519e5244",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "$a=[8=>'gone'];unset($a[8]);array_unshift($a);$a[-5]='y';$a[]='z';var_dump($a);"
+      ],
+      "actual_exit": 0,
+      "stdout_base64": "YXJyYXkoMikgewogIFstNV09PgogIHN0cmluZygxKSAieSIKICBbLTRdPT4KICBzdHJpbmcoMSkgInoiCn0K",
+      "stderr_base64": ""
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "state": "STARTED_NOT_COMPLETED",
+  "driver_argv": [
+    "C:\\Users\\rinpa\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\Compare-AllPhpCli.py",
+    "--executable",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+    "--cases",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-preparation\\composed11-boundaries66.cases.json",
+    "--output",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66",
+    "--timeout",
+    "30"
+  ],
+  "timeout_seconds": 30.0,
+  "inputs_before": {
+    "executable": "ab2276985752c1a69f42bfa2e1505f16a8aee7c551f1cda514422b9180193768",
+    "cases": "39a50125ea4bc6cfa72fe55afce947f6f7f1f513b1f639d4d87a6ad8d858b134",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "driver": "2853f4f1affd0c945e5f726a1b14d5293674bb6cfa6940235d631d96e8553aaa",
+    "adapter": "f7b61d06772ed661ac101347f454375ecfe8f18f952ea767f961cb77584e7706",
+    "host": "c79fe3d384d2098796def5a21eddef871c431b8b295004484b6c6427cb2407bd"
+  },
+  "cases_planned": 66
+}

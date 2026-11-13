@@ -1,0 +1,47 @@
+{
+  "command": [
+    "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+    "-n",
+    "-d",
+    "display_errors=stderr",
+    "-d",
+    "error_reporting=-1",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-enum-coercion-20261113\\Oracle-NamesAndNul.php"
+  ],
+  "actual_exit": 0,
+  "source_sha256": "e139844c6d6f8890caa61e42b3f367a249c27af4b08b0ef8af8019ab286eb9da",
+  "php_sha256": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+  "stdout_base64": "W3sidmFsdWVfYmFzZTY0IjoiZUFCNSIsImNsYXNzIjoiVmFsdWVFcnJvciIsIm1lc3NhZ2VfYmFzZTY0IjoiSW5naUlHbHpJRzV2ZENCaElIWmhiR2xrSUdKaFkydHBibWNnZG1Gc2RXVWdabTl5SUdWdWRXMGdSUT09In0seyJ2YWx1ZV9iYXNlNjQiOiJBR0ZpWXc9PSIsImNsYXNzIjoiVmFsdWVFcnJvciIsIm1lc3NhZ2VfYmFzZTY0IjoiSWlJZ2FYTWdibTkwSUdFZ2RtRnNhV1FnWW1GamEybHVaeUIyWVd4MVpTQm1iM0lnWlc1MWJTQkYifSx7InZhbHVlX2Jhc2U2NCI6ImVIa0EiLCJjbGFzcyI6IlZhbHVlRXJyb3IiLCJtZXNzYWdlX2Jhc2U2NCI6IkluaDVJaUJwY3lCdWIzUWdZU0IyWVd4cFpDQmlZV05yYVc1bklIWmhiSFZsSUdadmNpQmxiblZ0SUVVPSJ9LHsidmFsdWVfYmFzZTY0IjoiL3dCNiIsImNsYXNzIjoiVmFsdWVFcnJvciIsIm1lc3NhZ2VfYmFzZTY0IjoiSXY4aUlHbHpJRzV2ZENCaElIWmhiR2xrSUdKaFkydHBibWNnZG1Gc2RXVWdabTl5SUdWdWRXMGdSUT09In0seyJpZCI6InVwcGVyX3RyeWZyb20iLCJjbGFzcyI6IlR5cGVFcnJvciIsIm1lc3NhZ2VfYmFzZTY0IjoiUlRvNmRISjVSbkp2YlNncE9pQkJjbWQxYldWdWRDQWpNU0FvSkhaaGJIVmxLU0J0ZFhOMElHSmxJRzltSUhSNWNHVWdjM1J5YVc1bmZHbHVkQ3dnWVhKeVlYa2daMmwyWlc0PSJ9LHsiaWQiOiJ1cHBlcl9jYXNlcyIsImNvdW50IjoxfV0=",
+  "stderr_base64": "",
+  "observed": [
+    {
+      "value_base64": "eAB5",
+      "class": "ValueError",
+      "message_base64": "IngiIGlzIG5vdCBhIHZhbGlkIGJhY2tpbmcgdmFsdWUgZm9yIGVudW0gRQ=="
+    },
+    {
+      "value_base64": "AGFiYw==",
+      "class": "ValueError",
+      "message_base64": "IiIgaXMgbm90IGEgdmFsaWQgYmFja2luZyB2YWx1ZSBmb3IgZW51bSBF"
+    },
+    {
+      "value_base64": "eHkA",
+      "class": "ValueError",
+      "message_base64": "Inh5IiBpcyBub3QgYSB2YWxpZCBiYWNraW5nIHZhbHVlIGZvciBlbnVtIEU="
+    },
+    {
+      "value_base64": "/wB6",
+      "class": "ValueError",
+      "message_base64": "Iv8iIGlzIG5vdCBhIHZhbGlkIGJhY2tpbmcgdmFsdWUgZm9yIGVudW0gRQ=="
+    },
+    {
+      "id": "upper_tryfrom",
+      "class": "TypeError",
+      "message_base64": "RTo6dHJ5RnJvbSgpOiBBcmd1bWVudCAjMSAoJHZhbHVlKSBtdXN0IGJlIG9mIHR5cGUgc3RyaW5nfGludCwgYXJyYXkgZ2l2ZW4="
+    },
+    {
+      "id": "upper_cases",
+      "count": 1
+    }
+  ]
+}

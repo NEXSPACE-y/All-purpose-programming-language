@@ -1,0 +1,1 @@
+<?php $h=function(){echo "zero";return true;};set_error_handler($h);trigger_error("payload\xFF",E_USER_WARNING);

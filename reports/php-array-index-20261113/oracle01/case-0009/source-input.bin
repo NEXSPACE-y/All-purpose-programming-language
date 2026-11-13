@@ -1,0 +1,1 @@
+$a=array_reverse([-5=>'x'],true);$a[]='y';var_dump($a);

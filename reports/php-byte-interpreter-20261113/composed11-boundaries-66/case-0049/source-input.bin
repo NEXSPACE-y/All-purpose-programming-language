@@ -1,0 +1,1 @@
+enum E:int{case A=7;}var_dump(E::TRYFROM("8"),count(E::CASES()));try{E::TRYFROM([]);}catch(TypeError $e){echo $e->getMessage();}

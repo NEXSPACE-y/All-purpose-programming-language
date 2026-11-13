@@ -1,0 +1,2937 @@
+{
+  "scope": "Read-only completed-case snapshot",
+  "utc": "2026-11-13T06:09:33.172210+00:00",
+  "rows_observed": 65,
+  "process_observation": "process-observation02.json",
+  "observations": [
+    {
+      "id": "callback.arguments.named-variadic",
+      "verdict": "DIFFERENT",
+      "source_sha256": "4bb06b4e6803a7bf8453feca57ead5dd3d1f72b2250a5605d553c59e43182f13",
+      "differences": [
+        "process_state",
+        "exit_code",
+        "stdout_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 1.0478651000012178,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0000\\script.php"
+        ],
+        "stdout_bytes": 45,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "TIMEOUT",
+        "exit_code": null,
+        "elapsed_seconds": 30.26907360000041,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0000\\script.php"
+        ],
+        "stdout_bytes": 0,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": false
+    },
+    {
+      "id": "callback.arguments.closure-variadic",
+      "verdict": "DIFFERENT",
+      "source_sha256": "cbb19c863273877580ae991c3e00ac9da9555af1e949003803541bcf6f5b1229",
+      "differences": [
+        "process_state",
+        "exit_code"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5973334000009345,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0001\\script.php"
+        ],
+        "stdout_bytes": 45,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "TIMEOUT",
+        "exit_code": null,
+        "elapsed_seconds": 30.1211183000014,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0001\\script.php"
+        ],
+        "stdout_bytes": 45,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "callback.arguments.named-one-plus-variadic",
+      "verdict": "PASS",
+      "source_sha256": "74c054654c1d5661f6a762759570d6ab8c0dc177b0a486ec8bc1b11e298983c6",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.7750931999980821,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0002\\script.php"
+        ],
+        "stdout_bytes": 37,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 18.967186599998968,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0002\\script.php"
+        ],
+        "stdout_bytes": 37,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "callback.arguments.closure-one-plus-variadic",
+      "verdict": "PASS",
+      "source_sha256": "c3f0c89be2454f564d3c59eb38c6815a08d0421c5789840b0484f418a52c32ba",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5458905000014056,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0003\\script.php"
+        ],
+        "stdout_bytes": 37,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.327000600002066,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0003\\script.php"
+        ],
+        "stdout_bytes": 37,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "callback.arguments.first-class",
+      "verdict": "PASS",
+      "source_sha256": "4110ec1ab00a7481702ac2bbfe600aaffe89e2e68b32b7306862c22e6fd84b08",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.38195120000091265,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0004\\script.php"
+        ],
+        "stdout_bytes": 45,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.591658099998313,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0004\\script.php"
+        ],
+        "stdout_bytes": 45,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "callback.arguments.array-static",
+      "verdict": "PASS",
+      "source_sha256": "3a8e75511ae1a26cb39e823026c7df180a8782772c7612f92f3db8f28b860288",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5847988999994413,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0005\\script.php"
+        ],
+        "stdout_bytes": 45,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 10.317555500001617,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0005\\script.php"
+        ],
+        "stdout_bytes": 45,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "callback.arguments.array-instance",
+      "verdict": "PASS",
+      "source_sha256": "fe87e6f2f15e316052f077056b3f7092b28eb1de6289fc24cd801bff3355ad08",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.8228693999990355,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0006\\script.php"
+        ],
+        "stdout_bytes": 45,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 10.766674800001056,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0006\\script.php"
+        ],
+        "stdout_bytes": 45,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "callback.arguments.invokable",
+      "verdict": "PASS",
+      "source_sha256": "45eef4662d91132931a4f57cdf6a2d0b3edcab32b70efb3a8615af3be9631997",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.500766900000599,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0007\\script.php"
+        ],
+        "stdout_bytes": 45,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.154416400000628,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0007\\script.php"
+        ],
+        "stdout_bytes": 45,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "callback.arguments.named-zero",
+      "verdict": "PASS",
+      "source_sha256": "9bd343a1db7e607ba8d89c79960463114a124561e487338b335ae4d99523bf5b",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.45803410000007716,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0008\\script.php"
+        ],
+        "stdout_bytes": 4,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.243719900001452,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0008\\script.php"
+        ],
+        "stdout_bytes": 4,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "callback.arguments.closure-zero",
+      "verdict": "PASS",
+      "source_sha256": "cadd073a13ad6ea2218519c7ac4df0fa95855aaf759dbd94e3aa5c625fbed0e0",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.6441741999988153,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0009\\script.php"
+        ],
+        "stdout_bytes": 4,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.181856999999582,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0009\\script.php"
+        ],
+        "stdout_bytes": 4,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "callback.arguments.named-one",
+      "verdict": "PASS",
+      "source_sha256": "de329245a677df658a16c9110c234604ae020cb5a40257093059cfbeeca8801e",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5095192000007955,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0010\\script.php"
+        ],
+        "stdout_bytes": 3,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 7.872689899999386,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0010\\script.php"
+        ],
+        "stdout_bytes": 3,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "callback.arguments.closure-one",
+      "verdict": "PASS",
+      "source_sha256": "0556aec383e4fb7806fd8576395a0572120f872e721c2fc86384fac6109298b8",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.4561606999996002,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0011\\script.php"
+        ],
+        "stdout_bytes": 3,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 7.059951799998089,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0011\\script.php"
+        ],
+        "stdout_bytes": 3,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "callback.arguments.builtin-four",
+      "verdict": "PASS",
+      "source_sha256": "680b5e741b8ee1c10230abbf4bab0a87f683d7df25239d93a34fc45d88a9f5cc",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 1.0068461000009847,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0012\\script.php"
+        ],
+        "stdout_bytes": 44,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 14.316479699999036,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0012\\script.php"
+        ],
+        "stdout_bytes": 44,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "callback.arguments.closure-all-four",
+      "verdict": "PASS",
+      "source_sha256": "bb4534357d62965699f8b157f891c7496d1bd637a5822b0abf5ec76775c2757d",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5086708000017097,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0013\\script.php"
+        ],
+        "stdout_bytes": 35,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.329771699998673,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0013\\script.php"
+        ],
+        "stdout_bytes": 35,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "callback.arguments.raw-closure",
+      "verdict": "PASS",
+      "source_sha256": "32232f42b6e3e8b367c35175a464f0bb2db0d28e2428b07a9ba38a09f4155272",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.7844731000004685,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0014\\script.php"
+        ],
+        "stdout_bytes": 37,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.468444900001487,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0014\\script.php"
+        ],
+        "stdout_bytes": 37,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "callback.arguments.raw-array-method",
+      "verdict": "PASS",
+      "source_sha256": "a9a52417e91bbf0b9be62ed42fe9fec9dd112c285d591d2724190446def0b267",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5309013000005507,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0015\\script.php"
+        ],
+        "stdout_bytes": 37,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 10.930813200000557,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\composed11-boundaries-66\\case-0015\\script.php"
+        ],
+        "stdout_bytes": 37,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "byte.hex.empty",
+      "verdict": "PASS",
+      "source_sha256": "c60526ec71533b8e1b62b439c17cc78c2eb9fda60ddbc0f96f2d39063946a83b",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.8095532000006642,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "var_dump(bin2hex(''),function_exists('bin2hex'),is_string(bin2hex('a')));"
+        ],
+        "stdout_bytes": 35,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.646760200001154,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "var_dump(bin2hex(''),function_exists('bin2hex'),is_string(bin2hex('a')));"
+        ],
+        "stdout_bytes": 35,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "byte.hex.raw",
+      "verdict": "PASS",
+      "source_sha256": "aca48e0a78931495bf1b311315c2f1b97203700b7aa8a497f6b1c2ee9ade9879",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.42856599999868195,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "var_dump(bin2hex(\"\\0\\xFF\\x80\\u{D800}\"));"
+        ],
+        "stdout_bytes": 26,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 7.472884799997701,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "var_dump(bin2hex(\"\\0\\xFF\\x80\\u{D800}\"));"
+        ],
+        "stdout_bytes": 26,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "byte.hex.ascii-lookup",
+      "verdict": "PASS",
+      "source_sha256": "d42f30a694861e4a42dc36df692ebe17ac642b59a103eb54142b030d034cbaef",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.33324960000027204,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "echo BIN2HEX(\"\\xFE\\xDC\");"
+        ],
+        "stdout_bytes": 4,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 6.663287899998977,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "echo BIN2HEX(\"\\xFE\\xDC\");"
+        ],
+        "stdout_bytes": 4,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "byte.hex.null",
+      "verdict": "PASS",
+      "source_sha256": "0e78fe1aaad132801957eaca79bd99031aa484d404f22ff02e1cbab1bedf2b2b",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.6070304999993823,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "var_dump(bin2hex(null));"
+        ],
+        "stdout_bytes": 13,
+        "stderr_bytes": 122
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 15.049546599999303,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "var_dump(bin2hex(null));"
+        ],
+        "stdout_bytes": 13,
+        "stderr_bytes": 122
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "byte.hex.scalars",
+      "verdict": "PASS",
+      "source_sha256": "db0747d782e154ad04411d10252caad820613371abab13da185e33a96254ce46",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.7227927999992971,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "var_dump(bin2hex(12),bin2hex(2.5),bin2hex(true),bin2hex(false));"
+        ],
+        "stdout_bytes": 64,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 10.691710199997033,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "var_dump(bin2hex(12),bin2hex(2.5),bin2hex(true),bin2hex(false));"
+        ],
+        "stdout_bytes": 64,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "byte.hex.object",
+      "verdict": "PASS",
+      "source_sha256": "a155a98556ac817fa079de41b779c982df77853c2050a1bbc8a648e103c008ea",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.47556470000199624,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "class S{function __toString(){return \"\\xFF\";}}var_dump(bin2hex(new S()));"
+        ],
+        "stdout_bytes": 15,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.445741999999882,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "class S{function __toString(){return \"\\xFF\";}}var_dump(bin2hex(new S()));"
+        ],
+        "stdout_bytes": 15,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "byte.hex.type-and-count",
+      "verdict": "PASS",
+      "source_sha256": "c17481d9b9cb2cb29a2f5f87610f7378c9fb5e615d31992f7810ff67d99dd9d5",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.6629095999996935,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "try{bin2hex([]);}catch(Throwable $e){echo get_class($e),':',$e->getMessage(),\"\\n\";}try{bin2hex();}catch(Throwable $e){echo get_class($e),':',$e->getMessage();}"
+        ],
+        "stdout_bytes": 143,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 14.82317250000051,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "try{bin2hex([]);}catch(Throwable $e){echo get_class($e),':',$e->getMessage(),\"\\n\";}try{bin2hex();}catch(Throwable $e){echo get_class($e),':',$e->getMessage();}"
+        ],
+        "stdout_bytes": 143,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "byte.hex.chunk-boundary",
+      "verdict": "PASS",
+      "source_sha256": "236e3d0544006270e32011f932c3666d2dfde33979eacc8372c6676456728440",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5736410999998043,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "echo bin2hex(str_repeat(\"\\0\\xFF\",32769));"
+        ],
+        "stdout_bytes": 131076,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.221668899997894,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "echo bin2hex(str_repeat(\"\\0\\xFF\",32769));"
+        ],
+        "stdout_bytes": 131076,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "boundary.enum-string-raw",
+      "verdict": "PASS",
+      "source_sha256": "c550eac50dd29618fd08753ffdc182f7ceb29a74852cdfb92334799db297ef34",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.4623128999992332,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:string{case A=\"\\xFF\";case B=\"\\0\";}echo E::from(\"\\xFF\")->name,\":\",bin2hex(E::from(\"\\0\")->value);"
+        ],
+        "stdout_bytes": 4,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.084152799998265,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:string{case A=\"\\xFF\";case B=\"\\0\";}echo E::from(\"\\xFF\")->name,\":\",bin2hex(E::from(\"\\0\")->value);"
+        ],
+        "stdout_bytes": 4,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "boundary.enum-string-nfc",
+      "verdict": "PASS",
+      "source_sha256": "ea4639b786163cb53dc55a86167cf5becf913293dfd2ce019942841fcd8f4276",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5037359000016295,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:string{case A=\"\u00e9\";case B=\"e\u0301\";}echo E::from(\"\u00e9\")->name,\":\",E::from(\"e\u0301\")->name;"
+        ],
+        "stdout_bytes": 3,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 7.66587779999827,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:string{case A=\"\u00e9\";case B=\"e\u0301\";}echo E::from(\"\u00e9\")->name,\":\",E::from(\"e\u0301\")->name;"
+        ],
+        "stdout_bytes": 3,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "boundary.enum-string-valueerror",
+      "verdict": "PASS",
+      "source_sha256": "1676d67100c7cd25124df59d515af17a806b676d97719920e43082e0353aaf10",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.3904255999987072,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:string{case A=\"a\";}try{E::from(\"\\xFE\");}catch(ValueError $e){echo bin2hex($e->getMessage());}"
+        ],
+        "stdout_bytes": 86,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 15.229304399999819,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:string{case A=\"a\";}try{E::from(\"\\xFE\");}catch(ValueError $e){echo bin2hex($e->getMessage());}"
+        ],
+        "stdout_bytes": 86,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "boundary.enum-int-control",
+      "verdict": "PASS",
+      "source_sha256": "9a18518db45b380f559821c831c66f368d960bc148c083ce0333eb5ebc37321c",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5379724000013084,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:int{case A=7;}echo E::from(7)->name;var_dump(E::tryFrom(8));"
+        ],
+        "stdout_bytes": 6,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.623582199998054,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:int{case A=7;}echo E::from(7)->name;var_dump(E::tryFrom(8));"
+        ],
+        "stdout_bytes": 6,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "boundary.enum-weak-scalar-known-gap",
+      "verdict": "PASS",
+      "source_sha256": "6424f2a289769cb53ca74ddcccd01b363cf124516704e4bf6ec7109c3adbf536",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5234334999986459,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:string{case A=\"7\";}echo E::from(7)->name;"
+        ],
+        "stdout_bytes": 1,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.471363700002257,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:string{case A=\"7\";}echo E::from(7)->name;"
+        ],
+        "stdout_bytes": 1,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "boundary.firstclass-array-object",
+      "verdict": "PASS",
+      "source_sha256": "a9ddaf6905b2baffdd3a99a05be03c0ab6aac5f2879b47ddf6a6cccf1ac15e2a",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.6097559000008914,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "class C{function m($x){return $x+1;}}$c=new C();$f=[$c,\"m\"];$g=$f(...);echo $g(3);"
+        ],
+        "stdout_bytes": 1,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.282167199999094,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "class C{function m($x){return $x+1;}}$c=new C();$f=[$c,\"m\"];$g=$f(...);echo $g(3);"
+        ],
+        "stdout_bytes": 1,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "boundary.firstclass-array-static",
+      "verdict": "PASS",
+      "source_sha256": "09ae9b5c19a5d5b09c093c54cb4c30fe45a335256eea16c7c311c3760b1ff790",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.6376017000002321,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "class C{static function m($x){return $x+1;}}$f=[\"C\",\"m\"];$g=$f(...);echo $g(4);"
+        ],
+        "stdout_bytes": 1,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.047860000002402,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "class C{static function m($x){return $x+1;}}$f=[\"C\",\"m\"];$g=$f(...);echo $g(4);"
+        ],
+        "stdout_bytes": 1,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "boundary.isnumeric-bytes",
+      "verdict": "PASS",
+      "source_sha256": "701c637f3eb35eb646f23fd7be8b24ec7a1debb47c24c0a86f432b946f14caee",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.7806958000001032,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "var_dump(is_numeric(\"12\"),is_numeric(\"12.5\"),is_numeric(\"\\xFF\"),is_numeric(\"\u732b\"));"
+        ],
+        "stdout_bytes": 46,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.045832299998438,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "var_dump(is_numeric(\"12\"),is_numeric(\"12.5\"),is_numeric(\"\\xFF\"),is_numeric(\"\u732b\"));"
+        ],
+        "stdout_bytes": 46,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "boundary.instanceof-string",
+      "verdict": "PASS",
+      "source_sha256": "ce5992859d1dcb0799533ea436bf3b0805ae494c3442ff42e755a6a65f319e7b",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.7300620999994862,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "class C{}$x=new C();$name=\"c\";var_dump($x instanceof $name);"
+        ],
+        "stdout_bytes": 11,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.124797199998284,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "class C{}$x=new C();$name=\"c\";var_dump($x instanceof $name);"
+        ],
+        "stdout_bytes": 11,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "boundary.getter-constants",
+      "verdict": "PASS",
+      "source_sha256": "2da0a8b589c43d1c2b35e8e5b509d2aeb866ab9ee27042f0359b046a8fe89593",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.401265999997122,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "define(\"X\",\"\\xFF\");class C{const Y=\"\\0\";}$c=new C();var_dump(is_string(get_class($c)),bin2hex(constant(\"X\")),bin2hex(C::Y),is_string(C::class));"
+        ],
+        "stdout_bytes": 52,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.283533399997395,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "define(\"X\",\"\\xFF\");class C{const Y=\"\\0\";}$c=new C();var_dump(is_string(get_class($c)),bin2hex(constant(\"X\")),bin2hex(C::Y),is_string(C::class));"
+        ],
+        "stdout_bytes": 52,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "boundary.match-escaped-bytes",
+      "verdict": "PASS",
+      "source_sha256": "d7ac8ff643b0b75f0e83355837b370338ac34036750ba82d6fbf8c15b0c8d909",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.6093827000004239,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "try{match(\"\\xFF\\0\\x27\\\\\\n\"){};}catch(UnhandledMatchError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 36,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 16.85466330000054,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "try{match(\"\\xFF\\0\\x27\\\\\\n\"){};}catch(UnhandledMatchError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 36,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "boundary.match-byte-limit",
+      "verdict": "PASS",
+      "source_sha256": "8b8ed7dcdf49e8e02b67fb76e3a628610e1ebfb32d77c7da25656032be2225e2",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.7650701999991725,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "ini_set(\"zend.exception_string_param_max_len\",\"3\");try{match(\"A\\xFF\\nB\"){};}catch(UnhandledMatchError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 33,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 15.107434600002307,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "ini_set(\"zend.exception_string_param_max_len\",\"3\");try{match(\"A\\xFF\\nB\"){};}catch(UnhandledMatchError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 33,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "boundary.trace-escaped-bytes",
+      "verdict": "PASS",
+      "source_sha256": "cbd17765f1f869eceda4128f3ce84b546804b961adb0477e275d9bce556e28f5",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5445503999981156,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "function f($x){throw new Exception(\"boom\");}try{f(\"\\xFF\\0\\x27\\\\\\n\");}catch(Throwable $e){echo $e->getTraceAsString();}"
+        ],
+        "stdout_bytes": 53,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 15.077327900002274,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "function f($x){throw new Exception(\"boom\");}try{f(\"\\xFF\\0\\x27\\\\\\n\");}catch(Throwable $e){echo $e->getTraceAsString();}"
+        ],
+        "stdout_bytes": 53,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "boundary.trace-ignore-args",
+      "verdict": "PASS",
+      "source_sha256": "6dbce40bffbcf47a3f099738cc5ad8450c6b251adaba579730a9c5db7e4d1f3d",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.7613334999987273,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "ini_set(\"zend.exception_ignore_args\",\"1\");function f($x){throw new Exception(\"boom\");}try{f(\"\\xFF\");}catch(Throwable $e){echo $e->getTraceAsString();}"
+        ],
+        "stdout_bytes": 38,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 14.553838000003452,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "ini_set(\"zend.exception_ignore_args\",\"1\");function f($x){throw new Exception(\"boom\");}try{f(\"\\xFF\");}catch(Throwable $e){echo $e->getTraceAsString();}"
+        ],
+        "stdout_bytes": 38,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "boundary.trace-byte-limit",
+      "verdict": "PASS",
+      "source_sha256": "86a0a1462d239f4700376b02fe639058515ce1f254ec0a0e0f9418d0c95a96e0",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.929758899997978,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "ini_set(\"zend.exception_string_param_max_len\",\"1\");function f($x){throw new Exception(\"boom\");}try{f(\"\u732b\");}catch(Throwable $e){echo $e->getTraceAsString();}"
+        ],
+        "stdout_bytes": 47,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 16.79233100000056,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "ini_set(\"zend.exception_string_param_max_len\",\"1\");function f($x){throw new Exception(\"boom\");}try{f(\"\u732b\");}catch(Throwable $e){echo $e->getTraceAsString();}"
+        ],
+        "stdout_bytes": 47,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "boundary.static-reference-string",
+      "verdict": "PASS",
+      "source_sha256": "e674d17d66f32a65f0998b1be3bcd3970275c4620f02a3bf08ef882acaf6708d",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.4841465000026801,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "class C{public static $v=\"A\";static function &get(){return self::$v;}}$n=\"C\";$x=&$n::get();$x.=\"\\xFF\";echo bin2hex(C::$v);"
+        ],
+        "stdout_bytes": 4,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.668465800001286,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "class C{public static $v=\"A\";static function &get(){return self::$v;}}$n=\"C\";$x=&$n::get();$x.=\"\\xFF\";echo bin2hex(C::$v);"
+        ],
+        "stdout_bytes": 4,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "enum.weak.string-int",
+      "verdict": "PASS",
+      "source_sha256": "6424f2a289769cb53ca74ddcccd01b363cf124516704e4bf6ec7109c3adbf536",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.6255640999988827,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:string{case A=\"7\";}echo E::from(7)->name;"
+        ],
+        "stdout_bytes": 1,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 7.216379800000141,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:string{case A=\"7\";}echo E::from(7)->name;"
+        ],
+        "stdout_bytes": 1,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "enum.weak.string-bool-null",
+      "verdict": "PASS",
+      "source_sha256": "c29174bdaab57975cdaf3c8d508d9b341a543a1453b1e71d25c442bbb5702d90",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5115427000018826,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:string{case Z=\"0\";case O=\"1\";}echo E::from(false)->name,E::from(true)->name,E::from(null)->name;"
+        ],
+        "stdout_bytes": 90,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.353423799999291,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:string{case Z=\"0\";case O=\"1\";}echo E::from(false)->name,E::from(true)->name,E::from(null)->name;"
+        ],
+        "stdout_bytes": 90,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "enum.weak.string-float",
+      "verdict": "PASS",
+      "source_sha256": "0983f89795e3c96bf33fc94b5419481f51129680d5d9aa9f5e61fdcbc9c99f5f",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5800521000019216,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:string{case A=\"7\";case B=\"-7\";}echo E::from(7.0)->name,E::from(7.5)->name,E::from(-7.5)->name;"
+        ],
+        "stdout_bytes": 130,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 10.700042500000563,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:string{case A=\"7\";case B=\"-7\";}echo E::from(7.0)->name,E::from(7.5)->name,E::from(-7.5)->name;"
+        ],
+        "stdout_bytes": 130,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "enum.weak.integer-numeric-string",
+      "verdict": "PASS",
+      "source_sha256": "2057aca8374f3900a53d8e18b22204b3527efad7960776fed97841507df32dd5",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5573492999974405,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:int{case A=7;}echo E::from(\"07\")->name,E::from(\"7.0\")->name,E::from(\"7e0\")->name,E::from(\" 7 \")->name;"
+        ],
+        "stdout_bytes": 4,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.174555399997189,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:int{case A=7;}echo E::from(\"07\")->name,E::from(\"7.0\")->name,E::from(\"7e0\")->name,E::from(\" 7 \")->name;"
+        ],
+        "stdout_bytes": 4,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "enum.weak.integer-float-string",
+      "verdict": "PASS",
+      "source_sha256": "430447231b1c7ad24a7bade59849b5830508aa1870e83964e874421fec0a646d",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.8834905000003346,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:int{case A=7;}echo E::from(\"7.5\")->name;"
+        ],
+        "stdout_bytes": 73,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.288775799999712,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:int{case A=7;}echo E::from(\"7.5\")->name;"
+        ],
+        "stdout_bytes": 73,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "enum.weak.integer-null-bool",
+      "verdict": "PASS",
+      "source_sha256": "927e0a668db8640c4979f26aa5b14673666091a680bc47467fb9d05bb6935b6c",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.633369400002266,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:int{case Z=0;case O=1;}echo E::from(null)->name,E::from(false)->name,E::from(true)->name;"
+        ],
+        "stdout_bytes": 90,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.367162300000928,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:int{case Z=0;case O=1;}echo E::from(null)->name,E::from(false)->name,E::from(true)->name;"
+        ],
+        "stdout_bytes": 90,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "enum.weak.stringable",
+      "verdict": "PASS",
+      "source_sha256": "81222f56fd4da48f8177479358592f1af5bd34dbcc633d2def3bfaf8cfa781f1",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5533953000012843,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "class S{function __toString(){return \"7\";}}enum E:string{case A=\"7\";}echo E::from(new S())->name;"
+        ],
+        "stdout_bytes": 1,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.262396199999785,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "class S{function __toString(){return \"7\";}}enum E:string{case A=\"7\";}echo E::from(new S())->name;"
+        ],
+        "stdout_bytes": 1,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "enum.weak.integer-stringable-reject",
+      "verdict": "PASS",
+      "source_sha256": "3497ad2af9d486f5b93698773da2cd4b5f9398a213a61e8fd06b14f7a361c00f",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.47123759999885806,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "class S{function __toString(){return \"7\";}}enum E:int{case A=7;}try{E::from(new S());}catch(TypeError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 60,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 14.28879820000293,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "class S{function __toString(){return \"7\";}}enum E:int{case A=7;}try{E::from(new S());}catch(TypeError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 60,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "enum.weak.string-reject-types",
+      "verdict": "PASS",
+      "source_sha256": "dee187d0790ad88e9a5a0b01c6a85b455b10b4d9272759148caa3a071b110c28",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5675050000027113,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:string{case A=\"7\";}try{E::from([]);}catch(TypeError $e){echo $e->getMessage(),\"\\n\";}try{E::from(new stdClass());}catch(TypeError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 146,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 15.43200060000163,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:string{case A=\"7\";}try{E::from([]);}catch(TypeError $e){echo $e->getMessage(),\"\\n\";}try{E::from(new stdClass());}catch(TypeError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 146,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "enum.weak.tryfrom-canonical",
+      "verdict": "PASS",
+      "source_sha256": "48cc887dc0257e0b6ea95d94b268ea6caa24514a3ae788eccadfd086be9e8c06",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.4933452000004763,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:int{case A=7;}var_dump(E::TRYFROM(\"8\"),count(E::CASES()));try{E::TRYFROM([]);}catch(TypeError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 79,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 15.328074700002617,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:int{case A=7;}var_dump(E::TRYFROM(\"8\"),count(E::CASES()));try{E::TRYFROM([]);}catch(TypeError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 79,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "enum.weak.bad-string-nul",
+      "verdict": "PASS",
+      "source_sha256": "b573c88ec9d07bb93604a775ed1df010bbe970fe6455045af49591ade865e54e",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5822267000003194,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:string{case A=\"a\";}try{E::from(\"x\\0y\");}catch(ValueError $e){echo bin2hex($e->getMessage());}"
+        ],
+        "stdout_bytes": 86,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 17.39655859999766,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:string{case A=\"a\";}try{E::from(\"x\\0y\");}catch(ValueError $e){echo bin2hex($e->getMessage());}"
+        ],
+        "stdout_bytes": 86,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "enum.weak.nonfinite-string",
+      "verdict": "PASS",
+      "source_sha256": "4ba01b30add7d9767b3a08e6f2e8410ee391ae1a3169d69bfd15ff391d5aff51",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.7738534999989497,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:string{case A=\"INF\";case B=\"NAN\";}echo E::from(INF)->name,E::from(NAN)->name;"
+        ],
+        "stdout_bytes": 47,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.718636400000833,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",$message,\"\\n\";return true;});enum E:string{case A=\"INF\";case B=\"NAN\";}echo E::from(INF)->name,E::from(NAN)->name;"
+        ],
+        "stdout_bytes": 47,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "enum.weak.uppercase-string-type",
+      "verdict": "PASS",
+      "source_sha256": "2c23a2e64c0175361ef1e07b055f6585dfbd5f76f7878bdba393bdab3b6018b9",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.46308180000050925,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:STRING{case A=\"7\";}echo E::from(7)->name;"
+        ],
+        "stdout_bytes": 1,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 7.45310999999856,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:STRING{case A=\"7\";}echo E::from(7)->name;"
+        ],
+        "stdout_bytes": 1,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "enum.weak.uppercase-int-type",
+      "verdict": "PASS",
+      "source_sha256": "cd1af63913209331ed25a4b219ec5b28b23ded0b263382ff6d7ad4f9459d9d83",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.9596654000015405,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:INT{case A=7;}echo E::from(\"7\")->name;"
+        ],
+        "stdout_bytes": 1,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.767084499999328,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "enum E:INT{case A=7;}echo E::from(\"7\")->name;"
+        ],
+        "stdout_bytes": 1,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "byte.key-warning.ff",
+      "verdict": "PASS",
+      "source_sha256": "403602f2fc52243d9c398820c2e23a61512e41cb6ed47b47bf8329d73e6119b1",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.8883725000014238,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "$a=[];var_dump($a[\"\\xFF\"]);"
+        ],
+        "stdout_bytes": 5,
+        "stderr_bytes": 64
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.850738600001932,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "$a=[];var_dump($a[\"\\xFF\"]);"
+        ],
+        "stdout_bytes": 5,
+        "stderr_bytes": 64
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "byte.key-warning.nul",
+      "verdict": "PASS",
+      "source_sha256": "d09b447e319e41db2beb9b3fb23225cc6abd9552fe00ed3fb15c5f3b9dd0a445",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.7261496999999508,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "$a=[];var_dump($a[\"a\\0b\\xFF\"]);"
+        ],
+        "stdout_bytes": 5,
+        "stderr_bytes": 64
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.718144700000266,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "$a=[];var_dump($a[\"a\\0b\\xFF\"]);"
+        ],
+        "stdout_bytes": 5,
+        "stderr_bytes": 64
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "byte.key-warning.handler",
+      "verdict": "PASS",
+      "source_sha256": "8bc7f7edd755cd45d75dcd905610de6e6ca5f793ed80b04afc5b809e06557543",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.4028887999993458,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($n,$m){echo $n,':',$m,\"\\n\";return true;});$a=[];var_dump($a[\"\\x80\\xFF\"],$a[\"a\\0b\"],$a[-3]);"
+        ],
+        "stdout_bytes": 93,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 8.929120599997987,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($n,$m){echo $n,':',$m,\"\\n\";return true;});$a=[];var_dump($a[\"\\x80\\xFF\"],$a[\"a\\0b\"],$a[-3]);"
+        ],
+        "stdout_bytes": 93,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "byte.key-warning.quiet",
+      "verdict": "DIFFERENT",
+      "source_sha256": "eb969a9a5276e99343a465d70016e35963699ac86210f2127d37eb79cb84d29f",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.4379750000007334,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "$a=[];var_dump(isset($a[\"\\xFF\"]),empty($a[\"\\xFF\"]),$a[\"\\xFF\"]??'fallback');"
+        ],
+        "stdout_bytes": 44,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 1,
+        "elapsed_seconds": 26.916612499997427,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "$a=[];var_dump(isset($a[\"\\xFF\"]),empty($a[\"\\xFF\"]),$a[\"\\xFF\"]??'fallback');"
+        ],
+        "stdout_bytes": 0,
+        "stderr_bytes": 76
+      },
+      "stdout_equal": false
+    },
+    {
+      "id": "trigger.coercion.null",
+      "verdict": "DIFFERENT",
+      "source_sha256": "2036250d55916e89c40a580e39ecb5ddacde68063c26a718d0ac30e620b8b3ba",
+      "differences": [
+        "process_state",
+        "exit_code",
+        "stdout_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.7494297999983246,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});trigger_error(null,E_USER_WARNING);"
+        ],
+        "stdout_bytes": 181,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "TIMEOUT",
+        "exit_code": null,
+        "elapsed_seconds": 30.17669979999846,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});trigger_error(null,E_USER_WARNING);"
+        ],
+        "stdout_bytes": 0,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": false
+    },
+    {
+      "id": "trigger.coercion.reject-array-object",
+      "verdict": "DIFFERENT",
+      "source_sha256": "309c03dd15fda316b71c93dd93d2d37d3aed771667a5c6fd17278db4a316ed76",
+      "differences": [
+        "process_state",
+        "exit_code",
+        "stdout_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.7001821000012569,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});try{trigger_error([],E_USER_WARNING);}catch(TypeError $e){echo $e->getMessage(),\"\\n\";}try{trigger_error(new stdClass(),E_USER_WARNING);}catch(TypeError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 154,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "TIMEOUT",
+        "exit_code": null,
+        "elapsed_seconds": 30.266565699999774,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});try{trigger_error([],E_USER_WARNING);}catch(TypeError $e){echo $e->getMessage(),\"\\n\";}try{trigger_error(new stdClass(),E_USER_WARNING);}catch(TypeError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 0,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": false
+    },
+    {
+      "id": "trigger.coercion.stringable-raw",
+      "verdict": "DIFFERENT",
+      "source_sha256": "66dce62a96fc0b1cbd70ac248fcb82a492733dc14b80f069cb357a55dbe24038",
+      "differences": [
+        "process_state",
+        "exit_code",
+        "stdout_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.901866299998801,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});class S{function __toString(){return \"\\xFF\";}}trigger_error(new S(),E_USER_WARNING);"
+        ],
+        "stdout_bytes": 7,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "TIMEOUT",
+        "exit_code": null,
+        "elapsed_seconds": 30.369364499998483,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});class S{function __toString(){return \"\\xFF\";}}trigger_error(new S(),E_USER_WARNING);"
+        ],
+        "stdout_bytes": 0,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": false
+    },
+    {
+      "id": "trigger.coercion.alias-null",
+      "verdict": "PASS",
+      "source_sha256": "26da9574722410a1ac926f668c5e158e8ec182cb917ac98ac6f524816c443668",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5987533000006806,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});USER_ERROR(null,E_USER_WARNING);"
+        ],
+        "stdout_bytes": 175,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 26.269587700000557,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});USER_ERROR(null,E_USER_WARNING);"
+        ],
+        "stdout_bytes": 175,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": true
+    },
+    {
+      "id": "trigger.coercion.arity-alias",
+      "verdict": "DIFFERENT",
+      "source_sha256": "12aed1387db47c859e1cf61bcf133647490c6e08b3c8fe307321983821b512b1",
+      "differences": [
+        "process_state",
+        "exit_code",
+        "stdout_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5603964999972959,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "try{USER_ERROR();}catch(ArgumentCountError $e){echo $e->getMessage(),\"\\n\";}try{TRIGGER_ERROR(\"x\",E_USER_WARNING,99);}catch(ArgumentCountError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 102,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "TIMEOUT",
+        "exit_code": null,
+        "elapsed_seconds": 30.146727499999542,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "try{USER_ERROR();}catch(ArgumentCountError $e){echo $e->getMessage(),\"\\n\";}try{TRIGGER_ERROR(\"x\",E_USER_WARNING,99);}catch(ArgumentCountError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 0,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": false
+    },
+    {
+      "id": "trigger.coercion.null-level",
+      "verdict": "DIFFERENT",
+      "source_sha256": "f1dbc3b39e106e8471eb39edadf9d8e5ef94f81911afdbe8dbd2c0db792815b8",
+      "differences": [
+        "process_state",
+        "exit_code",
+        "stdout_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 1.0130236000004516,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});try{trigger_error(\"x\",null);}catch(ValueError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 302,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "TIMEOUT",
+        "exit_code": null,
+        "elapsed_seconds": 30.335178699999233,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});try{trigger_error(\"x\",null);}catch(ValueError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 0,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": false
+    },
+    {
+      "id": "trigger.coercion.array-level",
+      "verdict": "DIFFERENT",
+      "source_sha256": "685eda1d6ae486d1a0d55062c2b921b18ffdfbac40faefc12b5641568097b22a",
+      "differences": [
+        "process_state",
+        "exit_code",
+        "stdout_base64"
+      ],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.699508000001515,
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});try{trigger_error(\"x\",[]);}catch(TypeError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 76,
+        "stderr_bytes": 0
+      },
+      "candidate": {
+        "state": "TIMEOUT",
+        "exit_code": null,
+        "elapsed_seconds": 30.268056000000797,
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "-r",
+          "set_error_handler(function($level,$message){echo $level,\":\",bin2hex($message),\"\\n\";return true;});try{trigger_error(\"x\",[]);}catch(TypeError $e){echo $e->getMessage();}"
+        ],
+        "stdout_bytes": 0,
+        "stderr_bytes": 0
+      },
+      "stdout_equal": false
+    }
+  ],
+  "timeout_cause": "NOT_DETERMINED; no retry or timeout extension"
+}

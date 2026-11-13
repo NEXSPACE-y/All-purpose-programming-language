@@ -116,9 +116,17 @@
       "component": "PS interpreter migration to approved byte values and keys",
       "owner": "root",
       "path": "tools/candidates/php-byte-interpreter/",
-      "state": "composed06 source2c9e: CLI55/55 + separate reference32/32+4/4 exact. combined03 native:23+15+4 match plus4 guards. composed07 extra40 is23/40:16 trigger_error byte-boundary failures+1 enum weak difference retained. composed09 critical3/3 confirms byte callsite+raw key warning; full40/CLI197/default965 pending. No byte candidate package promotion.",
-      "latest_built_source": "6ee5992ebe6226d470bc4bf643b4f0a08ccb6a32861114fa0b4fe3eb1405b3f0",
-      "report": "reports/php-byte-interpreter-20261113/README.md"
+      "state": "composed14-array e7cc... actualCLI40/40 matched, inputs unchanged, Root97943 terminal0. This fixes raw-key quiet1 and signed-index history; previous66 f7b... remains56/66 with9TIMEOUT+1quiet difference. Phase01 original/diag3 each all6 EXITED0, no timeout reproduction; Invoke14-21sec, Dispose milliseconds, cause unresolved. Phase02 inner traces in preparation. CLI252/default965 still unexecuted on latest candidate.",
+      "latest_built_source": "e7ccae465117179f0a5cf55126e9b43a4f8f448b17f452650a945ab542a460d0",
+      "report": "reports/php-byte-interpreter-20261113/README.md",
+      "latest_candidate": "tools/candidates/php-byte-interpreter/composed14-array/ALL_PHP_byte_candidate.ps1",
+      "validation_plan": [
+        "callback agent phase02 original11 copies, wrapper/adapter inner trace diagnostic3 same30sec; Root40 ended and start authorized",
+        "then decide evidence-based host/precompile change or move to unchanged252/default965; no deadline increases",
+        "strict_types source audit/proposal and PHPT fidelity audit parallel read-only; stage2 not started"
+      ],
+      "last_root_process_session": null,
+      "process_liveness_note": "Root97943 terminal0,40/40. No Root-owned live process. Child statuses require direct verification; statefile is not liveness."
     },
     {
       "component": "Remaining core/stdlib/general ABI/Web/Linux",
@@ -126,8 +134,13 @@
     },
     {
       "component": "Native SDK import coverage and info-v2",
-      "state": "Static36 DLLs/985 PHP symbol names, code semantics separately classified. Info-v2/error-byte-length candidate preparation in own copies; runtime not yet measured.",
+      "state": "Static36 DLL/985 imports separately classified. Info-v2 owncore36/36 selected comparisons plus4 guards, getter6 synthetic payloads all match; old ModuleInfo2 failures preserved. General ABI and Linux/Web incomplete; getter TLS isolation not proven by empty-thread observation.",
       "report": "reports/php-native-coverage-20261113/NEXT_BATCHES.md"
+    },
+    {
+      "component": "Signed64 array next-index semantics",
+      "path": "tools/candidates/php-byte-interpreter/ArrayIndexEdits.py",
+      "state": "Latest14 e7cc... actual40/40 source matches:quiet4 plus signed history32 and unshift review4. Runtime input hashes unchanged, allprocess EXITED. Old12 draft unexecuted preserved, pre-shipment originalCLI/default and iterator/COW mutation combinations remain."
     }
   ],
   "pending_owner_input": [

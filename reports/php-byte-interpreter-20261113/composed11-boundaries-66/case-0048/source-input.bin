@@ -1,0 +1,1 @@
+enum E:string{case A="7";}try{E::from([]);}catch(TypeError $e){echo $e->getMessage(),"\n";}try{E::from(new stdClass());}catch(TypeError $e){echo $e->getMessage();}

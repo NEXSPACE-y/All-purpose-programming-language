@@ -1,0 +1,30 @@
+{
+  "status": "PREPARED_NOT_EXECUTED",
+  "candidate_sha256": "e7ccae465117179f0a5cf55126e9b43a4f8f448b17f452650a945ab542a460d0",
+  "count": 40,
+  "case_bodies_changed": false,
+  "inputs": [
+    {
+      "path": "tools\\candidates\\php-byte-interpreter\\array-diagnostics.cases.json",
+      "sha256": "c0dbecf267cf526492e00fefa2736f9978eeeb38bf8511e773fd489b947e9d6f",
+      "count": 4
+    },
+    {
+      "path": "tools\\candidates\\php-byte-interpreter\\array-index.cases.json",
+      "sha256": "5942c37ae7ef93a36c0585fb266a87260dba0a5ea7e57d06141040fc61b62911",
+      "count": 18
+    },
+    {
+      "path": "tools\\candidates\\php-byte-interpreter\\array-index-edges.cases.json",
+      "sha256": "6716fbf9a14b5540d7a5c46f4c83bec5441e2a38e3aec4b08e763631e9958fed",
+      "count": 14
+    },
+    {
+      "path": "reports\\php-array-index-20261113\\review01\\unshift-zero-reference.json",
+      "sha256": "abc47cfab8e08df64c458e5514c00b8292bbfc0c87409f1d7a2ac24b31966128",
+      "count": 4,
+      "transformation": "Copied exact source field into body-mode code; no program edits"
+    }
+  ],
+  "timeout_seconds": 30
+}

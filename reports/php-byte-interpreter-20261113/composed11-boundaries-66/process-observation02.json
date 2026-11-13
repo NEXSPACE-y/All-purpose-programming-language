@@ -1,0 +1,14 @@
+{
+  "scope": "Read-only own composed11 CLI and direct compiler children only; no process action",
+  "command": [
+    "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+    "-NoLogo",
+    "-NoProfile",
+    "-NonInteractive",
+    "-Command",
+    "$all=Get-CimInstance Win32_Process -Filter \"Name='all-php.exe' OR Name='csc.exe'\"; $target=@($all|Where-Object{$_.ExecutablePath -eq 'C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\composed11-cli\\all-php.exe'}); $ids=@($target|ForEach-Object{$_.ProcessId}); $children=@($all|Where-Object{$_.ParentProcessId -in $ids}); [ordered]@{Utc=[DateTime]::UtcNow.ToString('o');ProcessorCount=[Environment]::ProcessorCount;OwnCliAndDirectCompilerChildren=@($target+$children|Select-Object ProcessId,ParentProcessId,CreationDate,ExecutablePath,KernelModeTime,UserModeTime,WorkingSetSize,VirtualSize,CommandLine)}|ConvertTo-Json -Depth 5 -Compress"
+  ],
+  "actual_exit": 0,
+  "stdout_base64": "eyJVdGMiOiIyMDI2LTExLTEzVDA2OjA5OjMwLjQ2MTIwODVaIiwiUHJvY2Vzc29yQ291bnQiOjQsIk93bkNsaUFuZERpcmVjdENvbXBpbGVyQ2hpbGRyZW4iOlt7IlByb2Nlc3NJZCI6Njc5NiwiUGFyZW50UHJvY2Vzc0lkIjoxMjc0NCwiQ3JlYXRpb25EYXRlIjoiXC9EYXRlKDE3OTQ1NTAxNTcwOTkpXC8iLCJFeGVjdXRhYmxlUGF0aCI6IkM6XFxVc2Vyc1xccmlucGFcXEFMTC1waHAtY29tcGF0LTIwMjYxMTEyXFx0b29sc1xcY2FuZGlkYXRlc1xccGhwLWJ5dGUtaW50ZXJwcmV0ZXJcXG91dFxcY29tcG9zZWQxMS1jbGlcXGFsbC1waHAuZXhlIiwiS2VybmVsTW9kZVRpbWUiOjYyNTAwMDAsIlVzZXJNb2RlVGltZSI6MTE3MTg3NTAsIldvcmtpbmdTZXRTaXplIjo5MDg0MTA4OCwiVmlydHVhbFNpemUiOjUwNTU4ODUzMTIsIkNvbW1hbmRMaW5lIjoiQzpcXFVzZXJzXFxyaW5wYVxcQUxMLXBocC1jb21wYXQtMjAyNjExMTJcXHRvb2xzXFxjYW5kaWRhdGVzXFxwaHAtYnl0ZS1pbnRlcnByZXRlclxcb3V0XFxjb21wb3NlZDExLWNsaVxcYWxsLXBocC5leGUgLW4gLWQgZGlzcGxheV9lcnJvcnM9c3RkZXJyIC1kIGVycm9yX3JlcG9ydGluZz0tMSAtZCBkYXRlLnRpbWV6b25lPVVUQyAtciBcInNldF9lcnJvcl9oYW5kbGVyKGZ1bmN0aW9uKCRsZXZlbCwkbWVzc2FnZSl7ZWNobyAkbGV2ZWwsXFxcIjpcXFwiLGJpbjJoZXgoJG1lc3NhZ2UpLFxcXCJcXG5cXFwiO3JldHVybiB0cnVlO30pO3RyaWdnZXJfZXJyb3IoXFxcIlxceEZGXFxcIiw1MTIuNSk7XCIifV19DQo=",
+  "stderr_base64": ""
+}

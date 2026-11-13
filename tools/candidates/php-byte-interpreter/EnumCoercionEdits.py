@@ -16,7 +16,7 @@ C-string NUL boundary without truncating the actual lookup value.
 HELPERS = r'''        function ConvertTo-PhpWeakEnumArgument($value,$enum,[string]$method) {
             if(Is-PhpRefCell $value) { $value=$value.Value }
             $function=$enum.Name+'::'+$method
-            $stringBacked=Test-PhpRawNameEqual $enum.BackingType 'string'
+            $stringBacked=Test-PhpNameEqual $enum.BackingType 'string'
             if(Is-PhpStringValue $value) {
                 if($stringBacked) { return (To-PhpBytes $value) }
                 return (ConvertTo-PhpBuiltinInteger $value $function 1 'value')

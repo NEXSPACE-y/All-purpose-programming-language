@@ -1,0 +1,1 @@
+<?php $h=function($level,...$rest){echo $level,":",count($rest),":",bin2hex($rest[0]),":",gettype($rest[1]),":",gettype($rest[2]);return true;};set_error_handler($h);trigger_error("payload\xFF",E_USER_WARNING);

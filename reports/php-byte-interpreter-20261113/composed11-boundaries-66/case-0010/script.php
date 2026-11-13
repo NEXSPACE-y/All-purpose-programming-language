@@ -1,0 +1,1 @@
+<?php function h($level){echo $level;return true;}set_error_handler("h");trigger_error("payload\xFF",E_USER_WARNING);

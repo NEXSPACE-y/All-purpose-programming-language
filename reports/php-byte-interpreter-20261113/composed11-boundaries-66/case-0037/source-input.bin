@@ -1,0 +1,1 @@
+ini_set("zend.exception_ignore_args","1");function f($x){throw new Exception("boom");}try{f("\xFF");}catch(Throwable $e){echo $e->getTraceAsString();}

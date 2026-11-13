@@ -1,0 +1,1 @@
+set_error_handler(function($level,$message){echo $level,":",$message,"\n";return true;});enum E:string{case Z="0";case O="1";}echo E::from(false)->name,E::from(true)->name,E::from(null)->name;

@@ -1,0 +1,1 @@
+set_error_handler(function($level,$message){echo $level,":",$message,"\n";return true;});enum E:string{case A="INF";case B="NAN";}echo E::from(INF)->name,E::from(NAN)->name;

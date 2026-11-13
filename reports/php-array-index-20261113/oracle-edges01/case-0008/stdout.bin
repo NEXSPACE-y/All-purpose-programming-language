@@ -1,0 +1,8 @@
+array(3) {
+  ["s"]=>
+  string(1) "x"
+  [-5]=>
+  string(1) "z"
+  [-4]=>
+  string(1) "a"
+}
