@@ -42,13 +42,10 @@ function Invoke-AllPhpCli {
         for($j=$i+1;$j-lt$CliArguments.Length;$j++){[void]$remaining.Add($CliArguments[$j])}
         break
     }
-    if($null-eq$mode){
-        if($remaining.Count-gt0){$mode='file';$file=$remaining[0];$remaining.RemoveAt(0)}
-        else{$mode='stdin'}
-    }
+    if($null-eq$mode){$mode='stdin'}
     $sourceName='Command line code';$argv0='Standard input code'
     if($mode-ceq'file') {
-        if(-not[IO.File]::Exists($file)){[Console]::WriteLine('Could not open input file: '+$file);return [long]1}
+        if(-not[IO.File]::Exists($file)){[Console]::Error.Write('Could not open input file: '+$file+"`n");return [long]1}
         $sourceName=[IO.Path]::GetFullPath($file);$argv0=$file
         $code=[IO.File]::ReadAllText($sourceName,[Text.UTF8Encoding]::new($false,$true))
     } elseif($mode-ceq'stdin') {
@@ -59,6 +56,9 @@ function Invoke-AllPhpCli {
     foreach($item in $remaining){[void]$scriptArguments.Add($item)}
     $adapter=& $AdapterPath
     if($null-eq$adapter-or$adapter.Run-isnot[scriptblock]){throw 'ALL PHP CLI: adapter has no Run scriptblock'}
+    foreach($capability in @('source-body-v1','script-arguments-v1','initial-ini-v1')) {
+        if($adapter.CliContextCapabilities-notcontains$capability){throw ('ALL PHP CLI: adapter does not declare capability '+$capability)}
+    }
     $parameters=@($adapter.Run.Ast.ParamBlock.Parameters|ForEach-Object{$_.Name.VariablePath.UserPath})
     if($parameters-notcontains'CliContext'){throw 'ALL PHP CLI: adapter has no declared CliContext'}
     $context=@{SourcePath=$sourceName;ExitCode=[long]0;Terminated=$false;SourceMode=$mode;ScriptArguments=$scriptArguments.ToArray();InitialIni=$ini}

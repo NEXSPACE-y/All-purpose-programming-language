@@ -3,9 +3,14 @@ from pathlib import Path
 import hashlib
 import difflib
 import json
+import argparse
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[2]
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--output-directory',type=Path,required=True)
+args=parser.parse_args();destination=args.output_directory.resolve()
+if destination.exists():raise SystemExit('Output directory exists; preserve measured revisions')
 BASE=ROOT/'package/ALL_PHP_v3_12_adapter.ps1'
 EXPECTED='113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b'
 raw=BASE.read_bytes()
@@ -17,6 +22,11 @@ def replace(old,new):
     if value.count(old)!=1:raise SystemExit('Anchor is not unique')
     value=value.replace(old,new)
 
+replace("""    Name = 'PHP'
+    Run = {""", """    Name = 'PHP'
+    CliContextCapabilities = @('source-body-v1','script-arguments-v1','initial-ini-v1')
+    Run = {""")
+
 replace("""        $source = $Code.Trim()
         if ($source -notmatch '^<\\?php(?:\\s|$)') {
             throw 'ALL PHP: A <?php opening tag is required'
@@ -26,9 +36,11 @@ replace("""        $source = $Code.Trim()
         if ($source.EndsWith('?>')) {
             $source = $source.Substring(0, $source.Length - 2)
         }""", """        if ($isCli -and ($CliContext.Keys -contains 'SourceMode') -and
-            $CliContext['SourceMode'] -ceq 'body') {
+            ($CliContext['SourceMode'] -ceq 'body' -or
+             ($CliContext['SourceMode'] -in @('file','stdin') -and $Code.Length -eq 0))) {
             # CLI -r starts in PHP code mode. Preserve the actual input body,
             # including leading lines; do not add a synthetic opening tag.
+            # Empty file/stdin input is a legitimate zero-statement program.
             $source = $Code
         } else {
             $source = $Code.Trim()
@@ -75,9 +87,9 @@ replace("""        # Load the built-in exception classes up front when the progr
         # Load the built-in exception classes up front when the program mentions any of them, so""")
 
 output=b'\xef\xbb\xbf'+value.encode('utf-8')
-candidate=HERE/'ALL_PHP_cli_host_candidate.ps1'
-if candidate.exists():raise SystemExit('Candidate already exists; preserve measured revisions')
+destination.mkdir(parents=True)
+candidate=destination/'ALL_PHP_cli_host_candidate.ps1'
 candidate.write_bytes(output)
-(HERE/'cli-host-context.patch').write_text(''.join(difflib.unified_diff(before.splitlines(True),value.splitlines(True),fromfile='base113d',tofile='cli-host-context')),encoding='utf-8',newline='')
-(HERE/'provenance.json').write_text(json.dumps({'status':'ISOLATED_NOT_VERIFIED','base':str(BASE),'base_sha256':EXPECTED,'candidate':str(candidate),'candidate_sha256':hashlib.sha256(output).hexdigest(),'package_modified':False,'scope':'CLI code-body mode, initial diagnostic INI profile and argv/argc; not all CLI flags/INI/server globals'},indent=2)+'\n',encoding='utf-8')
+(destination/'cli-host-context.patch').write_text(''.join(difflib.unified_diff(before.splitlines(True),value.splitlines(True),fromfile='base113d',tofile='cli-host-context')),encoding='utf-8',newline='')
+(destination/'provenance.json').write_text(json.dumps({'status':'ISOLATED_NOT_VERIFIED','base':str(BASE),'base_sha256':EXPECTED,'candidate':str(candidate),'candidate_sha256':hashlib.sha256(output).hexdigest(),'package_modified':False,'scope':'CLI code-body mode, initial diagnostic INI profile and argv/argc; not all CLI flags/INI/server globals'},indent=2)+'\n',encoding='utf-8')
 print(hashlib.sha256(output).hexdigest())

@@ -1,0 +1,1 @@
+function f(){return $_SERVER["argv"][1];} echo f();

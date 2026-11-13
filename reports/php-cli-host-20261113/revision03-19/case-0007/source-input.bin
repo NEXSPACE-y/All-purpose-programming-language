@@ -1,0 +1,1 @@
+function f(){global $argv,$argc;return $argv[1].$argc;} echo f();

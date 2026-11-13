@@ -1,0 +1,110 @@
+[
+  {
+    "id": "tags.plain-html",
+    "mode": "file",
+    "code": "hello 日本語\n",
+    "relative": true
+  },
+  {
+    "id": "tags.empty",
+    "mode": "file",
+    "code": "",
+    "relative": true
+  },
+  {
+    "id": "tags.mixed",
+    "mode": "file",
+    "code": "before<?php $x=1;?>after<?php echo $x+2;?>",
+    "relative": true
+  },
+  {
+    "id": "tags.short-echo",
+    "mode": "file",
+    "code": "A<?= 2+3 ?>B",
+    "relative": true
+  },
+  {
+    "id": "tags.upper-tag",
+    "mode": "file",
+    "code": "<?PHP echo 7;?>x",
+    "relative": true
+  },
+  {
+    "id": "tags.quoted-close",
+    "mode": "file",
+    "code": "<?php echo \"?>\"; ?>ok",
+    "relative": true
+  },
+  {
+    "id": "tags.line-comment-close",
+    "mode": "file",
+    "code": "<?php // comment ?>HTML",
+    "relative": true
+  },
+  {
+    "id": "tags.hash-comment-close",
+    "mode": "file",
+    "code": "<?php # comment ?>HTML",
+    "relative": true
+  },
+  {
+    "id": "tags.block-comment-close",
+    "mode": "file",
+    "code": "<?php /* ?> */ echo \"ok\";?>tail",
+    "relative": true
+  },
+  {
+    "id": "tags.short-disabled",
+    "mode": "file",
+    "code": "<? echo 7;?>",
+    "relative": true
+  },
+  {
+    "id": "tags.not-open-tag",
+    "mode": "file",
+    "code": "<?phpecho \"x\";?>",
+    "relative": true
+  },
+  {
+    "id": "tags.close-lf",
+    "mode": "file",
+    "code": "<?php echo \"a\";?>\nB",
+    "relative": true
+  },
+  {
+    "id": "tags.close-crlf",
+    "mode": "file",
+    "code": "<?php echo \"a\";?>\r\nB",
+    "relative": true
+  },
+  {
+    "id": "tags.condition-spanning",
+    "mode": "file",
+    "code": "<?php if(false){?>NO<?php } else {?>YES<?php } ?>",
+    "relative": true
+  },
+  {
+    "id": "tags.function-spanning",
+    "mode": "file",
+    "code": "<?php function f(){?>F<?php } f();?>",
+    "relative": true
+  },
+  {
+    "id": "tags.bom",
+    "mode": "file",
+    "code": "﻿<?php echo \"ok\";?>tail",
+    "relative": true
+  },
+  {
+    "id": "tags.namespace-after-html",
+    "mode": "file",
+    "code": "outside<?php namespace A; echo \"x\";",
+    "relative": true
+  },
+  {
+    "id": "tags.namespace-template",
+    "mode": "file",
+    "code": "<?php namespace A; ?>html<?php function f(){return 5;} echo f();",
+    "relative": true
+  }
+]
