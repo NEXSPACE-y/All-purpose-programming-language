@@ -1,0 +1,895 @@
+{
+  "status": "NOT_COMPLETE",
+  "scope": "Actual C#/.NET Framework CLI host with own interpreter, selected modes/profile only; not full CLI/SAPI",
+  "measurement": "Same argument strings and stdin bytes; exact stdout/stderr and actual process status; no normalization",
+  "driver_argv": [
+    "C:\\Users\\rinpa\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "tools/cli/Compare-AllPhpCli.py",
+    "--executable",
+    "tools/cli/out/cli-host-04/all-php.exe",
+    "--cases",
+    "tools/cli/file-tags.cases.json",
+    "--output",
+    "reports/php-cli-host-20261113/file-tags-revision04",
+    "--timeout",
+    "30"
+  ],
+  "timeout_seconds": 30.0,
+  "inputs_before": {
+    "executable": "3951a90015facae743b6244dc8aebf32173b5932de164791490584798ca4f687",
+    "cases": "3215866674c07978e769ade2a798fbc8ea07e6bb6287c216ca94ce0e7dd5f7c9",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "driver": "c7022635e4a96c0382133f1b113d71ef66729fa76a67024230d55702fa424881",
+    "adapter": "cbbd6652ae37b1ff8191769e5adb6f691904154149d241b4fbc12a54978b0b7f",
+    "host": "dbd1231c3159b455db1df001d1f10fa91a1f3f574e0a4ff3c5f464919447e1c1"
+  },
+  "inputs_after": {
+    "executable": "3951a90015facae743b6244dc8aebf32173b5932de164791490584798ca4f687",
+    "cases": "3215866674c07978e769ade2a798fbc8ea07e6bb6287c216ca94ce0e7dd5f7c9",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "driver": "c7022635e4a96c0382133f1b113d71ef66729fa76a67024230d55702fa424881",
+    "adapter": "cbbd6652ae37b1ff8191769e5adb6f691904154149d241b4fbc12a54978b0b7f",
+    "host": "dbd1231c3159b455db1df001d1f10fa91a1f3f574e0a4ff3c5f464919447e1c1"
+  },
+  "inputs_unchanged": true,
+  "total": 18,
+  "passed": 15,
+  "results": [
+    {
+      "id": "tags.plain-html",
+      "mode": "file",
+      "source_sha256": "b003ce0e5d08ca7b5dda2f14a9cf35644e2142cb058be15041105997b2e1eed9",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0000",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.4999093999995239,
+        "stdout_base64": "aGVsbG8g5pel5pys6KqeCg==",
+        "stderr_base64": ""
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0000",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 5.423385099998995,
+        "stdout_base64": "aGVsbG8g5pel5pys6KqeCg==",
+        "stderr_base64": ""
+      }
+    },
+    {
+      "id": "tags.empty",
+      "mode": "file",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0001",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.6236121000001731,
+        "stdout_base64": "",
+        "stderr_base64": ""
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0001",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.4199302999986685,
+        "stdout_base64": "",
+        "stderr_base64": ""
+      }
+    },
+    {
+      "id": "tags.mixed",
+      "mode": "file",
+      "source_sha256": "26d79dbf425698b3f3fe2bbd44282ca243dd4e9caf4bd37dd3c318e29924f3a6",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0002",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.27841040000021167,
+        "stdout_base64": "YmVmb3JlYWZ0ZXIz",
+        "stderr_base64": ""
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0002",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 3.5429860000003828,
+        "stdout_base64": "YmVmb3JlYWZ0ZXIz",
+        "stderr_base64": ""
+      }
+    },
+    {
+      "id": "tags.short-echo",
+      "mode": "file",
+      "source_sha256": "7a499e8da68d2344a6c781bc833695808d1c63a0146dbc67d178e437c612150c",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0003",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.36054689999946277,
+        "stdout_base64": "QTVC",
+        "stderr_base64": ""
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0003",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.6684548999983235,
+        "stdout_base64": "QTVC",
+        "stderr_base64": ""
+      }
+    },
+    {
+      "id": "tags.upper-tag",
+      "mode": "file",
+      "source_sha256": "326738af3f2f2cb8011f3734626b6e666a275309f3eac6635ff20c3abdc22268",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0004",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2387243999983184,
+        "stdout_base64": "N3g=",
+        "stderr_base64": ""
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0004",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.3726126000001386,
+        "stdout_base64": "N3g=",
+        "stderr_base64": ""
+      }
+    },
+    {
+      "id": "tags.quoted-close",
+      "mode": "file",
+      "source_sha256": "6e73e737b8ea7aeccbb4c444f650b5182ae73f9949d0be8b9fe78e946d04d85d",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0005",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2421195999995689,
+        "stdout_base64": "Pz5vaw==",
+        "stderr_base64": ""
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0005",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 3.4751596999994945,
+        "stdout_base64": "Pz5vaw==",
+        "stderr_base64": ""
+      }
+    },
+    {
+      "id": "tags.line-comment-close",
+      "mode": "file",
+      "source_sha256": "4ee26ac7ec876e3b8f73597b4a5f1ab9f1feddafacfed0e1264e17b29918454f",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0006",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2761281000002782,
+        "stdout_base64": "SFRNTA==",
+        "stderr_base64": ""
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0006",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 3.1467399000011937,
+        "stdout_base64": "SFRNTA==",
+        "stderr_base64": ""
+      }
+    },
+    {
+      "id": "tags.hash-comment-close",
+      "mode": "file",
+      "source_sha256": "81f617d48d9533a549751d8d0ef0f2e6970d874e08009ab4038f0f72ddff044a",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0007",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.23292140000012296,
+        "stdout_base64": "SFRNTA==",
+        "stderr_base64": ""
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0007",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.8733460000003106,
+        "stdout_base64": "SFRNTA==",
+        "stderr_base64": ""
+      }
+    },
+    {
+      "id": "tags.block-comment-close",
+      "mode": "file",
+      "source_sha256": "b93d835bb7cc0e473c2ba527c31836e031cd5d414982134c5f40060b6002fe71",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0008",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.20727049999914016,
+        "stdout_base64": "b2t0YWls",
+        "stderr_base64": ""
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0008",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.3998984999998356,
+        "stdout_base64": "b2t0YWls",
+        "stderr_base64": ""
+      }
+    },
+    {
+      "id": "tags.short-disabled",
+      "mode": "file",
+      "source_sha256": "f2fd05e2583a8043462c34045641a493c4672adea6bb0b1a2dd76ed72aa7cc08",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "DIFFERENT",
+      "differences": [
+        "stdout_base64"
+      ],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0009",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.22113530000024184,
+        "stdout_base64": "Nw==",
+        "stderr_base64": ""
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0009",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.8181079999994836,
+        "stdout_base64": "PD8gZWNobyA3Oz8+",
+        "stderr_base64": ""
+      }
+    },
+    {
+      "id": "tags.not-open-tag",
+      "mode": "file",
+      "source_sha256": "e3d322ad731ba41d8a7fbbf9293219d9051a95758a22d999cf54938ed775aa52",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0010",
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.25659599999926286,
+        "stdout_base64": "",
+        "stderr_base64": "UGFyc2UgZXJyb3I6IHN5bnRheCBlcnJvciwgdW5leHBlY3RlZCBkb3VibGUtcXVvdGVkIHN0cmluZyAieCIgaW4gQzpcVXNlcnNccmlucGFcQUxMLXBocC1jb21wYXQtMjAyNjExMTJccmVwb3J0c1xwaHAtY2xpLWhvc3QtMjAyNjExMTNcZmlsZS10YWdzLXJldmlzaW9uMDRcY2FzZS0wMDEwXHNjcmlwdC5waHAgb24gbGluZSAxCg=="
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0010",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.589813900000081,
+        "stdout_base64": "PD9waHBlY2hvICJ4Ijs/Pg==",
+        "stderr_base64": ""
+      }
+    },
+    {
+      "id": "tags.close-lf",
+      "mode": "file",
+      "source_sha256": "d359badf63f9ef53435e61a65f3786f42d2e52f39e392077c22cb370299577e5",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0011",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.22989880000022822,
+        "stdout_base64": "YUI=",
+        "stderr_base64": ""
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0011",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 5.135938699999315,
+        "stdout_base64": "YUI=",
+        "stderr_base64": ""
+      }
+    },
+    {
+      "id": "tags.close-crlf",
+      "mode": "file",
+      "source_sha256": "c06c9e8f3d7a8548bd673c5834e0ae19124536bb0105b00e19982cf0b149f672",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0012",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.41304760000093665,
+        "stdout_base64": "YUI=",
+        "stderr_base64": ""
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0012",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 4.375101300000097,
+        "stdout_base64": "YUI=",
+        "stderr_base64": ""
+      }
+    },
+    {
+      "id": "tags.condition-spanning",
+      "mode": "file",
+      "source_sha256": "3460fcee7b9dbb9b5e6cc4696f81c7d85435682c82141d56c97ae04252cd30b2",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0013",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2484900999988895,
+        "stdout_base64": "WUVT",
+        "stderr_base64": ""
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0013",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 4.735643599999094,
+        "stdout_base64": "WUVT",
+        "stderr_base64": ""
+      }
+    },
+    {
+      "id": "tags.function-spanning",
+      "mode": "file",
+      "source_sha256": "f534704d7ba97e9b83988de6c2d2a06a505a23ae0e75f214aba65d96eb85b95b",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0014",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.21769150000000081,
+        "stdout_base64": "Rg==",
+        "stderr_base64": ""
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0014",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 4.615938800001459,
+        "stdout_base64": "Rg==",
+        "stderr_base64": ""
+      }
+    },
+    {
+      "id": "tags.bom",
+      "mode": "file",
+      "source_sha256": "f910e9fc84e3ea5429f51b5d7b1b23270a4f84921a6692e4bfeb73b74aa6cf8d",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0015",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.2756905000005645,
+        "stdout_base64": "77u/b2t0YWls",
+        "stderr_base64": ""
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0015",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.4672059999993508,
+        "stdout_base64": "77u/b2t0YWls",
+        "stderr_base64": ""
+      }
+    },
+    {
+      "id": "tags.namespace-after-html",
+      "mode": "file",
+      "source_sha256": "2b41ba0f217861c33bdb619bd0f8057a5b50e8725defcfe21ebdd155c8eb896b",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "DIFFERENT",
+      "differences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0016",
+        "state": "EXITED",
+        "exit_code": 255,
+        "elapsed_seconds": 0.2390718000006018,
+        "stdout_base64": "",
+        "stderr_base64": "RmF0YWwgZXJyb3I6IE5hbWVzcGFjZSBkZWNsYXJhdGlvbiBzdGF0ZW1lbnQgaGFzIHRvIGJlIHRoZSB2ZXJ5IGZpcnN0IHN0YXRlbWVudCBvciBhZnRlciBhbnkgZGVjbGFyZSBjYWxsIGluIHRoZSBzY3JpcHQgaW4gQzpcVXNlcnNccmlucGFcQUxMLXBocC1jb21wYXQtMjAyNjExMTJccmVwb3J0c1xwaHAtY2xpLWhvc3QtMjAyNjExMTNcZmlsZS10YWdzLXJldmlzaW9uMDRcY2FzZS0wMDE2XHNjcmlwdC5waHAgb24gbGluZSAxClN0YWNrIHRyYWNlOgojMCB7bWFpbn0K"
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0016",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 2.39406389999931,
+        "stdout_base64": "b3V0c2lkZXg=",
+        "stderr_base64": ""
+      }
+    },
+    {
+      "id": "tags.namespace-template",
+      "mode": "file",
+      "source_sha256": "420ed0aedcbacb51afacf385c72b31e548d6d460caf71d59afd7309322597023",
+      "stdin_base64": "",
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0017",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.19929539999975532,
+        "stdout_base64": "aHRtbDU=",
+        "stderr_base64": ""
+      },
+      "candidate": {
+        "command": [
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\cli\\out\\cli-host-04\\all-php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "script.php"
+        ],
+        "working_directory": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-cli-host-20261113\\file-tags-revision04\\case-0017",
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 3.7944370999994135,
+        "stdout_base64": "aHRtbDU=",
+        "stderr_base64": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,193 @@
+--- base113d
++++ cli-host-context
+@@ -1,5 +1,6 @@
+ @{
+     Name = 'PHP'
++    CliContextCapabilities = @('source-body-v1','script-arguments-v1','initial-ini-v1','source-tags-v1')
+     Run = {
+         # -PhpDiagnostics: report an uncaught PHP exception the way the PHP CLI does (text on the
+         # output stream) instead of surfacing it as a PowerShell error. Default behaviour is unchanged.
+@@ -14,14 +15,22 @@
+         $ErrorActionPreference = 'Stop'
+ 
+         # ALL's own PHP subset interpreter. No PHP executable, eval, or Invoke-Expression.
+-        $source = $Code.Trim()
+-        if ($source -notmatch '^<\?php(?:\s|$)') {
+-            throw 'ALL PHP: A <?php opening tag is required'
+-        }
+-        $source = [regex]::Replace($source, '^<\?php\b', '')
+-        $source = $source.TrimEnd()
+-        if ($source.EndsWith('?>')) {
+-            $source = $source.Substring(0, $source.Length - 2)
++        if ($isCli -and ($CliContext.Keys -contains 'SourceMode') -and
++            $CliContext['SourceMode'] -in @('body','file','stdin')) {
++            # CLI -r starts in PHP code mode. Preserve the actual input body,
++            # including leading lines; do not add a synthetic opening tag.
++            # Empty file/stdin input is a legitimate zero-statement program.
++            $source = $Code
++        } else {
++            $source = $Code.Trim()
++            if ($source -notmatch '^<\?php(?:\s|$)') {
++                throw 'ALL PHP: A <?php opening tag is required'
++            }
++            $source = [regex]::Replace($source, '^<\?php\b', '')
++            $source = $source.TrimEnd()
++            if ($source.EndsWith('?>')) {
++                $source = $source.Substring(0, $source.Length - 2)
++            }
+         }
+ 
+         $state = @{
+@@ -80,6 +89,7 @@
+                 ExceptionHandlerStack = [System.Collections.Generic.List[object]]::new()
+                 Ini = @{}
+                 NamespaceFallbacks = [System.Collections.Generic.Dictionary[int,string]]::new()
++                InlineHtml = [System.Collections.Generic.Dictionary[string,string]]::new([StringComparer]::Ordinal)
+                 ParsingInternalPrelude = $false
+         }
+ 
+@@ -245,10 +255,52 @@
+         # Tokenize before parsing. Unknown characters produce an error, never disappear.
+         $pattern = '(?:\s+|//[^\r\n]*|\#[^\r\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|''(?:\\.|[^''\\])*''|\$\$[A-Za-z_][A-Za-z_0-9]*|\$[A-Za-z_][A-Za-z_0-9]*|\$(?=\{)|0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|(?:\d[\d_]*(?:\.[\d_]*)?|\.\d[\d_]*)(?:[eE][+-]?\d[\d_]*)?|\\?[A-Za-z_][A-Za-z_0-9]*(?:\\[A-Za-z_][A-Za-z_0-9]*)*\\?|<=>|::|\.\.\.|<<=|>>=|<<|>>|===|!==|==|!=|<=|>=|&&|\|\||=>|->|\*\*=|\*\*|\?\?=|\?\?|\?->|\+\+|--|\*=|/=|%=|&=|\|=|\^=|\+=|-=|\.=|[+\-*/%.=<>!?:;{},()\[\]&|^~@])'
+         $rx = [regex]::new($pattern)
+-        function ConvertTo-PhpTokens([string]$text, $tokens, $lines) {
++        function ConvertTo-PhpTokens([string]$text, $tokens, $lines,
++            [bool]$FileMode=$false, [bool]$StartsInPhp=$true) {
+             $line = 1
++            $insidePhp = $StartsInPhp
++            $tokenRx = $rx
++            $openRx = $null
++            if ($FileMode) {
++                $openRx = [regex]::new('<\?(?:php(?=\s|$)|=)', [Text.RegularExpressions.RegexOptions]::IgnoreCase)
++                # A close tag ends a line comment, but not a quoted string or
++                # block comment. Those stay whole tokens under the existing rx.
++                $filePattern = $pattern.Replace('//[^\r\n]*','//(?:(?!\?>)[^\r\n])*').Replace('\#[^\r\n]*','\#(?:(?!\?>)[^\r\n])*')
++                $tokenRx = [regex]::new($filePattern)
++            }
+             for ($offset = 0; $offset -lt $text.Length;) {
+-                $match = $rx.Match($text, $offset)
++                if ($FileMode -and -not $insidePhp) {
++                    $opening = $openRx.Match($text,$offset)
++                    $stop = if ($opening.Success) { $opening.Index } else { $text.Length }
++                    if ($stop -gt $offset) {
++                        $html = $text.Substring($offset,$stop-$offset)
++                        $id = [string][char]30 + 'HTML:' + $state.InlineHtml.Count
++                        $state.InlineHtml[$id] = $html
++                        [void]$tokens.Add($id);[void]$lines.Add($line)
++                        $line += [regex]::Matches($html,"`r`n|`r|`n").Count
++                    }
++                    $offset = $stop
++                    if (-not $opening.Success) { break }
++                    if ($opening.Value -ceq '<?=') {
++                        [void]$tokens.Add('echo');[void]$lines.Add($line)
++                    }
++                    $offset += $opening.Length
++                    $insidePhp = $true
++                    continue
++                }
++                if ($FileMode -and $offset+1 -lt $text.Length -and
++                    $text[$offset] -ceq '?' -and $text[$offset+1] -ceq '>') {
++                    # A closing tag supplies the statement terminator and may
++                    # consume one following newline. The next text is HTML.
++                    [void]$tokens.Add(';');[void]$lines.Add($line)
++                    $offset += 2
++                    if ($offset -lt $text.Length -and $text[$offset] -ceq [char]13) {
++                        $offset++;if ($offset -lt $text.Length -and $text[$offset] -ceq [char]10) { $offset++ };$line++
++                    } elseif ($offset -lt $text.Length -and $text[$offset] -ceq [char]10) { $offset++;$line++ }
++                    $insidePhp = $false
++                    continue
++                }
++                $match = $tokenRx.Match($text, $offset)
+                 if (-not $match.Success -or $match.Index -ne $offset) {
+                     throw "ALL PHP: Unknown character at offset $offset"
+                 }
+@@ -260,7 +312,8 @@
+                     [void]$tokens.Add($token)
+                     [void]$lines.Add($line)
+                 }
+-                if ($token.IndexOf([char]10) -ge 0) { $line += ($token.Split([char]10).Count - 1) }
++                if ($FileMode) { $line += [regex]::Matches($token,"`r`n|`r|`n").Count }
++                elseif ($token.IndexOf([char]10) -ge 0) { $line += ($token.Split([char]10).Count - 1) }
+                 $offset += $token.Length
+             }
+             [void]$tokens.Add('(EOF)')
+@@ -365,7 +418,7 @@
+                         $isMember = ($prev -ceq '->' -or $prev -ceq '?->' -or $prev -ceq '::')
+                         $plainName = ($prev -ieq 'const' -or $prev -ieq 'function' -or $prev -ieq 'as' -or
+                             $prev -ieq 'case' -or ($inClass -and ($next -ieq 'as' -or $next -ieq 'insteadof')))
+-                        $startsStatement = ($prev -ceq '' -or $prev -ceq ';' -or $prev -ceq '{' -or $prev -ceq '}')
++                        $startsStatement = ($prev -ceq '' -or $prev -ceq ';' -or $prev -ceq '{' -or $prev -ceq '}' -or $state.InlineHtml.ContainsKey($prev))
+                         if (-not $isMember -and -not $plainName -and $startsStatement -and
+                             $lower -ceq 'namespace' -and $next -cne '(') {
+                             # namespace A\B;   namespace A\B { ... }   namespace { ... }
+@@ -527,7 +580,10 @@
+             }
+             return [pscustomobject]@{ Tokens=$outTokens; Lines=$outLines; Fallbacks=$outFallbacks }
+         }
+-        ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines
++        if ($isCli -and ($CliContext.Keys -contains 'SourceMode') -and
++            $CliContext['SourceMode'] -in @('body','file','stdin')) {
++            ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines $true ($CliContext['SourceMode'] -ceq 'body')
++        } else { ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines }
+         # Only programs that actually use namespaces, imports or qualified names take this pass.
+         $needsNameResolution = $false
+         for ($scan = 0; $scan -lt $state.Tokens.Count; $scan++) {
+@@ -1296,6 +1352,10 @@
+         }
+         function Read-StatementCore {
+             $token = Peek-Token
++            if ($state.InlineHtml.ContainsKey($token)) {
++                [void](Next-Token)
++                return [pscustomobject]@{ Kind='inline_html'; Text=$state.InlineHtml[$token] }
++            }
+             if ($token -ceq '{') {
+                 [void](Next-Token)
+                 $body = [System.Collections.Generic.List[object]]::new()
+@@ -2573,6 +2633,11 @@
+             return $copy
+         }
+         function Get-PhpVariableSlot([string]$name) {
++            # CLI-provided server data is a superglobal, including inside user
++            # function frames. Existing non-host runs retain their prior setup.
++            if ($name -ceq '_SERVER' -and $state.Globals.ContainsKey('_SERVER')) {
++                return [pscustomobject]@{ Store=$state.Globals; Key=$name }
++            }
+             if ($state.GlobalBindings.Contains($name)) {
+                 return [pscustomobject]@{ Store=$state.Globals; Key=$name }
+             }
+@@ -5892,6 +5957,7 @@
+             }
+             if ($null -ne $node.Line) { $state.Line = $node.Line }
+             switch ($node.Kind) {
++                'inline_html' { [Console]::Write($node.Text); return }
+                 'constdecl' {
+                     foreach ($decl in $node.Decls) {
+                         if ($state.Constants.ContainsKey($decl.Name) -or $phpConstants.ContainsKey($decl.Name)) {
+@@ -6534,6 +6600,27 @@
+             }
+             throw 'ALL PHP: Internal statement error'
+         }
++        if ($isCli -and ($CliContext.Keys -contains 'InitialIni')) {
++            foreach ($setting in $CliContext['InitialIni'].Keys) {
++                $state.Ini[[string]$setting] = [string]$CliContext['InitialIni'][$setting]
++            }
++            if ($state.Ini.ContainsKey('error_reporting')) {
++                $state.ErrorReporting = [long]$state.Ini['error_reporting']
++            }
++        }
++        if ($isCli -and ($CliContext.Keys -contains 'ScriptArguments')) {
++            $scriptArguments = @($CliContext['ScriptArguments'])
++            $argumentArray = New-PhpArray
++            foreach ($argument in $scriptArguments) {
++                Set-PhpArrayItem $argumentArray $null ([string]$argument) $true
++            }
++            $state.Globals['argc'] = [long]$scriptArguments.Count
++            $state.Globals['argv'] = $argumentArray
++            $server = New-PhpArray
++            Set-PhpArrayItem $server 'argc' ([long]$scriptArguments.Count) $false
++            Set-PhpArrayItem $server 'argv' $argumentArray $false
++            $state.Globals['_SERVER'] = $server
++        }
+         # Load the built-in exception classes up front when the program mentions any of them, so
+         # that user classes can extend them.
+         foreach ($programToken in $state.Tokens) {

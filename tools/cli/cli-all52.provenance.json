@@ -1,0 +1,21 @@
+{
+  "method": "Unmodified case records concatenated in source order; no input or expected result substitution",
+  "sources": [
+    {
+      "path": "tools\\cli\\cli-host.cases.json",
+      "sha256": "dd20b3e0ebb965892310f843637585c3b1e1d9f0b66ea4c80089fa6608df07a2",
+      "cases": 19
+    },
+    {
+      "path": "tools\\cli\\file-tags.cases.json",
+      "sha256": "3215866674c07978e769ade2a798fbc8ea07e6bb6287c216ca94ce0e7dd5f7c9",
+      "cases": 18
+    },
+    {
+      "path": "tools\\cli\\cli-extra.cases.json",
+      "sha256": "602a5ec34df5d949f02a9b47f41b0791236d55b2896f7b92a1276e77b23197f7",
+      "cases": 15
+    }
+  ],
+  "total": 52
+}

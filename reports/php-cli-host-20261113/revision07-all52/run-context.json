@@ -1,0 +1,25 @@
+{
+  "state": "STARTED_NOT_COMPLETED",
+  "driver_argv": [
+    "C:\\Users\\rinpa\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "tools/cli/Compare-AllPhpCli.py",
+    "--executable",
+    "tools/cli/out/cli-host-07/all-php.exe",
+    "--cases",
+    "tools/cli/cli-all52.cases.json",
+    "--output",
+    "reports/php-cli-host-20261113/revision07-all52",
+    "--timeout",
+    "30"
+  ],
+  "timeout_seconds": 30.0,
+  "inputs_before": {
+    "executable": "6dc103b8d3006b9c4b65e5be14e72afccb776e4081e10dc9d0da66e499e2e4a0",
+    "cases": "aec6d726a22a49f731a6b11beb8ef6c7491bcc3b6b05b77eab3eaf55ff7e3e85",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "driver": "2853f4f1affd0c945e5f726a1b14d5293674bb6cfa6940235d631d96e8553aaa",
+    "adapter": "42c17b474209afced61ee99c18b0b064d700041e5fd2ed0c69919b257754003a",
+    "host": "c79fe3d384d2098796def5a21eddef871c431b8b295004484b6c6427cb2407bd"
+  },
+  "cases_planned": 52
+}

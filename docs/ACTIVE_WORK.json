@@ -80,24 +80,38 @@
   ],
   "in_progress": [
     {
-      "component": "Synchronous native diagnostic callback",
-      "path": "native/php85abi-callback/",
-      "state": "Frozen separate prototype, NOT_ADOPTED. Final15 actual same-source comparisons match; synthetic3modes/27checks pass. Based on47c without v3.19 core fixes. Adoption requires rebase onto113d and old native74/bridge24/default965 regression.",
-      "report": "reports/native-callback-20261112/README.md",
-      "dll_sha256": "88117b8f38dc77d20e638ce573bb83fc6f959c1ad6821f8803c5499969fe234b"
+      "component": "Standalone independent PHP CLI and file source lexing",
+      "owner": "root",
+      "path": "tools/cli/",
+      "candidate": "tools/candidates/php-cli-host/revision07/ALL_PHP_cli_host_candidate.ps1",
+      "source_sha256": "42c17b474209afced61ee99c18b0b064d700041e5fd2ed0c69919b257754003a",
+      "state": "Isolated standalone CLI prototype07 matched52/52 exact same-input process comparisons, including source tags/shebang/BOM/argv/body/stdin/error exits. Earlier failures and incomplete observation retained. Not adopted into package. Full965 and cross-candidate integration still required.",
+      "report": "reports/php-cli-host-20261113/README.md"
     },
     {
-      "component": "PHP language/standard library and general native ABI",
-      "state": "Incomplete: undefined dynamic callable Error classification, byte strings, generators/fibers/attributes/Reflection, full library, general native values/identity/callback/lifecycle and extension binaries remain"
+      "component": "Dynamic callable semantics",
+      "owner": "dynamic_call_v320",
+      "path": "tools/candidates/php-dynamic-call/",
+      "state": "113d-based independent revisions. Baseline30 4/30; known early draft escaping defect was deliberately stopped with interruption record. Corrected critical4 matched; new52-case sequential measurement underway. Must inspect authoritative report/handle, not this state string.",
+      "report": "reports/php-dynamic-call-20261113/"
     },
     {
-      "component": "Windows Web SAPIs and Linux x64",
-      "state": "Unimplemented/unverified; Linux environment decision pending"
+      "component": "Heredoc/nowdoc and byte-accurate escape decoding",
+      "owner": "string_literals_v320",
+      "path": "tools/candidates/php-string-literals/",
+      "state": "113d-based independent candidatee207; default52 passed. Strict42-case measurement underway; arbitrary nonUTF8 bytes remain explicit unsupported. Whole-token doc scanner and state DocStrings sentinel for eventual file lexer integration.",
+      "report": "reports/php-string-literals-20261113/"
     },
     {
-      "component": "Reference-only PHP API inventory",
-      "path": "reports/php-api-inventory-20261112/",
-      "observation": "13934 exposure candidates UNVERIFIED/NOT_ASSESSED. Base registration query925names:80true/845false in v3.18. Not implementation counts."
+      "component": "Synchronous native diagnostic callback integration",
+      "owner": "callback_integration_v320",
+      "path": "tools/candidates/php-callback-v3_20/",
+      "state": "113d rebase, separate prototype only. Old native74/bridge24/consistency20 and synthetic27 passed. Existing-context capability bug fixed in separate revision. Timeout-heavy first strict runs retained; phase trace singleton matched, repeat measurement underway. No package or frozen DLL/bridge changed.",
+      "report": "reports/native-callback-integration-20261113/"
+    },
+    {
+      "component": "Remaining PHP language/stdlib/native ABI and Windows Web/Linux",
+      "state": "Full requirement scope remains incomplete. General binary strings, generators/fibers/attributes/Reflection/full standard library, general native ABI values/identity/callback/lifecycle and all Web SAPIs remain. Linux environment decision pending; not a reason to stop independent Windows work."
     }
   ],
   "pending_owner_input": [
@@ -110,5 +124,7 @@
     "do_not_start_other_languages_or_ALL_stage2_early": true,
     "keep_real_failed_and_partial_measurements": true
   },
-  "latest_package_checkpoint_commit": "19cc200"
+  "latest_package_checkpoint_commit": "19cc200",
+  "active_goal": "PHP完全互換が完了するまで動いてね",
+  "goal_status": "active"
 }

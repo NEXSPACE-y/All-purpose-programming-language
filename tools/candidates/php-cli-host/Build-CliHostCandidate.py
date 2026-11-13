@@ -9,9 +9,11 @@ HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[2]
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--output-directory',type=Path,required=True)
+parser.add_argument('--file-lexer',action='store_true')
+parser.add_argument('--base',type=Path,default=ROOT/'package/ALL_PHP_v3_12_adapter.ps1')
 args=parser.parse_args();destination=args.output_directory.resolve()
 if destination.exists():raise SystemExit('Output directory exists; preserve measured revisions')
-BASE=ROOT/'package/ALL_PHP_v3_12_adapter.ps1'
+BASE=args.base.resolve(strict=True)
 EXPECTED='113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b'
 raw=BASE.read_bytes()
 if hashlib.sha256(raw).hexdigest()!=EXPECTED:raise SystemExit('Package input differs from reviewed v3.19')
@@ -86,6 +88,9 @@ replace("""        # Load the built-in exception classes up front when the progr
         }
         # Load the built-in exception classes up front when the program mentions any of them, so""")
 
+if args.file_lexer:
+    from FileLexerEdits import apply
+    value=apply(value)
 output=b'\xef\xbb\xbf'+value.encode('utf-8')
 destination.mkdir(parents=True)
 candidate=destination/'ALL_PHP_cli_host_candidate.ps1'

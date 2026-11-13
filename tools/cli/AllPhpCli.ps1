@@ -7,6 +7,8 @@ function Invoke-AllPhpCli {
     $mode=$null; $code=$null; $file=$null
     $remaining=[Collections.Generic.List[string]]::new()
     $ini=[Collections.Generic.Dictionary[string,string]]::new([StringComparer]::Ordinal)
+    # Measured PHP 8.5.12 Windows target compiled default under -n.
+    $ini['short_open_tag']='1'
     for($i=0;$i-lt$CliArguments.Length;$i++) {
         $argument=$CliArguments[$i]
         if($argument-ceq'--') {
@@ -32,6 +34,7 @@ function Invoke-AllPhpCli {
             if($name-ceq'display_errors'-and$value-ceq'stderr'){$ini[$name]=$value;continue}
             if($name-ceq'error_reporting'-and$value-ceq'-1'){$ini[$name]=$value;continue}
             if($name-ceq'date.timezone'-and$value-ceq'UTC'){$ini[$name]=$value;continue}
+            if($name-ceq'short_open_tag'-and$value-in@('0','1')){$ini[$name]=$value;continue}
             throw ('ALL PHP CLI unsupported INI setting: '+$setting)
         }
         if($argument.StartsWith('-')){throw ('ALL PHP CLI unsupported option: '+$argument)}
@@ -47,7 +50,7 @@ function Invoke-AllPhpCli {
     if($mode-ceq'file') {
         if(-not[IO.File]::Exists($file)){[Console]::Error.Write('Could not open input file: '+$file+"`n");return [long]1}
         $sourceName=[IO.Path]::GetFullPath($file);$argv0=$file
-        $code=[IO.File]::ReadAllText($sourceName,[Text.UTF8Encoding]::new($false,$true))
+        $code=[Text.UTF8Encoding]::new($false,$true).GetString([IO.File]::ReadAllBytes($sourceName))
     } elseif($mode-ceq'stdin') {
         $sourceName='Standard input code'
         $code=[Console]::In.ReadToEnd()
@@ -56,7 +59,7 @@ function Invoke-AllPhpCli {
     foreach($item in $remaining){[void]$scriptArguments.Add($item)}
     $adapter=& $AdapterPath
     if($null-eq$adapter-or$adapter.Run-isnot[scriptblock]){throw 'ALL PHP CLI: adapter has no Run scriptblock'}
-    foreach($capability in @('source-body-v1','script-arguments-v1','initial-ini-v1')) {
+    foreach($capability in @('source-body-v1','script-arguments-v1','initial-ini-v1','source-tags-v1')) {
         if($adapter.CliContextCapabilities-notcontains$capability){throw ('ALL PHP CLI: adapter does not declare capability '+$capability)}
     }
     $parameters=@($adapter.Run.Ast.ParamBlock.Parameters|ForEach-Object{$_.Name.VariablePath.UserPath})

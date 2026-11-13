@@ -44,6 +44,7 @@ def main():
     cases=json.loads(paths['cases'].read_text(encoding='utf-8-sig'))
     if not cases or len({c['id'] for c in cases})!=len(cases):ap.error('Need distinct nonempty case IDs')
     out.mkdir(parents=True);rows=[]
+    (out/'run-context.json').write_text(json.dumps({'state':'STARTED_NOT_COMPLETED','driver_argv':[sys.executable,*sys.argv],'timeout_seconds':a.timeout,'inputs_before':before,'cases_planned':len(cases)},indent=2)+'\n',encoding='utf-8')
     for i,c in enumerate(cases):
         work=out/f'case-{i:04d}';work.mkdir()
         raw=c.get('code','').encode('utf-8');(work/'source-input.bin').write_bytes(raw)
@@ -56,6 +57,8 @@ def main():
             argv=(['-f',arg] if c.get('explicit_f',False) else [arg])
             if c.get('dashdash_before_file',False):argv=['--',arg]
         elif c['mode']=='missing':argv=[c['filename']]
+        elif c['mode']=='raw':
+            argv=c['arguments'];stdin=c.get('stdin','').encode('utf-8')
         else:raise ValueError('Unsupported case mode')
         argv+=c.get('tail',[])
         prefix=c.get('profile',PROFILE)
@@ -71,9 +74,12 @@ def main():
              'stdin_base64':base64.b64encode(stdin).decode('ascii'),'source_unchanged':source_stable,
              'verdict':'PASS' if not differences else 'DIFFERENT','differences':differences,
              'oracle':oracle,'candidate':candidate}
-        rows.append(row);print(row['verdict']+': '+c['id'],flush=True)
+        rows.append(row)
+        with (out/'results.jsonl').open('a',encoding='utf-8',newline='') as progress:
+            progress.write(json.dumps(row,ensure_ascii=False)+'\n');progress.flush()
+        print(row['verdict']+': '+c['id'],flush=True)
     after={k:sha(p) for k,p in paths.items()}
-    report={'status':'NOT_COMPLETE','scope':'Actual C#/.NET Framework CLI host with own interpreter, selected modes/profile only; not full CLI/SAPI',
+    report={'status':'NOT_COMPLETE','run_state':'COMPLETED','scope':'Actual C#/.NET Framework CLI host with own interpreter, selected modes/profile only; not full CLI/SAPI',
             'measurement':'Same argument strings and stdin bytes; exact stdout/stderr and actual process status; no normalization',
             'driver_argv':[sys.executable,*sys.argv],'timeout_seconds':a.timeout,'inputs_before':before,'inputs_after':after,
             'inputs_unchanged':before==after,'total':len(rows),'passed':sum(r['verdict']=='PASS' for r in rows),'results':rows}

@@ -1,0 +1,29 @@
+{
+    "status":  "BUILT_NOT_RUNTIME_VERIFIED",
+    "powerShell":  "5.1.26100.9818",
+    "architecture":  "x64",
+    "adapter_source":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-cli-host\\revision07\\ALL_PHP_cli_host_candidate.ps1",
+    "adapter_sha256":  "42c17b474209afced61ee99c18b0b064d700041e5fd2ed0c69919b257754003a",
+    "stock_php_execution_delegation":  false,
+    "files":  [
+                  {
+                      "path":  "all-php.exe",
+                      "bytes":  5120,
+                      "sha256":  "6dc103b8d3006b9c4b65e5be14e72afccb776e4081e10dc9d0da66e499e2e4a0"
+                  },
+                  {
+                      "path":  "AllPhpCli.ps1",
+                      "bytes":  4812,
+                      "sha256":  "c79fe3d384d2098796def5a21eddef871c431b8b295004484b6c6427cb2407bd"
+                  },
+                  {
+                      "path":  "ALL_PHP_adapter.ps1",
+                      "bytes":  371307,
+                      "sha256":  "42c17b474209afced61ee99c18b0b064d700041e5fd2ed0c69919b257754003a"
+                  }
+              ],
+    "source_sha256":  "60246ba0002baa11df84d7f00532626bc398317e7619e472ff1d365e814b2963",
+    "build_script_sha256":  "3cefe3dd008a304667f1274cf995e3ee5cbc8f809d43dce71b3a003d2a4c2c77",
+    "compiler_options":  "/platform:x64 /optimize+ /langversion:5",
+    "automation_assembly":  "C:\\WINDOWS\\Microsoft.Net\\assembly\\GAC_MSIL\\System.Management.Automation\\v4.0_3.0.0.0__31bf3856ad364e35\\System.Management.Automation.dll"
+}

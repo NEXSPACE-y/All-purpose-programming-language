@@ -1,0 +1,133 @@
+[
+  {
+    "id": "extra.stdin-empty",
+    "mode": "stdin",
+    "code": ""
+  },
+  {
+    "id": "extra.stdin-args",
+    "mode": "stdin",
+    "code": "<?php var_dump($argc,$argv);",
+    "tail": [
+      "--",
+      "one",
+      "-x"
+    ]
+  },
+  {
+    "id": "extra.file-shebang",
+    "mode": "file",
+    "code": "#!/usr/bin/env php\n<?php echo \"ok\";"
+  },
+  {
+    "id": "extra.stdin-shebang",
+    "mode": "stdin",
+    "code": "#!/usr/bin/env php\n<?php echo \"ok\";"
+  },
+  {
+    "id": "extra.stdin-bom",
+    "mode": "stdin",
+    "code": "﻿<?php echo \"ok\";"
+  },
+  {
+    "id": "extra.file-close-cr",
+    "mode": "file",
+    "code": "<?php echo \"a\";?>\rB"
+  },
+  {
+    "id": "extra.body-close-reopen",
+    "mode": "body",
+    "code": "echo \"A\";?>X<?php echo \"B\";"
+  },
+  {
+    "id": "extra.short-off",
+    "mode": "file",
+    "code": "<? echo 7;?>",
+    "profile": [
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "-d",
+      "error_reporting=-1",
+      "-d",
+      "date.timezone=UTC",
+      "-d",
+      "short_open_tag=0"
+    ]
+  },
+  {
+    "id": "extra.phpprefix-off",
+    "mode": "file",
+    "code": "<?phpecho \"x\";?>",
+    "profile": [
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "-d",
+      "error_reporting=-1",
+      "-d",
+      "date.timezone=UTC",
+      "-d",
+      "short_open_tag=0"
+    ]
+  },
+  {
+    "id": "extra.xml-short-off",
+    "mode": "file",
+    "code": "<?xml version=\"1.0\"?>TEXT",
+    "profile": [
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "-d",
+      "error_reporting=-1",
+      "-d",
+      "date.timezone=UTC",
+      "-d",
+      "short_open_tag=0"
+    ]
+  },
+  {
+    "id": "extra.short-on-ini",
+    "mode": "body",
+    "code": "var_dump(ini_get(\"short_open_tag\"));"
+  },
+  {
+    "id": "extra.short-off-ini",
+    "mode": "body",
+    "code": "var_dump(ini_get(\"short_open_tag\"));",
+    "profile": [
+      "-n",
+      "-d",
+      "display_errors=stderr",
+      "-d",
+      "error_reporting=-1",
+      "-d",
+      "date.timezone=UTC",
+      "-d",
+      "short_open_tag=0"
+    ]
+  },
+  {
+    "id": "extra.file-open-crlf",
+    "mode": "file",
+    "code": "<?php\r\necho $missing;"
+  },
+  {
+    "id": "extra.body-open-tag-invalid",
+    "mode": "body",
+    "code": "<?php echo \"x\";"
+  },
+  {
+    "id": "extra.file-dash-stdin",
+    "mode": "raw",
+    "arguments": [
+      "-f",
+      "-",
+      "--",
+      "one"
+    ],
+    "stdin": "<?php echo \"stdinDash:\"; var_dump($argc,$argv);",
+    "code": "<?php echo \"stdinDash:\"; var_dump($argc,$argv);"
+  }
+]

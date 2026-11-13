@@ -1,0 +1,1 @@
+<?php if(false){?>NO<?php } else {?>YES<?php } ?>
