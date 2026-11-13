@@ -1,0 +1,97 @@
+[
+  {
+    "name": "missing interface implementation",
+    "code": "<?php interface I {public function run();} class C implements I {}",
+    "error_contains": "ALL PHP: Interface method not implemented"
+  },
+  {
+    "name": "extend final class",
+    "code": "<?php final class A {} class B extends A {}",
+    "error_contains": "ALL PHP: Cannot extend final class"
+  },
+  {
+    "name": "override final method",
+    "code": "<?php class A {final public function f(){return 1;}} class B extends A {public function f(){return 2;}}",
+    "error_contains": "ALL PHP: Cannot override final method"
+  },
+  {
+    "name": "instantiate abstract",
+    "code": "<?php abstract class A {abstract public function f();} new A();",
+    "error_contains": "ALL PHP: Cannot instantiate abstract class"
+  },
+  {
+    "name": "nonabstract declares abstract method",
+    "code": "<?php class A {abstract public function f();}",
+    "error_contains": "ALL PHP: Abstract methods require an abstract class"
+  },
+  {
+    "name": "missing concrete method",
+    "code": "<?php abstract class A {abstract public function f();} class B extends A {}",
+    "error_contains": "ALL PHP: Concrete class has abstract method"
+  },
+  {
+    "name": "private interface member",
+    "code": "<?php interface I {private function foo();}",
+    "error_contains": "ALL PHP: Unsupported interface member"
+  },
+  {
+    "name": "interface method body not allowed",
+    "code": "<?php interface I {public function f(){return 1;}}",
+    "error_contains": "ALL PHP: Expected"
+  },
+  {
+    "name": "unknown interface extended",
+    "code": "<?php interface A extends Missing {}",
+    "error_contains": "ALL PHP: Undefined parent interface"
+  },
+  {
+    "name": "unknown interface implemented",
+    "code": "<?php class A implements Missing {}",
+    "error_contains": "ALL PHP: Undefined interface"
+  },
+  {
+    "name": "incompatible required args",
+    "code": "<?php interface I {public function f($n);} class A implements I {public function f($n,$x){}}",
+    "error_contains": "ALL PHP: Incompatible method signature"
+  },
+  {
+    "name": "argument byref requires variable",
+    "code": "<?php function f(&$x){$x=2;} f(4);",
+    "error_contains": "ALL PHP: must be a variable passed by reference"
+  },
+  {
+    "name": "array element reference unsupported",
+    "code": "<?php $a=[1,2];$b=&$a[0];",
+    "error_contains": "ALL PHP: Array/property reference assignment not yet supported"
+  },
+  {
+    "name": "closure return byref unsupported",
+    "code": "<?php $x=1;$f=function &() use ($x) {return $x;};",
+    "error_contains": "ALL PHP: Closure return by reference is not yet supported"
+  },
+  {
+    "name": "byref variadic unsupported",
+    "code": "<?php function f(&...$args){}",
+    "error_contains": "ALL PHP: By-reference variadic parameter is not yet supported"
+  },
+  {
+    "name": "undefined trait",
+    "code": "<?php trait T {public function f(){return 1;}} class C {use Missing;}",
+    "error_contains": "ALL PHP: Undefined trait"
+  },
+  {
+    "name": "conflicting trait methods",
+    "code": "<?php trait A {public function f(){return 1;}} trait B {public function f(){return 2;}} class C {use A,B;}",
+    "error_contains": "ALL PHP: Conflicting trait method"
+  },
+  {
+    "name": "unsupported trait extends",
+    "code": "<?php class P {} trait T extends P {}",
+    "error_contains": "ALL PHP: Expected"
+  },
+  {
+    "name": "trait cannot instantiate",
+    "code": "<?php trait A {} new A();",
+    "error_contains": "ALL PHP: Undefined class"
+  }
+]

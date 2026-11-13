@@ -1,0 +1,30 @@
+{
+  "status": "FROZEN_LOCAL_VALUE_BOUNDARY_PATCH_BUILT_PARSED_NOT_RUNTIME_VERIFIED",
+  "module_sha256": "1c284f89d29583a651bb698e7fe157b838ea428cbbb4dcf9ea8363ffb77f93f3",
+  "candidate_sha256": "9c1244a2eec741e13d67c77789551e19142a27c55a2d3a572a9acda9c613c36d",
+  "base_json05_sha256": "524ce86a322c0cd91d1f565a0c01a754842efbacd8521a47b6f3b4a56150bb8d",
+  "symbol_module_sha256": "4853ac24f16c2a792dd5836bc8eaeba05335a9e255b9810b898999751ab634c3",
+  "parse_exit": 0,
+  "runtime_measurement_completed": false,
+  "reference_observations": {
+    "string_examples": 11,
+    "individual_byte_examples": 256,
+    "diagnostic_limits": [
+      0,
+      1,
+      3,
+      15
+    ],
+    "reference_processes_actual_exit": [
+      0,
+      0
+    ],
+    "stderr_bytes": [
+      0,
+      0
+    ]
+  },
+  "package_modified": false,
+  "callback_arity_truncation_changed": false,
+  "remaining_design": "AUDIT.md"
+}

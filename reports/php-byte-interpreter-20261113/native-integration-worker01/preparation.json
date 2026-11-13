@@ -1,0 +1,94 @@
+{
+  "status": "WORKER_BUILT_SYNTAX_VERIFIED_NO_RUNTIME_MEASUREMENT_STARTED",
+  "runtime_measurement_started": false,
+  "parser_actual_status": 0,
+  "parser": {
+    "powerShell": "5.1.26100.9818",
+    "rows": [
+      {
+        "path": "tools/candidates/php-byte-interpreter/native-worker01/Invoke-ByteNativeWorker.ps1",
+        "errorCount": 0,
+        "errors": []
+      },
+      {
+        "path": "tools/candidates/php-byte-interpreter/native-worker01/Build-Host.ps1",
+        "errorCount": 0,
+        "errors": []
+      }
+    ]
+  },
+  "host_build": {
+    "status": "BUILT_NOT_RUNTIME_VERIFIED",
+    "input_paths": {
+      "host": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\native-worker01\\AllByteNativePhpHost.cs",
+      "worker": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\native-worker01\\Invoke-ByteNativeWorker.ps1",
+      "build": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\native-worker01\\Build-Host.ps1"
+    },
+    "inputs_before": {
+      "host": "386237269a62a91511188970a59f6d95fccd4c11b93953c8bbc01bede787a924",
+      "worker": "43151ca1834e873accad40190498b879d48f645a2eadd3a61e28d76c3d79670a",
+      "build": "63aa90231c71775f2df531980588f8f5007c1c45245aed69de28bebd3cdd2fbc"
+    },
+    "inputs_after": {
+      "host": "386237269a62a91511188970a59f6d95fccd4c11b93953c8bbc01bede787a924",
+      "worker": "43151ca1834e873accad40190498b879d48f645a2eadd3a61e28d76c3d79670a",
+      "build": "63aa90231c71775f2df531980588f8f5007c1c45245aed69de28bebd3cdd2fbc"
+    },
+    "files": [
+      {
+        "path": "all-byte-native-php-host.exe",
+        "bytes": 6144,
+        "sha256": "0bad369da0267a61dcfccfda88ff7b604235d77857d60bfec0d4b476090bb6c8"
+      },
+      {
+        "path": "byte-return-worker.ps1",
+        "bytes": 6682,
+        "sha256": "43151ca1834e873accad40190498b879d48f645a2eadd3a61e28d76c3d79670a"
+      }
+    ],
+    "powerShell": "5.1.26100.9818",
+    "clr": "4.0.30319.42000",
+    "pointer_bytes": 8,
+    "compiler_options": "/platform:x64 /optimize+ /langversion:5",
+    "host_exit": "Return signed DWORD from outer Main after disposing PowerShell and Runspace; no Environment.Exit",
+    "runtime_load": "Canonical original runtime first, byte bridge assembly second"
+  },
+  "selected_adapter": {
+    "path": "tools/candidates/php-byte-interpreter/combined03/ALL_PHP_byte_candidate.ps1",
+    "sha256": "4d120c8ff1e6f2179e2dee5cd2ef4726d2ff05d168fac536f34721c8c9e13a9c"
+  },
+  "canonical_runtime": {
+    "path": "tools/candidates/php-byte-runtime/out/runtime01/AllPhp.ByteValues.Runtime.dll",
+    "sha256": "18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b"
+  },
+  "byte_bridge": {
+    "path": "tools/candidates/php-byte-native/out/build05/AllPhp.NativeBytes.Bridges.dll",
+    "sha256": "4bdbb60db0da70140224dac092507aa8d911f7d86738680b53172c979f712932"
+  },
+  "prepared_sources": [
+    {
+      "path": "tools/candidates/php-byte-interpreter/native-worker01/.gitignore",
+      "sha256": "89e69901af2a01eced6f20f4f85d045f55ff4c1448232b0853fe6dcb42eec210"
+    },
+    {
+      "path": "tools/candidates/php-byte-interpreter/native-worker01/AllByteNativePhpHost.cs",
+      "sha256": "386237269a62a91511188970a59f6d95fccd4c11b93953c8bbc01bede787a924"
+    },
+    {
+      "path": "tools/candidates/php-byte-interpreter/native-worker01/Build-Host.ps1",
+      "sha256": "63aa90231c71775f2df531980588f8f5007c1c45245aed69de28bebd3cdd2fbc"
+    },
+    {
+      "path": "tools/candidates/php-byte-interpreter/native-worker01/Compare-ByteNativeSource.py",
+      "sha256": "019cc15b2265e46948148b7b01014ad5953bbeccbb932f049397715b69ece68d"
+    },
+    {
+      "path": "tools/candidates/php-byte-interpreter/native-worker01/Invoke-ByteNativeWorker.ps1",
+      "sha256": "43151ca1834e873accad40190498b879d48f645a2eadd3a61e28d76c3d79670a"
+    },
+    {
+      "path": "tools/candidates/php-byte-interpreter/native-worker01/raw-source.cases.json",
+      "sha256": "8d573889c1ba3631fc89c011847aa7b7dec5c44adf7f1057477f90a85882c22e"
+    }
+  ]
+}

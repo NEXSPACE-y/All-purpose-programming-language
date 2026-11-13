@@ -1,0 +1,1 @@
+$a=["\xFF\0"];foreach($a as &$v){}var_dump($a);unset($v);var_dump($a);

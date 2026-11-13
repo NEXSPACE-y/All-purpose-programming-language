@@ -1,0 +1,202 @@
+[
+  {
+    "id": "callback.arguments.named-variadic",
+    "code": "<?php function h(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;}set_error_handler(\"h\");trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+    "mode": "file"
+  },
+  {
+    "id": "callback.arguments.closure-variadic",
+    "code": "<?php $h=function(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;};set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+    "mode": "file"
+  },
+  {
+    "id": "callback.arguments.named-one-plus-variadic",
+    "code": "<?php function h($level,...$rest){echo $level,\":\",count($rest),\":\",bin2hex($rest[0]),\":\",gettype($rest[1]),\":\",gettype($rest[2]);return true;}set_error_handler(\"h\");trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+    "mode": "file"
+  },
+  {
+    "id": "callback.arguments.closure-one-plus-variadic",
+    "code": "<?php $h=function($level,...$rest){echo $level,\":\",count($rest),\":\",bin2hex($rest[0]),\":\",gettype($rest[1]),\":\",gettype($rest[2]);return true;};set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+    "mode": "file"
+  },
+  {
+    "id": "callback.arguments.first-class",
+    "code": "<?php function h(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;}$h=h(...);set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+    "mode": "file"
+  },
+  {
+    "id": "callback.arguments.array-static",
+    "code": "<?php class H{static function go(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;}}set_error_handler([\"H\",\"go\"]);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+    "mode": "file"
+  },
+  {
+    "id": "callback.arguments.array-instance",
+    "code": "<?php class H{function go(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;}}$h=new H();set_error_handler([$h,\"go\"]);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+    "mode": "file"
+  },
+  {
+    "id": "callback.arguments.invokable",
+    "code": "<?php class H{function __invoke(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;}}$h=new H();set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+    "mode": "file"
+  },
+  {
+    "id": "callback.arguments.named-zero",
+    "code": "<?php function h(){echo \"zero\";return true;}set_error_handler(\"h\");trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+    "mode": "file"
+  },
+  {
+    "id": "callback.arguments.closure-zero",
+    "code": "<?php $h=function(){echo \"zero\";return true;};set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+    "mode": "file"
+  },
+  {
+    "id": "callback.arguments.named-one",
+    "code": "<?php function h($level){echo $level;return true;}set_error_handler(\"h\");trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+    "mode": "file"
+  },
+  {
+    "id": "callback.arguments.closure-one",
+    "code": "<?php $h=function($level){echo $level;return true;};set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+    "mode": "file"
+  },
+  {
+    "id": "callback.arguments.builtin-four",
+    "code": "<?php set_error_handler(\"strlen\");try{trigger_error(\"payload\\xFF\",E_USER_WARNING);}catch(ArgumentCountError $e){echo $e->getMessage();}",
+    "mode": "file"
+  },
+  {
+    "id": "callback.arguments.closure-all-four",
+    "code": "<?php $h=function($level,$message,$file,$line){echo $level,\":\",bin2hex($message),\":\",gettype($file),\":\",gettype($line);return true;};set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+    "mode": "file"
+  },
+  {
+    "id": "callback.arguments.raw-closure",
+    "code": "<?php $h=function(...$args){echo count($args),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;};set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+    "mode": "file"
+  },
+  {
+    "id": "callback.arguments.raw-array-method",
+    "code": "<?php class H{function go(...$args){echo count($args),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;}}$h=new H();set_error_handler([$h,\"go\"]);trigger_error(\"payload\\xFF\",E_USER_WARNING);",
+    "mode": "file"
+  },
+  {
+    "id": "byte.hex.empty",
+    "mode": "body",
+    "code": "var_dump(bin2hex(''),function_exists('bin2hex'),is_string(bin2hex('a')));"
+  },
+  {
+    "id": "byte.hex.raw",
+    "mode": "body",
+    "code": "var_dump(bin2hex(\"\\0\\xFF\\x80\\u{D800}\"));"
+  },
+  {
+    "id": "byte.hex.ascii-lookup",
+    "mode": "body",
+    "code": "echo BIN2HEX(\"\\xFE\\xDC\");"
+  },
+  {
+    "id": "byte.hex.null",
+    "mode": "body",
+    "code": "var_dump(bin2hex(null));"
+  },
+  {
+    "id": "byte.hex.scalars",
+    "mode": "body",
+    "code": "var_dump(bin2hex(12),bin2hex(2.5),bin2hex(true),bin2hex(false));"
+  },
+  {
+    "id": "byte.hex.object",
+    "mode": "body",
+    "code": "class S{function __toString(){return \"\\xFF\";}}var_dump(bin2hex(new S()));"
+  },
+  {
+    "id": "byte.hex.type-and-count",
+    "mode": "body",
+    "code": "try{bin2hex([]);}catch(Throwable $e){echo get_class($e),':',$e->getMessage(),\"\\n\";}try{bin2hex();}catch(Throwable $e){echo get_class($e),':',$e->getMessage();}"
+  },
+  {
+    "id": "byte.hex.chunk-boundary",
+    "mode": "body",
+    "code": "echo bin2hex(str_repeat(\"\\0\\xFF\",32769));"
+  },
+  {
+    "id": "boundary.enum-string-raw",
+    "mode": "body",
+    "code": "enum E:string{case A=\"\\xFF\";case B=\"\\0\";}echo E::from(\"\\xFF\")->name,\":\",bin2hex(E::from(\"\\0\")->value);"
+  },
+  {
+    "id": "boundary.enum-string-nfc",
+    "mode": "body",
+    "code": "enum E:string{case A=\"é\";case B=\"é\";}echo E::from(\"é\")->name,\":\",E::from(\"é\")->name;"
+  },
+  {
+    "id": "boundary.enum-string-valueerror",
+    "mode": "body",
+    "code": "enum E:string{case A=\"a\";}try{E::from(\"\\xFE\");}catch(ValueError $e){echo bin2hex($e->getMessage());}"
+  },
+  {
+    "id": "boundary.enum-int-control",
+    "mode": "body",
+    "code": "enum E:int{case A=7;}echo E::from(7)->name;var_dump(E::tryFrom(8));"
+  },
+  {
+    "id": "boundary.enum-weak-scalar-known-gap",
+    "mode": "body",
+    "code": "enum E:string{case A=\"7\";}echo E::from(7)->name;"
+  },
+  {
+    "id": "boundary.firstclass-array-object",
+    "mode": "body",
+    "code": "class C{function m($x){return $x+1;}}$c=new C();$f=[$c,\"m\"];$g=$f(...);echo $g(3);"
+  },
+  {
+    "id": "boundary.firstclass-array-static",
+    "mode": "body",
+    "code": "class C{static function m($x){return $x+1;}}$f=[\"C\",\"m\"];$g=$f(...);echo $g(4);"
+  },
+  {
+    "id": "boundary.isnumeric-bytes",
+    "mode": "body",
+    "code": "var_dump(is_numeric(\"12\"),is_numeric(\"12.5\"),is_numeric(\"\\xFF\"),is_numeric(\"猫\"));"
+  },
+  {
+    "id": "boundary.instanceof-string",
+    "mode": "body",
+    "code": "class C{}$x=new C();$name=\"c\";var_dump($x instanceof $name);"
+  },
+  {
+    "id": "boundary.getter-constants",
+    "mode": "body",
+    "code": "define(\"X\",\"\\xFF\");class C{const Y=\"\\0\";}$c=new C();var_dump(is_string(get_class($c)),bin2hex(constant(\"X\")),bin2hex(C::Y),is_string(C::class));"
+  },
+  {
+    "id": "boundary.match-escaped-bytes",
+    "mode": "body",
+    "code": "try{match(\"\\xFF\\0\\x27\\\\\\n\"){};}catch(UnhandledMatchError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "boundary.match-byte-limit",
+    "mode": "body",
+    "code": "ini_set(\"zend.exception_string_param_max_len\",\"3\");try{match(\"A\\xFF\\nB\"){};}catch(UnhandledMatchError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "boundary.trace-escaped-bytes",
+    "mode": "body",
+    "code": "function f($x){throw new Exception(\"boom\");}try{f(\"\\xFF\\0\\x27\\\\\\n\");}catch(Throwable $e){echo $e->getTraceAsString();}"
+  },
+  {
+    "id": "boundary.trace-ignore-args",
+    "mode": "body",
+    "code": "ini_set(\"zend.exception_ignore_args\",\"1\");function f($x){throw new Exception(\"boom\");}try{f(\"\\xFF\");}catch(Throwable $e){echo $e->getTraceAsString();}"
+  },
+  {
+    "id": "boundary.trace-byte-limit",
+    "mode": "body",
+    "code": "ini_set(\"zend.exception_string_param_max_len\",\"1\");function f($x){throw new Exception(\"boom\");}try{f(\"猫\");}catch(Throwable $e){echo $e->getTraceAsString();}"
+  },
+  {
+    "id": "boundary.static-reference-string",
+    "mode": "body",
+    "code": "class C{public static $v=\"A\";static function &get(){return self::$v;}}$n=\"C\";$x=&$n::get();$x.=\"\\xFF\";echo bin2hex(C::$v);"
+  }
+]

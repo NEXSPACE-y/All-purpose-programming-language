@@ -1,0 +1,1 @@
+<?php namespace 名前;function 関数(){return __NAMESPACE__;}echo 関数();

@@ -1,0 +1,200 @@
+{
+  "profile": "legacy27",
+  "passed": 23,
+  "total_comparisons": 23,
+  "guards_rejected_before_native": 4,
+  "guards_separate": 4,
+  "inputs_unchanged": true,
+  "report_sha256": "a21a3b21e4398f083139aa47b88a4674d0638bdca75c4bf1d21053f5d477977f",
+  "cases": [
+    {
+      "id": "native.dynamic_function_exists",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 0,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.name_NUL_not_bound",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 0,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.direct_scalar",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.global_qualified",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.namespace_fallback",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.namespace_use_function",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.namespace_user_precedence",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 0,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.first_class",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.namespace_first_class",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.string_call",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.qualified_string_call",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.call_user_func",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.call_user_func_firstclass",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.output_once",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.argument_once",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.unicode_value",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.literal_NUL_value",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.int64_boundaries",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 2,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.catch_TypeError",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.catch_count_error",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.deprecation_source_context",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.error_reporting_suppression",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "native.at_suppression",
+      "verdict": "PASS",
+      "actual_exit_code": 0,
+      "native_invocations": 1,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "guard.user_error_handler",
+      "verdict": "EXPECTED_ENGINE_REJECTION",
+      "actual_exit_code": 1,
+      "native_invocations": 0,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "guard.named_native_arguments",
+      "verdict": "EXPECTED_ENGINE_REJECTION",
+      "actual_exit_code": 1,
+      "native_invocations": 0,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "guard.populated_native_array",
+      "verdict": "EXPECTED_ENGINE_REJECTION",
+      "actual_exit_code": 1,
+      "native_invocations": 0,
+      "controlled_lifecycle_balanced": true
+    },
+    {
+      "id": "guard.native_reference_return",
+      "verdict": "EXPECTED_ENGINE_REJECTION",
+      "actual_exit_code": 1,
+      "native_invocations": 0,
+      "controlled_lifecycle_balanced": true
+    }
+  ]
+}

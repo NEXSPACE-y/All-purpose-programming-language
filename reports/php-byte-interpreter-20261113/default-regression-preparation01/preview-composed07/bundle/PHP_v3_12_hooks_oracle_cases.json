@@ -1,0 +1,147 @@
+﻿[
+  {
+    "name": "virtual getter expression",
+    "code": "<?php class Box { public string $label { get => \"ready\"; } } $b = new Box(); echo $b->label;",
+    "oracle_php_exit": 0,
+    "expected": "ready"
+  },
+  {
+    "name": "virtual getter block",
+    "code": "<?php class Box { public string $label { get { return \"box\"; } } } $b=new Box(); echo $b->label;",
+    "oracle_php_exit": 0,
+    "expected": "box"
+  },
+  {
+    "name": "setter arrow transforms",
+    "code": "<?php class Box { public string $label { get => $this->label; set => strtolower($value); } } $b=new Box(); $b->label=\"HELLO\"; echo $b->label;",
+    "oracle_php_exit": 0,
+    "expected": "hello"
+  },
+  {
+    "name": "getter arrow transforms",
+    "code": "<?php class Box { public string $label { get => strtoupper($this->label); set => $value; } } $b=new Box(); $b->label=\"hello\"; echo $b->label;",
+    "oracle_php_exit": 0,
+    "expected": "HELLO"
+  },
+  {
+    "name": "getter and setter arrow transforms",
+    "code": "<?php class Box { public string $label { get => strtoupper($this->label); set => strtolower($value); } } $b=new Box(); $b->label=\"Hi\"; echo $b->label;",
+    "oracle_php_exit": 0,
+    "expected": "HI"
+  },
+  {
+    "name": "setter block normalizes",
+    "code": "<?php class Box { public string $label { get { return $this->label; } set { $this->label = strtolower($value); } } } $b=new Box(); $b->label=\"HI\"; echo $b->label;",
+    "oracle_php_exit": 0,
+    "expected": "hi"
+  },
+  {
+    "name": "numeric get transforms",
+    "code": "<?php class Box { public int $num { get => $this->num + 2; set => $value; } } $b=new Box(); $b->num=7; echo $b->num;",
+    "oracle_php_exit": 0,
+    "expected": "9"
+  },
+  {
+    "name": "numeric set transforms",
+    "code": "<?php class Box { public int $num { get => $this->num; set => $value * 3; } } $b=new Box(); $b->num=4; echo $b->num;",
+    "oracle_php_exit": 0,
+    "expected": "12"
+  },
+  {
+    "name": "typed string weak cast",
+    "code": "<?php class Box { public string $label { get => $this->label; set => $value; } } $b=new Box(); $b->label=42; echo $b->label;",
+    "oracle_php_exit": 0,
+    "expected": "42"
+  },
+  {
+    "name": "inherited hook",
+    "code": "<?php class ParentBox { public int $num { get => $this->num + 1; set => $value; } } class Box extends ParentBox {} $b=new Box(); $b->num=4; echo $b->num;",
+    "oracle_php_exit": 0,
+    "expected": "5"
+  },
+  {
+    "name": "independent object storage",
+    "code": "<?php class Box { public string $label { get => $this->label; set => $value; } } $a=new Box(); $b=new Box(); $a->label=\"A\"; $b->label=\"B\"; echo $a->label . $b->label;",
+    "oracle_php_exit": 0,
+    "expected": "AB"
+  },
+  {
+    "name": "getter reads separate field",
+    "code": "<?php class Box { private int $num=5; public int $twice { get => $this->num * 2; } } echo (new Box())->twice;",
+    "oracle_php_exit": 0,
+    "expected": "10"
+  },
+  {
+    "name": "hook with initial value",
+    "code": "<?php class Box { public int $num = 5 { get => $this->num + 1; } } echo (new Box())->num;",
+    "oracle_php_exit": 0,
+    "expected": "6"
+  },
+  {
+    "name": "get-only property rejects assignment",
+    "code": "<?php class Box { public string $label { get => \"readonly\"; } } $b=new Box(); $b->label=\"no\";",
+    "oracle_php_exit": 255,
+    "error_contains": "ALL PHP: get-only",
+    "oracle_php_error_excerpt": "PHP Fatal error:  Uncaught Error: Property Box::$label is read-only in Command line code:1"
+  },
+  {
+    "name": "readonly hook rejected",
+    "code": "<?php class Box { public readonly int $num { get => 1; } }",
+    "oracle_php_exit": 255,
+    "error_contains": "ALL PHP: readonly property cannot declare hooks",
+    "oracle_php_error_excerpt": "PHP Fatal error:  Hooked properties cannot be readonly in Command line code on line 1"
+  },
+  {
+    "name": "static hook rejected",
+    "code": "<?php class Box { public static int $num { get => 1; } }",
+    "oracle_php_exit": 255,
+    "error_contains": "ALL PHP: Static property hooks",
+    "oracle_php_error_excerpt": "PHP Fatal error:  Cannot declare hooks for static property in Command line code on line 1"
+  },
+  {
+    "name": "duplicate getter rejected",
+    "code": "<?php class Box { public int $num { get => 1; get => 2; } }",
+    "oracle_php_exit": 255,
+    "error_contains": "ALL PHP: Duplicate property hook",
+    "oracle_php_error_excerpt": "PHP Fatal error:  Cannot redeclare property hook \"get\" in Command line code on line 1"
+  },
+  {
+    "name": "get-only backed accepts write",
+    "code": "<?php class Box { public int $num { get => $this->num; } } $b=new Box(); $b->num=7; echo $b->num;",
+    "oracle_php_exit": 0,
+    "expected": "7"
+  },
+  {
+    "name": "setter-only backed readable",
+    "code": "<?php class Box { public int $num { set { $this->num=$value; } } } $b=new Box(); $b->num=8; echo $b->num;",
+    "oracle_php_exit": 0,
+    "expected": "8"
+  },
+  {
+    "name": "explicit typed setter",
+    "code": "<?php class Box { public string $label { get => $this->label; set(string $input) { $this->label=strtolower($input); } } } $b=new Box(); $b->label=\"YES\"; echo $b->label;",
+    "oracle_php_exit": 0,
+    "expected": "yes"
+  },
+  {
+    "name": "setter only virtual cannot read",
+    "code": "<?php class Box { public int $num { set { } } } $b=new Box(); $b->num=8; echo $b->num;",
+    "oracle_php_exit": 255,
+    "error_contains": "ALL PHP: write-only",
+    "oracle_php_error_excerpt": "PHP Fatal error:  Uncaught Error: Property Box::$num is write-only in Command line code:1"
+  },
+  {
+    "name": "getter type mismatch",
+    "code": "<?php class Box { public int $num { get => \"not-an-int\"; } } echo (new Box())->num;",
+    "oracle_php_exit": 255,
+    "error_contains": "ALL PHP: Type mismatch at property",
+    "oracle_php_error_excerpt": "PHP Fatal error:  Uncaught TypeError: Box::$num::get(): Return value must be of type int, string returned in Command line code:1"
+  },
+  {
+    "name": "duplicate setter rejected",
+    "code": "<?php class Box { public int $num { set => $value; set => $value; } }",
+    "oracle_php_exit": 255,
+    "error_contains": "ALL PHP: Duplicate property hook",
+    "oracle_php_error_excerpt": "PHP Fatal error:  Cannot redeclare property hook \"set\" in Command line code on line 1"
+  }
+]

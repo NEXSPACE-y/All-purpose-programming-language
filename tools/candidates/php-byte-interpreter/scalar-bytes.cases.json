@@ -1,0 +1,62 @@
+[
+  {
+    "id": "byte.echo-ff",
+    "mode": "body",
+    "code": "echo \"\\xFF\";"
+  },
+  {
+    "id": "byte.dump-ff-nul",
+    "mode": "body",
+    "code": "var_dump(\"\\xFF\\0A\");"
+  },
+  {
+    "id": "byte.concat",
+    "mode": "body",
+    "code": "echo \"\\xFF\" . \"\\0\\u{D800}\";"
+  },
+  {
+    "id": "byte.interpolate",
+    "mode": "body",
+    "code": "$a=\"\\xFF\\0\";echo \"x{$a}y\";"
+  },
+  {
+    "id": "byte.assignment-copy",
+    "mode": "body",
+    "code": "$a=\"\\xFF\";$b=$a;$a.=\"\\0\";echo $a,$b;"
+  },
+  {
+    "id": "byte.cast-scalar",
+    "mode": "body",
+    "code": "var_dump((string)123,(string)false,(int)\"123\\xFF\",(float)\"-0\\xFF\");"
+  },
+  {
+    "id": "byte.strict-raw",
+    "mode": "body",
+    "code": "var_dump(\"\\xFF\"===\"\\xFF\",\"\\xFF\"===\"\\xFE\");"
+  },
+  {
+    "id": "byte.strict-canonical-unicode",
+    "mode": "body",
+    "code": "var_dump(\"\\u{E9}\"===\"e\\u{301}\");"
+  },
+  {
+    "id": "byte.compare-raw",
+    "mode": "body",
+    "code": "var_dump(\"\\xFF\">\"\\xFE\",\"\\u{10000}\">\"\\u{E000}\",\"2\"<\"10\");"
+  },
+  {
+    "id": "byte.truth",
+    "mode": "body",
+    "code": "var_dump((bool)\"0\",(bool)\"0\\0\",(bool)\"\\xFF\",(bool)\"\");"
+  },
+  {
+    "id": "byte.bitwise",
+    "mode": "body",
+    "code": "echo \"\\xFF\\x01\"&\"\\x0F\",\"|\",\"\\x80\"|\"\\x01\\xFF\",\"|\",\"\\xFF\"^\"\\x0F\\x80\";"
+  },
+  {
+    "id": "byte.raw-exit",
+    "mode": "body",
+    "code": "exit(\"\\xFF\\0\");echo \"unreachable\";"
+  }
+]

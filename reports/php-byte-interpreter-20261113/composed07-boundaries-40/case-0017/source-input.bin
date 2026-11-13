@@ -1,0 +1,1 @@
+var_dump(bin2hex("\0\xFF\x80\u{D800}"));

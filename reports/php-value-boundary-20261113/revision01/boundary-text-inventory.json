@@ -1,0 +1,2156 @@
+{
+  "scope": "Read-only textual candidate locations; metadata/source tokens/internal tags must not be converted indiscriminately",
+  "source_sha256": "af5cbd9571d78477c3bd4ab06bbd828e1314e0adcddfc0a056ba63c8fe3c92a7",
+  "hits": [
+    {
+      "line": 7,
+      "function_context": "Run host/source setup",
+      "source": "param([string]$Code, [switch]$PhpDiagnostics, [System.Collections.IDictionary]$CliContext = $null, [object]$NativeContext = $null)"
+    },
+    {
+      "line": 82,
+      "function_context": "Run host/source setup",
+      "source": "if ([AllPhp.ValidTextSymbols.Comparers]::Contract -cne 'allphp-valid-utf8-symbols-01') {"
+    },
+    {
+      "line": 85,
+      "function_context": "ConvertTo-PhpAsciiLower",
+      "source": "function ConvertTo-PhpAsciiLower([string]$name) { return [AllPhp.ValidTextSymbols.Comparers]::LowerAscii($name) }"
+    },
+    {
+      "line": 86,
+      "function_context": "Test-PhpNameEqual",
+      "source": "function Test-PhpNameEqual([string]$left,[string]$right) { return [AllPhp.ValidTextSymbols.Comparers]::Ascii.Equals($left,$right) }"
+    },
+    {
+      "line": 87,
+      "function_context": "Test-PhpRawNameEqual",
+      "source": "function Test-PhpRawNameEqual([string]$left,[string]$right) { return [StringComparer]::Ordinal.Equals($left,$right) }"
+    },
+    {
+      "line": 88,
+      "function_context": "Test-PhpNameIn",
+      "source": "function Test-PhpNameIn([string]$name,$names) {"
+    },
+    {
+      "line": 94,
+      "function_context": "Test-PhpNameIn",
+      "source": "if ((Get-FileHash -LiteralPath $phpByteRuntimePath -Algorithm SHA256).Hash.ToLowerInvariant() -cne $phpByteRuntimeHash) {"
+    },
+    {
+      "line": 99,
+      "function_context": "Test-PhpNameIn",
+      "source": "if ([IO.Path]::GetFullPath($loadedByteType.Assembly.Location) -cne [IO.Path]::GetFullPath($phpByteRuntimePath)) {"
+    },
+    {
+      "line": 113,
+      "function_context": "Is-PhpStringValue",
+      "source": "return ($value -is [AllPhp.ByteValues.PhpBytes] -or $value -is [string])"
+    },
+    {
+      "line": 116,
+      "function_context": "ConvertTo-PhpOwnedValue",
+      "source": "if ($value -is [string]) { return [AllPhp.ByteValues.PhpBytes]::FromUtf8($value) }"
+    },
+    {
+      "line": 121,
+      "function_context": "Get-PhpHostText",
+      "source": "if ($value -is [string]) { return $value }"
+    },
+    {
+      "line": 133,
+      "function_context": "To-PhpBytes",
+      "source": "if ($value -is [string]) { return [AllPhp.ByteValues.PhpBytes]::FromUtf8($value) }"
+    },
+    {
+      "line": 190,
+      "function_context": "Get-PhpNumericView",
+      "source": "if ($value -is [string]) { return $value }"
+    },
+    {
+      "line": 210,
+      "function_context": "Format-PhpBytesDump",
+      "source": "function Format-PhpBytesDump($value, [string]$pad) {"
+    },
+    {
+      "line": 306,
+      "function_context": "Evaluate-PhpBuiltinArguments",
+      "source": "function Evaluate-PhpBuiltinArguments($expressions, [string]$name) {"
+    },
+    {
+      "line": 315,
+      "function_context": "Evaluate-PhpBuiltinArguments",
+      "source": "if($expression.Kind-ceq'named_argument') {"
+    },
+    {
+      "line": 416,
+      "function_context": "Test-PhpRegisteredPublicFunction",
+      "source": "function Test-PhpRegisteredPublicFunction([string]$name) {"
+    },
+    {
+      "line": 438,
+      "function_context": "Get-PhpNativeName",
+      "source": "function Get-PhpNativeName([string]$name) {"
+    },
+    {
+      "line": 442,
+      "function_context": "Test-PhpNativeFunction",
+      "source": "function Test-PhpNativeFunction([string]$name) {"
+    },
+    {
+      "line": 446,
+      "function_context": "Throw-PhpNativeUnsupported",
+      "source": "function Throw-PhpNativeUnsupported([string]$reason) {"
+    },
+    {
+      "line": 464,
+      "function_context": "Invoke-PhpNativeFunction",
+      "source": "function Invoke-PhpNativeFunction([string]$name, $values) {"
+    },
+    {
+      "line": 472,
+      "function_context": "Invoke-PhpNativeFunction",
+      "source": "$item.PhpType -ceq 'named_argument') {"
+    },
+    {
+      "line": 508,
+      "function_context": "Invoke-PhpNativeFunction",
+      "source": "if ($nativeResult.Status -lt 0 -or $nativeResult.ErrorClass -ceq 'ALLNativeUnsupported') {"
+    },
+    {
+      "line": 511,
+      "function_context": "Invoke-PhpNativeFunction",
+      "source": "Throw-PhpError ([string]$nativeResult.ErrorClass) $nativeResult.ErrorMessage"
+    },
+    {
+      "line": 517,
+      "function_context": "Invoke-PhpNativeFunction",
+      "source": "-not [string]::IsNullOrEmpty([string]$CliContext['SourcePath'])) {"
+    },
+    {
+      "line": 518,
+      "function_context": "Invoke-PhpNativeFunction",
+      "source": "$state.ScriptName = [string]$CliContext['SourcePath']"
+    },
+    {
+      "line": 600,
+      "function_context": "Throw-PhpLiteralParseError",
+      "source": "function Throw-PhpLiteralParseError([string]$message,[long]$line) {"
+    },
+    {
+      "line": 609,
+      "function_context": "Add-PhpLiteralText",
+      "source": "function Add-PhpLiteralText($bytes,[string]$text) {"
+    },
+    {
+      "line": 612,
+      "function_context": "Read-PhpDocToken",
+      "source": "function Read-PhpDocToken([string]$text,[int]$offset,[long]$line) {"
+    },
+    {
+      "line": 615,
+      "function_context": "Read-PhpDocToken",
+      "source": "if (($text[$offset] -ceq 'b' -or $text[$offset] -ceq 'B') -and $offset+1 -lt $text.Length) {"
+    },
+    {
+      "line": 616,
+      "function_context": "Read-PhpDocToken",
+      "source": "if ($text[$offset+1] -ceq '\"' -or $text[$offset+1] -ceq \"'\") {"
+    },
+    {
+      "line": 624,
+      "function_context": "Read-PhpDocToken",
+      "source": "if ($offset+3 -gt $text.Length -or $text.Substring($offset,3) -cne '<<<') { return $null }"
+    },
+    {
+      "line": 640,
+      "function_context": "Read-PhpDocToken",
+      "source": "if ($text[$end] -ceq [char]13 -and $position -lt $text.Length -and $text[$position] -ceq [char]10) { $position++ }"
+    },
+    {
+      "line": 653,
+      "function_context": "Read-PhpDocToken",
+      "source": "if($body[$k]-ceq'\\'){$k++;continue}"
+    },
+    {
+      "line": 654,
+      "function_context": "Read-PhpDocToken",
+      "source": "if($body[$k]-ceq'$'-and$k+1-lt$body.Length-and[string]$body[$k+1]-cmatch'[A-Za-z_\\x80-\\uffff{]') {"
+    },
+    {
+      "line": 668,
+      "function_context": "Read-PhpDocToken",
+      "source": "if($prefixLine[$column]-cne' '-and$prefixLine[$column]-cne[char]9) {"
+    },
+    {
+      "line": 671,
+      "function_context": "Read-PhpDocToken",
+      "source": "if($prefixLine[$column]-cne[char]9) {"
+    },
+    {
+      "line": 688,
+      "function_context": "Read-PhpDocToken",
+      "source": "if ($part[$skip] -cne ' ' -and $part[$skip] -cne [char]9) {"
+    },
+    {
+      "line": 691,
+      "function_context": "Read-PhpDocToken",
+      "source": "if ($part[$skip] -cne $indent[0]) { Throw-PhpLiteralParseError 'Invalid indentation - tabs and spaces cannot be mixed' $bodyLine }"
+    },
+    {
+      "line": 697,
+      "function_context": "Read-PhpDocToken",
+      "source": "if ($body[$end-1] -ceq [char]13 -and $end -lt $body.Length -and $body[$end] -ceq [char]10) { [void]$clean.Append($body[$end]);$end++ }"
+    },
+    {
+      "line": 708,
+      "function_context": "ConvertTo-PhpTokens",
+      "source": "function ConvertTo-PhpTokens([string]$text, $tokens, $lines,"
+    },
+    {
+      "line": 718,
+      "function_context": "ConvertTo-PhpTokens",
+      "source": "$CliContext['InitialIni']['short_open_tag'] -ceq '1') {"
+    },
+    {
+      "line": 746,
+      "function_context": "ConvertTo-PhpTokens",
+      "source": "if ($opening.Value -ceq '<?=') {"
+    },
+    {
+      "line": 754,
+      "function_context": "ConvertTo-PhpTokens",
+      "source": "$text[$offset] -ceq '?' -and $text[$offset+1] -ceq '>') {"
+    },
+    {
+      "line": 759,
+      "function_context": "ConvertTo-PhpTokens",
+      "source": "if ($offset -lt $text.Length -and $text[$offset] -ceq [char]13) {"
+    },
+    {
+      "line": 760,
+      "function_context": "ConvertTo-PhpTokens",
+      "source": "$offset++;if ($offset -lt $text.Length -and $text[$offset] -ceq [char]10) { $offset++ };$line++"
+    },
+    {
+      "line": 761,
+      "function_context": "ConvertTo-PhpTokens",
+      "source": "} elseif ($offset -lt $text.Length -and $text[$offset] -ceq [char]10) { $offset++;$line++ }"
+    },
+    {
+      "line": 868,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "if ($t -ceq '{') {"
+    },
+    {
+      "line": 872,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "} elseif ($t -ceq '}') {"
+    },
+    {
+      "line": 881,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "} elseif ($t -ceq ';') {"
+    },
+    {
+      "line": 887,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "$isMember = ($prev -ceq '->' -or $prev -ceq '?->' -or $prev -ceq '::')"
+    },
+    {
+      "line": 890,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "$startsStatement = ($prev -ceq '' -or $prev -ceq ';' -or $prev -ceq '{' -or $prev -ceq '}' -or $state.InlineHtml.ContainsKey($prev))"
+    },
+    {
+      "line": 892,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "$lower -ceq 'namespace' -and $next -cne '(') {"
+    },
+    {
+      "line": 907,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "if ($j -lt $total -and $tokens[$j] -cne '{' -and $tokens[$j] -cne ';') { $name = $tokens[$j]; $j++ }"
+    },
+    {
+      "line": 910,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "if ($j -lt $total -and $tokens[$j] -ceq '{') { $nsStack.Push($depth) }"
+    },
+    {
+      "line": 915,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "$lower -ceq 'use' -and -not $inClass -and $next -cne '(') {"
+    },
+    {
+      "line": 924,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "while ($j -lt $total -and $tokens[$j] -cne ';') {"
+    },
+    {
+      "line": 926,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "if ($item -ceq ',' ) { $j++; continue }"
+    },
+    {
+      "line": 927,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "if ($item -ceq '}') { $group = ''; $j++; continue }"
+    },
+    {
+      "line": 931,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "if ($j + 1 -lt $total -and $tokens[$j + 1] -ceq '{') {"
+    },
+    {
+      "line": 963,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "} elseif ($lower -ceq '__namespace__' -and -not $plainName) {"
+    },
+    {
+      "line": 970,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "if ($lower -ceq 'use' -and $atMember) { $classList = $true }"
+    },
+    {
+      "line": 971,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "} elseif ($next -ceq '::') {"
+    },
+    {
+      "line": 983,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "} elseif ($prev -ieq 'function' -or ($prev -ceq '&' -and $i -gt 1 -and $tokens[$i - 2] -ieq 'function')) {"
+    },
+    {
+      "line": 996,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "} elseif ($prev -ieq 'goto' -or ($next -ceq ':' -and ($prev -ceq '(' -or $prev -ceq ','))) {"
+    },
+    {
+      "line": 1000,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "} elseif ($inClass -and ($lower -ceq 'get' -or $lower -ceq 'set') -and"
+    },
+    {
+      "line": 1001,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "($next -ceq '{' -or $next -ceq '=>' -or $next -ceq ';' -or $next -ceq '(')) {"
+    },
+    {
+      "line": 1007,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "while ($k + 1 -lt $total -and ($tokens[$k] -ceq '|' -or $tokens[$k] -ceq '&') -and"
+    },
+    {
+      "line": 1008,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "($phpNameRx.IsMatch($tokens[$k + 1]) -or $tokens[$k + 1] -ceq '?')) { $k += 2 }"
+    },
+    {
+      "line": 1012,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "elseif (($after -ceq '&' -or $after -ceq '...') -and $k + 1 -lt $total -and"
+    },
+    {
+      "line": 1014,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "elseif ($after -ceq '...' -and $k + 1 -lt $total -and $tokens[$k + 1].StartsWith('$')) { $isType = $true }"
+    },
+    {
+      "line": 1018,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "while ($k -gt 1 -and ($tokens[$k] -ceq '|' -or $tokens[$k] -ceq '&') -and"
+    },
+    {
+      "line": 1020,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "if ($k -ge 1 -and $tokens[$k] -ceq '?') { $k-- }"
+    },
+    {
+      "line": 1021,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "if ($k -ge 1 -and $tokens[$k] -ceq ':' -and $tokens[$k - 1] -ceq ')') {"
+    },
+    {
+      "line": 1027,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "if ($tokens[$m] -ceq ')') { $nesting++ }"
+    },
+    {
+      "line": 1028,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "elseif ($tokens[$m] -ceq '(') { $nesting--; if ($nesting -eq 0) { break } }"
+    },
+    {
+      "line": 1035,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "elseif ($m -ge 3 -and $tokens[$m - 2] -ceq '&' -and $tokens[$m - 3] -ieq 'function') { $isType = $true }"
+    },
+    {
+      "line": 1036,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "elseif ($before -ceq '&' -and $m -ge 2 -and ($tokens[$m - 2] -ieq 'function' -or $tokens[$m - 2] -ieq 'fn')) { $isType = $true }"
+    },
+    {
+      "line": 1039,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "elseif ($k -ge 1 -and $tokens[$k] -ceq '(' -and $tokens[$k - 1] -ieq 'catch') { $isType = $true }"
+    },
+    {
+      "line": 1042,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "elseif ($next -ceq '(') {"
+    },
+    {
+      "line": 1066,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines $true ($CliContext['SourceMode'] -ceq 'body')"
+    },
+    {
+      "line": 1087,
+      "function_context": "Resolve-PhpNamespaceTokens",
+      "source": "$state.Tokens[$scan + 1] -cne '(') { $needsNameResolution = $true; break }"
+    },
+    {
+      "line": 1115,
+      "function_context": "Expect-Token",
+      "source": "function Expect-Token([string]$expected) {"
+    },
+    {
+      "line": 1118,
+      "function_context": "Expect-Token",
+      "source": "if ($isCli -and $expected -ceq ';' -and $unexpected.Length -ge 2 -and"
+    },
+    {
+      "line": 1137,
+      "function_context": "Decode-PhpString",
+      "source": "function Decode-PhpString([string]$text) {"
+    },
+    {
+      "line": 1156,
+      "function_context": "Decode-PhpString",
+      "source": "switch ([string]$next) {"
+    },
+    {
+      "line": 1177,
+      "function_context": "Expand-PhpDoubleString",
+      "source": "function Expand-PhpDoubleString([string]$token,[bool]$IsBody=$false,[bool]$Heredoc=$false,[bool]$ValidateOnly=$false,[long]$LineBase=0) {"
+    },
+    {
+      "line": 1183,
+      "function_context": "Expand-PhpDoubleString",
+      "source": "if($ch-ceq'\\') {"
+    },
+    {
+      "line": 1186,
+      "function_context": "Expand-PhpDoubleString",
+      "source": "if($next-ceq'x'-or$next-ceq'X') {"
+    },
+    {
+      "line": 1188,
+      "function_context": "Expand-PhpDoubleString",
+      "source": "while($j-lt$body.Length-and$hex.Length-lt2-and[string]$body[$j]-cmatch'^[0-9A-Fa-f]$'){$hex+=$body[$j];$j++}"
+    },
+    {
+      "line": 1191,
+      "function_context": "Expand-PhpDoubleString",
+      "source": "if([string]$next-cmatch'^[0-7]$') {"
+    },
+    {
+      "line": 1193,
+      "function_context": "Expand-PhpDoubleString",
+      "source": "while($j-lt$body.Length-and$octal.Length-lt3-and[string]$body[$j]-cmatch'^[0-7]$'){$octal+=$body[$j];$j++}"
+    },
+    {
+      "line": 1200,
+      "function_context": "Expand-PhpDoubleString",
+      "source": "if($next-ceq'u'-and$i+2-lt$body.Length-and$body[$i+2]-ceq'{') {"
+    },
+    {
+      "line": 1208,
+      "function_context": "Expand-PhpDoubleString",
+      "source": "if($point-le0x10ffff){$point=$point*16+[Convert]::ToInt32([string]$digit,16)}"
+    },
+    {
+      "line": 1220,
+      "function_context": "Expand-PhpDoubleString",
+      "source": "switch -CaseSensitive ([string]$next) {"
+    },
+    {
+      "line": 1238,
+      "function_context": "Expand-PhpDoubleString",
+      "source": "if($ch-ceq'$'-and$i+1-lt$body.Length-and$body[$i+1]-ceq'{'){throw 'ALL PHP: Legacy ${...} interpolation is not implemented'}"
+    },
+    {
+      "line": 1240,
+      "function_context": "Expand-PhpDoubleString",
+      "source": "if($ch-ceq'{'-and$i+1-lt$body.Length-and$body[$i+1]-ceq'$'){$braced=$true;$start++}"
+    },
+    {
+      "line": 1241,
+      "function_context": "Expand-PhpDoubleString",
+      "source": "elseif($ch-cne'$') {"
+    },
+    {
+      "line": 1246,
+      "function_context": "Expand-PhpDoubleString",
+      "source": "if($start+1-ge$body.Length-or-not([string]$body[$start+1]-cmatch'[A-Za-z_\\x80-\\uffff]')) {Add-PhpLiteralText $output ([string]$ch);continue}"
+    },
+    {
+      "line": 1248,
+      "function_context": "Expand-PhpDoubleString",
+      "source": "while($end-lt$body.Length-and[string]$body[$end]-cmatch'[A-Za-z_0-9\\x80-\\uffff]'){$end++}"
+    },
+    {
+      "line": 1249,
+      "function_context": "Expand-PhpDoubleString",
+      "source": "if($braced){if($end-ge$body.Length-or$body[$end]-cne'}'){throw 'ALL PHP: Complex braced string interpolation is not implemented'}}"
+    },
+    {
+      "line": 1250,
+      "function_context": "Expand-PhpDoubleString",
+      "source": "elseif($end-lt$body.Length-and($body[$end]-ceq'['-or($end+1-lt$body.Length-and$body.Substring($end,2)-ceq'->'))){throw 'ALL PHP: Complex string interpolation is not implemented'}"
+    },
+    {
+      "line": 1271,
+      "function_context": "Take-PhpFirstClassCallableArgs",
+      "source": "if ((Peek-Token) -cne '(' -or $state.Pos + 2 -ge $state.Tokens.Count) {"
+    },
+    {
+      "line": 1274,
+      "function_context": "Take-PhpFirstClassCallableArgs",
+      "source": "if ($state.Tokens[$state.Pos + 1] -cne '...' -or"
+    },
+    {
+      "line": 1275,
+      "function_context": "Take-PhpFirstClassCallableArgs",
+      "source": "$state.Tokens[$state.Pos + 2] -cne ')') { return $false }"
+    },
+    {
+      "line": 1284,
+      "function_context": "Read-Arguments",
+      "source": "if ((Peek-Token) -cne ')') {"
+    },
+    {
+      "line": 1289,
+      "function_context": "Read-Arguments",
+      "source": "$state.Tokens[$state.Pos + 1] -ceq ':') {"
+    },
+    {
+      "line": 1299,
+      "function_context": "Read-Arguments",
+      "source": "if ((Peek-Token) -cne ',') { break }"
+    },
+    {
+      "line": 1301,
+      "function_context": "Read-Arguments",
+      "source": "if ((Peek-Token) -ceq ')') { break }"
+    },
+    {
+      "line": 1330,
+      "function_context": "ConvertFrom-PhpNumberLiteral",
+      "source": "function ConvertFrom-PhpNumberLiteral([string]$token) {"
+    },
+    {
+      "line": 1342,
+      "function_context": "ConvertFrom-PhpNumberLiteral",
+      "source": "$digit = [Convert]::ToInt32([string]$ch, 16)"
+    },
+    {
+      "line": 1360,
+      "function_context": "Read-Array",
+      "source": "function Read-Array([string]$close) {"
+    },
+    {
+      "line": 1362,
+      "function_context": "Read-Array",
+      "source": "if ((Peek-Token) -cne $close) {"
+    },
+    {
+      "line": 1365,
+      "function_context": "Read-Array",
+      "source": "if ((Peek-Token) -ceq '...') {"
+    },
+    {
+      "line": 1370,
+      "function_context": "Read-Array",
+      "source": "if ((Peek-Token) -ceq '&') {"
+    },
+    {
+      "line": 1377,
+      "function_context": "Read-Array",
+      "source": "if ((Peek-Token) -ceq '=>') {"
+    },
+    {
+      "line": 1382,
+      "function_context": "Read-Array",
+      "source": "if ((Peek-Token) -ceq '&') { [void](Next-Token);$byReference=$true }"
+    },
+    {
+      "line": 1386,
+      "function_context": "Read-Array",
+      "source": "if ((Peek-Token) -cne ',') { break }"
+    },
+    {
+      "line": 1388,
+      "function_context": "Read-Array",
+      "source": "if ((Peek-Token) -ceq $close) { break }"
+    },
+    {
+      "line": 1400,
+      "function_context": "Read-Primary",
+      "source": "if ($token -ceq '(') {"
+    },
+    {
+      "line": 1406,
+      "function_context": "Read-Primary",
+      "source": "if ($token -ceq '[') {"
+    },
+    {
+      "line": 1443,
+      "function_context": "Read-Primary",
+      "source": "if ($token -ceq '$') {"
+    },
+    {
+      "line": 1463,
+      "function_context": "Read-Primary",
+      "source": "while ((Peek-Token) -cne '}') {"
+    },
+    {
+      "line": 1471,
+      "function_context": "Read-Primary",
+      "source": "while ((Peek-Token) -ceq ',') {"
+    },
+    {
+      "line": 1473,
+      "function_context": "Read-Primary",
+      "source": "if ((Peek-Token) -ceq '=>') { break }"
+    },
+    {
+      "line": 1482,
+      "function_context": "Read-Primary",
+      "source": "if ((Peek-Token) -cne ',') { break }"
+    },
+    {
+      "line": 1484,
+      "function_context": "Read-Primary",
+      "source": "if ((Peek-Token) -ceq '}') { break }"
+    },
+    {
+      "line": 1495,
+      "function_context": "Read-Primary",
+      "source": "if ((Peek-Token) -ceq '&') {"
+    },
+    {
+      "line": 1505,
+      "function_context": "Read-Primary",
+      "source": "if ((Peek-Token) -ceq ':') {"
+    },
+    {
+      "line": 1515,
+      "function_context": "Read-Primary",
+      "source": "while ((Peek-Token) -cne ')') {"
+    },
+    {
+      "line": 1517,
+      "function_context": "Read-Primary",
+      "source": "if ((Peek-Token) -ceq '&') {"
+    },
+    {
+      "line": 1528,
+      "function_context": "Read-Primary",
+      "source": "if ((Peek-Token) -cne ',') { break }"
+    },
+    {
+      "line": 1533,
+      "function_context": "Read-Primary",
+      "source": "if ((Peek-Token) -ceq ':') {"
+    },
+    {
+      "line": 1537,
+      "function_context": "Read-Primary",
+      "source": "if ((Peek-Token) -cne '{') { throw 'ALL PHP: Closure body must be a block' }"
+    },
+    {
+      "line": 1558,
+      "function_context": "Read-Primary",
+      "source": "if ((Peek-Token) -ceq '(') { $callArgs = Read-Arguments }"
+    },
+    {
+      "line": 1567,
+      "function_context": "Read-Primary",
+      "source": "$state.Tokens[$state.Pos + 1] -cne '(') {"
+    },
+    {
+      "line": 1581,
+      "function_context": "Read-Primary",
+      "source": "if ((Peek-Token) -ceq '(') {"
+    },
+    {
+      "line": 1590,
+      "function_context": "Read-Primary",
+      "source": "if ($state.ParsingInternalPrelude -and $token -ceq '__all_throwable_string') {"
+    },
+    {
+      "line": 1604,
+      "function_context": "Read-Postfix",
+      "source": "if ($token -ceq '(') {"
+    },
+    {
+      "line": 1617,
+      "function_context": "Read-Postfix",
+      "source": "if ($token -ceq '[') {"
+    },
+    {
+      "line": 1620,
+      "function_context": "Read-Postfix",
+      "source": "if ((Peek-Token) -cne ']') { $key = Read-Expr 1 }"
+    },
+    {
+      "line": 1625,
+      "function_context": "Read-Postfix",
+      "source": "if ($token -ceq '::') {"
+    },
+    {
+      "line": 1636,
+      "function_context": "Read-Postfix",
+      "source": "if ((Peek-Token) -ceq '(') {"
+    },
+    {
+      "line": 1655,
+      "function_context": "Read-Postfix",
+      "source": "if ($token -ceq '->' -or $token -ceq '?->') {"
+    },
+    {
+      "line": 1657,
+      "function_context": "Read-Postfix",
+      "source": "$nullSafe = ($token -ceq '?->')"
+    },
+    {
+      "line": 1662,
+      "function_context": "Read-Postfix",
+      "source": "if ((Peek-Token) -ceq '(') {"
+    },
+    {
+      "line": 1711,
+      "function_context": "Read-Unary",
+      "source": "if ($token -ceq '@') {"
+    },
+    {
+      "line": 1715,
+      "function_context": "Read-Unary",
+      "source": "if ($token -ceq '!') {"
+    },
+    {
+      "line": 1722,
+      "function_context": "Read-Unary",
+      "source": "if ($token -ceq '(' -and ($state.Pos + 2) -lt $state.Tokens.Count -and"
+    },
+    {
+      "line": 1723,
+      "function_context": "Read-Unary",
+      "source": "$state.Tokens[$state.Pos + 2] -ceq ')' -and"
+    },
+    {
+      "line": 1739,
+      "function_context": "Read-Power",
+      "source": "if ((Peek-Token) -ceq '**') {"
+    },
+    {
+      "line": 1748,
+      "function_context": "Operator-Priority",
+      "source": "function Operator-Priority([string]$op) {"
+    },
+    {
+      "line": 1784,
+      "function_context": "Read-Expr",
+      "source": "if ($op -ceq '??') {"
+    },
+    {
+      "line": 1795,
+      "function_context": "Read-Expr",
+      "source": "if ($minPriority -eq 1 -and (Peek-Token) -ceq '?') {"
+    },
+    {
+      "line": 1798,
+      "function_context": "Read-Expr",
+      "source": "if ((Peek-Token) -cne ':') { $ifTrue = Read-Expr 1 }"
+    },
+    {
+      "line": 1811,
+      "function_context": "Read-Expr",
+      "source": "if ($assignmentOp -ceq '=' -and (Peek-Token) -ceq '&') {"
+    },
+    {
+      "line": 1828,
+      "function_context": "Read-Expr",
+      "source": "if ($left.Kind -eq 'array' -and $assignmentOp -cne '=') {"
+    },
+    {
+      "line": 1840,
+      "function_context": "Read-ForMutations",
+      "source": "function Read-ForMutations([string]$endToken) {"
+    },
+    {
+      "line": 1842,
+      "function_context": "Read-ForMutations",
+      "source": "while ((Peek-Token) -cne $endToken) {"
+    },
+    {
+      "line": 1846,
+      "function_context": "Read-ForMutations",
+      "source": "if ((Peek-Token) -cne ',') { break }"
+    },
+    {
+      "line": 1855,
+      "function_context": "Read-ForMutations",
+      "source": "$op = if ($op -ceq '++') { '+=' } else { '-=' }"
+    },
+    {
+      "line": 1865,
+      "function_context": "Read-ForMutations",
+      "source": "if ((Peek-Token) -cne ',') { break }"
+    },
+    {
+      "line": 1883,
+      "function_context": "Read-StatementCore",
+      "source": "$CliContext['SourceMode'] -ceq 'body' -and $state.Pos -eq 0 -and $token -ceq '<') {"
+    },
+    {
+      "line": 1895,
+      "function_context": "Read-StatementCore",
+      "source": "if ($token -ceq '{') {"
+    },
+    {
+      "line": 1898,
+      "function_context": "Read-StatementCore",
+      "source": "while ((Peek-Token) -cne '}') {"
+    },
+    {
+      "line": 1899,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq '(EOF)') {"
+    },
+    {
+      "line": 1907,
+      "function_context": "Read-StatementCore",
+      "source": "if ($token -ceq ';') {"
+    },
+    {
+      "line": 1914,
+      "function_context": "Read-StatementCore",
+      "source": "($state.Tokens[$state.Pos + 1] -ceq '&' -and"
+    },
+    {
+      "line": 1928,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -cne ',') { break }"
+    },
+    {
+      "line": 1943,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq '=') {"
+    },
+    {
+      "line": 1948,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -cne ',') { break }"
+    },
+    {
+      "line": 1969,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -cne ',') { break }"
+    },
+    {
+      "line": 1976,
+      "function_context": "Read-StatementCore",
+      "source": "while ((Peek-Token) -cne '}') {"
+    },
+    {
+      "line": 1977,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq '(EOF)') { throw 'ALL PHP: Missing interface closing brace' }"
+    },
+    {
+      "line": 2025,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq ':') {"
+    },
+    {
+      "line": 2033,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq 'implements') {"
+    },
+    {
+      "line": 2041,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -cne ',') { break }"
+    },
+    {
+      "line": 2048,
+      "function_context": "Read-StatementCore",
+      "source": "while ((Peek-Token) -cne '}') {"
+    },
+    {
+      "line": 2049,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq '(EOF)') { throw 'ALL PHP: Missing enum closing brace' }"
+    },
+    {
+      "line": 2050,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq 'case') {"
+    },
+    {
+      "line": 2057,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq '=') {"
+    },
+    {
+      "line": 2074,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq 'public') { [void](Next-Token) }"
+    },
+    {
+      "line": 2075,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq 'static') { [void](Next-Token); $static=$true }"
+    },
+    {
+      "line": 2076,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -cne 'function') {"
+    },
+    {
+      "line": 2122,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -cne ',') { break }"
+    },
+    {
+      "line": 2132,
+      "function_context": "Read-StatementCore",
+      "source": "while ((Peek-Token) -cne '}') {"
+    },
+    {
+      "line": 2133,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq '(EOF)') { throw 'ALL PHP: Missing class closing brace' }"
+    },
+    {
+      "line": 2145,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -cne ',') { break }"
+    },
+    {
+      "line": 2150,
+      "function_context": "Read-StatementCore",
+      "source": "while ((Peek-Token) -cne '}') {"
+    },
+    {
+      "line": 2156,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq '::') {"
+    },
+    {
+      "line": 2176,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -cne ',') { break }"
+    },
+    {
+      "line": 2190,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -cne ';') {"
+    },
+    {
+      "line": 2228,
+      "function_context": "Read-StatementCore",
+      "source": "if ($modifiers.Contains('public') -and $modifier -cne 'public' -or"
+    },
+    {
+      "line": 2229,
+      "function_context": "Read-StatementCore",
+      "source": "$modifiers.Contains('protected') -and $modifier -cne 'protected' -or"
+    },
+    {
+      "line": 2230,
+      "function_context": "Read-StatementCore",
+      "source": "$modifiers.Contains('private') -and $modifier -cne 'private') {"
+    },
+    {
+      "line": 2288,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq '?' -or"
+    },
+    {
+      "line": 2310,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq '=') {"
+    },
+    {
+      "line": 2324,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq '{') {"
+    },
+    {
+      "line": 2328,
+      "function_context": "Read-StatementCore",
+      "source": "while ((Peek-Token) -cne '}') {"
+    },
+    {
+      "line": 2329,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq '(EOF)') {"
+    },
+    {
+      "line": 2339,
+      "function_context": "Read-StatementCore",
+      "source": "if ($hookName -ceq 'get' -and $null -ne $getHook -or"
+    },
+    {
+      "line": 2340,
+      "function_context": "Read-StatementCore",
+      "source": "$hookName -ceq 'set' -and $null -ne $setHook) {"
+    },
+    {
+      "line": 2344,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq '(') {"
+    },
+    {
+      "line": 2345,
+      "function_context": "Read-StatementCore",
+      "source": "if ($hookName -ceq 'get') {"
+    },
+    {
+      "line": 2359,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq '=>') {"
+    },
+    {
+      "line": 2364,
+      "function_context": "Read-StatementCore",
+      "source": "} elseif ((Peek-Token) -ceq '{') {"
+    },
+    {
+      "line": 2369,
+      "function_context": "Read-StatementCore",
+      "source": "if ($hookName -ceq 'set' -and $arrow) {"
+    },
+    {
+      "line": 2373,
+      "function_context": "Read-StatementCore",
+      "source": "if ($state.Tokens[$hi] -ceq '$this' -and"
+    },
+    {
+      "line": 2374,
+      "function_context": "Read-StatementCore",
+      "source": "$state.Tokens[$hi + 1] -ceq '->' -and"
+    },
+    {
+      "line": 2382,
+      "function_context": "Read-StatementCore",
+      "source": "if ($hookName -ceq 'get') { $getHook=$hook }"
+    },
+    {
+      "line": 2414,
+      "function_context": "Read-StatementCore",
+      "source": "while ((Peek-Token) -cne '}') {"
+    },
+    {
+      "line": 2416,
+      "function_context": "Read-StatementCore",
+      "source": "if ($label -ceq '(EOF)') { throw 'ALL PHP: Missing switch closing brace' }"
+    },
+    {
+      "line": 2446,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -cne ';') { $expr = Read-Expr 1 }"
+    },
+    {
+      "line": 2477,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -cne ';') { $condition = Read-Expr 1 }"
+    },
+    {
+      "line": 2512,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq '&') {"
+    },
+    {
+      "line": 2522,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq '=>') {"
+    },
+    {
+      "line": 2526,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -ceq '&') {"
+    },
+    {
+      "line": 2545,
+      "function_context": "Read-StatementCore",
+      "source": "$state.Tokens[$state.Pos + 2] -ceq '=') {"
+    },
+    {
+      "line": 2555,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -cne ',') { break }"
+    },
+    {
+      "line": 2563,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -cne '{') { throw \"ALL PHP: Expected '{', got '$(Peek-Token)'\" }"
+    },
+    {
+      "line": 2576,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -cne '|') { break }"
+    },
+    {
+      "line": 2584,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -cne '{') { throw \"ALL PHP: Expected '{', got '$(Peek-Token)'\" }"
+    },
+    {
+      "line": 2593,
+      "function_context": "Read-StatementCore",
+      "source": "if ((Peek-Token) -cne '{') { throw \"ALL PHP: Expected '{', got '$(Peek-Token)'\" }"
+    },
+    {
+      "line": 2607,
+      "function_context": "Read-StatementCore",
+      "source": "while ((Peek-Token) -ceq ',') {"
+    },
+    {
+      "line": 2621,
+      "function_context": "Read-StatementCore",
+      "source": "if ($expr.Kind -ceq 'class_name') {"
+    },
+    {
+      "line": 2624,
+      "function_context": "Read-StatementCore",
+      "source": "if ($isCli -and (Peek-Token) -cne ';') { Expect-Token ';' }"
+    },
+    {
+      "line": 2634,
+      "function_context": "Read-PhpTypeAnnotation",
+      "source": "if ($first -ceq '?') {"
+    },
+    {
+      "line": 2673,
+      "function_context": "Read-Parameters",
+      "source": "if ((Peek-Token) -cne ')') {"
+    },
+    {
+      "line": 2693,
+      "function_context": "Read-Parameters",
+      "source": "if ((Peek-Token) -ceq '?' -or"
+    },
+    {
+      "line": 2701,
+      "function_context": "Read-Parameters",
+      "source": "if ((Peek-Token) -ceq '&') {"
+    },
+    {
+      "line": 2706,
+      "function_context": "Read-Parameters",
+      "source": "if ((Peek-Token) -ceq '...') {"
+    },
+    {
+      "line": 2723,
+      "function_context": "Read-Parameters",
+      "source": "if ((Peek-Token) -ceq '=') {"
+    },
+    {
+      "line": 2739,
+      "function_context": "Read-Parameters",
+      "source": "if ((Peek-Token) -cne ',') { break }"
+    },
+    {
+      "line": 2741,
+      "function_context": "Read-Parameters",
+      "source": "if ((Peek-Token) -ceq ')') { break }"
+    },
+    {
+      "line": 2750,
+      "function_context": "Read-Function",
+      "source": "if ((Peek-Token) -ceq '&') {"
+    },
+    {
+      "line": 2765,
+      "function_context": "Read-Function",
+      "source": "if ((Peek-Token) -ceq ':') {"
+    },
+    {
+      "line": 2773,
+      "function_context": "Read-Function",
+      "source": "if ((Peek-Token) -cne '{') { throw 'ALL PHP: Function body must be a block' }"
+    },
+    {
+      "line": 2787,
+      "function_context": "Read-Function",
+      "source": "while ((Peek-Token) -cne '(EOF)') {"
+    },
+    {
+      "line": 2879,
+      "function_context": "Ensure-PhpPrelude",
+      "source": "while ((Peek-Token) -cne '(EOF)') { [void]$nodes.Add((Read-Statement)) }"
+    },
+    {
+      "line": 2897,
+      "function_context": "Format-PhpTraceArgument",
+      "source": "$value.PhpType -ceq 'named_argument') { $value = $value.Value }"
+    },
+    {
+      "line": 2903,
+      "function_context": "Format-PhpTraceArgument",
+      "source": "if ($value -is [string]) {"
+    },
+    {
+      "line": 2948,
+      "function_context": "Throw-PhpObject",
+      "source": "function Throw-PhpObject($object, [string]$legacyText = '') {"
+    },
+    {
+      "line": 2961,
+      "function_context": "Throw-PhpObject",
+      "source": "$id = [string]$state.ThrownSeq"
+    },
+    {
+      "line": 2971,
+      "function_context": "Get-PhpThrown",
+      "source": "$id = [string]$ex.Data['PhpThrowableId']"
+    },
+    {
+      "line": 2979,
+      "function_context": "Throw-PhpError",
+      "source": "function Throw-PhpError([string]$className, $message, [string]$legacyText = '') {"
+    },
+    {
+      "line": 2993,
+      "function_context": "Format-PhpMatchValue",
+      "source": "if ($value -is [string]) { return (\"'\" + $value.Replace('\\', '\\\\').Replace(\"'\", \"\\'\") + \"'\") }"
+    },
+    {
+      "line": 3001,
+      "function_context": "Throw-PhpInvalidValueCallable",
+      "source": "function Throw-PhpInvalidValueCallable([string]$message, [string]$callbackReason,"
+    },
+    {
+      "line": 3002,
+      "function_context": "Throw-PhpInvalidValueCallable",
+      "source": "[string]$callbackFunction, [string]$legacyText='ALL PHP: Value is not callable') {"
+    },
+    {
+      "line": 3008,
+      "function_context": "Assert-PhpMethodValueCallable",
+      "source": "function Assert-PhpMethodValueCallable([string]$className, [string]$methodName,"
+    },
+    {
+      "line": 3009,
+      "function_context": "Assert-PhpMethodValueCallable",
+      "source": "[bool]$staticOnly, [string]$callbackFunction) {"
+    },
+    {
+      "line": 3031,
+      "function_context": "Assert-PhpValueCallable",
+      "source": "function Assert-PhpValueCallable($callee, [string]$callbackFunction='') {"
+    },
+    {
+      "line": 3035,
+      "function_context": "Assert-PhpValueCallable",
+      "source": "if ($callee -is [string]) {"
+    },
+    {
+      "line": 3066,
+      "function_context": "Assert-PhpValueCallable",
+      "source": "if ($target -isnot [string] -and -not (Is-PhpObject $target)) {"
+    },
+    {
+      "line": 3069,
+      "function_context": "Assert-PhpValueCallable",
+      "source": "if ($member -isnot [string]) {"
+    },
+    {
+      "line": 3089,
+      "function_context": "Get-PhpValueCallableDefinition",
+      "source": "if ($callee.PhpType -ceq 'closure') { return $callee.Definition }"
+    },
+    {
+      "line": 3090,
+      "function_context": "Get-PhpValueCallableDefinition",
+      "source": "if ($callee.PhpType -ceq 'first_class_callable') {"
+    },
+    {
+      "line": 3091,
+      "function_context": "Get-PhpValueCallableDefinition",
+      "source": "if ($callee.Mode -ceq 'function' -and $state.Functions.ContainsKey($callee.Name)) { return $state.Functions[$callee.Name] }"
+    },
+    {
+      "line": 3092,
+      "function_context": "Get-PhpValueCallableDefinition",
+      "source": "if ($callee.Mode -ceq 'method') { return (Find-OptionalPhpMethod $callee.BoundThis.Class $callee.Name) }"
+    },
+    {
+      "line": 3093,
+      "function_context": "Get-PhpValueCallableDefinition",
+      "source": "if ($callee.Mode -ceq 'static') { return (Find-OptionalPhpMethod $callee.Class $callee.Name) }"
+    },
+    {
+      "line": 3101,
+      "function_context": "Get-PhpValueCallableDefinition",
+      "source": "$className=if (Is-PhpObject $target) { $target.Class } else { [string]$target }"
+    },
+    {
+      "line": 3104,
+      "function_context": "Get-PhpValueCallableDefinition",
+      "source": "if ($callee -is [string]) {"
+    },
+    {
+      "line": 3128,
+      "function_context": "Prepare-PhpCallbackValues",
+      "source": "if ($null -ne $item -and $item.PSObject.Properties['PhpType'] -and $item.PhpType -ceq 'named_argument') {"
+    },
+    {
+      "line": 3137,
+      "function_context": "Prepare-PhpCallbackValues",
+      "source": "elseif ($null -ne $value -and $value.PSObject.Properties['PhpType'] -and $value.PhpType -ceq 'refargument') { $cell=$value.Cell }"
+    },
+    {
+      "line": 3139,
+      "function_context": "Prepare-PhpCallbackValues",
+      "source": "$displayName=[string]$definition.Name"
+    },
+    {
+      "line": 3140,
+      "function_context": "Prepare-PhpCallbackValues",
+      "source": "if ($definition.PSObject.Properties['Owner'] -and -not [string]::IsNullOrEmpty([string]$definition.Owner)) {"
+    },
+    {
+      "line": 3156,
+      "function_context": "Invoke-PhpValueCallable",
+      "source": "function Invoke-PhpValueCallable($callee, $values, [string]$callbackFunction='') {"
+    },
+    {
+      "line": 3162,
+      "function_context": "Invoke-PhpValueCallable",
+      "source": "if ($callee.PhpType -ceq 'closure') {"
+    },
+    {
+      "line": 3165,
+      "function_context": "Invoke-PhpValueCallable",
+      "source": "if ($callee.PhpType -ceq 'first_class_callable') {"
+    },
+    {
+      "line": 3183,
+      "function_context": "Invoke-PhpValueCallable",
+      "source": "if ($pair.Count -eq 2 -and $pair[1] -is [string]) {"
+    },
+    {
+      "line": 3185,
+      "function_context": "Invoke-PhpValueCallable",
+      "source": "if ($pair[0] -is [string]) { return (Invoke-PhpStaticMethod $pair[0] $pair[1] $values) }"
+    },
+    {
+      "line": 3189,
+      "function_context": "Invoke-PhpValueCallable",
+      "source": "if ($callee -is [string]) {"
+    },
+    {
+      "line": 3204,
+      "function_context": "Get-PhpCallableArity",
+      "source": "$callee.PhpType -ceq 'closure') { return @($callee.Definition.Params).Count }"
+    },
+    {
+      "line": 3205,
+      "function_context": "Get-PhpCallableArity",
+      "source": "if ($callee -is [string] -and $state.Functions.ContainsKey($callee)) {"
+    },
+    {
+      "line": 3217,
+      "function_context": "Write-PhpDiagnostic",
+      "source": "$handlerArgs=@($level,$messageBytes,(To-PhpBytes ([string]$state.ScriptName)),[long]$state.Line)"
+    },
+    {
+      "line": 3242,
+      "function_context": "Test-PhpObjectHasProp",
+      "source": "function Test-PhpObjectHasProp($object, [string]$name) {"
+    },
+    {
+      "line": 3257,
+      "function_context": "Get-PhpObjectDumpEntries",
+      "source": "if (-not $seen.Add([string]$prop.Name)) { continue }"
+    },
+    {
+      "line": 3269,
+      "function_context": "Get-PhpObjectDumpEntries",
+      "source": "Name=[string]$prop.Name; Suffix=$suffix; PlainSuffix=$plain; Present=$present"
+    },
+    {
+      "line": 3270,
+      "function_context": "Get-PhpObjectDumpEntries",
+      "source": "TypeName=[string]$declared.TypeName"
+    },
+    {
+      "line": 3277,
+      "function_context": "Get-PhpObjectDumpEntries",
+      "source": "if (-not $seen.Add([string]$key)) { continue }"
+    },
+    {
+      "line": 3279,
+      "function_context": "Get-PhpObjectDumpEntries",
+      "source": "Name=[string]$key; Suffix=''; PlainSuffix=''; Present=$true; TypeName=''"
+    },
+    {
+      "line": 3329,
+      "function_context": "Is-PhpArray",
+      "source": "$value.PhpType -ceq 'array')"
+    },
+    {
+      "line": 3333,
+      "function_context": "Is-PhpObject",
+      "source": "$value.PhpType -ceq 'object')"
+    },
+    {
+      "line": 3349,
+      "function_context": "Get-PhpVariableSlot",
+      "source": "function Get-PhpVariableSlot([string]$name) {"
+    },
+    {
+      "line": 3352,
+      "function_context": "Get-PhpVariableSlot",
+      "source": "if ($name -ceq '_SERVER' -and $state.Globals.ContainsKey('_SERVER')) {"
+    },
+    {
+      "line": 3367,
+      "function_context": "Is-PhpRefCell",
+      "source": "$value.PhpType -ceq 'refcell')"
+    },
+    {
+      "line": 3369,
+      "function_context": "Get-PhpVariableValue",
+      "source": "function Get-PhpVariableValue([string]$name) {"
+    },
+    {
+      "line": 3370,
+      "function_context": "Get-PhpVariableValue",
+      "source": "if ($name -ceq 'GLOBALS') {"
+    },
+    {
+      "line": 3376,
+      "function_context": "Get-PhpVariableValue",
+      "source": "Set-PhpArrayItem $snapshot ([string]$globalName) $globalValue $false"
+    },
+    {
+      "line": 3393,
+      "function_context": "Set-PhpVariableValue",
+      "source": "function Set-PhpVariableValue([string]$name, $value) {"
+    },
+    {
+      "line": 3402,
+      "function_context": "Get-PhpVariableCell",
+      "source": "function Get-PhpVariableCell([string]$name) {"
+    },
+    {
+      "line": 3412,
+      "function_context": "Set-PhpVariableReference",
+      "source": "function Set-PhpVariableReference([string]$target, [string]$source) {"
+    },
+    {
+      "line": 3466,
+      "function_context": "Resolve-PhpLValueSlot",
+      "source": "if ($declared.Readonly -or -not [string]::IsNullOrEmpty([string]$declared.TypeName)) {"
+    },
+    {
+      "line": 3485,
+      "function_context": "Resolve-PhpLValueSlot",
+      "source": "if (-not [string]::IsNullOrEmpty([string]$prop.TypeName)) {"
+    },
+    {
+      "line": 3521,
+      "function_context": "Evaluate-PhpUserArguments",
+      "source": "if ($arg.Kind -ceq 'named_argument') {"
+    },
+    {
+      "line": 3590,
+      "function_context": "Throw-PhpJsonFailure",
+      "source": "function Throw-PhpJsonFailure([long]$code, [string]$message) {"
+    },
+    {
+      "line": 3649,
+      "function_context": "Convert-JsonToPhp",
+      "source": "if ($value -is [bool] -or $value -is [string]) { return (ConvertTo-PhpOwnedValue $value) }"
+    },
+    {
+      "line": 3681,
+      "function_context": "Convert-JsonToPhp",
+      "source": "if ($assoc) { Set-PhpArrayItem $result ([string]$key) $converted $false }"
+    },
+    {
+      "line": 3682,
+      "function_context": "Convert-JsonToPhp",
+      "source": "else { $result.Props[[string]$key] = Copy-PhpValue $converted }"
+    },
+    {
+      "line": 3688,
+      "function_context": "Convert-JsonToPhp",
+      "source": "if ($assoc) { Set-PhpArrayItem $result ([string]$pair.Name) $converted $false }"
+    },
+    {
+      "line": 3689,
+      "function_context": "Convert-JsonToPhp",
+      "source": "else { $result.Props[[string]$pair.Name] = Copy-PhpValue $converted }"
+    },
+    {
+      "line": 3723,
+      "function_context": "Round-PhpDigits",
+      "source": "function Round-PhpDigits([string]$digits, [int]$point, [int]$count) {"
+    },
+    {
+      "line": 3751,
+      "function_context": "Test-PhpFloatRoundTrip",
+      "source": "function Test-PhpFloatRoundTrip($parts, [string]$digits, [int]$point) {"
+    },
+    {
+      "line": 3796,
+      "function_context": "Format-PhpFloat",
+      "source": "return ($sign + $mant + 'E+' + [string]$e)"
+    },
+    {
+      "line": 3936,
+      "function_context": "Convert-PhpCast",
+      "source": "function Convert-PhpCast($value, [string]$type) {"
+    },
+    {
+      "line": 3976,
+      "function_context": "Format-PhpVarDump",
+      "source": "function Format-PhpVarDump($value, [string]$pad) {"
+    },
+    {
+      "line": 3987,
+      "function_context": "Format-PhpVarDump",
+      "source": "if ($value -is [string]) {"
+    },
+    {
+      "line": 4179,
+      "function_context": "Php-Equal",
+      "source": "} else { $b.Props.ContainsKey([string]$key) }"
+    },
+    {
+      "line": 4233,
+      "function_context": "Test-PhpRelation",
+      "source": "function Test-PhpRelation($a, $b, [string]$op) {"
+    },
+    {
+      "line": 4246,
+      "function_context": "Resolve-PhpClass",
+      "source": "function Resolve-PhpClass([string]$name) {"
+    },
+    {
+      "line": 4264,
+      "function_context": "Test-PhpTypeAtom",
+      "source": "function Test-PhpTypeAtom($value, [string]$type) {"
+    },
+    {
+      "line": 4303,
+      "function_context": "Convert-PhpTypedValue",
+      "source": "function Convert-PhpTypedValue($value, [string]$typeName, [string]$location) {"
+    },
+    {
+      "line": 4404,
+      "function_context": "Assert-PhpPropertyDefault",
+      "source": "function Assert-PhpPropertyDefault($value, [string]$typeName, [string]$propertyName) {"
+    },
+    {
+      "line": 4418,
+      "function_context": "Copy-PhpTraitMethod",
+      "source": "function Copy-PhpTraitMethod($method, [string]$newName, [string]$visibility) {"
+    },
+    {
+      "line": 4509,
+      "function_context": "Get-PhpClassChain",
+      "source": "function Get-PhpClassChain([string]$className) {"
+    },
+    {
+      "line": 4526,
+      "function_context": "Get-PhpInterfaceChain",
+      "source": "function Get-PhpInterfaceChain([string]$name) {"
+    },
+    {
+      "line": 4544,
+      "function_context": "Test-PhpImplements",
+      "source": "function Test-PhpImplements([string]$className, [string]$interfaceName) {"
+    },
+    {
+      "line": 4554,
+      "function_context": "Assert-PhpMethodSignature",
+      "source": "function Assert-PhpMethodSignature($implementation, $required, [string]$context) {"
+    },
+    {
+      "line": 4586,
+      "function_context": "Test-PhpInstanceOf",
+      "source": "function Test-PhpInstanceOf([string]$actual, [string]$target) {"
+    },
+    {
+      "line": 4605,
+      "function_context": "Find-PhpMethod",
+      "source": "function Find-PhpMethod([string]$className, [string]$methodName) {"
+    },
+    {
+      "line": 4613,
+      "function_context": "Find-OptionalPhpMethod",
+      "source": "function Find-OptionalPhpMethod([string]$className, [string]$methodName) {"
+    },
+    {
+      "line": 4622,
+      "function_context": "Find-PhpProperty",
+      "source": "function Find-PhpProperty([string]$className, [string]$propertyName, [bool]$staticOnly) {"
+    },
+    {
+      "line": 4632,
+      "function_context": "Assert-PhpVisibility",
+      "source": "function Assert-PhpVisibility([string]$visibility, [string]$owner) {"
+    },
+    {
+      "line": 4666,
+      "function_context": "Set-PhpStaticProperty",
+      "source": "$value=Convert-PhpTypedValue $value ([string]$prop.TypeName) ('property ' + $node.Name)"
+    },
+    {
+      "line": 4684,
+      "function_context": "Invoke-PhpPropertyHook",
+      "source": "function Invoke-PhpPropertyHook($object, $declared, [string]$mode, $value=$null) {"
+    },
+    {
+      "line": 4685,
+      "function_context": "Invoke-PhpPropertyHook",
+      "source": "$hook=if ($mode -ceq 'get') { $declared.GetHook } else { $declared.SetHook }"
+    },
+    {
+      "line": 4687,
+      "function_context": "Invoke-PhpPropertyHook",
+      "source": "$hookKey=([string]$object.GetHashCode() + ':' + [string]$declared.Name)"
+    },
+    {
+      "line": 4693,
+      "function_context": "Invoke-PhpPropertyHook",
+      "source": "if ($mode -ceq 'set') {"
+    },
+    {
+      "line": 4708,
+      "function_context": "Invoke-PhpPropertyHook",
+      "source": "$callArgs=if ($mode -ceq 'get') { @() } else { ,$value }"
+    },
+    {
+      "line": 4710,
+      "function_context": "Invoke-PhpPropertyHook",
+      "source": "if ($mode -ceq 'get') {"
+    },
+    {
+      "line": 4711,
+      "function_context": "Invoke-PhpPropertyHook",
+      "source": "return (Convert-PhpTypedValue $result ([string]$declared.TypeName) ('property ' + $declared.Name))"
+    },
+    {
+      "line": 4734,
+      "function_context": "Get-PhpCliQuietPath",
+      "source": "$name = if ($node.Kind -ceq 'variable') { $node.Name } else { Resolve-PhpDynamicVariableName $node }"
+    },
+    {
+      "line": 4741,
+      "function_context": "Get-PhpCliQuietPath",
+      "source": "if ($node.Kind -ceq 'index') {"
+    },
+    {
+      "line": 4761,
+      "function_context": "Get-PhpCliQuietPath",
+      "source": "if ($node.Kind -ceq 'property') {"
+    },
+    {
+      "line": 4819,
+      "function_context": "Get-LValue",
+      "source": "([string]$base.GetHashCode() + ':' + $node.Name))) {"
+    },
+    {
+      "line": 4826,
+      "function_context": "Get-LValue",
+      "source": "([string]$base.GetHashCode() + ':' + $node.Name))) {"
+    },
+    {
+      "line": 4831,
+      "function_context": "Get-LValue",
+      "source": "-not [string]::IsNullOrEmpty([string]$declared.TypeName)) {"
+    },
+    {
+      "line": 4836,
+      "function_context": "Get-LValue",
+      "source": "$guardKey=([string]$base.GetHashCode() + ':' + $node.Name)"
+    },
+    {
+      "line": 4855,
+      "function_context": "Set-LValue",
+      "source": "function Set-LValue($node, $value, [string]$op, $AssignmentResult=$null) {"
+    },
+    {
+      "line": 4858,
+      "function_context": "Set-LValue",
+      "source": "if ($op -cne '=' -or -not (Is-PhpArray $value)) {"
+    },
+    {
+      "line": 4885,
+      "function_context": "Set-LValue",
+      "source": "if ($op -cne '=') {"
+    },
+    {
+      "line": 4886,
+      "function_context": "Set-LValue",
+      "source": "if ($node.Kind -ceq 'index') {"
+    },
+    {
+      "line": 4980,
+      "function_context": "Set-LValue",
+      "source": "$guardKey=([string]$base.GetHashCode() + ':' + $node.Name)"
+    },
+    {
+      "line": 4993,
+      "function_context": "Set-LValue",
+      "source": "([string]$base.GetHashCode() + ':' + $node.Name))) {"
+    },
+    {
+      "line": 4994,
+      "function_context": "Set-LValue",
+      "source": "$value=Convert-PhpTypedValue $value ([string]$declared.TypeName) ('property ' + $node.Name)"
+    },
+    {
+      "line": 5002,
+      "function_context": "Set-LValue",
+      "source": "([string]$base.GetHashCode() + ':' + $node.Name))) {"
+    },
+    {
+      "line": 5011,
+      "function_context": "Set-LValue",
+      "source": "$value=Convert-PhpTypedValue $value ([string]$declared.TypeName) ('property ' + $node.Name)"
+    },
+    {
+      "line": 5022,
+      "function_context": "Invoke-PhpCallable",
+      "source": "function Invoke-PhpCallable($definition, $callArgs, $object, [string]$owner = '', $closure = $null, [bool]$referenceContext = $false) {"
+    },
+    {
+      "line": 5050,
+      "function_context": "Invoke-PhpCallable",
+      "source": "$frameName = [string]$definition.Name"
+    },
+    {
+      "line": 5078,
+      "function_context": "Invoke-PhpCallable",
+      "source": "$arg.PhpType -ceq 'named_argument') {"
+    },
+    {
+      "line": 5113,
+      "function_context": "Invoke-PhpCallable",
+      "source": "$extraArg.PhpType -ceq 'named_argument') {"
+    },
+    {
+      "line": 5119,
+      "function_context": "Invoke-PhpCallable",
+      "source": "$element.PhpType -ceq 'refargument')"
+    },
+    {
+      "line": 5131,
+      "function_context": "Invoke-PhpCallable",
+      "source": "$named.PhpType -cne 'refargument')) {"
+    },
+    {
+      "line": 5142,
+      "function_context": "Invoke-PhpCallable",
+      "source": "$provided.PhpType -ceq 'refargument')"
+    },
+    {
+      "line": 5163,
+      "function_context": "Invoke-PhpCallable",
+      "source": "$name=[string]$param.Name"
+    },
+    {
+      "line": 5202,
+      "function_context": "Invoke-PhpCallable",
+      "source": "$returnType=[string]$definition.ReturnType"
+    },
+    {
+      "line": 5267,
+      "function_context": "Invoke-PhpCliExit",
+      "source": "$argument.PhpType -ceq 'named_argument') {"
+    },
+    {
+      "line": 5268,
+      "function_context": "Invoke-PhpCliExit",
+      "source": "if ($argument.Name -cne 'status') { Throw-PhpError 'Error' ('Unknown named parameter $' + $argument.Name) }"
+    },
+    {
+      "line": 5320,
+      "function_context": "Assert-PhpStringBuiltinArity",
+      "source": "function Assert-PhpStringBuiltinArity([string]$function, $arguments, [int]$minimum, [int]$maximum) {"
+    },
+    {
+      "line": 5328,
+      "function_context": "ConvertTo-PhpBuiltinBytes",
+      "source": "function ConvertTo-PhpBuiltinBytes($value, [string]$function, [int]$number, [string]$parameter, [string]$accepted='string') {"
+    },
+    {
+      "line": 5338,
+      "function_context": "ConvertTo-PhpBuiltinInteger",
+      "source": "function ConvertTo-PhpBuiltinInteger($value, [string]$function, [int]$number, [string]$parameter) {"
+    },
+    {
+      "line": 5457,
+      "function_context": "Invoke-PhpFunction",
+      "source": "function Invoke-PhpFunction([string]$name, $callArgs) {"
+    },
+    {
+      "line": 5463,
+      "function_context": "Invoke-PhpFunction",
+      "source": "$arg.PhpType -ceq 'named_argument') {"
+    },
+    {
+      "line": 5940,
+      "function_context": "Invoke-PhpFunction",
+      "source": "if ($iniName -ceq 'error_reporting') { $state.ErrorReporting = To-PhpInt (To-Number $callArgs[1]) }"
+    },
+    {
+      "line": 6019,
+      "function_context": "Invoke-PhpFunction",
+      "source": "return [string]$callArgs[0].Class"
+    },
+    {
+      "line": 6048,
+      "function_context": "Invoke-PhpFunction",
+      "source": "if ($callArgs[0] -is [string]) {"
+    },
+    {
+      "line": 6122,
+      "function_context": "Invoke-PhpMethod",
+      "source": "function Invoke-PhpMethod($object, [string]$name, $callArgs) {"
+    },
+    {
+      "line": 6132,
+      "function_context": "Invoke-PhpStaticMethod",
+      "source": "function Invoke-PhpStaticMethod([string]$className, [string]$methodName, $callArgs) {"
+    },
+    {
+      "line": 6145,
+      "function_context": "Get-PhpClassConstant",
+      "source": "function Get-PhpClassConstant([string]$className, [string]$constName) {"
+    },
+    {
+      "line": 6147,
+      "function_context": "Get-PhpClassConstant",
+      "source": "if ($constName -ceq 'class') { return $className }"
+    },
+    {
+      "line": 6241,
+      "function_context": "Invoke-PhpReferenceCall",
+      "source": "$callee.PhpType -ceq 'closure') {"
+    },
+    {
+      "line": 6245,
+      "function_context": "Invoke-PhpReferenceCall",
+      "source": "if ($callee -is [string] -and $state.Functions.ContainsKey($callee)) {"
+    },
+    {
+      "line": 6338,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($null -ne $callable -and $callable -is [string]) {"
+    },
+    {
+      "line": 6355,
+      "function_context": "Invoke-PhpExpr",
+      "source": "Mode='static'; Class=[string]$target; Name=$member }"
+    },
+    {
+      "line": 6373,
+      "function_context": "Invoke-PhpExpr",
+      "source": "$callee.PhpType -ceq 'closure') {"
+    },
+    {
+      "line": 6419,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($callee -is [string] -and $state.Functions.ContainsKey($callee)) {"
+    },
+    {
+      "line": 6423,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($callee -is [string]) {"
+    },
+    {
+      "line": 6426,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($arg.Kind -ceq 'named_argument') {"
+    },
+    {
+      "line": 6449,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($node.Name -ceq 'cases') {"
+    },
+    {
+      "line": 6466,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($enum.BackingType -eq 'string' -and $needle -is [string] -and"
+    },
+    {
+      "line": 6467,
+      "function_context": "Invoke-PhpExpr",
+      "source": "$item.Props['value'] -ceq $needle) { return $item }"
+    },
+    {
+      "line": 6471,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($node.Name -ceq 'tryFrom') { return $null }"
+    },
+    {
+      "line": 6472,
+      "function_context": "Invoke-PhpExpr",
+      "source": "$shown = if ($needle -is [string]) { '\"' + $needle + '\"' } else { To-PhpText $needle }"
+    },
+    {
+      "line": 6485,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($arg.Kind -ceq 'named_argument') {"
+    },
+    {
+      "line": 6525,
+      "function_context": "Invoke-PhpExpr",
+      "source": "$diff = if ($node.Op -ceq '++') { [long]1 } else { [long]-1 }"
+    },
+    {
+      "line": 6540,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($node.Op -ceq '??=') {"
+    },
+    {
+      "line": 6552,
+      "function_context": "Invoke-PhpExpr",
+      "source": "$writeOp = if ($node.Op -ceq '??=') { '=' } else { $node.Op }"
+    },
+    {
+      "line": 6558,
+      "function_context": "Invoke-PhpExpr",
+      "source": "($node.Target.Kind -eq 'property' -and $node.Op -ceq '=')) {"
+    },
+    {
+      "line": 6606,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($node.Name -ceq 'isset' -or $node.Name -ceq 'empty') {"
+    },
+    {
+      "line": 6607,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($node.Name -ceq 'isset' -and $node.Args.Count -lt 1) {"
+    },
+    {
+      "line": 6610,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($node.Name -ceq 'empty' -and $node.Args.Count -ne 1) {"
+    },
+    {
+      "line": 6628,
+      "function_context": "Invoke-PhpExpr",
+      "source": "-not [string]::IsNullOrEmpty([string]$typedProperty.TypeName)) {"
+    },
+    {
+      "line": 6629,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($node.Name -ceq 'isset') { return $false }"
+    },
+    {
+      "line": 6630,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($node.Name -ceq 'empty') { return $true }"
+    },
+    {
+      "line": 6635,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($node.Name -ceq 'isset' -and -not $found) { return $false }"
+    },
+    {
+      "line": 6636,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($node.Name -ceq 'isset' -and $found) { continue }"
+    },
+    {
+      "line": 6637,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($node.Name -ceq 'empty' -and -not $found) { return $true }"
+    },
+    {
+      "line": 6642,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($isCli -and $arg.Kind -ceq 'index') {"
+    },
+    {
+      "line": 6659,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($node.Name -ceq 'isset' -and -not $isset) { return $false }"
+    },
+    {
+      "line": 6660,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($node.Name -ceq 'empty') { return (-not $found -or -not (Is-Truthy $value)) }"
+    },
+    {
+      "line": 6664,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($node.Name -ceq 'unset') {"
+    },
+    {
+      "line": 6716,
+      "function_context": "Invoke-PhpExpr",
+      "source": "(($callbackName -ceq 'call_user_func' -and $node.Args.Count -ge 1) -or"
+    },
+    {
+      "line": 6717,
+      "function_context": "Invoke-PhpExpr",
+      "source": "($callbackName -ceq 'call_user_func_array' -and $node.Args.Count -eq 2))) {"
+    },
+    {
+      "line": 6719,
+      "function_context": "Invoke-PhpExpr",
+      "source": "foreach ($expression in $node.Args) { if ($expression.Kind -ceq 'named_argument') { $plainArguments=$false } }"
+    },
+    {
+      "line": 6750,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($arg.Kind -ceq 'named_argument') {"
+    },
+    {
+      "line": 6762,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($state.Classes.ContainsKey($className)) { $className=[string]$state.Classes[$className].Name }"
+    },
+    {
+      "line": 6788,
+      "function_context": "Invoke-PhpExpr",
+      "source": "-not [string]::IsNullOrEmpty([string]$prop.TypeName)) {"
+    },
+    {
+      "line": 6793,
+      "function_context": "Invoke-PhpExpr",
+      "source": "$object.Props[$prop.Name]=Copy-PhpValue (Convert-PhpTypedValue $val ([string]$prop.TypeName) ('property ' + $prop.Name))"
+    },
+    {
+      "line": 6848,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($node.Op -ceq '??') {"
+    },
+    {
+      "line": 6860,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($node.Op -ceq '&&') {"
+    },
+    {
+      "line": 6864,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($node.Op -ceq '||') {"
+    },
+    {
+      "line": 6905,
+      "function_context": "Invoke-PhpExpr",
+      "source": "if ($b -isnot [string]) { throw 'ALL PHP: instanceof class name required' }"
+    },
+    {
+      "line": 7061,
+      "function_context": "Invoke-PhpStatement",
+      "source": "if ($node.BackingType -eq 'string' -and $backedValue -isnot [string]) {"
+    },
+    {
+      "line": 7068,
+      "function_context": "Invoke-PhpStatement",
+      "source": "$uniqueValue=$node.BackingType + ':' + [string]$backedValue"
+    },
+    {
+      "line": 7270,
+      "function_context": "Invoke-PhpStatement",
+      "source": "if ($node.Readonly -and [string]::IsNullOrEmpty([string]$prop.TypeName)) {"
+    },
+    {
+      "line": 7278,
+      "function_context": "Invoke-PhpStatement",
+      "source": "Assert-PhpPropertyDefault $defaultValue ([string]$prop.TypeName) $prop.Name"
+    },
+    {
+      "line": 7286,
+      "function_context": "Invoke-PhpStatement",
+      "source": "-not [string]::IsNullOrEmpty([string]$prop.TypeName)) {"
+    },
+    {
+      "line": 7291,
+      "function_context": "Invoke-PhpStatement",
+      "source": "$statics[$prop.Name]=Copy-PhpValue (Convert-PhpTypedValue $default ([string]$prop.TypeName) ('property ' + $prop.Name))"
+    },
+    {
+      "line": 7377,
+      "function_context": "Invoke-PhpStatement",
+      "source": "if ($node.Op -ceq '??=') {"
+    },
+    {
+      "line": 7459,
+      "function_context": "Invoke-PhpStatement",
+      "source": "if ($state.Flow.LoopControl -ceq 'break') {"
+    },
+    {
+      "line": 7463,
+      "function_context": "Invoke-PhpStatement",
+      "source": "if ($state.Flow.LoopControl -ceq 'continue') {"
+    },
+    {
+      "line": 7477,
+      "function_context": "Invoke-PhpStatement",
+      "source": "if ($state.Flow.LoopControl -ceq 'break') {"
+    },
+    {
+      "line": 7481,
+      "function_context": "Invoke-PhpStatement",
+      "source": "if ($state.Flow.LoopControl -ceq 'continue') {"
+    },
+    {
+      "line": 7497,
+      "function_context": "Invoke-PhpStatement",
+      "source": "if ($state.Flow.LoopControl -ceq 'break') {"
+    },
+    {
+      "line": 7501,
+      "function_context": "Invoke-PhpStatement",
+      "source": "if ($state.Flow.LoopControl -ceq 'continue') {"
+    },
+    {
+      "line": 7544,
+      "function_context": "Invoke-PhpStatement",
+      "source": "if ($state.Flow.LoopControl -ceq 'break') {"
+    },
+    {
+      "line": 7548,
+      "function_context": "Invoke-PhpStatement",
+      "source": "if ($state.Flow.LoopControl -ceq 'continue') {"
+    },
+    {
+      "line": 7561,
+      "function_context": "Invoke-PhpStatement",
+      "source": "$state.Ini[[string]$setting] = [string]$CliContext['InitialIni'][$setting]"
+    },
+    {
+      "line": 7571,
+      "function_context": "Invoke-PhpStatement",
+      "source": "Set-PhpArrayItem $argumentArray $null ([string]$argument) $true"
+    },
+    {
+      "line": 7609,
+      "function_context": "Invoke-PhpStatement",
+      "source": "param([long]$nativeLevel,[string]$nativeMessage)"
+    },
+    {
+      "line": 7621,
+      "function_context": "Invoke-PhpStatement",
+      "source": "if ($declaration.Kind -ceq 'functiondef' -and"
+    }
+  ]
+}

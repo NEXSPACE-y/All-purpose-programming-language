@@ -1,0 +1,1 @@
+function f(){$v="\xFF\0";return [&$v];}$a=f();var_dump($a);

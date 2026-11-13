@@ -1,0 +1,58 @@
+[
+  {
+    "id": "callback.arguments.named-variadic",
+    "code": "<?php function h(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;}set_error_handler(\"h\");trigger_error(\"payload\\xFF\",E_USER_WARNING);"
+  },
+  {
+    "id": "callback.arguments.closure-variadic",
+    "code": "<?php $h=function(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;};set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);"
+  },
+  {
+    "id": "callback.arguments.named-one-plus-variadic",
+    "code": "<?php function h($level,...$rest){echo $level,\":\",count($rest),\":\",bin2hex($rest[0]),\":\",gettype($rest[1]),\":\",gettype($rest[2]);return true;}set_error_handler(\"h\");trigger_error(\"payload\\xFF\",E_USER_WARNING);"
+  },
+  {
+    "id": "callback.arguments.closure-one-plus-variadic",
+    "code": "<?php $h=function($level,...$rest){echo $level,\":\",count($rest),\":\",bin2hex($rest[0]),\":\",gettype($rest[1]),\":\",gettype($rest[2]);return true;};set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);"
+  },
+  {
+    "id": "callback.arguments.first-class",
+    "code": "<?php function h(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;}$h=h(...);set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);"
+  },
+  {
+    "id": "callback.arguments.array-static",
+    "code": "<?php class H{static function go(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;}}set_error_handler([\"H\",\"go\"]);trigger_error(\"payload\\xFF\",E_USER_WARNING);"
+  },
+  {
+    "id": "callback.arguments.array-instance",
+    "code": "<?php class H{function go(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;}}$h=new H();set_error_handler([$h,\"go\"]);trigger_error(\"payload\\xFF\",E_USER_WARNING);"
+  },
+  {
+    "id": "callback.arguments.invokable",
+    "code": "<?php class H{function __invoke(...$args){echo count($args),\":\",gettype($args[0]),\":\",$args[0],\":\",bin2hex($args[1]),\":\",gettype($args[2]),\":\",gettype($args[3]);return true;}}$h=new H();set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);"
+  },
+  {
+    "id": "callback.arguments.named-zero",
+    "code": "<?php function h(){echo \"zero\";return true;}set_error_handler(\"h\");trigger_error(\"payload\\xFF\",E_USER_WARNING);"
+  },
+  {
+    "id": "callback.arguments.closure-zero",
+    "code": "<?php $h=function(){echo \"zero\";return true;};set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);"
+  },
+  {
+    "id": "callback.arguments.named-one",
+    "code": "<?php function h($level){echo $level;return true;}set_error_handler(\"h\");trigger_error(\"payload\\xFF\",E_USER_WARNING);"
+  },
+  {
+    "id": "callback.arguments.closure-one",
+    "code": "<?php $h=function($level){echo $level;return true;};set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);"
+  },
+  {
+    "id": "callback.arguments.builtin-four",
+    "code": "<?php set_error_handler(\"strlen\");try{trigger_error(\"payload\\xFF\",E_USER_WARNING);}catch(ArgumentCountError $e){echo $e->getMessage();}"
+  },
+  {
+    "id": "callback.arguments.closure-all-four",
+    "code": "<?php $h=function($level,$message,$file,$line){echo $level,\":\",bin2hex($message),\":\",gettype($file),\":\",gettype($line);return true;};set_error_handler($h);trigger_error(\"payload\\xFF\",E_USER_WARNING);"
+  }
+]

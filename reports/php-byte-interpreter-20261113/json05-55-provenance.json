@@ -1,0 +1,29 @@
+{
+  "status": "PREPARED_NOT_EXECUTED",
+  "candidate_sha256": "524ce86a322c0cd91d1f565a0c01a754842efbacd8521a47b6f3b4a56150bb8d",
+  "case_count": 55,
+  "input_programs_changed": false,
+  "inputs": [
+    {
+      "path": "tools\\candidates\\php-byte-interpreter\\scalar-bytes.cases.json",
+      "sha256": "c282f8b4c5485b6c860b2ef4f091f72f5939137a28c4767ffa26d570ee46b879",
+      "cases": 12
+    },
+    {
+      "path": "tools\\candidates\\php-byte-interpreter\\typed-arrays.cases.json",
+      "sha256": "b679161d990fcf18952e1aa32f45c1d9c46f7625688b29f2194fe2ac61e00aff",
+      "cases": 12
+    },
+    {
+      "path": "reports\\php-byte-interpreter-20261113\\string-offset-oracle01\\cases.json",
+      "sha256": "e8453fa8d2b4e115cb2ec2b02e26b95c88626b4b22f1f9dc4c26e692e218653c",
+      "cases": 19
+    },
+    {
+      "path": "tools\\candidates\\php-byte-interpreter\\json-bytes.cases.json",
+      "sha256": "7d193358c33d57118d665acc660e2850a00c87b2eb554931155d1994515741a6",
+      "cases": 12
+    }
+  ],
+  "measurement": "Actual CLI body entry with raw stdout stderr and actual status; timeout30 unchanged"
+}

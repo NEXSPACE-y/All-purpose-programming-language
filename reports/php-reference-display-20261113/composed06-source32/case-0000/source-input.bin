@@ -1,0 +1,1 @@
+$v="\xFF\0";$w=&$v;var_dump($v,$w);

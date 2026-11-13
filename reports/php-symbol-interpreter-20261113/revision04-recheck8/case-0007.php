@@ -1,0 +1,1 @@
+<?php FuNcTiOn f(){ReTuRn 8;}EcHo f();

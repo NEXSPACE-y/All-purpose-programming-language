@@ -1,0 +1,128 @@
+[
+  {
+    "name": "handler receives undefined variable warning",
+    "code": "<?php\nset_error_handler(function($no, $str, $file, $line) { echo \"[$no] $str @ $line\\n\"; return true; });\necho \"a\";\necho $missing;\necho \"b\";",
+    "oracle_php_exit": 0,
+    "expected": "a[2] Undefined variable $missing @ 4\nb"
+  },
+  {
+    "name": "undefined variable evaluates to null",
+    "code": "<?php set_error_handler(function($no, $str) { echo \"<\", $str, \">\"; return true; }); $x = $nope; var_dump($x); var_dump($nope2 + 1, $nope3 . \"s\");",
+    "oracle_php_exit": 0,
+    "expected": "<Undefined variable $nope>NULL\n<Undefined variable $nope2><Undefined variable $nope3>int(1)\nstring(1) \"s\"\n"
+  },
+  {
+    "name": "handler receives undefined array key warnings",
+    "code": "<?php set_error_handler(function($no, $str) { echo \"[$no] $str\\n\"; return true; }); $a = [1, \"k\" => 2]; var_dump($a[5]); var_dump($a[\"missing\"]); var_dump($a[0], $a[\"k\"]);",
+    "oracle_php_exit": 0,
+    "expected": "[2] Undefined array key 5\nNULL\n[2] Undefined array key \"missing\"\nNULL\nint(1)\nint(2)\n"
+  },
+  {
+    "name": "handler receives undefined property warning",
+    "code": "<?php set_error_handler(function($no, $str) { echo \"[$no] $str\\n\"; return true; }); class P { public $a = 1; } $p = new P(); var_dump($p->nope); $s = new stdClass(); var_dump($s->gone);",
+    "oracle_php_exit": 0,
+    "expected": "[2] Undefined property: P::$nope\nNULL\n[2] Undefined property: stdClass::$gone\nNULL\n"
+  },
+  {
+    "name": "null coalescing and isset stay silent",
+    "code": "<?php set_error_handler(function($no, $str) { echo \"UNEXPECTED $str\\n\"; return true; }); $a = []; echo $u ?? \"d1\", \"|\", $a[\"k\"] ?? \"d2\", \"|\", isset($u) ? \"set\" : \"unset\", \"|\", empty($a[\"k\"]) ? \"empty\" : \"full\", \"|\"; $v ??= \"assigned\"; echo $v;",
+    "oracle_php_exit": 0,
+    "expected": "d1|d2|unset|empty|assigned"
+  },
+  {
+    "name": "silence operator still calls handler",
+    "code": "<?php set_error_handler(function($no, $str) { echo \"handler:\", $str, \"\\n\"; return true; }); $r = @$undefined; var_dump($r);",
+    "oracle_php_exit": 0,
+    "expected": "handler:Undefined variable $undefined\nNULL\n"
+  },
+  {
+    "name": "trigger_error levels reach handler",
+    "code": "<?php set_error_handler(function($no, $str, $file, $line) { echo \"$no:$str:$line\\n\"; return true; });\ntrigger_error(\"note\");\ntrigger_error(\"warn\", E_USER_WARNING);\ntrigger_error(\"dep\", E_USER_DEPRECATED);\nuser_error(\"alias\", E_USER_NOTICE);",
+    "oracle_php_exit": 0,
+    "expected": "1024:note:2\n512:warn:3\n16384:dep:4\n1024:alias:5\n"
+  },
+  {
+    "name": "trigger_error invalid level",
+    "code": "<?php try { trigger_error(\"x\", 12345); } catch (ValueError $e) { echo $e->getMessage(); }",
+    "oracle_php_exit": 0,
+    "expected": "trigger_error(): Argument #2 ($error_level) must be one of E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE, or E_USER_DEPRECATED"
+  },
+  {
+    "name": "handler mask filters levels",
+    "code": "<?php set_error_handler(function($no, $str) { echo \"got $str\\n\"; return true; }, E_USER_WARNING); trigger_error(\"w\", E_USER_WARNING); @trigger_error(\"n\", E_USER_NOTICE); echo \"done\";",
+    "oracle_php_exit": 0,
+    "expected": "got w\ndone"
+  },
+  {
+    "name": "set_error_handler returns previous and restore works",
+    "code": "<?php $h1 = function($n, $s) { echo \"h1:$s\\n\"; return true; }; $h2 = function($n, $s) { echo \"h2:$s\\n\"; return true; }; var_dump(set_error_handler($h1)); $prev = set_error_handler($h2); var_dump($prev === $h1); trigger_error(\"a\"); restore_error_handler(); trigger_error(\"b\"); restore_error_handler(); @trigger_error(\"c\"); echo \"end\";",
+    "oracle_php_exit": 0,
+    "expected": "NULL\nbool(true)\nh2:a\nh1:b\nend"
+  },
+  {
+    "name": "handler with fewer parameters",
+    "code": "<?php set_error_handler(function($no) { echo \"level $no\\n\"; return true; }); trigger_error(\"x\", E_USER_WARNING); set_error_handler(function() { echo \"no params\\n\"; return true; }); trigger_error(\"y\");",
+    "oracle_php_exit": 0,
+    "expected": "level 512\nno params\n"
+  },
+  {
+    "name": "handler as function name and method",
+    "code": "<?php function on_error($no, $str) { echo \"fn:$str\\n\"; return true; } class L { public function handle($no, $str) { echo \"method:$str\\n\"; return true; } public static function shandle($no, $str) { echo \"static:$str\\n\"; return true; } } set_error_handler(\"on_error\"); trigger_error(\"1\"); set_error_handler([new L(), \"handle\"]); trigger_error(\"2\"); set_error_handler([\"L\", \"shandle\"]); trigger_error(\"3\"); set_error_handler(\"L::shandle\"); trigger_error(\"4\");",
+    "oracle_php_exit": 0,
+    "expected": "fn:1\nmethod:2\nstatic:3\nstatic:4\n"
+  },
+  {
+    "name": "handler converting warnings to exceptions",
+    "code": "<?php set_error_handler(function($no, $str, $file, $line) { throw new ErrorException($str, 0); }); try { echo $undefined_thing; echo \"not reached\"; } catch (ErrorException $e) { echo \"caught: \", $e->getMessage(); }",
+    "oracle_php_exit": 0,
+    "expected": "caught: Undefined variable $undefined_thing"
+  },
+  {
+    "name": "handler not re-entered for errors inside itself",
+    "code": "<?php set_error_handler(function($no, $str) { echo \"outer:$str\\n\"; @trigger_error(\"inner\"); return true; }); trigger_error(\"first\"); echo \"after\";",
+    "oracle_php_exit": 0,
+    "expected": "outer:first\nafter"
+  },
+  {
+    "name": "error_reporting get and set",
+    "code": "<?php var_dump(error_reporting()); $old = error_reporting(E_ALL & ~E_USER_NOTICE); var_dump($old, error_reporting()); error_reporting(0); var_dump(error_reporting());",
+    "oracle_php_exit": 0,
+    "expected": "int(-1)\nint(-1)\nint(29695)\nint(0)\n"
+  },
+  {
+    "name": "error_reporting zero silences without handler",
+    "code": "<?php error_reporting(0); echo $nothing; $a = []; echo $a[\"x\"]; trigger_error(\"quiet\"); echo \"silent ok\";",
+    "oracle_php_exit": 0,
+    "expected": "silent ok"
+  },
+  {
+    "name": "silence operator without handler",
+    "code": "<?php $a = []; $v = @$a[\"none\"]; $w = @$undef; @trigger_error(\"hidden\", E_USER_WARNING); var_dump($v, $w); echo \"ok\";",
+    "oracle_php_exit": 0,
+    "expected": "NULL\nNULL\nok"
+  },
+  {
+    "name": "ini_set and ini_get round trip",
+    "code": "<?php var_dump(ini_set(\"precision\", \"10\") !== null, ini_get(\"precision\")); ini_set(\"error_reporting\", \"0\"); var_dump(error_reporting()); echo $gone; echo \"fine\";",
+    "oracle_php_exit": 0,
+    "expected": "bool(true)\nstring(2) \"10\"\nint(0)\nfine"
+  },
+  {
+    "name": "define twice warns through handler",
+    "code": "<?php set_error_handler(function($no, $str) { echo \"[$no] $str\\n\"; return true; }); define(\"ONCE\", 1); var_dump(define(\"ONCE\", 2)); echo ONCE;",
+    "oracle_php_exit": 0,
+    "expected": "[2] Constant ONCE already defined, this will be an error in PHP 9\nbool(false)\n1"
+  },
+  {
+    "name": "list destructuring missing key warns",
+    "code": "<?php set_error_handler(function($no, $str) { echo \"[$str]\"; return true; }); [$a, $b] = [1]; var_dump($a, $b);",
+    "oracle_php_exit": 0,
+    "expected": "[Undefined array key 1]int(1)\nNULL\n"
+  },
+  {
+    "name": "warning inside function reports function line",
+    "code": "<?php\nset_error_handler(function($no, $str, $file, $line) { echo \"$str on $line\\n\"; return true; });\nfunction reader() {\n    $x = 1;\n    return $undefinedInside;\n}\nreader();\necho $topLevel;",
+    "oracle_php_exit": 0,
+    "expected": "Undefined variable $undefinedInside on 5\nUndefined variable $topLevel on 8\n"
+  }
+]

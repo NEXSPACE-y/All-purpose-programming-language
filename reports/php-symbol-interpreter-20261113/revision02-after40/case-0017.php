@@ -1,0 +1,1 @@
+<?php function ſtatic(){return 6;}echo ſtatic();

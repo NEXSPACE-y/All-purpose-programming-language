@@ -1,0 +1,1 @@
+<?php function K(){return 1;}function K(){return 2;}echo k().K();

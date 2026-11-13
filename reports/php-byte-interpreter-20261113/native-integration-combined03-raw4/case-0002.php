@@ -1,0 +1,1 @@
+<?php $v=dl_test_test2("\u{D800}");echo $v;

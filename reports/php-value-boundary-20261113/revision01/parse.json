@@ -1,0 +1,15 @@
+{
+  "command": [
+    "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+    "-NoLogo",
+    "-NoProfile",
+    "-NonInteractive",
+    "-Command",
+    "$text=[Console]::In.ReadToEnd();$tokens=$null;$errors=$null;[void][Management.Automation.Language.Parser]::ParseInput($text,[ref]$tokens,[ref]$errors);foreach($e in $errors){[Console]::Error.WriteLine($e.ToString())};if($errors.Count){exit 1};[Console]::WriteLine(\"Parse OK\")"
+  ],
+  "actual_exit": 0,
+  "stdout_base64": "UGFyc2UgT0sNCg==",
+  "stderr_base64": "",
+  "input_candidate_sha256": "9c1244a2eec741e13d67c77789551e19142a27c55a2d3a572a9acda9c613c36d",
+  "scope": "Actual candidate source parse only, not runtime execution"
+}

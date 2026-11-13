@@ -1,0 +1,42 @@
+[
+  {
+    "id": "identifier.variable-japanese",
+    "code": "<?php $変数=7;echo $変数;"
+  },
+  {
+    "id": "identifier.function-japanese",
+    "code": "<?php function 関数(){return 7;}echo 関数();"
+  },
+  {
+    "id": "identifier.class-japanese",
+    "code": "<?php class 猫{}echo get_class(new 猫());"
+  },
+  {
+    "id": "identifier.namespace-japanese",
+    "code": "<?php namespace 名前;function 関数(){return __NAMESPACE__;}echo 関数();"
+  },
+  {
+    "id": "identifier.function-unicode-case",
+    "code": "<?php function É(){return 1;}function é(){return 2;}echo É().é();"
+  },
+  {
+    "id": "identifier.function-emoji",
+    "code": "<?php function 😀(){return 3;}echo 😀();"
+  },
+  {
+    "id": "identifier.function-nbsp",
+    "code": "<?php function a b(){return 4;}echo a b();"
+  },
+  {
+    "id": "identifier.ascii-class-canonical",
+    "code": "<?php class CaT{}echo get_class(new cAt());"
+  },
+  {
+    "id": "symbols.constant-prefix-ascii",
+    "code": "<?php namespace MiXeD;const VaL=7;echo \\mixed\\VaL;"
+  },
+  {
+    "id": "symbols.keyword-kelvin-control",
+    "code": "<?php function breaK(){return 9;}echo breaK();"
+  }
+]

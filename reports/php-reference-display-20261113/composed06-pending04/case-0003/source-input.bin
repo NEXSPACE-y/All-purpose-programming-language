@@ -1,0 +1,1 @@
+function f(&$x,&$a){$a[]=1;var_dump($a);}$a=["\xFF"];f($a[0],$a);

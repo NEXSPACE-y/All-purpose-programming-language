@@ -1,0 +1,1 @@
+<?php define("MiXeD\\VaL",7);var_dump(defined("mixed\\VaL"),defined("mixed\\val"));

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "reference.pending-intraarray-target",
+    "mode": "body",
+    "code": "$a=[\"\\xFF\",1];$a[1]=&$a[0];$a[0].=\"\\0\";var_dump($a);"
+  },
+  {
+    "id": "reference.pending-distinct-array-arguments",
+    "mode": "body",
+    "code": "function f(&$x,&$y){$x.=\"0\";$y.=\"1\";}$a=[\"\\xFF\",\"\\xFE\"];f($a[0],$a[1]);var_dump($a);"
+  },
+  {
+    "id": "reference.pending-same-array-argument",
+    "mode": "body",
+    "code": "function f(&$x,&$y){$x.=\"0\";$y.=\"1\";}$a=[\"\\xFF\"];f($a[0],$a[0]);var_dump($a);"
+  },
+  {
+    "id": "reference.pending-array-and-element",
+    "mode": "body",
+    "code": "function f(&$x,&$a){$a[]=1;var_dump($a);}$a=[\"\\xFF\"];f($a[0],$a);"
+  }
+]

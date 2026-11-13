@@ -1,0 +1,11 @@
+{
+    "status":  "PARSE_ONLY_PASS_NOT_EXECUTION",
+    "candidate":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\composed09\\ALL_PHP_byte_candidate.ps1",
+    "sourceSha256":  "6ee5992ebe6226d470bc4bf643b4f0a08ccb6a32861114fa0b4fe3eb1405b3f0",
+    "powerShell":  "5.1.26100.9818",
+    "errorCount":  0,
+    "errors":  [
+
+               ],
+    "phpProgramsExecuted":  0
+}

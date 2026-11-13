@@ -1,0 +1,1 @@
+<?php function MiXeD(){return 1;}echo mixed();

@@ -1,0 +1,18 @@
+{
+  "status": "BUILT_PARSED_NOT_RUNTIME_VERIFIED",
+  "base_sha256": "9c1244a2eec741e13d67c77789551e19142a27c55a2d3a572a9acda9c613c36d",
+  "base_unchanged": true,
+  "module_sha256": "87e64ea50065e4a52e0a02f63cf0bd0382de01a0d03640f606e3aaec87bb666f",
+  "candidate_sha256": "9dd51fc926e076a592f769ffc19fce5f2ef1642f84c7b9f0f255ebc6bec11aac",
+  "builder_sha256": "deb199857cb5469c3d45985640efbe180281780497f175260b736261fd7e3101",
+  "crlf_retained": true,
+  "lf_composition_same": true,
+  "parser_exit": 0,
+  "runtime_measurement_completed": false,
+  "get_php_callable_arity_function_unchanged": true,
+  "guards": {
+    "second_apply": "CallbackArgumentEdits: expected exactly one byte-diagnostic truncation fragment",
+    "changed_anchor": "CallbackArgumentEdits: expected exactly one byte-diagnostic truncation fragment"
+  },
+  "package_modified": false
+}

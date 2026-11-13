@@ -1,0 +1,95 @@
+{
+  "status": "FROZEN_LOCAL_VALUE_BOUNDARY_PATCH_BUILT_PARSED_NOT_RUNTIME_VERIFIED",
+  "files": [
+    {
+      "path": "tools/candidates/php-byte-interpreter/ValueBoundaryEdits.py",
+      "size": 9740,
+      "sha256": "1c284f89d29583a651bb698e7fe157b838ea428cbbb4dcf9ea8363ffb77f93f3"
+    },
+    {
+      "path": "reports/php-value-boundary-20261113/AUDIT.md",
+      "size": 4627,
+      "sha256": "eab33c06ce24a25ece191bd4da8fe840341c45193f707a77b4ec45485e8dea13"
+    },
+    {
+      "path": "reports/php-value-boundary-20261113/Build-Evidence.py",
+      "size": 4173,
+      "sha256": "9ea77213a4355755499edfd9ed4be59f446d4b452993185c723d9364f1c1b649"
+    },
+    {
+      "path": "reports/php-value-boundary-20261113/oracle-diagnostic-strings.json",
+      "size": 54156,
+      "sha256": "30c5487f7a8a6fdca2ed129b752879e2e608e65a435b3422b528fe328c6ee93c"
+    },
+    {
+      "path": "reports/php-value-boundary-20261113/Oracle-DiagnosticStrings.php",
+      "size": 974,
+      "sha256": "87a131b1d18ef6605ddf3143ae64c670a5e91cf0b9795abe1f0861668ede3bfa"
+    },
+    {
+      "path": "reports/php-value-boundary-20261113/oracle-values.json",
+      "size": 11435,
+      "sha256": "e21c659bd144a1017e8bced4fc9f086b0a9e2a06d52a30ffdabdabc9ea94c70e"
+    },
+    {
+      "path": "reports/php-value-boundary-20261113/Oracle-Values.php",
+      "size": 1469,
+      "sha256": "f50481f8cfa5bd6ce0cf03e91c1236d6d90338cd8f3c76dd7ad5a1edcea6fdff"
+    },
+    {
+      "path": "reports/php-value-boundary-20261113/revision01/ALL_PHP_value_boundary_candidate.ps1",
+      "size": 442530,
+      "sha256": "9c1244a2eec741e13d67c77789551e19142a27c55a2d3a572a9acda9c613c36d"
+    },
+    {
+      "path": "reports/php-value-boundary-20261113/revision01/boundary-text-inventory.json",
+      "size": 69909,
+      "sha256": "64fe45f5b1cc58c356c2499482c8d589e88a346771c6c313884c35db5841b90f"
+    },
+    {
+      "path": "reports/php-value-boundary-20261113/revision01/json05.snapshot.ps1",
+      "size": 432865,
+      "sha256": "524ce86a322c0cd91d1f565a0c01a754842efbacd8521a47b6f3b4a56150bb8d"
+    },
+    {
+      "path": "reports/php-value-boundary-20261113/revision01/parse.json",
+      "size": 709,
+      "sha256": "e3a0c9d87e4fe9afbddea7397e39d8f7b5e72679c078cead3306f7b3d062cac2"
+    },
+    {
+      "path": "reports/php-value-boundary-20261113/revision01/post-symbol-before-boundary.snapshot.ps1",
+      "size": 439587,
+      "sha256": "af5cbd9571d78477c3bd4ab06bbd828e1314e0adcddfc0a056ba63c8fe3c92a7"
+    },
+    {
+      "path": "reports/php-value-boundary-20261113/revision01/provenance.json",
+      "size": 824,
+      "sha256": "7bc2c5281c98f793190d885dda4053d85264e4e667f88d0e7e23033b9970ca7c"
+    },
+    {
+      "path": "reports/php-value-boundary-20261113/revision01/source.patch",
+      "size": 16934,
+      "sha256": "eedb741e28c8e05d288f027a468656ac1c2f677e7f886f99403e9af755b5e966"
+    },
+    {
+      "path": "reports/php-value-boundary-20261113/revision01/SymbolEdits.snapshot.py",
+      "size": 13532,
+      "sha256": "4853ac24f16c2a792dd5836bc8eaeba05335a9e255b9810b898999751ab634c3"
+    },
+    {
+      "path": "reports/php-value-boundary-20261113/revision01/ValueBoundaryEdits.snapshot.py",
+      "size": 9740,
+      "sha256": "1c284f89d29583a651bb698e7fe157b838ea428cbbb4dcf9ea8363ffb77f93f3"
+    },
+    {
+      "path": "reports/php-value-boundary-20261113/static-guards.json",
+      "size": 536,
+      "sha256": "02018094233f560135f992ada8575ddd9ab46518d15e5c6b1e3753578db48b2f"
+    },
+    {
+      "path": "reports/php-value-boundary-20261113/summary.json",
+      "size": 928,
+      "sha256": "1fe9230276335dd23e66080e6f3434b58664eda1a46fca0281d3e49ab9164046"
+    }
+  ]
+}

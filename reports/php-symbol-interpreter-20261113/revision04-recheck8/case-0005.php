@@ -1,0 +1,1 @@
+<?php class 猫{static function 鳴く($x){return $x+1;}}$f=["猫","鳴く"];echo $f(4),":",call_user_func_array($f,["x"=>6]);

@@ -1,0 +1,1 @@
+class C{public static $v="A";static function &get(){return self::$v;}}$n="C";$x=&$n::get();$x.="\xFF";echo bin2hex(C::$v);

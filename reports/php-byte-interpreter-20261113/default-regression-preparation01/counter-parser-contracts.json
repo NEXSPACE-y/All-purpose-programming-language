@@ -1,0 +1,64 @@
+{
+  "status": "COUNTER_PARSER_CONTRACT_ONLY_NOT_NEW_PHP_FIXTURES_OR_CANDIDATE_EXECUTION",
+  "historical_raw": "reports\\v3_20-validation-20261113\\default-api\\validation.stdout.bin",
+  "historical_raw_sha256": "bcf6d37af5030a6cc424af6053395fb73bfb9523750870f478cd3004b54eeba8",
+  "mutations_are_in_memory_counter_inputs_only": true,
+  "new_php_fixtures_created": false,
+  "results": [
+    {
+      "id": "historical_complete",
+      "input_sha256": "bcf6d37af5030a6cc424af6053395fb73bfb9523750870f478cd3004b54eeba8",
+      "expected_all_cases_pass": true,
+      "actual_all_cases_pass": true,
+      "matched": true,
+      "observed_cases": 965,
+      "decode_error": null
+    },
+    {
+      "id": "wrapper_banner_only",
+      "input_sha256": "073dedc68f59e68c7551b2ce29df34e0fae722b161dd68fbfdc35b00b8d3e280",
+      "expected_all_cases_pass": false,
+      "actual_all_cases_pass": false,
+      "matched": true,
+      "observed_cases": 0,
+      "decode_error": null
+    },
+    {
+      "id": "missing_case",
+      "input_sha256": "ce0c67c49e0924d42d4becddb096c47aa47d69ae2647b39f3f50591a9f701799",
+      "expected_all_cases_pass": false,
+      "actual_all_cases_pass": false,
+      "matched": true,
+      "observed_cases": 964,
+      "decode_error": null
+    },
+    {
+      "id": "one_failed_case",
+      "input_sha256": "37dda766eb4ec0e65bf3965c774ce3e7bcdf5f28c5fda436bd405cab09fdc538",
+      "expected_all_cases_pass": false,
+      "actual_all_cases_pass": false,
+      "matched": true,
+      "observed_cases": 965,
+      "decode_error": null
+    },
+    {
+      "id": "wrong_case_label_same_count",
+      "input_sha256": "0a6bd65ab928fa9f5e605d1fa6ba116e33b538cea279d26ea60e7d728bccba3a",
+      "expected_all_cases_pass": false,
+      "actual_all_cases_pass": false,
+      "matched": true,
+      "observed_cases": 965,
+      "decode_error": null
+    },
+    {
+      "id": "invalid_utf8_counter_stream",
+      "input_sha256": "cebde830f0e27b67420f44d6f3b6ab434248c978bf6794c7d339506679b710fb",
+      "expected_all_cases_pass": false,
+      "actual_all_cases_pass": false,
+      "matched": true,
+      "observed_cases": 0,
+      "decode_error": "'utf-8' codec can't decode byte 0xff in position 59361: invalid start byte"
+    }
+  ],
+  "all_matched": true
+}

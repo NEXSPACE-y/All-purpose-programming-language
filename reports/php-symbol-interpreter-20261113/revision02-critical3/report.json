@@ -1,0 +1,198 @@
+{
+  "status": "READ_ONLY_AUDIT_NOT_COMPLETE",
+  "baseline": "Frozen exact starting package snapshot; production lexer/comparers were not changed",
+  "driver_argv": [
+    "C:\\Users\\rinpa\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "tools/candidates/php-identifiers/Compare-Identifiers.py",
+    "--adapter",
+    "reports/php-symbol-interpreter-20261113/revision02/ALL_PHP_symbol_candidate.ps1",
+    "--cases",
+    "reports/php-symbol-interpreter-20261113/critical3.cases.json",
+    "--output",
+    "reports/php-symbol-interpreter-20261113/revision02-critical3"
+  ],
+  "timeout_seconds": 30,
+  "measurement": "Same original PHP source bytes, exact stdout/stderr/actual process exit; no normalization",
+  "inputs_before": {
+    "adapter": "74979e8b73c93a8777ab8c7121fd270d22652fd18a9facbc298040a23631f1b0",
+    "cases": "01cb204085d0bd906406f805e412b4ff2965279c59b090a160402b7a12b674e8",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "driver": "771d6432cd8c35145ee746094a47e9f03e6f75fc9e3e285e20576cbc520c9424",
+    "strict_helper": "f9d7c8161d000dde5b4314998a053ca8b2333d2e93edc630b6243058a13f60cd",
+    "worker": "471bcb240f0a29ea256ef1a5fc8f6ecdeb0094a323f19a8811d3f84e883e62ac",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d"
+  },
+  "inputs_after": {
+    "adapter": "74979e8b73c93a8777ab8c7121fd270d22652fd18a9facbc298040a23631f1b0",
+    "cases": "01cb204085d0bd906406f805e412b4ff2965279c59b090a160402b7a12b674e8",
+    "php": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+    "driver": "771d6432cd8c35145ee746094a47e9f03e6f75fc9e3e285e20576cbc520c9424",
+    "strict_helper": "f9d7c8161d000dde5b4314998a053ca8b2333d2e93edc630b6243058a13f60cd",
+    "worker": "471bcb240f0a29ea256ef1a5fc8f6ecdeb0094a323f19a8811d3f84e883e62ac",
+    "powershell": "d8f182560210d43baaf767d482ad1dc1207372522e91413b9d5e515a875e552d"
+  },
+  "inputs_unchanged": true,
+  "total": 3,
+  "passed": 3,
+  "results": [
+    {
+      "id": "identifier.ascii-function",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-symbol-interpreter-20261113\\revision02-critical3\\case-0000.php",
+      "source_sha256": "18b54da823251860f94f142e9d148dd4c8982c31a2f08b557b936e030ce5cfc2",
+      "source_base64": "PD9waHAgZnVuY3Rpb24gTWlYZUQoKXtyZXR1cm4gMTt9ZWNobyBtaXhlZCgpOw==",
+      "valid_utf8_source": true,
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.5513343000020541,
+        "stdout_base64": "MQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "1",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-symbol-interpreter-20261113\\revision02-critical3\\case-0000.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 9.38024249999944,
+        "stdout_base64": "MQ==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "1",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-symbol-interpreter-20261113\\revision02\\ALL_PHP_symbol_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-symbol-interpreter-20261113\\revision02-critical3\\case-0000.php"
+        ]
+      }
+    },
+    {
+      "id": "identifier.variable-japanese",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-symbol-interpreter-20261113\\revision02-critical3\\case-0001.php",
+      "source_sha256": "5378e6dc266a99d6b7155aed421086ec27f88281237702dd966ba67541931e11",
+      "source_base64": "PD9waHAgJOWkieaVsD03O2VjaG8gJOWkieaVsDs=",
+      "valid_utf8_source": true,
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.23861250000118162,
+        "stdout_base64": "Nw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "7",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-symbol-interpreter-20261113\\revision02-critical3\\case-0001.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 6.3702874000009615,
+        "stdout_base64": "Nw==",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "7",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-symbol-interpreter-20261113\\revision02\\ALL_PHP_symbol_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-symbol-interpreter-20261113\\revision02-critical3\\case-0001.php"
+        ]
+      }
+    },
+    {
+      "id": "identifier.ascii-class-canonical",
+      "source_path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-symbol-interpreter-20261113\\revision02-critical3\\case-0002.php",
+      "source_sha256": "b64ed659afae25e9d500a086d623435ab67b1c72ee141ebaa5f3ba620f1fe87c",
+      "source_base64": "PD9waHAgY2xhc3MgQ2FUe31lY2hvIGdldF9jbGFzcyhuZXcgY0F0KCkpOw==",
+      "valid_utf8_source": true,
+      "source_unchanged": true,
+      "verdict": "PASS",
+      "differences": [],
+      "oracle": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 0.33433680000234745,
+        "stdout_base64": "Q2FU",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "CaT",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+          "-n",
+          "-d",
+          "display_errors=stderr",
+          "-d",
+          "error_reporting=-1",
+          "-d",
+          "date.timezone=UTC",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-symbol-interpreter-20261113\\revision02-critical3\\case-0002.php"
+        ]
+      },
+      "candidate": {
+        "state": "EXITED",
+        "exit_code": 0,
+        "elapsed_seconds": 10.22474180000063,
+        "stdout_base64": "Q2FU",
+        "stderr_base64": "",
+        "stdout_utf8_preview": "CaT",
+        "stderr_utf8_preview": "",
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\differential\\PhpCliCandidateWorker.ps1",
+          "-AdapterPath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-symbol-interpreter-20261113\\revision02\\ALL_PHP_symbol_candidate.ps1",
+          "-SourcePath",
+          "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-symbol-interpreter-20261113\\revision02-critical3\\case-0002.php"
+        ]
+      }
+    }
+  ]
+}

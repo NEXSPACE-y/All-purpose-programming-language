@@ -1,0 +1,1 @@
+<?php namespace N; function dl_test_test2($v){return 'user:'.$v;} echo dl_test_test2('ALL');

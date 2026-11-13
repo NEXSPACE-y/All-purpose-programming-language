@@ -1,0 +1,218 @@
+[
+  {
+    "name": "var_dump simple object",
+    "code": "<?php class P { public $a = 1; public $b = \"x\"; } var_dump(new P());",
+    "oracle_php_exit": 0,
+    "expected": "object(P)#1 (2) {\n  [\"a\"]=>\n  int(1)\n  [\"b\"]=>\n  string(1) \"x\"\n}\n"
+  },
+  {
+    "name": "var_dump visibility annotations",
+    "code": "<?php class V { public $pub = 1; protected $pro = 2; private $pri = 3; } var_dump(new V());",
+    "oracle_php_exit": 0,
+    "expected": "object(V)#1 (3) {\n  [\"pub\"]=>\n  int(1)\n  [\"pro\":protected]=>\n  int(2)\n  [\"pri\":\"V\":private]=>\n  int(3)\n}\n"
+  },
+  {
+    "name": "var_dump inherited properties order and private owner",
+    "code": "<?php class A { public $a = 1; private $secret = \"a\"; protected $shared = \"s\"; } class B extends A { public $b = 2; private $own = \"b\"; } var_dump(new B());",
+    "oracle_php_exit": 0,
+    "expected": "object(B)#1 (5) {\n  [\"a\"]=>\n  int(1)\n  [\"secret\":\"A\":private]=>\n  string(1) \"a\"\n  [\"shared\":protected]=>\n  string(1) \"s\"\n  [\"b\"]=>\n  int(2)\n  [\"own\":\"B\":private]=>\n  string(1) \"b\"\n}\n"
+  },
+  {
+    "name": "var_dump object ids in creation order",
+    "code": "<?php class N {} $x = new N(); $y = new N(); $z = new N(); var_dump($z, $x, $y);",
+    "oracle_php_exit": 0,
+    "expected": "object(N)#3 (0) {\n}\nobject(N)#1 (0) {\n}\nobject(N)#2 (0) {\n}\n"
+  },
+  {
+    "name": "var_dump stdClass and dynamic properties",
+    "code": "<?php $o = new stdClass(); $o->name = \"n\"; $o->list = [1, 2]; var_dump($o);",
+    "oracle_php_exit": 0,
+    "expected": "object(stdClass)#1 (2) {\n  [\"name\"]=>\n  string(1) \"n\"\n  [\"list\"]=>\n  array(2) {\n    [0]=>\n    int(1)\n    [1]=>\n    int(2)\n  }\n}\n"
+  },
+  {
+    "name": "var_dump nested objects and arrays",
+    "code": "<?php class Box { public $item; public $tags = []; } $inner = new Box(); $inner->item = 5; $outer = new Box(); $outer->item = $inner; $outer->tags = [\"a\" => $inner, 0 => 1.5]; var_dump($outer);",
+    "oracle_php_exit": 0,
+    "expected": "object(Box)#2 (2) {\n  [\"item\"]=>\n  object(Box)#1 (2) {\n    [\"item\"]=>\n    int(5)\n    [\"tags\"]=>\n    array(0) {\n    }\n  }\n  [\"tags\"]=>\n  array(2) {\n    [\"a\"]=>\n    object(Box)#1 (2) {\n      [\"item\"]=>\n      int(5)\n      [\"tags\"]=>\n      array(0) {\n      }\n    }\n    [0]=>\n    float(1.5)\n  }\n}\n"
+  },
+  {
+    "name": "var_dump same object twice shows same id",
+    "code": "<?php class T { public $v = 1; } $t = new T(); var_dump([$t, $t]);",
+    "oracle_php_exit": 0,
+    "expected": "array(2) {\n  [0]=>\n  object(T)#1 (1) {\n    [\"v\"]=>\n    int(1)\n  }\n  [1]=>\n  object(T)#1 (1) {\n    [\"v\"]=>\n    int(1)\n  }\n}\n"
+  },
+  {
+    "name": "var_dump recursion",
+    "code": "<?php class Node { public $self; } $n = new Node(); $n->self = $n; var_dump($n);",
+    "oracle_php_exit": 0,
+    "expected": "object(Node)#1 (1) {\n  [\"self\"]=>\n  *RECURSION*\n}\n"
+  },
+  {
+    "name": "var_dump uninitialized typed property",
+    "code": "<?php class U { public int $n; public ?string $s = null; public string $t = \"set\"; } var_dump(new U());",
+    "oracle_php_exit": 0,
+    "expected": "object(U)#1 (2) {\n  [\"n\"]=>\n  uninitialized(int)\n  [\"s\"]=>\n  NULL\n  [\"t\"]=>\n  string(3) \"set\"\n}\n"
+  },
+  {
+    "name": "var_dump typed properties after assignment",
+    "code": "<?php class U { public int $n; public float $f; } $u = new U(); $u->n = 5; $u->f = 2; var_dump($u);",
+    "oracle_php_exit": 0,
+    "expected": "object(U)#1 (2) {\n  [\"n\"]=>\n  int(5)\n  [\"f\"]=>\n  float(2)\n}\n"
+  },
+  {
+    "name": "var_dump enum cases",
+    "code": "<?php enum Suit: string { case Hearts = \"H\"; case Spades = \"S\"; } enum Flag { case On; case Off; } var_dump(Suit::Hearts, Flag::Off, [Suit::Spades]);",
+    "oracle_php_exit": 0,
+    "expected": "enum(Suit::Hearts)\nenum(Flag::Off)\narray(1) {\n  [0]=>\n  enum(Suit::Spades)\n}\n"
+  },
+  {
+    "name": "var_dump object holding enum and null",
+    "code": "<?php enum Lvl: int { case Low = 1; } class H { public $lvl; public $none = null; public $ok = true; } $h = new H(); $h->lvl = Lvl::Low; var_dump($h);",
+    "oracle_php_exit": 0,
+    "expected": "object(H)#1 (3) {\n  [\"lvl\"]=>\n  enum(Lvl::Low)\n  [\"none\"]=>\n  NULL\n  [\"ok\"]=>\n  bool(true)\n}\n"
+  },
+  {
+    "name": "var_dump empty object",
+    "code": "<?php class E {} var_dump(new E(), new stdClass());",
+    "oracle_php_exit": 0,
+    "expected": "object(E)#1 (0) {\n}\nobject(stdClass)#2 (0) {\n}\n"
+  },
+  {
+    "name": "var_dump constructor promoted properties",
+    "code": "<?php class Pt { public function __construct(public int $x = 0, protected int $y = 0, private string $label = \"p\") {} } var_dump(new Pt(3, 4));",
+    "oracle_php_exit": 0,
+    "expected": "object(Pt)#1 (3) {\n  [\"x\"]=>\n  int(3)\n  [\"y\":protected]=>\n  int(4)\n  [\"label\":\"Pt\":private]=>\n  string(1) \"p\"\n}\n"
+  },
+  {
+    "name": "var_dump cloned object gets new id",
+    "code": "<?php class C { public $v = 1; } $a = new C(); $b = clone $a; $b->v = 2; var_dump($a, $b);",
+    "oracle_php_exit": 0,
+    "expected": "object(C)#1 (1) {\n  [\"v\"]=>\n  int(1)\n}\nobject(C)#2 (1) {\n  [\"v\"]=>\n  int(2)\n}\n"
+  },
+  {
+    "name": "print_r scalars",
+    "code": "<?php print_r(1); echo \"|\"; print_r(1.5); echo \"|\"; print_r(\"s\"); echo \"|\"; print_r(true); echo \"|\"; print_r(false); echo \"|\"; print_r(null); echo \"|\";",
+    "oracle_php_exit": 0,
+    "expected": "1|1.5|s|1|||"
+  },
+  {
+    "name": "print_r flat array",
+    "code": "<?php print_r([1, \"two\", 3.5, true, null]);",
+    "oracle_php_exit": 0,
+    "expected": "Array\n(\n    [0] => 1\n    [1] => two\n    [2] => 3.5\n    [3] => 1\n    [4] => \n)\n"
+  },
+  {
+    "name": "print_r associative and nested array",
+    "code": "<?php print_r([\"a\" => 1, \"b\" => [10, 20, [\"deep\" => \"x\"]], 5 => \"five\"]);",
+    "oracle_php_exit": 0,
+    "expected": "Array\n(\n    [a] => 1\n    [b] => Array\n        (\n            [0] => 10\n            [1] => 20\n            [2] => Array\n                (\n                    [deep] => x\n                )\n\n        )\n\n    [5] => five\n)\n"
+  },
+  {
+    "name": "print_r empty array",
+    "code": "<?php print_r([]); print_r([\"e\" => []]);",
+    "oracle_php_exit": 0,
+    "expected": "Array\n(\n)\nArray\n(\n    [e] => Array\n        (\n        )\n\n)\n"
+  },
+  {
+    "name": "print_r object with visibility",
+    "code": "<?php class V { public $pub = 1; protected $pro = [1, 2]; private $pri = \"p\"; } print_r(new V());",
+    "oracle_php_exit": 0,
+    "expected": "V Object\n(\n    [pub] => 1\n    [pro:protected] => Array\n        (\n            [0] => 1\n            [1] => 2\n        )\n\n    [pri:V:private] => p\n)\n"
+  },
+  {
+    "name": "print_r nested object and stdClass",
+    "code": "<?php $o = new stdClass(); $o->a = 1; $o->child = new stdClass(); $o->child->b = [1]; print_r($o);",
+    "oracle_php_exit": 0,
+    "expected": "stdClass Object\n(\n    [a] => 1\n    [child] => stdClass Object\n        (\n            [b] => Array\n                (\n                    [0] => 1\n                )\n\n        )\n\n)\n"
+  },
+  {
+    "name": "print_r return mode",
+    "code": "<?php $s = print_r([1, 2], true); echo strlen($s), \"|\", $s; var_dump(print_r(\"x\", true));",
+    "oracle_php_exit": 0,
+    "expected": "36|Array\n(\n    [0] => 1\n    [1] => 2\n)\nstring(1) \"x\"\n"
+  },
+  {
+    "name": "print_r inherited private",
+    "code": "<?php class A { private $a = 1; } class B extends A { private $b = 2; public $c = 3; } print_r(new B());",
+    "oracle_php_exit": 0,
+    "expected": "B Object\n(\n    [a:A:private] => 1\n    [b:B:private] => 2\n    [c] => 3\n)\n"
+  },
+  {
+    "name": "const statement",
+    "code": "<?php const GREETING = \"hello\"; const ANSWER = 42, RATIO = 1.5; echo GREETING, \" \", ANSWER, \" \", RATIO; var_dump(ANSWER + 1, RATIO * 2);",
+    "oracle_php_exit": 0,
+    "expected": "hello 42 1.5int(43)\nfloat(3)\n"
+  },
+  {
+    "name": "const expression values",
+    "code": "<?php const BASE = 10; const DOUBLE = BASE * 2; const LIST_ = [1, 2, 3]; const NAME = \"n\" . \"m\"; var_dump(DOUBLE, LIST_, NAME);",
+    "oracle_php_exit": 0,
+    "expected": "int(20)\narray(3) {\n  [0]=>\n  int(1)\n  [1]=>\n  int(2)\n  [2]=>\n  int(3)\n}\nstring(2) \"nm\"\n"
+  },
+  {
+    "name": "define and constant lookup",
+    "code": "<?php define(\"SITE\", \"example\"); define(\"MAX\", 5); echo SITE, MAX; var_dump(defined(\"SITE\"), defined(\"NOPE\"), constant(\"MAX\"), defined(\"PHP_INT_MAX\"));",
+    "oracle_php_exit": 0,
+    "expected": "example5bool(true)\nbool(false)\nint(5)\nbool(true)\n"
+  },
+  {
+    "name": "constants inside functions and classes",
+    "code": "<?php const LIMIT = 3; define(\"STEP\", 2); function f() { return LIMIT * STEP; } class K { public function g() { return LIMIT + STEP; } } echo f(), \"|\"; $k = new K(); echo $k->g();",
+    "oracle_php_exit": 0,
+    "expected": "6|5"
+  },
+  {
+    "name": "undefined constant via constant function",
+    "code": "<?php try { constant(\"MISSING_ONE\"); } catch (Error $e) { echo get_class($e), \": \", $e->getMessage(); }",
+    "oracle_php_exit": 0,
+    "expected": "Error: Undefined constant \"MISSING_ONE\""
+  },
+  {
+    "name": "error level constants",
+    "code": "<?php var_dump(E_ALL, E_ERROR, E_WARNING, E_NOTICE, E_DEPRECATED, E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE, E_USER_DEPRECATED, E_ALL & ~E_NOTICE);",
+    "oracle_php_exit": 0,
+    "expected": "int(30719)\nint(1)\nint(2)\nint(8)\nint(8192)\nint(256)\nint(512)\nint(1024)\nint(16384)\nint(30711)\n"
+  },
+  {
+    "name": "version and platform constants",
+    "code": "<?php var_dump(PHP_VERSION, PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION, PHP_VERSION_ID, PHP_OS, PHP_OS_FAMILY, DIRECTORY_SEPARATOR);",
+    "oracle_php_exit": 0,
+    "expected": "string(6) \"8.5.12\"\nint(8)\nint(5)\nint(12)\nint(80512)\nstring(5) \"WINNT\"\nstring(7) \"Windows\"\nstring(1) \"\\\"\n"
+  },
+  {
+    "name": "str_repeat",
+    "code": "<?php echo str_repeat(\"ab\", 3), \"|\", str_repeat(\"-\", 0), \"|\", str_repeat(\"x\", 1); try { str_repeat(\"x\", -1); } catch (ValueError $e) { echo \"|\", $e->getMessage(); }",
+    "oracle_php_exit": 0,
+    "expected": "ababab||x|str_repeat(): Argument #2 ($times) must be greater than or equal to 0"
+  },
+  {
+    "name": "call_user_func variants",
+    "code": "<?php function add($a, $b) { return $a + $b; } class M { public function twice($x) { return $x * 2; } public static function neg($x) { return -$x; } } $m = new M(); echo call_user_func(\"add\", 1, 2), \"|\", call_user_func(function($x) { return $x . \"!\"; }, \"hi\"), \"|\", call_user_func([$m, \"twice\"], 4), \"|\", call_user_func([\"M\", \"neg\"], 5), \"|\", call_user_func(\"M::neg\", 6), \"|\", call_user_func(\"strtoupper\", \"up\");",
+    "oracle_php_exit": 0,
+    "expected": "3|hi!|8|-5|-6|UP"
+  },
+  {
+    "name": "call_user_func_array",
+    "code": "<?php function join3($a, $b, $c) { return \"$a-$b-$c\"; } echo call_user_func_array(\"join3\", [1, 2, 3]), \"|\", call_user_func_array(fn($x, $y) => $x * $y, [6, 7]);",
+    "oracle_php_exit": 0,
+    "expected": "1-2-3|42"
+  },
+  {
+    "name": "function_exists",
+    "code": "<?php function mine() {} var_dump(function_exists(\"mine\"), function_exists(\"MINE\"), function_exists(\"not_defined_fn\"));",
+    "oracle_php_exit": 0,
+    "expected": "bool(true)\nbool(true)\nbool(false)\n"
+  },
+  {
+    "name": "uncaught exception handler",
+    "code": "<?php set_exception_handler(function($e) { echo \"handled: \", get_class($e), \" - \", $e->getMessage(); }); echo \"start \"; throw new RuntimeException(\"oops\"); echo \"never\";",
+    "oracle_php_exit": 0,
+    "expected": "start handled: RuntimeException - oops"
+  },
+  {
+    "name": "exception handler replaced and restored",
+    "code": "<?php $first = function($e) { echo \"first \", $e->getMessage(); }; $second = function($e) { echo \"second \", $e->getMessage(); }; var_dump(set_exception_handler($first) === null); set_exception_handler($second); restore_exception_handler(); throw new Exception(\"x\");",
+    "oracle_php_exit": 0,
+    "expected": "bool(true)\nfirst x"
+  }
+]

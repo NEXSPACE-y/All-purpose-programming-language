@@ -1,0 +1,162 @@
+[
+  {
+    "id": "scalar_alias_roots",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$w=&$v;var_dump($v,$w);"
+  },
+  {
+    "id": "array_external_alias",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$a=[&$v];var_dump($a);"
+  },
+  {
+    "id": "array_single_cell_after_unset",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$a=[&$v];unset($v);var_dump($a);"
+  },
+  {
+    "id": "array_cell_copy_alias_alive",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$a=[&$v];$b=$a;var_dump($a,$b);"
+  },
+  {
+    "id": "array_cell_copy_then_alias_unset",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$a=[&$v];$b=$a;unset($v);var_dump($a,$b);"
+  },
+  {
+    "id": "array_cell_alias_unset_then_copy",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$a=[&$v];unset($v);$b=$a;var_dump($a,$b);"
+  },
+  {
+    "id": "array_cow_before_unset",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$a=[&$v];$b=$a;$b[]=1;unset($v);var_dump($a,$b);"
+  },
+  {
+    "id": "array_cow_after_unset",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$a=[&$v];$b=$a;unset($v);$b[]=1;var_dump($a,$b);"
+  },
+  {
+    "id": "array_single_copy_write",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$a=[&$v];unset($v);$b=$a;$a[0]=\"x\";var_dump($a,$b);"
+  },
+  {
+    "id": "array_two_slots",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$a=[&$v,&$v];unset($v);var_dump($a);"
+  },
+  {
+    "id": "array_two_slots_one_unset",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$a=[&$v,&$v];unset($v);unset($a[1]);var_dump($a);"
+  },
+  {
+    "id": "array_two_slots_then_copy",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$a=[&$v,&$v];unset($v);$b=$a;var_dump($a,$b);"
+  },
+  {
+    "id": "array_two_distinct_cells",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$w=\"\\xFF\\0\";$a=[&$v,&$w];unset($v,$w);var_dump($a);"
+  },
+  {
+    "id": "nested_array_single",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$a=[[&$v]];unset($v);var_dump($a);"
+  },
+  {
+    "id": "nested_array_copies",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$inner=[&$v];$a=[$inner,$inner];unset($v,$inner);var_dump($a);"
+  },
+  {
+    "id": "array_alias_variable_alive",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$w=&$v;$a=[&$v];unset($v);var_dump($a);"
+  },
+  {
+    "id": "array_alias_variable_removed",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$w=&$v;$a=[&$v];unset($v,$w);var_dump($a);"
+  },
+  {
+    "id": "function_local_reference_returned_array",
+    "mode": "body",
+    "code": "function f(){$v=\"\\xFF\\0\";return [&$v];}$a=f();var_dump($a);"
+  },
+  {
+    "id": "function_reference_parameter_live",
+    "mode": "body",
+    "code": "function f(&$v){$a=[&$v];var_dump($a);}$v=\"\\xFF\\0\";f($v);"
+  },
+  {
+    "id": "function_argument_array_alias_alive",
+    "mode": "body",
+    "code": "function f($a){var_dump($a);}$v=\"\\xFF\\0\";$a=[&$v];f($a);"
+  },
+  {
+    "id": "function_argument_array_alias_unset",
+    "mode": "body",
+    "code": "function f($a){var_dump($a);}$v=\"\\xFF\\0\";$a=[&$v];unset($v);f($a);"
+  },
+  {
+    "id": "function_suspended_outer_local",
+    "mode": "body",
+    "code": "function f($a){var_dump($a);}function g(){$v=\"\\xFF\\0\";$a=[&$v];f($a);}g();"
+  },
+  {
+    "id": "function_ref_return_alias_alive",
+    "mode": "body",
+    "code": "function &f(){static $v=\"\\xFF\\0\";return $v;}$v=&f();$a=[&$v];unset($v);var_dump($a);"
+  },
+  {
+    "id": "closure_capture_reference_live",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$a=[&$v];$f=function()use(&$v){return $v;};unset($v);var_dump($a);"
+  },
+  {
+    "id": "closure_capture_reference_unset",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$a=[&$v];$f=function()use(&$v){return $v;};unset($v,$f);var_dump($a);"
+  },
+  {
+    "id": "object_property_external_alias",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$o=new stdClass();$o->x=&$v;var_dump($o);"
+  },
+  {
+    "id": "object_property_single_cell",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$o=new stdClass();$o->x=&$v;unset($v);var_dump($o);"
+  },
+  {
+    "id": "object_property_two_slots",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$o=new stdClass();$o->x=&$v;$o->y=&$v;unset($v);var_dump($o);"
+  },
+  {
+    "id": "reference_array_self",
+    "mode": "body",
+    "code": "$a=[];$a[0]=&$a;var_dump($a);"
+  },
+  {
+    "id": "array_element_dump_top",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$a=[&$v];var_dump($a[0]);"
+  },
+  {
+    "id": "foreach_reference_cell_lingering",
+    "mode": "body",
+    "code": "$a=[\"\\xFF\\0\"];foreach($a as &$v){}var_dump($a);unset($v);var_dump($a);"
+  },
+  {
+    "id": "var_dump_shared_args",
+    "mode": "body",
+    "code": "$v=\"\\xFF\\0\";$a=[&$v];unset($v);var_dump($a,$a);"
+  }
+]

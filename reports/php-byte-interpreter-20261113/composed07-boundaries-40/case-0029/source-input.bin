@@ -1,0 +1,1 @@
+class C{function m($x){return $x+1;}}$c=new C();$f=[$c,"m"];$g=$f(...);echo $g(3);

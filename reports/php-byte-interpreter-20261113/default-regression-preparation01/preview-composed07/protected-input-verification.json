@@ -1,0 +1,434 @@
+[
+  {
+    "path": "package/ALL_PHP_v3_16_test.ps1",
+    "source": {
+      "bytes": 8190,
+      "sha256": "e7d9a05b4e68919932d8b9b5ac22876bf64f7b40b293922a96e9da9fd00c342c"
+    },
+    "bundle": {
+      "bytes": 8190,
+      "sha256": "e7d9a05b4e68919932d8b9b5ac22876bf64f7b40b293922a96e9da9fd00c342c"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/ALL_math_cases.json",
+    "source": {
+      "bytes": 15631,
+      "sha256": "e89e768d9b9b57832b986bd42c9c0e43c20b6d5d33c187861a556edeb01d2269"
+    },
+    "bundle": {
+      "bytes": 15631,
+      "sha256": "e89e768d9b9b57832b986bd42c9c0e43c20b6d5d33c187861a556edeb01d2269"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/ALL_PHP_v3_1_1_cases.json",
+    "source": {
+      "bytes": 5697,
+      "sha256": "5f7a172d327380aefdb37329294ffca7fb23438be81204c9817e8e8c923080f1"
+    },
+    "bundle": {
+      "bytes": 5697,
+      "sha256": "5f7a172d327380aefdb37329294ffca7fb23438be81204c9817e8e8c923080f1"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_2_cases.json",
+    "source": {
+      "bytes": 6092,
+      "sha256": "17bee499576362b8cffc5beadcf3d0836a0b1f8ae57a704cd26f8fe559537a64"
+    },
+    "bundle": {
+      "bytes": 6092,
+      "sha256": "17bee499576362b8cffc5beadcf3d0836a0b1f8ae57a704cd26f8fe559537a64"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_3_cases.json",
+    "source": {
+      "bytes": 7233,
+      "sha256": "d98c6c7464e91539d6b9115b3e57669e424d4f3c654b02fdfbabcf0a36881db5"
+    },
+    "bundle": {
+      "bytes": 7233,
+      "sha256": "d98c6c7464e91539d6b9115b3e57669e424d4f3c654b02fdfbabcf0a36881db5"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_3_guard_cases.json",
+    "source": {
+      "bytes": 551,
+      "sha256": "84ec76b8f51455f5d2c3236463423759a01fec593a4c41ce0e45d759f56e41c3"
+    },
+    "bundle": {
+      "bytes": 551,
+      "sha256": "84ec76b8f51455f5d2c3236463423759a01fec593a4c41ce0e45d759f56e41c3"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_4_cases.json",
+    "source": {
+      "bytes": 8732,
+      "sha256": "b4c928cf56ccc84099b72db89860687c7b867702e7a19b244579a8abf5358563"
+    },
+    "bundle": {
+      "bytes": 8732,
+      "sha256": "b4c928cf56ccc84099b72db89860687c7b867702e7a19b244579a8abf5358563"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_4_guard_cases.json",
+    "source": {
+      "bytes": 501,
+      "sha256": "2946be1e4ee514d475971e5a5049115f1433232185f38b445aec066090297811"
+    },
+    "bundle": {
+      "bytes": 501,
+      "sha256": "2946be1e4ee514d475971e5a5049115f1433232185f38b445aec066090297811"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_5_variables_operators_arrays_cases.json",
+    "source": {
+      "bytes": 5236,
+      "sha256": "ec23128e16889b6496b7516107f0d72347367fb11c71be9ab7633998018c0873"
+    },
+    "bundle": {
+      "bytes": 5236,
+      "sha256": "ec23128e16889b6496b7516107f0d72347367fb11c71be9ab7633998018c0873"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_5_functions_scopes_cases.json",
+    "source": {
+      "bytes": 3876,
+      "sha256": "255d82197ee4b6dc3296619cd25856bd3dc451248ead21eeeabe36e962c33f97"
+    },
+    "bundle": {
+      "bytes": 3876,
+      "sha256": "255d82197ee4b6dc3296619cd25856bd3dc451248ead21eeeabe36e962c33f97"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_5_oop_cases.json",
+    "source": {
+      "bytes": 4714,
+      "sha256": "2a57ca21204fe872e8b8bc3aaf42383a2a77730af2ab30ab9332c7b72dc6bfa6"
+    },
+    "bundle": {
+      "bytes": 4714,
+      "sha256": "2a57ca21204fe872e8b8bc3aaf42383a2a77730af2ab30ab9332c7b72dc6bfa6"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_6_retained_v3_5_guards.json",
+    "source": {
+      "bytes": 1021,
+      "sha256": "91b465100e2eb0635a0def21a02d5972298ac87bde82c5dc9e390c44373c69bf"
+    },
+    "bundle": {
+      "bytes": 1021,
+      "sha256": "91b465100e2eb0635a0def21a02d5972298ac87bde82c5dc9e390c44373c69bf"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_6_implemented_prior_guards.json",
+    "source": {
+      "bytes": 295,
+      "sha256": "73ba3ad30b90792865ccc614c5db014c828e68812bcabcbddfe0c83e1298f5ef"
+    },
+    "bundle": {
+      "bytes": 295,
+      "sha256": "73ba3ad30b90792865ccc614c5db014c828e68812bcabcbddfe0c83e1298f5ef"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_6_oop_cases.json",
+    "source": {
+      "bytes": 5463,
+      "sha256": "a5ba1ce29a1e95cef8851480e8c03750821604c5e0bf8ddb913e9daa75302856"
+    },
+    "bundle": {
+      "bytes": 5463,
+      "sha256": "a5ba1ce29a1e95cef8851480e8c03750821604c5e0bf8ddb913e9daa75302856"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_6_reference_cases.json",
+    "source": {
+      "bytes": 3306,
+      "sha256": "cff7e7fd947d8a41c695fd5d76de4ed23bff1513a0afdc8f350466b18d959f14"
+    },
+    "bundle": {
+      "bytes": 3306,
+      "sha256": "cff7e7fd947d8a41c695fd5d76de4ed23bff1513a0afdc8f350466b18d959f14"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_6_compound_cases.json",
+    "source": {
+      "bytes": 771,
+      "sha256": "18d3357ef5817a81d9d2767010918733c74b7d0d26fca66daaed63d7a3781005"
+    },
+    "bundle": {
+      "bytes": 771,
+      "sha256": "18d3357ef5817a81d9d2767010918733c74b7d0d26fca66daaed63d7a3781005"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_6_trait_cases.json",
+    "source": {
+      "bytes": 2568,
+      "sha256": "d3e75b41e9b2ccc7d26bdae7b252e7a235b1a8ae7614991424b63430d8dc17d2"
+    },
+    "bundle": {
+      "bytes": 2568,
+      "sha256": "d3e75b41e9b2ccc7d26bdae7b252e7a235b1a8ae7614991424b63430d8dc17d2"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_9_2_active_guards.json",
+    "source": {
+      "bytes": 2940,
+      "sha256": "beeff5169993b1d0cbdf703d5606c605f9501abc5c24b53ecf2e74fd1226b11f"
+    },
+    "bundle": {
+      "bytes": 2940,
+      "sha256": "beeff5169993b1d0cbdf703d5606c605f9501abc5c24b53ecf2e74fd1226b11f"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_9_2_native_oracle_cases.json",
+    "source": {
+      "bytes": 388,
+      "sha256": "8c49e8cb1aeeac43665013f48d62a224579340a947c19830b8c9a16d118712c6"
+    },
+    "bundle": {
+      "bytes": 388,
+      "sha256": "8c49e8cb1aeeac43665013f48d62a224579340a947c19830b8c9a16d118712c6"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_7_implemented_prior_guards.json",
+    "source": {
+      "bytes": 353,
+      "sha256": "cb592d6b83caee9d0d40d492dd425a317f488fe7fc6f834fa7e325287f1648c2"
+    },
+    "bundle": {
+      "bytes": 353,
+      "sha256": "cb592d6b83caee9d0d40d492dd425a317f488fe7fc6f834fa7e325287f1648c2"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_7_native_oracle_cases.json",
+    "source": {
+      "bytes": 4390,
+      "sha256": "b886a4669029993fb947666a0186afd9c69b4f3b57ddd6d4665d3424cea6e37c"
+    },
+    "bundle": {
+      "bytes": 4390,
+      "sha256": "b886a4669029993fb947666a0186afd9c69b4f3b57ddd6d4665d3424cea6e37c"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_7_trait_oracle_cases.json",
+    "source": {
+      "bytes": 4431,
+      "sha256": "b475773875d05eba90d4a928f54432df7eddcfd8427ddf8b5e90762cb66fa0aa"
+    },
+    "bundle": {
+      "bytes": 4431,
+      "sha256": "b475773875d05eba90d4a928f54432df7eddcfd8427ddf8b5e90762cb66fa0aa"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_8_implemented_prior_guards.json",
+    "source": {
+      "bytes": 127,
+      "sha256": "296ad934a4dd1fcb365faa9e409b8210850108f21bfd279bc00a080043e06fe9"
+    },
+    "bundle": {
+      "bytes": 127,
+      "sha256": "296ad934a4dd1fcb365faa9e409b8210850108f21bfd279bc00a080043e06fe9"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_8_native_oracle_cases.json",
+    "source": {
+      "bytes": 8102,
+      "sha256": "422a0b2f50b348a24adb4ec63c35c6a17af6efe63b416a4e50247bcbe30a239c"
+    },
+    "bundle": {
+      "bytes": 8102,
+      "sha256": "422a0b2f50b348a24adb4ec63c35c6a17af6efe63b416a4e50247bcbe30a239c"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_9_native_oracle_cases.json",
+    "source": {
+      "bytes": 4017,
+      "sha256": "1d84a3d34faf4612c123212212ef65a3629ba3899ccbb8f26a27374548b00de3"
+    },
+    "bundle": {
+      "bytes": 4017,
+      "sha256": "1d84a3d34faf4612c123212212ef65a3629ba3899ccbb8f26a27374548b00de3"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_9_1_ref_return_oracle_cases.json",
+    "source": {
+      "bytes": 2949,
+      "sha256": "63a4ea9f72cc381ff5ae5476fb97b01adea5a94240a6a193b452964a2667bad1"
+    },
+    "bundle": {
+      "bytes": 2949,
+      "sha256": "63a4ea9f72cc381ff5ae5476fb97b01adea5a94240a6a193b452964a2667bad1"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_10_typed_oracle_cases.json",
+    "source": {
+      "bytes": 11534,
+      "sha256": "d37c518bebe2f1bd14a40b32d09fe158d898f9af9de1742a7fec4cc3f82ffca2"
+    },
+    "bundle": {
+      "bytes": 11534,
+      "sha256": "d37c518bebe2f1bd14a40b32d09fe158d898f9af9de1742a7fec4cc3f82ffca2"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_11_properties_oracle_cases.json",
+    "source": {
+      "bytes": 15882,
+      "sha256": "10506faf092013e2c7d57f968a19bbaab87351afe2109d00899b5c346f5ae306"
+    },
+    "bundle": {
+      "bytes": 15882,
+      "sha256": "10506faf092013e2c7d57f968a19bbaab87351afe2109d00899b5c346f5ae306"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_12_hooks_oracle_cases.json",
+    "source": {
+      "bytes": 6309,
+      "sha256": "f1adf6cf1ad674fe027c589746e44f13606c9925dde6a180097f01c2d3f216f1"
+    },
+    "bundle": {
+      "bytes": 6309,
+      "sha256": "f1adf6cf1ad674fe027c589746e44f13606c9925dde6a180097f01c2d3f216f1"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_13_numeric_oracle_cases.json",
+    "source": {
+      "bytes": 29953,
+      "sha256": "8f48e3a23e69a2bf964ea4bf974c39c3bed5f6bb8ce7f189b8b63912df3dfe83"
+    },
+    "bundle": {
+      "bytes": 29953,
+      "sha256": "8f48e3a23e69a2bf964ea4bf974c39c3bed5f6bb8ce7f189b8b63912df3dfe83"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_14_exceptions_oracle_cases.json",
+    "source": {
+      "bytes": 15930,
+      "sha256": "ffb616f0e7bcac973ab0b112120aa1a617a2c8a76c924e498b4ae3eaad5fd8ce"
+    },
+    "bundle": {
+      "bytes": 15930,
+      "sha256": "ffb616f0e7bcac973ab0b112120aa1a617a2c8a76c924e498b4ae3eaad5fd8ce"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_15_objects_constants_oracle_cases.json",
+    "source": {
+      "bytes": 12385,
+      "sha256": "a2464d80d7c52b8f1011aa5998b4439a031aebdd913fd9114b6c0b1e8d269fbd"
+    },
+    "bundle": {
+      "bytes": 12385,
+      "sha256": "a2464d80d7c52b8f1011aa5998b4439a031aebdd913fd9114b6c0b1e8d269fbd"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_15_diagnostics_oracle_cases.json",
+    "source": {
+      "bytes": 7807,
+      "sha256": "e3a6c541d98e9ff1820b8bebfffcf8da0a507edb7480379bc8f0a1c76acc9fd9"
+    },
+    "bundle": {
+      "bytes": 7807,
+      "sha256": "e3a6c541d98e9ff1820b8bebfffcf8da0a507edb7480379bc8f0a1c76acc9fd9"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_16_namespaces_oracle_cases.json",
+    "source": {
+      "bytes": 10930,
+      "sha256": "6ee35b0112df5617028ca4b219d1094de26847dae36db9dc638064cd9fd8e8dc"
+    },
+    "bundle": {
+      "bytes": 10930,
+      "sha256": "6ee35b0112df5617028ca4b219d1094de26847dae36db9dc638064cd9fd8e8dc"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/ALL_PHP_v3_17_namespace_test.ps1",
+    "source": {
+      "bytes": 1892,
+      "sha256": "21d8ac81f753175b312628f04936bb09ae781b821019ca89e0c3d7bf7b692b5f"
+    },
+    "bundle": {
+      "bytes": 1892,
+      "sha256": "21d8ac81f753175b312628f04936bb09ae781b821019ca89e0c3d7bf7b692b5f"
+    },
+    "byteIdentical": true
+  },
+  {
+    "path": "package/PHP_v3_17_namespace_runtime_oracle_cases.json",
+    "source": {
+      "bytes": 6371,
+      "sha256": "00561fa0183bc7905638d67d06f68bee26b873a600c7e438e05e8516b77be341"
+    },
+    "bundle": {
+      "bytes": 6371,
+      "sha256": "00561fa0183bc7905638d67d06f68bee26b873a600c7e438e05e8516b77be341"
+    },
+    "byteIdentical": true
+  }
+]

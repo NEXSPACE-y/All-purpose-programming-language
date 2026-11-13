@@ -1,0 +1,1 @@
+$a=["\xFF"=>1,2=>2];var_dump(array_keys($a),array_key_first($a),array_key_last($a),array_key_exists("\xFF",$a));

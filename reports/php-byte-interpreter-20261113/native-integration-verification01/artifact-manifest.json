@@ -1,0 +1,836 @@
+{
+  "status": "FROZEN_NATIVE_BYTE_SOURCE_INTEGRATION_NOT_FULL_PHP",
+  "adapter_sha256": "4d120c8ff1e6f2179e2dee5cd2ef4726d2ff05d168fac536f34721c8c9e13a9c",
+  "files": [
+    {
+      "path": "tools/candidates/php-byte-interpreter/native-worker01/.gitignore",
+      "bytes": 6,
+      "sha256": "89e69901af2a01eced6f20f4f85d045f55ff4c1448232b0853fe6dcb42eec210"
+    },
+    {
+      "path": "tools/candidates/php-byte-interpreter/native-worker01/AllByteNativePhpHost.cs",
+      "bytes": 2558,
+      "sha256": "386237269a62a91511188970a59f6d95fccd4c11b93953c8bbc01bede787a924"
+    },
+    {
+      "path": "tools/candidates/php-byte-interpreter/native-worker01/Build-Host.ps1",
+      "bytes": 2695,
+      "sha256": "63aa90231c71775f2df531980588f8f5007c1c45245aed69de28bebd3cdd2fbc"
+    },
+    {
+      "path": "tools/candidates/php-byte-interpreter/native-worker01/Compare-ByteNativeSource.py",
+      "bytes": 8602,
+      "sha256": "019cc15b2265e46948148b7b01014ad5953bbeccbb932f049397715b69ece68d"
+    },
+    {
+      "path": "tools/candidates/php-byte-interpreter/native-worker01/Invoke-ByteNativeWorker.ps1",
+      "bytes": 6682,
+      "sha256": "43151ca1834e873accad40190498b879d48f645a2eadd3a61e28d76c3d79670a"
+    },
+    {
+      "path": "tools/candidates/php-byte-interpreter/native-worker01/out/host01/all-byte-native-php-host.exe",
+      "bytes": 6144,
+      "sha256": "0bad369da0267a61dcfccfda88ff7b604235d77857d60bfec0d4b476090bb6c8"
+    },
+    {
+      "path": "tools/candidates/php-byte-interpreter/native-worker01/out/host01/build.json",
+      "bytes": 2199,
+      "sha256": "839cee8e7e72ee4a334aaa530286f6b59206ff34b62887079e0cd8d765e1f1b0"
+    },
+    {
+      "path": "tools/candidates/php-byte-interpreter/native-worker01/out/host01/byte-return-worker.ps1",
+      "bytes": 6682,
+      "sha256": "43151ca1834e873accad40190498b879d48f645a2eadd3a61e28d76c3d79670a"
+    },
+    {
+      "path": "tools/candidates/php-byte-interpreter/native-worker01/raw-source.cases.json",
+      "bytes": 1788,
+      "sha256": "8d573889c1ba3631fc89c011847aa7b7dec5c44adf7f1057477f90a85882c22e"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0000.native.json",
+      "bytes": 8197,
+      "sha256": "79d617b13bfddd2504956419ccdec823f73bf55420f1c6317f63fdc2b3c625bf"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0000.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "32f170c4062e5df71ae9bf397038cb9af7560325bbf06ee216f6589344d0a003"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0000.php",
+      "bytes": 31,
+      "sha256": "5a92990cefe34fa9b797279641a8d6da9fea82c3d36ffb8f524ef29a23732475"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0001.native.json",
+      "bytes": 8197,
+      "sha256": "bbf6e57de22957d4dfdd58de177c53de47ba96a06662c938cbffd2cdfd9caf65"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0001.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "dd6a6ca739276ea8b0869238d1aaee1c9fadeec3965e30cdf1f0c3d04ed8aab6"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0001.php",
+      "bytes": 89,
+      "sha256": "2d9c55918c0f54c626c2ab99c64cf8fffbcf78b06754d3466e01804b8644826f"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0002.native.json",
+      "bytes": 8197,
+      "sha256": "df2a194ca4c1f0281d0fd5dfa64f74b429573c0796a7a266f9a07672780f9b0b"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0002.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "854cabdccfeb528a374b2c922a453309a77c79a2c8b0f8c83b59f148d6f92f32"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0002.php",
+      "bytes": 90,
+      "sha256": "e312601c8a378cd254ef3f73a3d653f70556e9aaf95ebe51781e3ec979c45426"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0003.native.json",
+      "bytes": 8130,
+      "sha256": "ab582189f14e0caa90bd9c64c3c7af305a7e232cd87c745ec377701f6f8f70fa"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0003.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "9b414f418b30d16dff16ec975920339d0c3033c71cf430c26e6f35d90b1342bb"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0003.php",
+      "bytes": 182,
+      "sha256": "9fb8e097ff06b7282ad4679bdac850bbaa1042a6632aea2863d9b16fc641be1f"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0004.native.json",
+      "bytes": 8196,
+      "sha256": "067e0549733a8e387710de32e53dc5b0089eed03590fa3d3e55dd368d9c64165"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0004.native.json.phases.jsonl",
+      "bytes": 1323,
+      "sha256": "c7385636661596e603bb6a1f1ba88d559f757dded6ff72dcd94a5863d9decba0"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0004.php",
+      "bytes": 50,
+      "sha256": "c44cdc490ccc6e06b12b927dcd0834a5bbf52c6a19fa13907a4f7822aca0dea4"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0005.native.json",
+      "bytes": 8196,
+      "sha256": "8c636cbe5c29b2e4fb4918b146e229a9c2bd7c87c48eaad74295f4c95f6bdffe"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0005.native.json.phases.jsonl",
+      "bytes": 1323,
+      "sha256": "52ad990b4b3764de5ae02c9dac6c6de6009970997a4c59332b195532234c1319"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0005.php",
+      "bytes": 108,
+      "sha256": "d6f952320bc5910fc035317eff9cfc7a881f662f841a1b373c42f90363ab212e"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0006.native.json",
+      "bytes": 8196,
+      "sha256": "7b9f873d80e8e83ee76d92bcb97e487aa23a5db926290e0fe269051eddf19301"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0006.native.json.phases.jsonl",
+      "bytes": 1323,
+      "sha256": "3d51d7a070c42c775e41d434568dcaa8072a6311d45887a12a0576711f2a48e7"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0006.php",
+      "bytes": 90,
+      "sha256": "d9619829bd44113571445b571bee3d4b2212099bb4cd9bd135f3905c27496333"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0007.native.json",
+      "bytes": 8196,
+      "sha256": "5a57f240745d2b2da738ac609b60fbe82eacc686b4d479e68cc613898cc39399"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0007.native.json.phases.jsonl",
+      "bytes": 1323,
+      "sha256": "7f1a5aaf2f4b1e878535fa18560b091e621b155f5d8c60cc176f7a71a249cbf4"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0007.php",
+      "bytes": 91,
+      "sha256": "356b20d008c94f37b3ffd029f2f1b312b4190dd7a3cef8612802672a8a9284c8"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0008.native.json",
+      "bytes": 8197,
+      "sha256": "f97e421ac1bffaacef7d0c8d78453057b394103ad1b9aec14de62358c0fc0d4d"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0008.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "7e08debb8c820530b95e6c363bc71f6cc7bb18ae67c99e9755e926162920da3a"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0008.php",
+      "bytes": 99,
+      "sha256": "dbd41e09b73b796504bd6eb469f5018a0c398ff43a5b8a981fbe4328cdb5de82"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0009.native.json",
+      "bytes": 8196,
+      "sha256": "2903184b065ac6a75b36ff2d021eba3dbf9414c6bb7ede117801357831467e89"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0009.native.json.phases.jsonl",
+      "bytes": 1323,
+      "sha256": "c5d1e21e38669467626f228321656133569c7d2f23ed70e010a8f4d3f4c0422d"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0009.php",
+      "bytes": 126,
+      "sha256": "5512b0944c061b93c0180ee580f2a0058fb4b22b74aedf20c7487e729c69545e"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0010.native.json",
+      "bytes": 8196,
+      "sha256": "76b29b5cce99b5fb1104363fa1656d728ce09edb1109ffc7aea349c4bfea23bc"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0010.native.json.phases.jsonl",
+      "bytes": 1323,
+      "sha256": "b79c3925f41a070d8ad8ab8880592dd7efe687215bbce5482174f8c9ab7748ab"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0010.php",
+      "bytes": 153,
+      "sha256": "c7d8225f8e503446beb984e750bd3bbc0767e9d8be7eae4b746ea1e1699388e6"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0011.native.json",
+      "bytes": 8445,
+      "sha256": "ccc48a0b976305fa5875615baa0bb57855ccaf3a57b8264f851e7226c89fc8ee"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0011.native.json.phases.jsonl",
+      "bytes": 1323,
+      "sha256": "88bf12ce8dc9cfde88e59612d658a265817af5b2d71f6f4275318e978fd2cc63"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0011.php",
+      "bytes": 151,
+      "sha256": "e44a7e570624f96a58668354764afa33522e131886d513b93656b9b22a09e42b"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0012.native.json",
+      "bytes": 8379,
+      "sha256": "6c8da39f361caa39bd8888d0219d1801a77e66d106be8cfacf5452bfadd35c02"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0012.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "40340c35ae793555e03f0b53022f980f285ef24a84be415cd0c554ba4335e0a1"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0012.php",
+      "bytes": 165,
+      "sha256": "dfe1cf44bd26f039fcb9bd3cd80984063b26550785c08fd9481fd2e78c81bf12"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0013.native.json",
+      "bytes": 8197,
+      "sha256": "51a187b99a05732e910b5aa9d62a0a27e59d21ad44258d8c60891b0c1a377606"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0013.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "013d815ae13186653c910b017234c7024d137f23b9aff45287d28d2c2edcf1fb"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0013.php",
+      "bytes": 139,
+      "sha256": "2229679543c8af48e79b82239c2aa886815c2c1445a55e1dc1737b8f3958014d"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0014.native.json",
+      "bytes": 8130,
+      "sha256": "aeb17fc19863d5f29e41767885f96fc6a8df72b5e28bb6b924e6566cfe49040d"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0014.native.json.phases.jsonl",
+      "bytes": 1323,
+      "sha256": "7568103fb919d0f5695a03770086f275a0e0664ea680fd6c483ee7d64e2b9219"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/case-0014.php",
+      "bytes": 102,
+      "sha256": "7bebda5ddc17ee933c38dbfe0caf067ee954bbacd9662e874d705aa32fd07cad"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/README.md",
+      "bytes": 1357,
+      "sha256": "6a21a437fef4210bf511fc98cc085cc0abf063e800a110f4136bff55a1ad03ff"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/report.json",
+      "bytes": 140864,
+      "sha256": "43edd225fa5b98b7c8a17fe4e7b6e27c97ef46efaef58e26feefdd327b74e120"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/report.partial.json",
+      "bytes": 136084,
+      "sha256": "481393877198063132e10586bb8ce3b003d36061dd415fd3e9b25e5643cde068"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-callback15/verification.json",
+      "bytes": 3197,
+      "sha256": "087477a194dd9d7ceaab1bf4eb1d00d21bb5a7c0749e5fb99068ea3465da21c9"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0000.native.json",
+      "bytes": 7612,
+      "sha256": "cede4c1e1b9afae62204d7277be04e4345ccac4d874490eb6657b94fbbc02ef0"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0000.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "651cccabfaff86f22fec2c2eeefe6589121190a5f44eef933d64f32d2d478deb"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0000.php",
+      "bytes": 160,
+      "sha256": "02ae4eb1478932e1a257ba6c05dc2462efeeec748c2f9a3ed92e78311a6bb2bf"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0001.native.json",
+      "bytes": 7612,
+      "sha256": "2eb0a10479adf62a0010c38b2a304e83aca7ac2d1f0b2d2ed8b8605264dc1ab6"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0001.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "02555a901828ba1f9e971b21cee3039b214105d3bfd883150def629be784da5c"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0001.php",
+      "bytes": 55,
+      "sha256": "e144b1f3d67e1cabde298c9a689c319179eb7b83e3eacdfa103f9f27343f3683"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0002.native.json",
+      "bytes": 7679,
+      "sha256": "69635173bab2819f70c48d09a6de8b5a805ffd32a7dd99feeaa15a5622607659"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0002.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "7ea9156ee77639adb99e99f2b59dd8d273fa19be5b3066d5dbdbe155994e6d32"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0002.php",
+      "bytes": 32,
+      "sha256": "e2b85891ea51e54793ef4289976c0d64cd217b1524a8f3fef790a7ee49321077"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0003.native.json",
+      "bytes": 7679,
+      "sha256": "0b7672e8d1d4f91b3c02eaa1245be251b3a697872175db0a77cd3e1554a6a0b0"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0003.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "1d59b7047a41a43b813ccd57eb4759b8acbc28a4e14e2af0c62c119e0674997c"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0003.php",
+      "bytes": 33,
+      "sha256": "1fb963abd09d3b0c46600f6b1f0c55c4631ac6239ac0899dcd4a79652388eb01"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0004.native.json",
+      "bytes": 7679,
+      "sha256": "1997860ef149fdfe8924a0ffe331257bfc45fea3f87439df99c41f9b318f167b"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0004.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "9c652af77c7cfaedc1ccd76bb49aec18870b56cb6c17be4dc5ae584e0a2c754d"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0004.php",
+      "bytes": 45,
+      "sha256": "ffe0684e1c0c02073c012ac03af461669ffdb23ae5a7af1c97ee69ac62f54baa"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0005.native.json",
+      "bytes": 7678,
+      "sha256": "0bb6736c73d12c605846511cfbe2a6d8105dde0cf886b0cd1c37731cd03b1080"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0005.native.json.phases.jsonl",
+      "bytes": 1323,
+      "sha256": "5ad4a15493ea35f32973081f3142c889d53c3f4f686f4161cd58288251ae7799"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0005.php",
+      "bytes": 74,
+      "sha256": "72bac1a7f5d6856a98fb796e5af5ba1f959be165bb61dff54103a90a1a958857"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0006.native.json",
+      "bytes": 7612,
+      "sha256": "cb2add4d8b05679cc48180dcee2353b9469ff53cfe47172a90eb537efde2d10b"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0006.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "ac7f11193b7bd82e13dbc1355cc594efa05c1bad87d8c74326d06e78f548abe0"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0006.php",
+      "bytes": 92,
+      "sha256": "035d667f15dcee277172707bf9351c7130dcf9eaf733b16a7b48fc3dd94f7f05"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0007.native.json",
+      "bytes": 7679,
+      "sha256": "1351b8f55742fcda4a4f46e89e1fc0114903bac0b359c4311e85087d49dafec1"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0007.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "4243875314853e9b48fdc0ac00ffb2a3832a76ae2f3ee6b3a09af9b49e73179d"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0007.php",
+      "bytes": 44,
+      "sha256": "1ac1444595a7ecd8c6d7e4c1f434b8ae8aeb55d11370ffa608070656bafa4b20"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0008.native.json",
+      "bytes": 7679,
+      "sha256": "4c3bc938704e3af5441670bd48281e429f9e8107f6ab0c826620af4164732709"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0008.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "5440ed6d196ceed3e216c01ba9b8f1a33f7fd8269392cea84809167e027d0da0"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0008.php",
+      "bytes": 57,
+      "sha256": "1281e18f5879549b25af1868eed2308a4cae54bd47b3001d1bae063dc29b86f7"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0009.native.json",
+      "bytes": 7679,
+      "sha256": "a649a60db411ffa811d34087cff678e97e0637305cc671c91973e00a0d4b5cad"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0009.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "819993fcd0fc494edd4559544aec00d2b34deae4f0c0e610272f5b6969aaa2d7"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0009.php",
+      "bytes": 41,
+      "sha256": "beb4b16c30410070280598434c30b5c4cd031b7dedee7da87dff89344f9dccca"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0010.native.json",
+      "bytes": 7679,
+      "sha256": "b1ea32684f58b9027fef38dc3e50a7115678cf6ab0ea5dc61fcace1ca7f33060"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0010.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "e29e39152eed07ca83f760999e99dc40bb68f982b8875c00dd3bbb029d61df68"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0010.php",
+      "bytes": 42,
+      "sha256": "78e58dca14f18bce45561c76ac1793a96e8cd8225d65435366716fa2fd9c9495"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0011.native.json",
+      "bytes": 7679,
+      "sha256": "9e8f35427a0257709e495a24877d15673fbd936af88c9972e07f0c945f36936b"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0011.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "135ba7b48b2293fd6a2a889e03eb4bb9b422c5213824d251c331bde66f3f4c56"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0011.php",
+      "bytes": 49,
+      "sha256": "6db8afcf6413d542d457df77a2c99570f1da838af2a2a98e7ce1c9f39d03ca54"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0012.native.json",
+      "bytes": 7677,
+      "sha256": "cb07ecb4c5c0f8ddf7b2486919a9ee136634cf41d55858796201ba8c93854c6a"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0012.native.json.phases.jsonl",
+      "bytes": 1310,
+      "sha256": "8964b2d6d842bd9e84566027ea6bf4fcba9bb318fad19ba7cea50324ab17b6e3"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0012.php",
+      "bytes": 59,
+      "sha256": "86a51d54c503139d56c9c3791463961c342e0bce711a8d352cb94830f0cf9699"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0013.native.json",
+      "bytes": 7672,
+      "sha256": "39c64159a9221baa7f3a91e40d5fdc1d25b9cf052cd4577a48fc261a2b7324d1"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0013.native.json.phases.jsonl",
+      "bytes": 1310,
+      "sha256": "1e46c5ea6e5c0885eaa7e243c8d6e37d23ca6b8a7aa9a732b37384dd2231353e"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0013.php",
+      "bytes": 53,
+      "sha256": "f4fc0965bcba6d7cc4f782e93decbf487ddfa1a53df6034c2d4b73338c6cc971"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0014.native.json",
+      "bytes": 7679,
+      "sha256": "d0eedb2e9410f07cf6a5fcf714fbca79b62ef3a6893be554bdda1851a0ba4c2f"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0014.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "cc99068d338ed2f32b4879fa45d037e202ca935a89f23cc59fd865f538f18179"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0014.php",
+      "bytes": 102,
+      "sha256": "2e54f832d25b874203ab9e0e8f71030bd3137947f0dce83b294dd55e3166f790"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0015.native.json",
+      "bytes": 7679,
+      "sha256": "8a11289bb3f4bdd6ac0a70753e530c4fbb79c5a83cf17ed8041014d09304bd0f"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0015.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "07a31dc6b719d424dca1e850bc4a91b28a9e168290ae3b8e635d15ade07c7412"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0015.php",
+      "bytes": 38,
+      "sha256": "810a674aa3294488a689fd0a6c6a208c888b5b2b229fe3f94482e4a0af6e43a2"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0016.native.json",
+      "bytes": 7679,
+      "sha256": "09bf6af293fcda3eeb2f1f10869c936f127a03184cb854dfe3980c2851da980e"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0016.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "898606333e599ad5701300a7cd6328174a2b594026c4fa228e0e5c1aaa3cf595"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0016.php",
+      "bytes": 32,
+      "sha256": "78a75675eba24a9268b9cf5ebb5e5026b5f7cb8fd592f24de45f1815cf5661e4"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0017.native.json",
+      "bytes": 7692,
+      "sha256": "aa7044df12493d9162143a2f9dae2db6c205c16e2496f814c110ed1d21999587"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0017.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "2b08cdf5edfa250e3fe0d850c4400301229c91d43891d5c2a22f8c3000cf7361"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0017.php",
+      "bytes": 95,
+      "sha256": "4ede9952c60b9f74a2a3f0256da6fdac945a4c132dbea06c0a6cfab32468d483"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0018.native.json",
+      "bytes": 7861,
+      "sha256": "cbdbac8fdd879b6e6ea3ca80791b680dd66e26a0d017b60cee2c72eded358223"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0018.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "1d8639500afd39a13c17c347e05171d2fd81754f01724868c662220efae06924"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0018.php",
+      "bytes": 107,
+      "sha256": "9783961f02fe2c5cdd1d98f61793809e4cec707fe98c367f4ffceca91bac7d2d"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0019.native.json",
+      "bytes": 7699,
+      "sha256": "14ea6972f69550d2afa7466dc33fd11528e6bd75ead2c09b3879968509401faf"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0019.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "d620bc47bcdfaffb7f9feb952e64c7e1a6129b548d95656af6d361fe5291d943"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0019.php",
+      "bytes": 100,
+      "sha256": "bfa5ace223a04a1d0e9b3b5aca5682ccf6a77b0a8f0b4e718a4eac5e7f828c7e"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0020.native.json",
+      "bytes": 7691,
+      "sha256": "b82e67f75408c9b14f3fd3518989147f0b510e06d13468f98adeb7efd39b43bd"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0020.native.json.phases.jsonl",
+      "bytes": 1323,
+      "sha256": "cb20bd07e32fa0c65dc8a4bdc2ffa84975c61eb2663da9f67a3ab6c8eae6b1ab"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0020.php",
+      "bytes": 46,
+      "sha256": "9eb2603a32db0a64fd9cb63193c816319a6532c1f00959f7cb7bd85e95b4552e"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0021.native.json",
+      "bytes": 7691,
+      "sha256": "9ee26bc2c5a776a553b2ef6e7ff695e3e4f2c559f4b37b0cb1963916409ee50a"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0021.native.json.phases.jsonl",
+      "bytes": 1323,
+      "sha256": "d5af54d6db8bbc48369889f5f2f23861e9ab3c02e24312324621d8ed9fb246f6"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0021.php",
+      "bytes": 60,
+      "sha256": "ea1581a357e431426a4fca95e97a3f22498cf34758582cf7b09f268fed15f26f"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0022.native.json",
+      "bytes": 7692,
+      "sha256": "fbf0d68e222d9668e20a99fd7c8b09877807c3f1f42a07f459a83066e7b12e35"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0022.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "04e906098ffda774754f1dfe98c37055dbef828159face9a865b55f2adee43ae"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0022.php",
+      "bytes": 41,
+      "sha256": "eeec7b64ade83e52c107b3e5b4719e071d4aceba996fae0a45ee425631e70433"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0023.native.json",
+      "bytes": 7346,
+      "sha256": "c3bf39f14e91326a908c63488e5678e80590cf7d3e1e80934a288cb3c721136f"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0023.native.json.phases.jsonl",
+      "bytes": 1211,
+      "sha256": "efeee317305acffdd34e41f142d5117220760210151a58628b202a6d42e9db06"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0023.php",
+      "bytes": 102,
+      "sha256": "6ddb11ef5cabbe212178f6d966af22bf5c34ae87eda544aba49682422bc00167"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0024.native.json",
+      "bytes": 7312,
+      "sha256": "7e9ecc63adffa7a46a6f177149a27d2e527837586bd4e979b9287e89d379cf18"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0024.native.json.phases.jsonl",
+      "bytes": 1235,
+      "sha256": "7a90e8f852d01b6ce91f309830e28242817bd87aea5f2e9466aa108d0ee03f11"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0024.php",
+      "bytes": 31,
+      "sha256": "adb98770d3ec4ff48e1c669eef45d04cad5b26df618121516d934c5933782a6d"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0025.native.json",
+      "bytes": 7544,
+      "sha256": "1515d4045f939b39e7a1bed1b007b11412e90214c0fd3e456d8b0f5ee20ca3c6"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0025.native.json.phases.jsonl",
+      "bytes": 1235,
+      "sha256": "39a36819ee3b80aa40bce585861e3605da6065713ffcea440a6301a2ea269bb4"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0025.php",
+      "bytes": 27,
+      "sha256": "c83c62715a24266948ad1c5fc0257eb9aec7cec323f4dd80d1f52cbccfa78b56"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0026.native.json",
+      "bytes": 7318,
+      "sha256": "ad7ed576a7080d22d811b9b0f758048d3a0560adc50d7a03c2ec88ef5645479f"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0026.native.json.phases.jsonl",
+      "bytes": 1223,
+      "sha256": "7c40904585472edb707f19af1b7ec7edc59c851af65fab6d40ce28f87b6dd169"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/case-0026.php",
+      "bytes": 31,
+      "sha256": "2ee8189da7c54fcd6638b1740c13acbf0fe4a82e125157477f0e584003d5b788"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/README.md",
+      "bytes": 1439,
+      "sha256": "e0fe933830fd81a669869c65c75a97a7edd4c329e1e57865887b03b4a933a7f7"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/report.json",
+      "bytes": 232119,
+      "sha256": "a21a3b21e4398f083139aa47b88a4674d0638bdca75c4bf1d21053f5d477977f"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/report.partial.json",
+      "bytes": 227367,
+      "sha256": "1e020344d38ac3884f4ff6d79f57f02717d6fd19e045b29f63b3ced1ccf9eda3"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-legacy27/verification.json",
+      "bytes": 5492,
+      "sha256": "f76b212e6c02f5253a1463ce6f36826030812e02bccc9a584a9874690c141c1b"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-raw4/case-0000.native.json",
+      "bytes": 8112,
+      "sha256": "b3c19a4de14e701c477d20f8d5082c0b0edbc67bc990575ff99039c058b42c3d"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-raw4/case-0000.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "4521dd2996dc05ce206d5363cbf1402d53103a7d24e2b12e472b675790d5b5ef"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-raw4/case-0000.php",
+      "bytes": 39,
+      "sha256": "84f62ccfef067724ae939b897dbacc593d005501ae2b5fa5335a9217e74f7b66"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-raw4/case-0001.native.json",
+      "bytes": 8112,
+      "sha256": "0f6b803f365deaa34dc7bc1951447be0af14f2cb3bf3855befc69a34678537e9"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-raw4/case-0001.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "6995f08bfea6fe7295f41781aaea166c6c035983b006bd72a6e31ba4978e2f2d"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-raw4/case-0001.php",
+      "bytes": 56,
+      "sha256": "c023ef35635b4bbc77706ecab632c7cf84ddf26e2f3254f3330704ad295bf6bd"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-raw4/case-0002.native.json",
+      "bytes": 8112,
+      "sha256": "80bb4cf3866628734ffff19d5c714f551ad9e820f56ae7e84ed564d19fc5edef"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-raw4/case-0002.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "2ded86cb9b83ffd08314f6bce139ca0615be4a6bc118ea2796335d1c95b53bde"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-raw4/case-0002.php",
+      "bytes": 43,
+      "sha256": "cc5d06b0a2893aadd654f08eb1792abd148dc344e5ad8b89c74bf2e1090b2621"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-raw4/case-0003.native.json",
+      "bytes": 8112,
+      "sha256": "50138d42e22e1b73d028b7de0122b0fa15585aeb61e57df827ddce670babffb8"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-raw4/case-0003.native.json.phases.jsonl",
+      "bytes": 1336,
+      "sha256": "8f8d46b3ca98c7456cfffc8ccae847b4833506010a31785796a3822dd35595d4"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-raw4/case-0003.php",
+      "bytes": 1063,
+      "sha256": "e4601861a5575501e409fcd34be2a5798fe7f32f468ceb95013d91f140345b9d"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-raw4/README.md",
+      "bytes": 1542,
+      "sha256": "6dceceeccc974274af5d825bcfd9f112693b9150a223f1f52e31e536ec2123da"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-raw4/report.json",
+      "bytes": 44008,
+      "sha256": "7f99a2a7afa8dd6262086a9fccc8f7e9903584dccee0a65cea1dd67273284a6f"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-raw4/report.partial.json",
+      "bytes": 39233,
+      "sha256": "5d36f594c3215190b88be3e780dd3c11eed1c6230169c3eeeab1ab4de04943d9"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-combined03-raw4/verification.json",
+      "bytes": 1582,
+      "sha256": "89f5fc2ce53c4a206bdb403230df153146176970dd58b012db2d6b677268f212"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-verification01/README.md",
+      "bytes": 1698,
+      "sha256": "6e78b9c66d0a46f1acbb4b51cce6b349240881d52eb9a3d0dbba8ac696f41ad6"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-verification01/summary.json",
+      "bytes": 12095,
+      "sha256": "138029e9897640f2167b43efc0c239c5ac480d2b6a4017fe3cd9e55fbdadf786"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-verification01/Verify-Evidence.py",
+      "bytes": 4118,
+      "sha256": "02b7306404541a0bfce83a59842b60b79ba2a7dabbece927562f4bfbbe1ad2e2"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-worker01/artifact-manifest.json",
+      "bytes": 2718,
+      "sha256": "fa39a76bc52dbe8c7b267ca315d549c9ff4efce4edf68ff2ca81970b08f5955f"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-worker01/parser.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-worker01/parser.stdout.bin",
+      "bytes": 269,
+      "sha256": "1593d2bea23baaebe7ffc3fffb66cc892a1315740cbf0c4594ca98bd2fa5f156"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/native-integration-worker01/preparation.json",
+      "bytes": 4181,
+      "sha256": "fb793184f9e6f8457612c9a4b715fa6be97c9c3892677b3945c3fb112831b6ef"
+    }
+  ]
+}

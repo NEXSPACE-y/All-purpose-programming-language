@@ -1,0 +1,1 @@
+<?php class C{public $é=1;public $é=2;} $x=new C();echo $x->é,":",$x->é;

@@ -1,0 +1,17 @@
+[
+  {
+    "name": "reject duplicate switch default",
+    "code": "<?php switch(1){default:echo \"a\";default:echo \"b\";}",
+    "error_contains": "Duplicate switch default"
+  },
+  {
+    "name": "reject nullsafe assignment",
+    "code": "<?php $o=null; $o?->name=2;",
+    "error_contains": "Cannot use nullsafe access as assignment target"
+  },
+  {
+    "name": "reject complex interpolation rather than silently misexecute",
+    "code": "<?php $a=[\"a\"]; echo \"$a[0]\";",
+    "error_contains": "Complex string interpolation is not implemented"
+  }
+]

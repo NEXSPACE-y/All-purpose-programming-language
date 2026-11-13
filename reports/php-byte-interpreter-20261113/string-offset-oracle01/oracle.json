@@ -1,0 +1,350 @@
+{
+  "status": "ORACLE_ONLY_NOT_CANDIDATE_VERIFICATION",
+  "candidate_invocations": 0,
+  "oracle_sha256": "0ac893499799256db6d3a54b0da73692e02311493922e6e4f86a062674a77d66",
+  "count": 19,
+  "records": [
+    {
+      "id": "byte.offset.read.integer",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{var_dump($s[1],$s[-1],$s[-4]);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.5588466000008339,
+      "stdout_base64": "c3RyaW5nKDEpICL/IgpzdHJpbmcoMSkgIkIiCnN0cmluZygxKSAiQSIK",
+      "stderr_base64": "",
+      "source_sha256": "b6b6ec9da05a305c41ae387d3161f819e0eb2efe45f8096009712844f0f003ad"
+    },
+    {
+      "id": "byte.offset.read.outside",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{var_dump($s[4],$s[-5]);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.6325761999978567,
+      "stdout_base64": "VzI6VW5pbml0aWFsaXplZCBzdHJpbmcgb2Zmc2V0IDQKVzI6VW5pbml0aWFsaXplZCBzdHJpbmcgb2Zmc2V0IC01CnN0cmluZygwKSAiIgpzdHJpbmcoMCkgIiIK",
+      "stderr_base64": "",
+      "source_sha256": "487af41421a3d3559b7afe6753c479bf5fcc82ccdd1fd0857aed5911e6685414"
+    },
+    {
+      "id": "byte.offset.read.numeric-string",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{var_dump($s[\"1\"],$s[\" 1 \"],$s[\"+1\"],$s[\"01\"]);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.4372659000000567,
+      "stdout_base64": "c3RyaW5nKDEpICL/IgpzdHJpbmcoMSkgIv8iCnN0cmluZygxKSAi/yIKc3RyaW5nKDEpICL/Igo=",
+      "stderr_base64": "",
+      "source_sha256": "fdc3c4f662515ef43128cea091c78acb63f17a4f731319087e5fb8aecbeadfb1"
+    },
+    {
+      "id": "byte.offset.read.float-string",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{var_dump($s[\"1.0\"]);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.48225209999873186,
+      "stdout_base64": "VHlwZUVycm9yOkNhbm5vdCBhY2Nlc3Mgb2Zmc2V0IG9mIHR5cGUgc3RyaW5nIG9uIHN0cmluZw==",
+      "stderr_base64": "",
+      "source_sha256": "8088a0aa39dd2509a9d13f1f72937cc872f93982b1eb15acd4a2cc00dfc96f17"
+    },
+    {
+      "id": "byte.offset.read.prefix-string",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{var_dump($s[\"1x\"]);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.47212560000116355,
+      "stdout_base64": "VzI6SWxsZWdhbCBzdHJpbmcgb2Zmc2V0ICIxeCIKc3RyaW5nKDEpICL/Igo=",
+      "stderr_base64": "",
+      "source_sha256": "6f2fdfb866e3d7f31a4fb24597ceaf3e8e4e7e7d465a4ec021c9299ee8954963"
+    },
+    {
+      "id": "byte.offset.read.nonnumeric-string",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{var_dump($s[\"x\"]);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.2865961999996216,
+      "stdout_base64": "VHlwZUVycm9yOkNhbm5vdCBhY2Nlc3Mgb2Zmc2V0IG9mIHR5cGUgc3RyaW5nIG9uIHN0cmluZw==",
+      "stderr_base64": "",
+      "source_sha256": "f1160dd194239481c518d2f2ab6a3d10d86da8640bb74421fedd175e1761c7a3"
+    },
+    {
+      "id": "byte.offset.read.scalar-cast",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{var_dump($s[true],$s[false],$s[null],$s[2.9]);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.3365684999989753,
+      "stdout_base64": "VzI6U3RyaW5nIG9mZnNldCBjYXN0IG9jY3VycmVkClcyOlN0cmluZyBvZmZzZXQgY2FzdCBvY2N1cnJlZApXMjpTdHJpbmcgb2Zmc2V0IGNhc3Qgb2NjdXJyZWQKVzI6U3RyaW5nIG9mZnNldCBjYXN0IG9jY3VycmVkCnN0cmluZygxKSAi/yIKc3RyaW5nKDEpICJBIgpzdHJpbmcoMSkgIkEiCnN0cmluZygxKSAiACIK",
+      "stderr_base64": "",
+      "source_sha256": "d47259571e072fbf8168c9e2668de261c48a6c12c11eb0aff292482f1f0fd2f7"
+    },
+    {
+      "id": "byte.offset.read.array",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{var_dump($s[[]]);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.2894670000023325,
+      "stdout_base64": "VHlwZUVycm9yOkNhbm5vdCBhY2Nlc3Mgb2Zmc2V0IG9mIHR5cGUgYXJyYXkgb24gc3RyaW5n",
+      "stderr_base64": "",
+      "source_sha256": "03efe8c072ed08d1397ee8287e6fa9ea0de1bc52c02d875f9438992bcc9d245f"
+    },
+    {
+      "id": "byte.offset.write.integer",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$a=$s;$r=$s[1]=\"\\x80\";var_dump($s,$a,$r);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.25180120000004536,
+      "stdout_base64": "c3RyaW5nKDQpICJBgABCIgpzdHJpbmcoNCkgIkH/AEIiCnN0cmluZygxKSAigCIK",
+      "stderr_base64": "",
+      "source_sha256": "e1063c76e3c76cee5ff8f7c60032c38ad5996db6d6a3a215d73f94fac4256ea4"
+    },
+    {
+      "id": "byte.offset.write.extend",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$r=$s[7]=\"\\x80\";var_dump($s,$r);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.28158280000207014,
+      "stdout_base64": "c3RyaW5nKDgpICJB/wBCICAggCIKc3RyaW5nKDEpICKAIgo=",
+      "stderr_base64": "",
+      "source_sha256": "7cab30e86389ab580b4d22004134c88d1bad105faadb7e0e63b67bf815ee8b70"
+    },
+    {
+      "id": "byte.offset.write.negative",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$r=$s[-2]=\"\\x80\";var_dump($s,$r);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.3048949000003631,
+      "stdout_base64": "c3RyaW5nKDQpICJB/4BCIgpzdHJpbmcoMSkgIoAiCg==",
+      "stderr_base64": "",
+      "source_sha256": "dd9d5c61c3a3dce859a3135cac7723762693ce31b275d913b5bdeb2b1d4c3c1f"
+    },
+    {
+      "id": "byte.offset.write.negative-outside",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$r=$s[-5]=\"\\x80\";var_dump($s,$r);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.2332572999985132,
+      "stdout_base64": "VzI6SWxsZWdhbCBzdHJpbmcgb2Zmc2V0IC01CnN0cmluZyg0KSAiQf8AQiIKTlVMTAo=",
+      "stderr_base64": "",
+      "source_sha256": "5fd54e1efa892c9cafce79485097615879ef43df9a1553e10d6c595c4d5c6560"
+    },
+    {
+      "id": "byte.offset.write.multibyte",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$r=$s[0]=\"\\xFF\\0\";var_dump($s,$r);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.46506979999685427,
+      "stdout_base64": "VzI6T25seSB0aGUgZmlyc3QgYnl0ZSB3aWxsIGJlIGFzc2lnbmVkIHRvIHRoZSBzdHJpbmcgb2Zmc2V0CnN0cmluZyg0KSAi//8AQiIKc3RyaW5nKDEpICL/Igo=",
+      "stderr_base64": "",
+      "source_sha256": "8488c6f567caa5fe602aa753b57d32c0c8a53c41418faa3a7115c68be149ca29"
+    },
+    {
+      "id": "byte.offset.write.empty",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$s[1]=\"\";var_dump($s);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.3211425999979838,
+      "stdout_base64": "RXJyb3I6Q2Fubm90IGFzc2lnbiBhbiBlbXB0eSBzdHJpbmcgdG8gYSBzdHJpbmcgb2Zmc2V0",
+      "stderr_base64": "",
+      "source_sha256": "ef3d1b8ca3ce01034a1f8392e46d97fa68df80328bb6f6cf580b8e546e9fd31e"
+    },
+    {
+      "id": "byte.offset.write.append",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$s[]=\"x\";var_dump($s);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.4681412999998429,
+      "stdout_base64": "RXJyb3I6W10gb3BlcmF0b3Igbm90IHN1cHBvcnRlZCBmb3Igc3RyaW5ncw==",
+      "stderr_base64": "",
+      "source_sha256": "642f6d559a48ab8cf7cc2b50e084b9efebfe88a70d0de514391f1e0e933aa50b"
+    },
+    {
+      "id": "byte.offset.write.nested",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$a=[\"s\"=>$s];$b=$a;$a[\"s\"][1]=\"\\x80\";var_dump($a,$b);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.47661629999856814,
+      "stdout_base64": "YXJyYXkoMSkgewogIFsicyJdPT4KICBzdHJpbmcoNCkgIkGAAEIiCn0KYXJyYXkoMSkgewogIFsicyJdPT4KICBzdHJpbmcoNCkgIkH/AEIiCn0K",
+      "stderr_base64": "",
+      "source_sha256": "5e9884ffd033a071b7a362955340fbe1178ebae7fb98964946293ccfa7f4d2ed"
+    },
+    {
+      "id": "byte.offset.write.property",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$o=new stdClass();$o->s=$s;$o->s[1]=\"\\x80\";var_dump($o->s);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.8370881000009831,
+      "stdout_base64": "c3RyaW5nKDQpICJBgABCIgo=",
+      "stderr_base64": "",
+      "source_sha256": "f0f5fc535e8addfde7124d76a75f7bf354363bc95892a24cf2de1e12543aee6b"
+    },
+    {
+      "id": "byte.offset.write.compound",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$s[1].=\"x\";var_dump($s);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.651203200002783,
+      "stdout_base64": "RXJyb3I6Q2Fubm90IHVzZSBhc3NpZ24tb3Agb3BlcmF0b3JzIHdpdGggc3RyaW5nIG9mZnNldHM=",
+      "stderr_base64": "",
+      "source_sha256": "38faa2dcb98866be90aa3718c24028ace6e2d08ceb7aca3d0011047cc4eb9cac"
+    },
+    {
+      "id": "byte.offset.write.reference",
+      "command": [
+        "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+        "-n",
+        "-d",
+        "display_errors=stderr",
+        "-d",
+        "error_reporting=-1",
+        "-r",
+        "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$r=&$s[1];var_dump($r);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+      ],
+      "actual_exit_code": 0,
+      "elapsed_seconds": 0.5528263000014704,
+      "stdout_base64": "RXJyb3I6Q2Fubm90IGNyZWF0ZSByZWZlcmVuY2VzIHRvL2Zyb20gc3RyaW5nIG9mZnNldHM=",
+      "stderr_base64": "",
+      "source_sha256": "ce8ca6631ccef492e1d5f77c297a4d2d7d92d8fbcd7d4e24e60170f74bd76f30"
+    }
+  ]
+}

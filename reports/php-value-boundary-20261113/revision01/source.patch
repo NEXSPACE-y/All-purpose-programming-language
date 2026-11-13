@@ -1,0 +1,267 @@
+--- json05-plus-symbols
++++ value-boundary-candidate
+@@ -2892,6 +2892,40 @@
+             $state.Line = $savedLine
+             $state.Steps = $savedSteps
+         }
++        function Get-PhpDiagnosticStringLimit {
++            $limit=[long]15
++            if ($state.Ini.ContainsKey('zend.exception_string_param_max_len')) {
++                $configured=Get-PhpHostText (To-PhpBytes $state.Ini['zend.exception_string_param_max_len'])
++                $parsed=[long]0
++                if ([long]::TryParse($configured,[Globalization.NumberStyles]::Integer,[Globalization.CultureInfo]::InvariantCulture,[ref]$parsed) -and $parsed -ge 0) { $limit=$parsed }
++            }
++            return $limit
++        }
++        function Format-PhpDiagnosticString($value,[long]$limit) {
++            $bytes=To-PhpBytes $value
++            $take=[Math]::Min($bytes.LongLength,$limit)
++            $text=[Text.StringBuilder]::new()
++            [void]$text.Append("'")
++            for($offset=[long]0;$offset-lt$take;$offset++) {
++                $byte=$bytes.GetByte($offset)
++                switch([int]$byte) {
++                    9 { [void]$text.Append('\t') }
++                    10 { [void]$text.Append('\n') }
++                    11 { [void]$text.Append('\v') }
++                    12 { [void]$text.Append('\f') }
++                    13 { [void]$text.Append('\r') }
++                    27 { [void]$text.Append('\e') }
++                    92 { [void]$text.Append('\\') }
++                    default {
++                        if($byte-lt32-or$byte-ge127) { [void]$text.Append('\x'+$byte.ToString('X2',[Globalization.CultureInfo]::InvariantCulture)) }
++                        else { [void]$text.Append([char]$byte) }
++                    }
++                }
++            }
++            if($bytes.LongLength-gt$take) { [void]$text.Append('...') }
++            [void]$text.Append("'")
++            return $text.ToString()
++        }
+         function Format-PhpTraceArgument($value) {
+             if ($null -ne $value -and $value.PSObject.Properties['PhpType'] -and
+                 $value.PhpType -ceq 'named_argument') { $value = $value.Value }
+@@ -2900,10 +2934,7 @@
+             if ($value -is [bool]) { if ($value) { return 'true' }; return 'false' }
+             if ($value -is [long]) { return $value.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
+             if ($value -is [double]) { return (Format-PhpFloat $value 0) }
+-            if ($value -is [string]) {
+-                if ($value.Length -gt 15) { return ("'" + $value.Substring(0, 15) + "...'") }
+-                return ("'" + $value + "'")
+-            }
++            if (Is-PhpStringValue $value) { return (Format-PhpDiagnosticString $value (Get-PhpDiagnosticStringLimit)) }
+             if (Is-PhpArray $value) { return 'Array' }
+             if (Is-PhpObject $value) { return ('Object(' + $value.Class + ')') }
+             return 'Object'
+@@ -2914,7 +2945,12 @@
+             for ($i = $state.CallStack.Count - 1; $i -ge 0; $i--) {
+                 $frame = $state.CallStack[$i]
+                 $parts = [System.Collections.Generic.List[string]]::new()
+-                foreach ($item in $frame.Args) { [void]$parts.Add((Format-PhpTraceArgument $item)) }
++                $includeArguments=$true
++                if($state.Ini.ContainsKey('zend.exception_ignore_args')) {
++                    $setting=ConvertTo-PhpAsciiLower (Get-PhpHostText (To-PhpBytes $state.Ini['zend.exception_ignore_args']))
++                    $includeArguments=$setting -cin @('','0','off','false','no','none')
++                }
++                if($includeArguments) { foreach ($item in $frame.Args) { [void]$parts.Add((Format-PhpTraceArgument $item)) } }
+                 [void]$sb.Append('#' + $index + ' ' + $state.ScriptName + '(' + $frame.Line + '): ' +
+                     $frame.Name + '(' + [string]::Join(', ', $parts.ToArray()) + ")`n")
+                 $index++
+@@ -2924,9 +2960,9 @@
+         }
+         # Called for every freshly created object: Throwables remember where they were created.
+         function Initialize-PhpThrowable($object) {
+-            $object.Props['file'] = $state.ScriptName
++            $object.Props['file'] = To-PhpBytes $state.ScriptName
+             $object.Props['line'] = [long]$state.Line
+-            $object.Props['__trace'] = Format-PhpStackTrace
++            $object.Props['__trace'] = To-PhpBytes (Format-PhpStackTrace)
+         }
+         function Get-PhpThrowableString($object) {
+             $builder=[AllPhp.ByteValues.PhpByteBuilder]::new()
+@@ -2990,7 +3026,11 @@
+             if ($value -is [bool]) { if ($value) { return 'true' }; return 'false' }
+             if ($value -is [long]) { return $value.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
+             if ($value -is [double]) { return (Format-PhpFloat $value 0) }
+-            if ($value -is [string]) { return ("'" + $value.Replace('\', '\\').Replace("'", "\'") + "'") }
++            if (Is-PhpStringValue $value) {
++                $limit=Get-PhpDiagnosticStringLimit
++                if($limit-eq0) { return 'of type string' }
++                return (Format-PhpDiagnosticString $value $limit)
++            }
+             if (Is-PhpObject $value) { return ('of type ' + $value.Class) }
+             return 'of type array'
+         }
+@@ -3478,7 +3518,7 @@
+                 return [pscustomobject]@{ Store=$object.Props; Key=$node.Name }
+             }
+             if ($node.Kind -eq 'static_property') {
+-                $klass=Resolve-PhpClass ([string](Invoke-PhpExpr $node.Base))
++                $klass=Resolve-PhpClass (Get-PhpHostText (Invoke-PhpExpr $node.Base))
+                 $prop=Find-PhpProperty $klass $node.Name $true
+                 if ($null -eq $prop) { throw 'ALL PHP: Undefined static property reference' }
+                 Assert-PhpVisibility $prop.Visibility $prop.Owner
+@@ -5922,8 +5962,8 @@
+                 'constant' {
+                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: constant() requires one argument' }
+                     $constName = To-PhpText $callArgs[0]
+-                    if ($state.Constants.ContainsKey($constName)) { return $state.Constants[$constName] }
+-                    if ($phpConstants.ContainsKey($constName)) { return $phpConstants[$constName] }
++                    if ($state.Constants.ContainsKey($constName)) { return (ConvertTo-PhpOwnedValue $state.Constants[$constName]) }
++                    if ($phpConstants.ContainsKey($constName)) { return (ConvertTo-PhpOwnedValue $phpConstants[$constName]) }
+                     Throw-PhpError 'Error' ('Undefined constant "' + $constName + '"')
+                 }
+                 'error_reporting' {
+@@ -6016,7 +6056,7 @@
+                     if ($callArgs.Count -ne 1 -or -not (Is-PhpObject $callArgs[0])) {
+                         throw 'ALL PHP: get_class() requires one object argument'
+                     }
+-                    return [string]$callArgs[0].Class
++                    return (To-PhpBytes ([string]$callArgs[0].Class))
+                 }
+                 'var_dump' {
+                     if ($callArgs.Count -lt 1) { throw 'ALL PHP: var_dump() requires at least one argument' }
+@@ -6045,7 +6085,7 @@
+                 'is_numeric' {
+                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_numeric() requires one argument' }
+                     if (Is-PhpNum $callArgs[0]) { return $true }
+-                    if ($callArgs[0] -is [string]) {
++                    if (Is-PhpStringValue $callArgs[0]) {
+                         return ($null -ne (ConvertFrom-PhpNumericString $callArgs[0] $false))
+                     }
+                     return $false
+@@ -6144,20 +6184,20 @@
+         }
+         function Get-PhpClassConstant([string]$className, [string]$constName) {
+             $className=Resolve-PhpClass $className
+-            if ($constName -ceq 'class') { return $className }
++            if (Test-PhpNameEqual $constName 'class') { return (To-PhpBytes $className) }
+             if ($state.Classes.ContainsKey($className)) {
+                 foreach ($cls in (Get-PhpClassChain $className)) {
+                     if ($cls.Constants.ContainsKey($constName)) {
+                         $entry=$cls.Constants[$constName]
+                         Assert-PhpVisibility $entry.Visibility $entry.Owner
+-                        return $entry.Value
++                        return (ConvertTo-PhpOwnedValue $entry.Value)
+                     }
+                 }
+                 foreach ($cls in (Get-PhpClassChain $className)) {
+                     foreach ($name in $cls.Interfaces) {
+                         foreach ($iface in (Get-PhpInterfaceChain $name)) {
+                             if ($iface.Constants.ContainsKey($constName)) {
+-                                return $iface.Constants[$constName].Value
++                                return (ConvertTo-PhpOwnedValue $iface.Constants[$constName].Value)
+                             }
+                         }
+                     }
+@@ -6165,7 +6205,7 @@
+             } elseif ($state.Interfaces.ContainsKey($className)) {
+                 foreach ($iface in (Get-PhpInterfaceChain $className)) {
+                     if ($iface.Constants.ContainsKey($constName)) {
+-                        return $iface.Constants[$constName].Value
++                        return (ConvertTo-PhpOwnedValue $iface.Constants[$constName].Value)
+                     }
+                 }
+             }
+@@ -6222,7 +6262,7 @@
+                 return (Invoke-PhpCallable $def $args $receiver $def.Owner $null $true)
+             }
+             if ($node.Kind -eq 'static_method') {
+-                $klass=Resolve-PhpClass ([string](Invoke-PhpExpr $node.Base))
++                $klass=Resolve-PhpClass (Get-PhpHostText (Invoke-PhpExpr $node.Base))
+                 $def=Find-PhpMethod $klass $node.Name
+                 Assert-PhpVisibility $def.Visibility $def.Owner
+                 $args=Evaluate-PhpUserArguments $node.Args $def
+@@ -6264,8 +6304,8 @@
+                 }
+                 'class_name' {
+                     $constantName = Resolve-PhpConstantNodeName $node
+-                    if ($state.Constants.ContainsKey($constantName)) { return $state.Constants[$constantName] }
+-                    if ($phpConstants.ContainsKey($constantName)) { return $phpConstants[$constantName] }
++                    if ($state.Constants.ContainsKey($constantName)) { return (ConvertTo-PhpOwnedValue $state.Constants[$constantName]) }
++                    if ($phpConstants.ContainsKey($constantName)) { return (ConvertTo-PhpOwnedValue $phpConstants[$constantName]) }
+                     return $node.Name
+                 }
+                 'cast' { return (Convert-PhpCast (Invoke-PhpExpr $node.Arg) $node.Type) }
+@@ -6324,7 +6364,7 @@
+                     }
+                 }
+                 'first_class_static' {
+-                    $klass=Resolve-PhpClass ([string](Invoke-PhpExpr $node.Base))
++                    $klass=Resolve-PhpClass (Get-PhpHostText (Invoke-PhpExpr $node.Base))
+                     if ($null -eq (Find-OptionalPhpMethod $klass $node.Name)) {
+                         throw "ALL PHP: Undefined static method '$($node.Name)'"
+                     }
+@@ -6347,6 +6387,8 @@
+                     }
+                     if (Is-PhpArray $callable) {
+                         $target=Get-PhpArrayItem $callable ([long]0);$member=Get-PhpArrayItem $callable ([long]1)
++                        if (Is-PhpStringValue $target) { $target=Get-PhpHostText $target }
++                        if (Is-PhpStringValue $member) { $member=Get-PhpHostText $member }
+                         if (Is-PhpObject $target) {
+                             return [pscustomobject]@{ PhpType='first_class_callable'; Id=(New-PhpObjectId)
+                                 Mode='method'; BoundThis=$target; Name=$member }
+@@ -6463,14 +6505,17 @@
+                             }
+                             $needle=Invoke-PhpExpr $node.Args[0]
+                             foreach ($item in $enum.EnumCases) {
+-                                if ($enum.BackingType -eq 'string' -and $needle -is [string] -and
+-                                    $item.Props['value'] -ceq $needle) { return $item }
++                                if ($enum.BackingType -eq 'string' -and (Is-PhpStringValue $needle) -and
++                                    (To-PhpBytes $item.Props['value']).Equals((To-PhpBytes $needle))) { return $item }
+                                 if ($enum.BackingType -eq 'int' -and $needle -is [long] -and
+                                     $item.Props['value'] -eq $needle) { return $item }
+                             }
+                             if ($node.Name -ceq 'tryFrom') { return $null }
+-                            $shown = if ($needle -is [string]) { '"' + $needle + '"' } else { To-PhpText $needle }
+-                            Throw-PhpError 'ValueError' ($shown + ' is not a valid backing value for enum ' + $enum.Name) 'ALL PHP: ValueError: invalid backing value for enum'
++                            $message=[AllPhp.ByteValues.PhpByteBuilder]::new()
++                            if(Is-PhpStringValue $needle) { $message.AppendUtf8('"');$message.Append((To-PhpBytes $needle));$message.AppendUtf8('"') }
++                            else { $message.Append((To-PhpBytes $needle)) }
++                            $message.AppendUtf8(' is not a valid backing value for enum '+$enum.Name)
++                            Throw-PhpError 'ValueError' ($message.ToPhpBytes()) 'ALL PHP: ValueError: invalid backing value for enum'
+                         }
+                     }
+                     $def=Find-OptionalPhpMethod $klass $node.Name
+@@ -6902,8 +6947,8 @@
+                         '^' { if ((Is-PhpStringValue $a) -and (Is-PhpStringValue $b)) { return (To-PhpBytes $a).Bitwise((To-PhpBytes $b),[char]'^') };return [long]((To-PhpInt $a) -bxor (To-PhpInt $b)) }
+                         'instanceof' {
+                             if (-not (Is-PhpObject $a)) { return $false }
+-                            if ($b -isnot [string]) { throw 'ALL PHP: instanceof class name required' }
+-                            return (Test-PhpInstanceOf $a.Class $b)
++                            if (-not (Is-PhpStringValue $b)) { throw 'ALL PHP: instanceof class name required' }
++                            return (Test-PhpInstanceOf $a.Class (Get-PhpHostText $b))
+                         }
+                     }
+                 }
+@@ -7047,25 +7092,24 @@
+                     $constants=[System.Collections.Generic.Dictionary[string,object]]::new(
+                         [System.StringComparer]::Ordinal)
+                     $enumCases=[System.Collections.Generic.List[object]]::new()
+-                    $usedValues=[System.Collections.Generic.HashSet[string]]::new(
+-                        [System.StringComparer]::Ordinal)
++                    $usedValues=[System.Collections.Generic.HashSet[object]]::new()
+                     foreach ($case in $node.Cases) {
+                         if ($constants.ContainsKey($case.Name)) {
+                             throw "ALL PHP: Duplicate enum case '$($case.Name)'"
+                         }
+                         $props=[System.Collections.Specialized.OrderedDictionary]::new(
+                             [System.StringComparer]::Ordinal)
+-                        $props['name']=$case.Name
++                        $props['name']=To-PhpBytes $case.Name
+                         if ($null -ne $node.BackingType) {
+-                            $backedValue=Invoke-PhpExpr $case.Value
+-                            if ($node.BackingType -eq 'string' -and $backedValue -isnot [string]) {
++                            $backedValue=ConvertTo-PhpOwnedValue (Invoke-PhpExpr $case.Value)
++                            if ($node.BackingType -eq 'string' -and -not (Is-PhpStringValue $backedValue)) {
+                                 throw 'ALL PHP: Backed enum string case expects a string'
+                             }
+                             if ($node.BackingType -eq 'int' -and
+                                 ($backedValue -isnot [long])) {
+                                 throw 'ALL PHP: Backed enum int case expects an integer'
+                             }
+-                            $uniqueValue=$node.BackingType + ':' + [string]$backedValue
++                            $uniqueValue=$backedValue
+                             if (-not $usedValues.Add($uniqueValue)) {
+                                 throw 'ALL PHP: Duplicate backed enum case value'
+                             }

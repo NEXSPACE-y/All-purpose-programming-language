@@ -1,0 +1,13 @@
+{"phase":"worker-entered","utc":"2026-11-13T04:54:55.4407237Z","pid":5556,"managed_thread":9}
+{"phase":"before-canonical-runtime-load","utc":"2026-11-13T04:54:56.0523666Z","pid":5556,"managed_thread":9}
+{"phase":"after-canonical-runtime-load","utc":"2026-11-13T04:54:56.1402880Z","pid":5556,"managed_thread":9}
+{"phase":"after-byte-bridge-load","utc":"2026-11-13T04:54:56.1737744Z","pid":5556,"managed_thread":9}
+{"phase":"before-native-start","utc":"2026-11-13T04:54:56.7634586Z","pid":5556,"managed_thread":9}
+{"phase":"before-evaluator-run","utc":"2026-11-13T04:54:56.7782104Z","pid":5556,"managed_thread":9}
+{"phase":"after-evaluator-run","utc":"2026-11-13T04:55:04.4340108Z","pid":5556,"managed_thread":9}
+{"phase":"before-native-end","utc":"2026-11-13T04:55:04.4360222Z","pid":5556,"managed_thread":9}
+{"phase":"after-native-end","utc":"2026-11-13T04:55:04.4398030Z","pid":5556,"managed_thread":9}
+{"phase":"before-native-shutdown","utc":"2026-11-13T04:55:04.4519588Z","pid":5556,"managed_thread":9}
+{"phase":"after-native-shutdown","utc":"2026-11-13T04:55:04.4582527Z","pid":5556,"managed_thread":9}
+{"phase":"before-metadata-write","utc":"2026-11-13T04:55:04.5366205Z","pid":5556,"managed_thread":9}
+{"phase":"worker-returned-status","utc":"2026-11-13T04:55:04.5706984Z","pid":5556,"managed_thread":9}

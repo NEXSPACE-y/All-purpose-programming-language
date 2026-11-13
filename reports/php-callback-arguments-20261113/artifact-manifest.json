@@ -1,0 +1,85 @@
+{
+  "status": "FROZEN_CALLBACK_ARGUMENT_PATCH_BUILT_PARSED_NOT_RUNTIME_VERIFIED",
+  "files": [
+    {
+      "path": "tools/candidates/php-byte-interpreter/CallbackArgumentEdits.py",
+      "size": 1880,
+      "sha256": "87e64ea50065e4a52e0a02f63cf0bd0382de01a0d03640f606e3aaec87bb666f"
+    },
+    {
+      "path": "reports/php-callback-arguments-20261113/Build-Cases.py",
+      "size": 2874,
+      "sha256": "59d228312b39f0f1be7200ff11c3a84dba4d41a8d90aab6c0b983f8370c94972"
+    },
+    {
+      "path": "reports/php-callback-arguments-20261113/Build-Evidence.py",
+      "size": 3303,
+      "sha256": "deb199857cb5469c3d45985640efbe180281780497f175260b736261fd7e3101"
+    },
+    {
+      "path": "reports/php-callback-arguments-20261113/Build-RawCases.py",
+      "size": 853,
+      "sha256": "8296ce543820d99d398247510a7afd7eaabc134930ce375a560b38dd97894cf0"
+    },
+    {
+      "path": "reports/php-callback-arguments-20261113/callback-arguments.cases.json",
+      "size": 3851,
+      "sha256": "932674fdeaa2d30137a8190a1b02ad3ea6cac3abbd57b765982b4498a07ddddb"
+    },
+    {
+      "path": "reports/php-callback-arguments-20261113/callback-raw2.cases.json",
+      "size": 614,
+      "sha256": "6338a8b632725454423f3ff0857067d54b32b4dd3d5bcbf337f76a2a1fc5c9ce"
+    },
+    {
+      "path": "reports/php-callback-arguments-20261113/oracle-handler-arguments.json",
+      "size": 11216,
+      "sha256": "4d6571c773865b955fc4b8446f091c6566b14b67235ffec745c575d7b1df14ff"
+    },
+    {
+      "path": "reports/php-callback-arguments-20261113/Oracle-HandlerArguments.php",
+      "size": 2247,
+      "sha256": "2aa5f6f911900206d4f0f23e5c63a3944ba78ff656375141e9a873662505d766"
+    },
+    {
+      "path": "reports/php-callback-arguments-20261113/README.md",
+      "size": 2416,
+      "sha256": "4cb974992c389ecd9fdf7358b7992d73056f3b406395ba02b8af060029f5a277"
+    },
+    {
+      "path": "reports/php-callback-arguments-20261113/revision01/ALL_PHP_callback_arguments_candidate.ps1",
+      "size": 442431,
+      "sha256": "9dd51fc926e076a592f769ffc19fce5f2ef1642f84c7b9f0f255ebc6bec11aac"
+    },
+    {
+      "path": "reports/php-callback-arguments-20261113/revision01/base.snapshot.ps1",
+      "size": 442530,
+      "sha256": "9c1244a2eec741e13d67c77789551e19142a27c55a2d3a572a9acda9c613c36d"
+    },
+    {
+      "path": "reports/php-callback-arguments-20261113/revision01/CallbackArgumentEdits.snapshot.py",
+      "size": 1880,
+      "sha256": "87e64ea50065e4a52e0a02f63cf0bd0382de01a0d03640f606e3aaec87bb666f"
+    },
+    {
+      "path": "reports/php-callback-arguments-20261113/revision01/parse.json",
+      "size": 630,
+      "sha256": "c4bd81470df4dfe6e0ac42b63e4bd5370218efc60dd24db30c28a5cb22d1471a"
+    },
+    {
+      "path": "reports/php-callback-arguments-20261113/revision01/provenance.json",
+      "size": 872,
+      "sha256": "6f644a77da683c339a055daaa49f39d4f73bedd1133fa39d405778a6b73f84da"
+    },
+    {
+      "path": "reports/php-callback-arguments-20261113/revision01/source.patch",
+      "size": 885,
+      "sha256": "823b27f6cc0ab726f8f468006a424392a3941f1fc8f8a1926b6805c77a674a67"
+    },
+    {
+      "path": "reports/php-callback-arguments-20261113/summary.json",
+      "size": 877,
+      "sha256": "fa28fd72213007070930804a1af516a20083263e8220510f51f275e82c45af3f"
+    }
+  ]
+}

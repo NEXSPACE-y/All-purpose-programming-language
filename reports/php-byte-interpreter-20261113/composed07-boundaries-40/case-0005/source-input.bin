@@ -1,0 +1,1 @@
+<?php class H{static function go(...$args){echo count($args),":",gettype($args[0]),":",$args[0],":",bin2hex($args[1]),":",gettype($args[2]),":",gettype($args[3]);return true;}}set_error_handler(["H","go"]);trigger_error("payload\xFF",E_USER_WARNING);

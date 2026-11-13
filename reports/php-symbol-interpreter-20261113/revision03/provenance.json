@@ -1,0 +1,14 @@
+{
+  "status": "BUILT_NOT_RUNTIME_VERIFIED",
+  "base": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\out\\typed02-cli\\ALL_PHP_adapter.ps1",
+  "base_sha256": "07951c5730cb66b14173e487bab9886cec109389dab86fab21b3347b1b4ef16c",
+  "module": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\SymbolEdits.py",
+  "module_sha256": "79e813d1ac21c1a5de08f147d2858501f785ed1e202408100cde54b02f244ee8",
+  "builder_sha256": "b25bbf7ee166dcc70ec0cfd3633fd922c0776b8cda64cf92794345b99f56cdbc",
+  "candidate_sha256": "112cb7c6f6228822ab3a0f812f25566514baa5ca0b6e135bd73db4d58ee1c7a7",
+  "crlf_retained": true,
+  "lf_composition_same": true,
+  "package_modified": false,
+  "runtime_delegation": false,
+  "scope": "Valid-UTF8 metadata/lexer bridge; raw byte names/source decoder not adopted"
+}

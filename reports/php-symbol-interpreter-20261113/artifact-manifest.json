@@ -1,0 +1,515 @@
+{
+  "status": "FROZEN_ISOLATED_VALID_UTF8_SYMBOL_PATCH_NOT_PACKAGE_ADOPTED",
+  "files": [
+    {
+      "path": "tools/candidates/php-byte-interpreter/SymbolEdits.py",
+      "size": 13532,
+      "sha256": "4853ac24f16c2a792dd5836bc8eaeba05335a9e255b9810b898999751ab634c3"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/before10/case-0000.php",
+      "size": 29,
+      "sha256": "5378e6dc266a99d6b7155aed421086ec27f88281237702dd966ba67541931e11"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/before10/case-0001.php",
+      "size": 48,
+      "sha256": "89644def18b3b99c4b9390805f2b9f0352a74be21598445ea769f0e034568ac1"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/before10/case-0002.php",
+      "size": 43,
+      "sha256": "14bb42c5c579a49dbeebf73109937468ea272adbf12201bd33cf77f949add241"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/before10/case-0003.php",
+      "size": 77,
+      "sha256": "fc7e64c37354acc94093972f3878f52bd75d042358c0d42efa6220ae139d48e4"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/before10/case-0004.php",
+      "size": 69,
+      "sha256": "5f7d436423d92f28ced0f5de49326092fb08b8e831074e55561eee7988eca170"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/before10/case-0005.php",
+      "size": 44,
+      "sha256": "fbe91e755a5ad9b95c88645054f0553738c60b4256ff353dc61cef42eef608b4"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/before10/case-0006.php",
+      "size": 44,
+      "sha256": "b5c4606a52d9281fc2df8afd376739442cef3529e330847edf0a4e5a91efc9ad"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/before10/case-0007.php",
+      "size": 43,
+      "sha256": "b64ed659afae25e9d500a086d623435ab67b1c72ee141ebaa5f3ba620f1fe87c"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/before10/case-0008.php",
+      "size": 50,
+      "sha256": "85034dfd3a790fbecabf666a88ea9c01fdccc8640d8a77abd181e9ebd6b8cbb0"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/before10/case-0009.php",
+      "size": 50,
+      "sha256": "9b2285df6b996c061c9d4467cd1e0d8b0ae29ad82745eef6e04eedd67bd6db30"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/before10/report.json",
+      "size": 24575,
+      "sha256": "706f1b556b7f98ed4660d1a80927d4ab9849fb045cd690fd4c10f8257170d7de"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/before10.cases.json",
+      "size": 1206,
+      "sha256": "b33c5c4f03ac516cd0c5439c051ce439af56b1da9e7af960da975f2fdbd53953"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/Build-Cases.py",
+      "size": 2709,
+      "sha256": "cd8764f19ed48d3f83f492ce111c69f06710dbbbd7c0462576c700deed1e2f5c"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/Build-Evidence.py",
+      "size": 2237,
+      "sha256": "b25bbf7ee166dcc70ec0cfd3633fd922c0776b8cda64cf92794345b99f56cdbc"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/case-provenance.json",
+      "size": 280,
+      "sha256": "1c2e66c8a18f2fd8d7f790e82cd1ba569b97263916605eb509528888365dca21"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/combined03-static-composition.json",
+      "size": 106,
+      "sha256": "3a98c2eba8dce828a3bc555be170be98f2ed7361441134a8a8df3076aa79c105"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/combined03-static-composition02.json",
+      "size": 323,
+      "sha256": "acc963822a71713804a36b0dd25259c5d4b8dcdd7119a704b90f61da970a42e7"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/combined03-static-composition03.json",
+      "size": 323,
+      "sha256": "bfe3cf993c15a6b018c00b18bac308845debb648a3f3a45208f20085cc9fad97"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/critical3.cases.json",
+      "size": 334,
+      "sha256": "01cb204085d0bd906406f805e412b4ff2965279c59b090a160402b7a12b674e8"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/DESIGN.md",
+      "size": 3295,
+      "sha256": "fe7dd005f7cc8b0697eab133777a9ee65efad43c58d6c92d892c3cdc74481ff1"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/README.md",
+      "size": 2794,
+      "sha256": "0e296fa2d1e6187bba388a1b6cd65e75c0fff96850b00f4ce348746e52297134"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/recheck8.cases.json",
+      "size": 1036,
+      "sha256": "c43ec0bfd46f396a0085a78f0642722c0f3054896ce13d4ad99d3520f93cd068"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision01/ALL_PHP_symbol_candidate.ps1",
+      "size": 417917,
+      "sha256": "b3b7aac3c2e047523b1f832860f131527df2ecd282dc85304c17f10b56af2ef0"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision01/base.snapshot.ps1",
+      "size": 411876,
+      "sha256": "07951c5730cb66b14173e487bab9886cec109389dab86fab21b3347b1b4ef16c"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision01/parse.json",
+      "size": 1385,
+      "sha256": "8e4becf233edfbe6837a218727282631c56900932e22088418d5f14f84a40b9a"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision01/parse02.json",
+      "size": 739,
+      "sha256": "8ac31c137e1058a66fb7940f08254ba90d4fddefbde03a250c21ca11fe2be7f0"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision01/provenance.json",
+      "size": 864,
+      "sha256": "abb98166760cb742d64e705cb2c20adedcc820159e93e79451a3dcf1e1533bb2"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision01/source.patch",
+      "size": 56234,
+      "sha256": "54ab3a2ffabbe85847386dcc823af1918740f62d23eb9271f6a0f00073f8bc16"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision01/SymbolEdits.snapshot.py",
+      "size": 11124,
+      "sha256": "5d411411fafedce06413e2e722f3ce2e3953a4d5bbca6993dd16fc077439af71"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02/ALL_PHP_symbol_candidate.ps1",
+      "size": 418563,
+      "sha256": "74979e8b73c93a8777ab8c7121fd270d22652fd18a9facbc298040a23631f1b0"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02/base.snapshot.ps1",
+      "size": 411876,
+      "sha256": "07951c5730cb66b14173e487bab9886cec109389dab86fab21b3347b1b4ef16c"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02/provenance.json",
+      "size": 864,
+      "sha256": "a9a766bde80508f6915a1852b07f8e222414dc762a5c7f08b77144db30290432"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02/source.patch",
+      "size": 66733,
+      "sha256": "79ac6967c97181efae9abd6193c142310103a68eec818c0b4da753e21f576236"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02/SymbolEdits.snapshot.py",
+      "size": 12506,
+      "sha256": "652de5ef87e7713fabe9815a0933ec864cc21b7561dec1238c49c13420d984c9"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0000.php",
+      "size": 46,
+      "sha256": "18b54da823251860f94f142e9d148dd4c8982c31a2f08b557b936e030ce5cfc2"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0001.php",
+      "size": 27,
+      "sha256": "a153b2f6f014426ca35ee38761d23c512a59de17f36edbeffdd9cd008a54b336"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0002.php",
+      "size": 29,
+      "sha256": "5378e6dc266a99d6b7155aed421086ec27f88281237702dd966ba67541931e11"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0003.php",
+      "size": 47,
+      "sha256": "94f92d4369cf07678d4d3e4fe5c223ff2613f2ef2e7806b90d2b9934cdd99b89"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0004.php",
+      "size": 49,
+      "sha256": "22b2085e0a50cc529f069d5c8eb60dfa89df64586ccccb3fc5c614569b0fb515"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0005.php",
+      "size": 48,
+      "sha256": "89644def18b3b99c4b9390805f2b9f0352a74be21598445ea769f0e034568ac1"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0006.php",
+      "size": 43,
+      "sha256": "14bb42c5c579a49dbeebf73109937468ea272adbf12201bd33cf77f949add241"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0007.php",
+      "size": 27,
+      "sha256": "a5846ec7c00e1d1aa20ffd2c197d72b07ea33126c6ca1faa35e0bd5dfc64c1f4"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0008.php",
+      "size": 77,
+      "sha256": "fc7e64c37354acc94093972f3878f52bd75d042358c0d42efa6220ae139d48e4"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0009.php",
+      "size": 72,
+      "sha256": "dbe68ce55cac1434bb4ef46732c3df9bc2dfe8d386c5810735aa8f8968041c19"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0010.php",
+      "size": 53,
+      "sha256": "468e6ddf6a7f881839a7baa1e9afe83191e64c2c85ed4a559c5162ee547230dc"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0011.php",
+      "size": 69,
+      "sha256": "5f7d436423d92f28ced0f5de49326092fb08b8e831074e55561eee7988eca170"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0012.php",
+      "size": 69,
+      "sha256": "acb38b6f7458a687a32f5d3da9676588c1ec49f336bb9e54b5eb91025b169132"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0013.php",
+      "size": 44,
+      "sha256": "fbe91e755a5ad9b95c88645054f0553738c60b4256ff353dc61cef42eef608b4"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0014.php",
+      "size": 44,
+      "sha256": "b5c4606a52d9281fc2df8afd376739442cef3529e330847edf0a4e5a91efc9ad"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0015.php",
+      "size": 42,
+      "sha256": "9230dbe871b2a9fb0cd1e14d5a38fb12f3ec8e0866da9643da2a0a9df69ee881"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0016.php",
+      "size": 71,
+      "sha256": "d0e6a53478e0d11bd2cbbc7bfd72571ad9cb961b59d53da2d01bc9b5dc8d58de"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0017.php",
+      "size": 50,
+      "sha256": "898f63c251d31b7e6f605fc4411c40ce81da9c7fd36216c8a6b2324de15c1ee8"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0018.php",
+      "size": 69,
+      "sha256": "7fc57e078a7417628dba1ada6594b25f06bc4772d3e3b11b6e2473ca8c30081c"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0019.php",
+      "size": 73,
+      "sha256": "3a2bf9c7a32d3aa043b456c240ae799b3ad5fae98eb23d96b65f5e4a90447004"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0020.php",
+      "size": 112,
+      "sha256": "ef91ac954ace27995c00a36273675830fd953ecc14faaad22e68e79bb0700aa3"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0021.php",
+      "size": 43,
+      "sha256": "b64ed659afae25e9d500a086d623435ab67b1c72ee141ebaa5f3ba620f1fe87c"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0022.php",
+      "size": 93,
+      "sha256": "cf327f304acc25ffcb401d063eca67061c703f382819a82b2a29f038443af20f"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0023.php",
+      "size": 101,
+      "sha256": "b1e10b2d9e33084f5668316c7fc5ad7e2ad6c780bb4e445883a925aab5d6efe4"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0024.php",
+      "size": 41,
+      "sha256": "599eee886ec266a73ec2f5beaa583744c94141b66f6efbf2a528debc7c4dc70e"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0025.php",
+      "size": 39,
+      "sha256": "1074f483c3383e2eeffa45e2c9eaef5dc4f670549fca76ad3b974cc8af4d86e8"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0026.php",
+      "size": 61,
+      "sha256": "d9e44374771e841ac883e4d631ef7677c6d220fc6e795ab3be291017f5ba06c8"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0027.php",
+      "size": 67,
+      "sha256": "4387d3163af04c9b3b5431f49ace6928e7994ed427a37ac452a62dc10985f45e"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0028.php",
+      "size": 29,
+      "sha256": "c17c41cd590ca23e178d613eb303c7fed84e36c1979cf21eabcd15f1dd6aec5f"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0029.php",
+      "size": 57,
+      "sha256": "b7afb49235570dedd704ada9c4c6f1875c23a2eb711b3c9a8f95d3beff224ab5"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0030.php",
+      "size": 62,
+      "sha256": "1d4ab3f37317cbd39262ff8390a7be9478968f394769739413e050c7721f5fd0"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0031.php",
+      "size": 78,
+      "sha256": "dffe794252a5de2befc2c957290514ac51535026a3ddc6685c203d8886f987e5"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0032.php",
+      "size": 127,
+      "sha256": "4034b4d90d44b86c34a1907656772362d5d7fffe7738f714ccf1d3a9c332e5bc"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0033.php",
+      "size": 103,
+      "sha256": "13640bfaa699a4d53f5743ad9dc757be4e42adcc60285b29bc4accaa7f18d696"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0034.php",
+      "size": 50,
+      "sha256": "85034dfd3a790fbecabf666a88ea9c01fdccc8640d8a77abd181e9ebd6b8cbb0"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0035.php",
+      "size": 83,
+      "sha256": "6de73da09e310dd93be38a630a26262cd46da78344d060d9d707ce5ce5184844"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0036.php",
+      "size": 126,
+      "sha256": "27d88eac426fab88e3842d42b2332ca4ed83567e7d165427a8f13930d4c01ef5"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0037.php",
+      "size": 40,
+      "sha256": "8a59ee71d55645a5361cfe643e2108109c2795f8dac80c16b91535975b6d3a42"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0038.php",
+      "size": 50,
+      "sha256": "9b2285df6b996c061c9d4467cd1e0d8b0ae29ad82745eef6e04eedd67bd6db30"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/case-0039.php",
+      "size": 38,
+      "sha256": "34dce770492be2ee2211a3b0e9e278362d57398f1bd54a08feb6b2a6ff3fe546"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-after40/report.json",
+      "size": 89507,
+      "sha256": "62f7852cdb1de655b5dbc43b40b1b5f3039495e47897bb910aa62fcebbb31736"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-critical3/case-0000.php",
+      "size": 46,
+      "sha256": "18b54da823251860f94f142e9d148dd4c8982c31a2f08b557b936e030ce5cfc2"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-critical3/case-0001.php",
+      "size": 29,
+      "sha256": "5378e6dc266a99d6b7155aed421086ec27f88281237702dd966ba67541931e11"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-critical3/case-0002.php",
+      "size": 43,
+      "sha256": "b64ed659afae25e9d500a086d623435ab67b1c72ee141ebaa5f3ba620f1fe87c"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision02-critical3/report.json",
+      "size": 8463,
+      "sha256": "509fff975788941c2e5dc1159159e00653d9eef059cd08d65f2987ff342da650"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision03/ALL_PHP_symbol_candidate.ps1",
+      "size": 418665,
+      "sha256": "112cb7c6f6228822ab3a0f812f25566514baa5ca0b6e135bd73db4d58ee1c7a7"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision03/base.snapshot.ps1",
+      "size": 411876,
+      "sha256": "07951c5730cb66b14173e487bab9886cec109389dab86fab21b3347b1b4ef16c"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision03/provenance.json",
+      "size": 864,
+      "sha256": "29488ab38bafe7192891dec54bf380806e0a734326fe0835ff16449bf796a3b5"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision03/source.patch",
+      "size": 67680,
+      "sha256": "8bbf0ed07da357c7e784b06f536b6c8f1cbb45fbc1cfa045c1f0da5234e67855"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision03/SymbolEdits.snapshot.py",
+      "size": 13018,
+      "sha256": "79e813d1ac21c1a5de08f147d2858501f785ed1e202408100cde54b02f244ee8"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision04/ALL_PHP_symbol_candidate.ps1",
+      "size": 418591,
+      "sha256": "bfb9fb18b56bb7359cac8abe2a06547a152bbe6b23150f44ff1ffb6d80e75297"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision04/base.snapshot.ps1",
+      "size": 411876,
+      "sha256": "07951c5730cb66b14173e487bab9886cec109389dab86fab21b3347b1b4ef16c"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision04/provenance.json",
+      "size": 864,
+      "sha256": "27a93e9e61e28d6449a150b0018cd0ac9eecf136fb6b65caed8c7bde3f07e2c1"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision04/source.patch",
+      "size": 67155,
+      "sha256": "a31a73d97794779e2aadc60675a2a541894ba24043f1dad1f364d0fb6d32d4f3"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision04/SymbolEdits.snapshot.py",
+      "size": 13532,
+      "sha256": "4853ac24f16c2a792dd5836bc8eaeba05335a9e255b9810b898999751ab634c3"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision04-recheck8/case-0000.php",
+      "size": 46,
+      "sha256": "18b54da823251860f94f142e9d148dd4c8982c31a2f08b557b936e030ce5cfc2"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision04-recheck8/case-0001.php",
+      "size": 29,
+      "sha256": "5378e6dc266a99d6b7155aed421086ec27f88281237702dd966ba67541931e11"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision04-recheck8/case-0002.php",
+      "size": 47,
+      "sha256": "94f92d4369cf07678d4d3e4fe5c223ff2613f2ef2e7806b90d2b9934cdd99b89"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision04-recheck8/case-0003.php",
+      "size": 49,
+      "sha256": "22b2085e0a50cc529f069d5c8eb60dfa89df64586ccccb3fc5c614569b0fb515"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision04-recheck8/case-0004.php",
+      "size": 62,
+      "sha256": "1d4ab3f37317cbd39262ff8390a7be9478968f394769739413e050c7721f5fd0"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision04-recheck8/case-0005.php",
+      "size": 126,
+      "sha256": "27d88eac426fab88e3842d42b2332ca4ed83567e7d165427a8f13930d4c01ef5"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision04-recheck8/case-0006.php",
+      "size": 50,
+      "sha256": "9b2285df6b996c061c9d4467cd1e0d8b0ae29ad82745eef6e04eedd67bd6db30"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision04-recheck8/case-0007.php",
+      "size": 38,
+      "sha256": "34dce770492be2ee2211a3b0e9e278362d57398f1bd54a08feb6b2a6ff3fe546"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/revision04-recheck8/report.json",
+      "size": 19308,
+      "sha256": "76ee1d778635dcd657f952cb71f067824b6943880358be477ec8327cdfb48fbd"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/source-definition-provenance.json",
+      "size": 8220,
+      "sha256": "5b1253e4bf27135ef475b7e55eebaaec87c218103e57edfff27af3b0c66a0625"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/summary.json",
+      "size": 2365,
+      "sha256": "e56b6f8135ab872cb8f29a28933bb33d0a4fcdf8eee969aff774f9290715a631"
+    },
+    {
+      "path": "reports/php-symbol-interpreter-20261113/symbols40.cases.json",
+      "size": 5381,
+      "sha256": "f6314a7ca2bf366a89a05f8785af780e189daee7fd58830097c2a23d206a2d27"
+    }
+  ]
+}

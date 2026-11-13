@@ -1,0 +1,277 @@
+[
+  {
+    "id": "byte.echo-ff",
+    "mode": "body",
+    "code": "echo \"\\xFF\";"
+  },
+  {
+    "id": "byte.dump-ff-nul",
+    "mode": "body",
+    "code": "var_dump(\"\\xFF\\0A\");"
+  },
+  {
+    "id": "byte.concat",
+    "mode": "body",
+    "code": "echo \"\\xFF\" . \"\\0\\u{D800}\";"
+  },
+  {
+    "id": "byte.interpolate",
+    "mode": "body",
+    "code": "$a=\"\\xFF\\0\";echo \"x{$a}y\";"
+  },
+  {
+    "id": "byte.assignment-copy",
+    "mode": "body",
+    "code": "$a=\"\\xFF\";$b=$a;$a.=\"\\0\";echo $a,$b;"
+  },
+  {
+    "id": "byte.cast-scalar",
+    "mode": "body",
+    "code": "var_dump((string)123,(string)false,(int)\"123\\xFF\",(float)\"-0\\xFF\");"
+  },
+  {
+    "id": "byte.strict-raw",
+    "mode": "body",
+    "code": "var_dump(\"\\xFF\"===\"\\xFF\",\"\\xFF\"===\"\\xFE\");"
+  },
+  {
+    "id": "byte.strict-canonical-unicode",
+    "mode": "body",
+    "code": "var_dump(\"\\u{E9}\"===\"e\\u{301}\");"
+  },
+  {
+    "id": "byte.compare-raw",
+    "mode": "body",
+    "code": "var_dump(\"\\xFF\">\"\\xFE\",\"\\u{10000}\">\"\\u{E000}\",\"2\"<\"10\");"
+  },
+  {
+    "id": "byte.truth",
+    "mode": "body",
+    "code": "var_dump((bool)\"0\",(bool)\"0\\0\",(bool)\"\\xFF\",(bool)\"\");"
+  },
+  {
+    "id": "byte.bitwise",
+    "mode": "body",
+    "code": "echo \"\\xFF\\x01\"&\"\\x0F\",\"|\",\"\\x80\"|\"\\x01\\xFF\",\"|\",\"\\xFF\"^\"\\x0F\\x80\";"
+  },
+  {
+    "id": "byte.raw-exit",
+    "mode": "body",
+    "code": "exit(\"\\xFF\\0\");echo \"unreachable\";"
+  },
+  {
+    "id": "byte.array-raw-key-values",
+    "mode": "body",
+    "code": "$a=[\"\\xFF\"=>\"\\x80\\0\",\"\\x80\"=>\"\\xFF\"];var_dump($a);echo $a[\"\\xFF\"];"
+  },
+  {
+    "id": "byte.array-key-kinds",
+    "mode": "body",
+    "code": "var_dump([\"0\"=>1,\"-0\"=>2,\"+0\"=>3,\"01\"=>4,\"9223372036854775808\"=>5,\"-1\"=>6]);"
+  },
+  {
+    "id": "byte.array-key-unicode-identity",
+    "mode": "body",
+    "code": "$a=[\"\\u{E9}\"=>1,\"e\\u{301}\"=>2];var_dump($a);"
+  },
+  {
+    "id": "byte.array-copy",
+    "mode": "body",
+    "code": "$a=[\"\\xFF\"=>\"\\x80\"];$b=$a;$a[\"\\xFF\"].=\"x\";var_dump($a,$b,$a===$b);"
+  },
+  {
+    "id": "byte.array-foreach",
+    "mode": "body",
+    "code": "$a=[\"\\xFF\"=>\"\\x80\",2=>\"\\0\"];foreach($a as $k=>$v){var_dump($k,$v);}"
+  },
+  {
+    "id": "byte.array-unpack-union",
+    "mode": "body",
+    "code": "$a=[\"\\xFF\"=>\"\\x80\",4=>\"\\0\"];var_dump([...$a,\"\\xFF\"=>\"\\xFE\"],$a+[\"\\xFF\"=>\"\\xFE\",7=>1]);"
+  },
+  {
+    "id": "byte.array-reference",
+    "mode": "body",
+    "code": "$v=\"\\xFF\";$a=[\"\\x80\"=>&$v];$b=$a;$v.=\"\\0\";var_dump($a,$b);"
+  },
+  {
+    "id": "byte.array-keys",
+    "mode": "body",
+    "code": "$a=[\"\\xFF\"=>1,2=>2];var_dump(array_keys($a),array_key_first($a),array_key_last($a),array_key_exists(\"\\xFF\",$a));"
+  },
+  {
+    "id": "byte.array-transform",
+    "mode": "body",
+    "code": "$a=[\"\\xFF\"=>\"\\x80\",3=>\"\\0\",\"x\"=>\"\\xFE\"];var_dump(array_reverse($a),array_slice($a,1,2,true),array_merge($a,$a));"
+  },
+  {
+    "id": "byte.array-shift-pop",
+    "mode": "body",
+    "code": "$a=[\"\\xFF\"=>\"\\x80\",3=>\"\\0\"];var_dump(array_shift($a),$a,array_pop($a),$a);"
+  },
+  {
+    "id": "byte.print-r-raw",
+    "mode": "body",
+    "code": "$a=[\"\\xFF\"=>\"\\x80\\0\"];print_r($a);echo print_r($a,true);"
+  },
+  {
+    "id": "byte.typed-return",
+    "mode": "body",
+    "code": "function f(string $a):string{return $a . \"\\xFF\";}var_dump(f(\"\\x80\"),f(12));"
+  },
+  {
+    "id": "byte.offset.read.integer",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{var_dump($s[1],$s[-1],$s[-4]);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.read.outside",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{var_dump($s[4],$s[-5]);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.read.numeric-string",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{var_dump($s[\"1\"],$s[\" 1 \"],$s[\"+1\"],$s[\"01\"]);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.read.float-string",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{var_dump($s[\"1.0\"]);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.read.prefix-string",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{var_dump($s[\"1x\"]);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.read.nonnumeric-string",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{var_dump($s[\"x\"]);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.read.scalar-cast",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{var_dump($s[true],$s[false],$s[null],$s[2.9]);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.read.array",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{var_dump($s[[]]);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.write.integer",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$a=$s;$r=$s[1]=\"\\x80\";var_dump($s,$a,$r);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.write.extend",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$r=$s[7]=\"\\x80\";var_dump($s,$r);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.write.negative",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$r=$s[-2]=\"\\x80\";var_dump($s,$r);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.write.negative-outside",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$r=$s[-5]=\"\\x80\";var_dump($s,$r);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.write.multibyte",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$r=$s[0]=\"\\xFF\\0\";var_dump($s,$r);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.write.empty",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$s[1]=\"\";var_dump($s);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.write.append",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$s[]=\"x\";var_dump($s);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.write.nested",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$a=[\"s\"=>$s];$b=$a;$a[\"s\"][1]=\"\\x80\";var_dump($a,$b);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.write.property",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$o=new stdClass();$o->s=$s;$o->s[1]=\"\\x80\";var_dump($o->s);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.write.compound",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$s[1].=\"x\";var_dump($s);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.offset.write.reference",
+    "mode": "body",
+    "code": "set_error_handler(function($n,$m){echo \"W\",$n,\":\",$m,\"\\n\";return true;});$s=\"A\\xFF\\0B\";try{$r=&$s[1];var_dump($r);}catch(Throwable $e){echo get_class($e),\":\",$e->getMessage();}"
+  },
+  {
+    "id": "byte.json.valid-strings",
+    "mode": "body",
+    "code": "var_dump(json_encode(\"a\\0\\x7F/\\u{E9}\\u{1F600}\"),json_last_error(),json_last_error_msg());"
+  },
+  {
+    "id": "byte.json.invalid-string",
+    "mode": "body",
+    "code": "var_dump(json_encode(\"\\xFF\"),json_last_error(),json_last_error_msg());"
+  },
+  {
+    "id": "byte.json.invalid-key",
+    "mode": "body",
+    "code": "var_dump(json_encode([\"\\xFF\"=>1]),json_last_error(),json_last_error_msg());"
+  },
+  {
+    "id": "byte.json.surrogate-bytes",
+    "mode": "body",
+    "code": "var_dump(json_encode(\"\\u{D800}\"),json_last_error(),json_last_error_msg());"
+  },
+  {
+    "id": "byte.json.decode-invalid",
+    "mode": "body",
+    "code": "var_dump(json_decode(\"\\xFF\"),json_last_error(),json_last_error_msg());"
+  },
+  {
+    "id": "byte.json.decode-values",
+    "mode": "body",
+    "code": "var_dump(json_decode('{\"x\":\"a\\u0000\\u00e9\"}',true),json_last_error());"
+  },
+  {
+    "id": "byte.json.error-reset",
+    "mode": "body",
+    "code": "json_encode(\"\\xFF\");var_dump(json_encode(12),json_last_error(),json_last_error_msg());"
+  },
+  {
+    "id": "byte.json.references",
+    "mode": "body",
+    "code": "$v=\"\\u{E9}\";$a=[&$v];var_dump(json_encode($a),json_last_error());"
+  },
+  {
+    "id": "byte.json.recursion",
+    "mode": "body",
+    "code": "$a=[];$a['self']=&$a;var_dump(json_encode($a),json_last_error(),json_last_error_msg());"
+  },
+  {
+    "id": "byte.json.nonfinite",
+    "mode": "body",
+    "code": "var_dump(json_encode(NAN),json_last_error(),json_last_error_msg(),json_encode(INF),json_last_error());"
+  },
+  {
+    "id": "byte.json.object-visibility",
+    "mode": "body",
+    "code": "class C{public $a='x';protected $b='y';private $c='z';}var_dump(json_encode(new C()),json_last_error());"
+  },
+  {
+    "id": "byte.json.array-order",
+    "mode": "body",
+    "code": "var_dump(json_encode([0=>'a',1=>'b']),json_encode([1=>'a',0=>'b']),json_encode(['0'=>'x','01'=>'y']));"
+  }
+]

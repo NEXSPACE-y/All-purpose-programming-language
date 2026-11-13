@@ -1,0 +1,243 @@
+[
+  {
+    "name": "English import and function",
+    "main": "import \"math.all\"\nprint(add(7,5))",
+    "files": {
+      "math.all": "fn add(a,b) { return a+b }"
+    },
+    "expected": "12",
+    "error_contains": null,
+    "inline": false
+  },
+  {
+    "name": "Japanese import and function",
+    "main": "「math.all」をモジュールとして読み込む\nprint(add(3,4))",
+    "files": {
+      "math.all": "fn add(a,b) { return a+b }"
+    },
+    "expected": "7",
+    "error_contains": null,
+    "inline": false
+  },
+  {
+    "name": "Japanese function and natural syntax",
+    "main": "「計算.all」をモジュールとして読み込む\n変数 合計 = 二倍(11)\n合計を改行して表示する",
+    "files": {
+      "計算.all": "関数 二倍(値) { 返す 値 * 2 }"
+    },
+    "expected": "22\n",
+    "error_contains": null,
+    "inline": false
+  },
+  {
+    "name": "Two imports",
+    "main": "import \"a.all\"\nimport \"b.all\"\nprint(one()+two())",
+    "files": {
+      "a.all": "fn one(){return 1}",
+      "b.all": "fn two(){return 2}"
+    },
+    "expected": "3",
+    "error_contains": null,
+    "inline": false
+  },
+  {
+    "name": "Duplicate import idempotent",
+    "main": "import \"a.all\"\nimport \"a.all\"\nprint(number())",
+    "files": {
+      "a.all": "fn number(){return 8}"
+    },
+    "expected": "8",
+    "error_contains": null,
+    "inline": false
+  },
+  {
+    "name": "Imported variable shared scope",
+    "main": "import \"state.all\"\nprint(score)",
+    "files": {
+      "state.all": "let score=42"
+    },
+    "expected": "42",
+    "error_contains": null,
+    "inline": false
+  },
+  {
+    "name": "Nested import",
+    "main": "import \"lib/outer.all\"\nprint(outer())",
+    "files": {
+      "lib/outer.all": "import \"inner.all\"\nfn outer(){return inner()+1}",
+      "lib/inner.all": "fn inner(){return 12}"
+    },
+    "expected": "13",
+    "error_contains": null,
+    "inline": false
+  },
+  {
+    "name": "Module in Japanese subdirectory",
+    "main": "import \"数学/合計.all\"\nprint(合計(2,7))",
+    "files": {
+      "数学/合計.all": "関数 合計(a,b){返す a+b}"
+    },
+    "expected": "9",
+    "error_contains": null,
+    "inline": false
+  },
+  {
+    "name": "Comments do not import",
+    "main": "# import \"missing.all\"\n// import \"missing.all\"\nprint(5)",
+    "files": {},
+    "expected": "5",
+    "error_contains": null,
+    "inline": false
+  },
+  {
+    "name": "String literal not import",
+    "main": "print(\"import \\\"missing.all\\\"\")",
+    "files": {},
+    "expected": "import \"missing.all\"",
+    "error_contains": null,
+    "inline": false
+  },
+  {
+    "name": "No import source unchanged",
+    "main": "変数 年齢 = 20\n年齢が18以上なら {\n「成人です」と表示する\n}",
+    "files": {},
+    "expected": "成人です",
+    "error_contains": null,
+    "inline": false
+  },
+  {
+    "name": "Mixed-language imports",
+    "main": "import \"en.all\"\n「jp.all」をモジュールとして読み込む\nprint(add(十()))",
+    "files": {
+      "en.all": "fn add(x){return x+1}",
+      "jp.all": "関数 十(){返す 10}"
+    },
+    "expected": "11",
+    "error_contains": null,
+    "inline": false
+  },
+  {
+    "name": "Nested parent traversal inside project",
+    "main": "import \"lib/outer.all\"\nprint(inner())",
+    "files": {
+      "lib/outer.all": "import \"../shared/inner.all\"",
+      "shared/inner.all": "fn inner(){return 19}"
+    },
+    "expected": "19",
+    "error_contains": null,
+    "inline": false
+  },
+  {
+    "name": "Duplicate via nested and root",
+    "main": "import \"lib/outer.all\"\nimport \"shared/inner.all\"\nprint(inner())",
+    "files": {
+      "lib/outer.all": "import \"../shared/inner.all\"",
+      "shared/inner.all": "fn inner(){return 19}"
+    },
+    "expected": "19",
+    "error_contains": null,
+    "inline": false
+  },
+  {
+    "name": "Filename with spaces",
+    "main": "import \"lib/my module.all\"\nprint(something())",
+    "files": {
+      "lib/my module.all": "fn something(){return 23}"
+    },
+    "expected": "23",
+    "error_contains": null,
+    "inline": false
+  },
+  {
+    "name": "Direct Code import",
+    "main": "import \"fn.all\"\nprint(answer())",
+    "files": {
+      "fn.all": "fn answer(){return 41}"
+    },
+    "expected": "41",
+    "error_contains": null,
+    "inline": true
+  },
+  {
+    "name": "Missing module rejected",
+    "main": "import \"missing.all\"",
+    "files": {},
+    "expected": "",
+    "error_contains": "Module not found",
+    "inline": false
+  },
+  {
+    "name": "Traversal rejected",
+    "main": "import \"../outside.all\"",
+    "files": {},
+    "expected": "",
+    "error_contains": "escapes project root",
+    "inline": false
+  },
+  {
+    "name": "Absolute path rejected",
+    "main": "import \"C:/Windows/system32/outside.all\"",
+    "files": {},
+    "expected": "",
+    "error_contains": "Absolute module path forbidden",
+    "inline": false
+  },
+  {
+    "name": "Extension rejected",
+    "main": "import \"data.php\"",
+    "files": {},
+    "expected": "",
+    "error_contains": "Expected .all module",
+    "inline": false
+  },
+  {
+    "name": "Import after executable rejected",
+    "main": "let x=1\nimport \"fn.all\"",
+    "files": {
+      "fn.all": "fn answer(){return 41}"
+    },
+    "expected": "",
+    "error_contains": "Imports must appear",
+    "inline": false
+  },
+  {
+    "name": "Import inside block rejected",
+    "main": "if (true) {\nimport \"fn.all\"\n}",
+    "files": {
+      "fn.all": "fn answer(){return 41}"
+    },
+    "expected": "",
+    "error_contains": "Imports must appear",
+    "inline": false
+  },
+  {
+    "name": "Malformed import rejected",
+    "main": "import abc",
+    "files": {},
+    "expected": "",
+    "error_contains": "Malformed import",
+    "inline": false
+  },
+  {
+    "name": "Circular import rejected",
+    "main": "import \"a.all\"",
+    "files": {
+      "a.all": "import \"b.all\"",
+      "b.all": "import \"a.all\""
+    },
+    "expected": "",
+    "error_contains": "Circular import",
+    "inline": false
+  },
+  {
+    "name": "Japanese root with nested import",
+    "main": "「lib/main.all」をモジュールとして読み込む\nprint(n())",
+    "files": {
+      "lib/main.all": "「sub/inner.all」をモジュールとして読み込む",
+      "lib/sub/inner.all": "fn n(){return 99}"
+    },
+    "expected": "99",
+    "error_contains": null,
+    "inline": false
+  }
+]

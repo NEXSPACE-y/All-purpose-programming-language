@@ -1,0 +1,1 @@
+<?php class É{public function x(){return 1;}}class é{public function x(){return 2;}}echo (new É())->x(),":",(new é())->x();

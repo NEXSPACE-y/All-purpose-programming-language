@@ -1,0 +1,1677 @@
+--- v3.20-5856687f7abd1471b4af7af9827ca2d17a011e836ad2852bf1d7993298fddc9f
++++ byte-migration-candidate
+@@ -13,6 +13,243 @@
+             [void]$CliContext.Remove('CompileError')
+         }
+         $ErrorActionPreference = 'Stop'
++        $phpByteRuntimePath = 'C:\Users\rinpa\ALL-php-compat-20261112\tools\candidates\php-byte-runtime\out\runtime01\AllPhp.ByteValues.Runtime.dll'
++        $phpByteRuntimeHash = '18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b'
++        if ((Get-FileHash -LiteralPath $phpByteRuntimePath -Algorithm SHA256).Hash.ToLowerInvariant() -cne $phpByteRuntimeHash) {
++            throw 'ALL PHP byte runtime hash mismatch'
++        }
++        $loadedByteType = 'AllPhp.ByteValues.PhpBytes' -as [type]
++        if ($null -ne $loadedByteType) {
++            if ([IO.Path]::GetFullPath($loadedByteType.Assembly.Location) -cne [IO.Path]::GetFullPath($phpByteRuntimePath)) {
++                throw 'ALL PHP byte runtime was already loaded from a different location'
++            }
++        } else { Add-Type -Path $phpByteRuntimePath }
++        # PHP-owned strings use PhpBytes. Host names/paths remain explicit text
++        # boundaries until their separate symbol/source-byte migration is wired.
++        function Is-PhpBytes($value) {
++            if (Is-PhpRefCell $value) { $value=$value.Value }
++            return ($value -is [AllPhp.ByteValues.PhpBytes])
++        }
++        function Is-PhpStringValue($value) {
++            if (Is-PhpRefCell $value) { $value=$value.Value }
++            # Legacy text from an existing builtin is normalized on value entry.
++            # This bridge is temporary and is not a claim all text producers moved.
++            return ($value -is [AllPhp.ByteValues.PhpBytes] -or $value -is [string])
++        }
++        function ConvertTo-PhpOwnedValue($value) {
++            if ($value -is [string]) { return [AllPhp.ByteValues.PhpBytes]::FromUtf8($value) }
++            return $value
++        }
++        function Get-PhpHostText($value) {
++            if (Is-PhpRefCell $value) { $value=$value.Value }
++            if ($value -is [string]) { return $value }
++            if ($value -is [AllPhp.ByteValues.PhpBytes]) {
++                $text=$null
++                if ($value.TryDecodeUtf8([ref]$text)) { return $text }
++                throw 'ALL PHP byte migration: this host-text boundary still requires valid UTF-8'
++            }
++            throw 'ALL PHP byte migration: PHP value was used as host metadata without conversion'
++        }
++        function To-PhpBytes($value) {
++            if (Is-PhpRefCell $value) { $value=$value.Value }
++            if ($value -is [AllPhp.ByteValues.PhpBytes]) { return $value }
++            if ($null -eq $value) { return [AllPhp.ByteValues.PhpBytes]::Empty }
++            if ($value -is [string]) { return [AllPhp.ByteValues.PhpBytes]::FromUtf8($value) }
++            if ($value -is [bool]) {
++                if ($value) { return [AllPhp.ByteValues.PhpBytes]::FromUtf8('1') }
++                return [AllPhp.ByteValues.PhpBytes]::Empty
++            }
++            if ($value -is [long]) {
++                return [AllPhp.ByteValues.PhpBytes]::FromUtf8($value.ToString([Globalization.CultureInfo]::InvariantCulture))
++            }
++            if ($value -is [double]) {
++                return [AllPhp.ByteValues.PhpBytes]::FromUtf8((Format-PhpFloat $value 14))
++            }
++            if (Is-PhpArray $value) {
++                if ($isCli -or $PhpDiagnostics) {
++                    Write-PhpDiagnostic 2 'Array to string conversion'
++                    return [AllPhp.ByteValues.PhpBytes]::FromUtf8('Array')
++                }
++                throw 'ALL PHP: Array to string conversion is not supported'
++            }
++            if (Is-PhpObject $value) {
++                $magic=Find-OptionalPhpMethod $value.Class '__toString'
++                if ($null -ne $magic) {
++                    $converted=Invoke-PhpMethod $value '__toString' @()
++                    if ((Is-PhpStringValue $converted) -or (Is-PhpNum $converted) -or $converted -is [bool]) {
++                        return (To-PhpBytes $converted)
++                    }
++                    throw 'ALL PHP: __toString must return string'
++                }
++                throw 'ALL PHP: Object to string conversion is not supported'
++            }
++            throw 'ALL PHP byte migration: unsupported PHP string conversion source'
++        }
++        function Write-PhpBytes($value, [bool]$ErrorStream=$false) {
++            $bytes=To-PhpBytes $value
++            $stream=$null
++            if ($isCli) {
++                $key=if($ErrorStream){'ErrorByteStream'}else{'OutputByteStream'}
++                if ($CliContext.Keys -contains $key) { $stream=$CliContext[$key] }
++            }
++            if ($null -ne $stream) {
++                if ($stream -isnot [IO.Stream] -or -not $stream.CanWrite) {
++                    throw 'ALL PHP byte migration: invalid request byte output stream'
++                }
++                $bytes.WriteTo($stream);$stream.Flush();return
++            }
++            if (-not $isCli) {
++                # Preserve the existing library's valid-text Console capture.
++                # Invalid bytes never become replacement text.
++                $text=$null
++                if ($bytes.TryDecodeUtf8([ref]$text)) {
++                    if ($ErrorStream) { [Console]::Error.Write($text) } else { [Console]::Write($text) }
++                    return
++                }
++            }
++            $raw=if($ErrorStream){[Console]::OpenStandardError()}else{[Console]::OpenStandardOutput()}
++            $bytes.WriteTo($raw);$raw.Flush()
++        }
++        function Get-PhpNumericView($value) {
++            if ($value -is [string]) { return $value }
++            if ($value -isnot [AllPhp.ByteValues.PhpBytes]) { throw 'Not a PHP string numeric view' }
++            # This is a grammar-classification view, never a PHP value/output.
++            # Non-ASCII bytes map to '?' which cannot match PHP ASCII numeric
++            # syntax. The original bytes remain unchanged. Large streaming
++            # numeric parsing is a separately tracked migration obligation.
++            return [Text.Encoding]::ASCII.GetString($value.ToArray())
++        }
++        function New-PhpIntegerKey([long]$value) {
++            return [AllPhp.ByteValues.PhpKey]::FromInteger($value)
++        }
++        function Get-PhpKeyValue($key) {
++            if ($key -isnot [AllPhp.ByteValues.PhpKey]) { throw 'ALL PHP byte migration: untyped array key' }
++            if ($key.IsInteger) { return [long]$key.IntegerValue }
++            return $key.BytesValue
++        }
++        function Get-PhpKeyHostText($key) {
++            if ($key.IsInteger) { return $key.IntegerValue.ToString([Globalization.CultureInfo]::InvariantCulture) }
++            return (Get-PhpHostText $key.BytesValue)
++        }
++        function Format-PhpBytesDump($value, [string]$pad) {
++            $builder=[AllPhp.ByteValues.PhpByteBuilder]::new()
++            if (Is-PhpRefCell $value) { $value=$value.Value }
++            if ($null -eq $value) { $builder.AppendUtf8($pad+"NULL`n");return $builder.ToPhpBytes() }
++            if ($value -is [bool]) {
++                $text=if($value){'true'}else{'false'}
++                $builder.AppendUtf8($pad+'bool('+$text+")`n");return $builder.ToPhpBytes()
++            }
++            if ($value -is [long]) {
++                $builder.AppendUtf8($pad+'int('+$value.ToString([Globalization.CultureInfo]::InvariantCulture)+")`n")
++                return $builder.ToPhpBytes()
++            }
++            if ($value -is [double]) {
++                $builder.AppendUtf8($pad+'float('+(Format-PhpFloat $value 0)+")`n");return $builder.ToPhpBytes()
++            }
++            if (Is-PhpStringValue $value) {
++                $bytes=To-PhpBytes $value
++                $builder.AppendUtf8($pad+'string('+$bytes.Length+') "');$builder.Append($bytes)
++                $builder.AppendUtf8("`"`n");return $builder.ToPhpBytes()
++            }
++            if (Is-PhpArray $value) {
++                $builder.AppendUtf8($pad+'array('+$value.Items.Count+") {`n")
++                foreach($key in $value.Items.Keys) {
++                    if($key.IsInteger){$builder.AppendUtf8($pad+'  ['+$key.IntegerValue+"]=>`n")}
++                    else{$builder.AppendUtf8($pad+'  ["');$builder.Append($key.BytesValue);$builder.AppendUtf8("`"]=>`n")}
++                    $builder.Append((Format-PhpBytesDump $value.Items[$key] ($pad+'  ')))
++                }
++                $builder.AppendUtf8($pad+"}`n");return $builder.ToPhpBytes()
++            }
++            if (Is-PhpObject $value) {
++                if ($state.Classes.ContainsKey($value.Class) -and
++                    $state.Classes[$value.Class].PSObject.Properties['Enum'] -and
++                    $state.Classes[$value.Class].Enum) {
++                    $builder.AppendUtf8($pad+'enum('+$value.Class+'::')
++                    $builder.Append((To-PhpBytes $value.Props['name']))
++                    $builder.AppendUtf8(")`n");return $builder.ToPhpBytes()
++                }
++                foreach($seen in $state.DumpStack) {
++                    if([object]::ReferenceEquals($seen,$value)) {
++                        $builder.AppendUtf8($pad+"*RECURSION*`n");return $builder.ToPhpBytes()
++                    }
++                }
++                [void]$state.DumpStack.Add($value)
++                try {
++                    $entries=Get-PhpObjectDumpEntries $value
++                    $count=0
++                    foreach($entry in $entries){if($entry.Present){$count++}}
++                    $id=0
++                    if($value.PSObject.Properties['Id']){$id=$value.Id}
++                    $builder.AppendUtf8($pad+'object('+$value.Class+')#'+$id+' ('+$count+") {`n")
++                    foreach($entry in $entries) {
++                        $builder.AppendUtf8($pad+'  ["'+$entry.Name+'"'+$entry.Suffix+"]=>`n")
++                        if($entry.Present){$builder.Append((Format-PhpBytesDump $entry.Value ($pad+'  ')))}
++                        else{$builder.AppendUtf8($pad+'  uninitialized('+$entry.TypeName+")`n")}
++                    }
++                    $builder.AppendUtf8($pad+"}`n");return $builder.ToPhpBytes()
++                } finally {$state.DumpStack.RemoveAt($state.DumpStack.Count-1)}
++            }
++            throw 'ALL PHP: var_dump() of this value type is not implemented'
++        }
++        function Format-PhpBytesPrintR($value, [int]$indent) {
++            if (Is-PhpRefCell $value) { $value=$value.Value }
++            $pad=' '*$indent
++            $builder=[AllPhp.ByteValues.PhpByteBuilder]::new()
++            if(Is-PhpArray $value) {
++                $builder.AppendUtf8("Array`n"+$pad+"(`n")
++                foreach($key in $value.Items.Keys) {
++                    $builder.AppendUtf8($pad+'    [')
++                    $builder.Append((To-PhpBytes (Get-PhpKeyValue $key)))
++                    $builder.AppendUtf8('] => ')
++                    $builder.Append((Format-PhpBytesPrintR $value.Items[$key] ($indent+8)))
++                    $builder.AppendUtf8("`n")
++                }
++                $builder.AppendUtf8($pad+")`n");return $builder.ToPhpBytes()
++            }
++            if(Is-PhpObject $value) {
++                foreach($seen in $state.DumpStack) {
++                    if([object]::ReferenceEquals($seen,$value)){return [AllPhp.ByteValues.PhpBytes]::FromUtf8('*RECURSION*')}
++                }
++                [void]$state.DumpStack.Add($value)
++                try {
++                    $enum=($state.Classes.ContainsKey($value.Class)-and
++                        $state.Classes[$value.Class].PSObject.Properties['Enum']-and$state.Classes[$value.Class].Enum)
++                    $kind=if($enum){' Enum'}else{' Object'}
++                    $builder.AppendUtf8($value.Class+$kind+"`n"+$pad+"(`n")
++                    foreach($entry in (Get-PhpObjectDumpEntries $value)) {
++                        if(-not$entry.Present){continue}
++                        $builder.AppendUtf8($pad+'    ['+$entry.Name+$entry.PlainSuffix+'] => ')
++                        $builder.Append((Format-PhpBytesPrintR $entry.Value ($indent+8)))
++                        $builder.AppendUtf8("`n")
++                    }
++                    $builder.AppendUtf8($pad+")`n");return $builder.ToPhpBytes()
++                } finally {$state.DumpStack.RemoveAt($state.DumpStack.Count-1)}
++            }
++            return (To-PhpBytes $value)
++        }
++        function Evaluate-PhpBuiltinArguments($expressions, [string]$name) {
++            $result=[Collections.Generic.List[object]]::new()
++            # These are the currently implemented mutating array builtins. Their
++            # first operand retains its existing lvalue storage. All by-value
++            # array arguments must snapshot at evaluation time, before later
++            # argument expressions can mutate the source array.
++            $firstByReference=$name.ToLowerInvariant() -cin @('array_push','array_pop','array_shift','array_unshift')
++            for($i=0;$i-lt$expressions.Count;$i++) {
++                $expression=$expressions[$i]
++                if($expression.Kind-ceq'named_argument') {
++                    $value=Invoke-PhpExpr $expression.Expr
++                    [void]$result.Add([pscustomobject]@{
++                        PhpType='named_argument';Name=$expression.Name;Value=(Copy-PhpValue $value)
++                    })
++                } else {
++                    $value=Invoke-PhpExpr $expression
++                    if(-not($firstByReference-and$i-eq0)){$value=Copy-PhpValue $value}
++                    [void]$result.Add($value)
++                }
++            }
++            return ,($result.ToArray())
++        }
++
+ 
+         # ALL's own PHP subset interpreter. No PHP executable, eval, or Invoke-Expression.
+         if ($isCli -and ($CliContext.Keys -contains 'SourceMode') -and
+@@ -135,46 +372,69 @@
+             $signal.Data['AllPhpNativeUnsupported'] = $true
+             throw $signal
+         }
++        function Throw-PhpNativeUnsupportedBytes($reason) {
++            $rawReason=To-PhpBytes $reason
++            $hostReason=$null
++            if ($rawReason.TryDecodeUtf8([ref]$hostReason)) {
++                Throw-PhpNativeUnsupported $hostReason
++            }
++            # This ASCII carrier is host metadata, not the PHP diagnostic.
++            # The complete raw message remains available without replacement.
++            $signal=[System.InvalidOperationException]::new('ALL PHP Native Unsupported: raw native message retained in exception data')
++            $signal.Data['AllPhpNativeUnsupported']=$true
++            $signal.Data['AllPhpNativeUnsupportedBytes']=$rawReason
++            throw $signal
++        }
+         function Invoke-PhpNativeFunction([string]$name, $values) {
+-            # Deferred events cannot reproduce synchronous user-handler callbacks.
+-            # Refuse before invoking native code while any user handler is installed.
+             if ($null -ne $state.ErrorHandler -and -not $NativeContext.SynchronousCallbacksEnabled) {
+                 Throw-PhpNativeUnsupported 'native calls with an installed PHP error handler require synchronous callbacks'
+             }
+-            $nativeName = Get-PhpNativeName $name
++            $nativeName=Get-PhpNativeName $name
++            $nativeUsesBytes=($null -ne $NativeContext.PSObject.Methods['InvokeScalarBytes'])
+             foreach ($item in @($values)) {
+                 if ($null -ne $item -and $item.PSObject.Properties['PhpType'] -and
+                     $item.PhpType -ceq 'named_argument') {
+                     Throw-PhpNativeUnsupported 'named native arguments are not implemented'
+                 }
+             }
++            $nativeValues=[System.Collections.Generic.List[object]]::new()
+             try {
+-                # The frozen evaluator has no strict_types source implementation.
+-                # This candidate's selected source execution is weak/positional only.
+-                $nativeResult = $NativeContext.InvokeScalar($nativeName, [object[]]@($values), $false)
++                foreach ($item in @($values)) {
++                    # Convert only actual PHP strings. Arrays/objects/references
++                    # retain their explicit pre-existing native boundary guards.
++                    if (Is-PhpStringValue $item) {
++                        if ($nativeUsesBytes) { [void]$nativeValues.Add((To-PhpBytes $item)) }
++                        else { [void]$nativeValues.Add((Get-PhpHostText $item)) }
++                    } else { [void]$nativeValues.Add($item) }
++                }
++                $nativeArguments=$nativeValues.ToArray()
++                # API choice is made before native execution. No catch branch
++                # calls an alternative native/runtime implementation.
++                if ($nativeUsesBytes) {
++                    $nativeResult=$NativeContext.InvokeScalarBytes($nativeName,$nativeArguments,$false)
++                } else {
++                    $nativeResult=$NativeContext.InvokeScalar($nativeName,$nativeArguments,$false)
++                }
+             } catch {
+                 if ($isCli -and (Test-PhpCliExit $_)) { throw }
+-                $callbackThrowable = Get-PhpThrown $_
++                $callbackThrowable=Get-PhpThrown $_
+                 if ($null -ne $callbackThrowable) { Throw-PhpObject $callbackThrowable }
+                 Throw-PhpNativeUnsupported ('scalar boundary: ' + $_.Exception.Message)
+             }
+-            # The native call has happened exactly once. Even an unsupported result
+-            # or encoding failure must never cause a retry through another runtime.
+             if ($null -ne $nativeResult.Output -and $nativeResult.Output.Length -gt 0) {
+-                $nativeStdout = [Console]::OpenStandardOutput()
+-                $nativeStdout.Write($nativeResult.Output, 0, $nativeResult.Output.Length)
+-                $nativeStdout.Flush()
++                if (Is-PhpBytes $nativeResult.Output) { Write-PhpBytes $nativeResult.Output }
++                else { Write-PhpBytes ([AllPhp.ByteValues.PhpBytes]::FromBytes([byte[]]$nativeResult.Output)) }
+             }
+             foreach ($event in $nativeResult.DiagnosticEvents) {
+-                if (-not $event.Delivered) { Write-PhpDiagnostic ([long]$event.Level) ([string]$event.Message) }
++                if (-not $event.Delivered) { Write-PhpDiagnostic ([long]$event.Level) $event.Message }
+             }
+             if (-not $nativeResult.Ok) {
+                 if ($nativeResult.Status -lt 0 -or $nativeResult.ErrorClass -ceq 'ALLNativeUnsupported') {
+-                    Throw-PhpNativeUnsupported ([string]$nativeResult.ErrorMessage)
+-                }
+-                Throw-PhpError ([string]$nativeResult.ErrorClass) ([string]$nativeResult.ErrorMessage)
+-            }
+-            return $nativeResult.Value
++                    Throw-PhpNativeUnsupportedBytes $nativeResult.ErrorMessage
++                }
++                Throw-PhpError ([string]$nativeResult.ErrorClass) $nativeResult.ErrorMessage
++            }
++            return (ConvertTo-PhpOwnedValue $nativeResult.Value)
+         }
+ 
+         if ($isCli -and ($CliContext.Keys -contains 'SourcePath') -and
+@@ -836,7 +1096,7 @@
+                     [void]$sb.Append($ch)
+                 }
+             }
+-            return $sb.ToString()
++            return [AllPhp.ByteValues.PhpBytes]::FromUtf8($sb.ToString())
+         }
+         function Expand-PhpDoubleString([string]$token,[bool]$IsBody=$false,[bool]$Heredoc=$false,[bool]$ValidateOnly=$false,[long]$LineBase=0) {
+             $body=if($IsBody){$token}else{$token.Substring(1,$token.Length-2)}
+@@ -873,8 +1133,10 @@
+                         }
+                         if($point-gt0x10ffff){Throw-PhpLiteralParseError 'Invalid UTF-8 codepoint escape sequence: Codepoint too large' $errorLine}
+                         if($point-ge0xd800-and$point-le0xdfff){
+-                            if($ValidateOnly){$i=$end;continue}
+-                            throw 'ALL PHP: Binary string containing a non-scalar UTF-8 codepoint is not supported'
++                            [void]$output.Add([byte](0xe0-bor($point-shr12)))
++                            [void]$output.Add([byte](0x80-bor(($point-shr6)-band0x3f)))
++                            [void]$output.Add([byte](0x80-bor($point-band0x3f)))
++                            $i=$end;continue
+                         }
+                         Add-PhpLiteralText $output ([char]::ConvertFromUtf32([int]$point));$i=$end;continue
+                     }
+@@ -919,7 +1181,7 @@
+                         # The existing default API intentionally omits the PHP
+                         # notice/warning while CLI and PhpDiagnostics expose it.
+                         if($slot.Store.ContainsKey($slot.Key)-or$PhpDiagnostics-or$isCli){
+-                            Add-PhpLiteralText $output (To-PhpText (Get-PhpVariableValue $name))
++                            $output.AddRange((To-PhpBytes (Get-PhpVariableValue $name)).ToArray())
+                         }
+                     }
+                     finally{$state.Line=$savedLine}
+@@ -927,8 +1189,7 @@
+                 if($braced){$i=$end}else{$i=$end-1}
+             }
+             if($ValidateOnly){return ''}
+-            try{return $phpLiteralUtf8.GetString($output.ToArray())}
+-            catch [Text.DecoderFallbackException]{throw 'ALL PHP: Arbitrary non-UTF8 PHP byte strings are not supported'}
++            return [AllPhp.ByteValues.PhpBytes]::FromBytes($output.ToArray())
+         }
+         function Take-PhpFirstClassCallableArgs {
+             if ((Peek-Token) -cne '(' -or $state.Pos + 2 -ge $state.Tokens.Count) {
+@@ -2592,18 +2853,33 @@
+             $object.Props['__trace'] = Format-PhpStackTrace
+         }
+         function Get-PhpThrowableString($object) {
+-            $text = $object.Class + ': ' + (To-PhpText $object.Props['message']) + ' in ' +
+-                (To-PhpText $object.Props['file']) + ':' + (To-PhpText $object.Props['line']) +
+-                "`nStack trace:`n" + (To-PhpText $object.Props['__trace'])
+-            $previous = $object.Props['previous']
+-            if (Is-PhpObject $previous) { return ((Get-PhpThrowableString $previous) + "`n`nNext " + $text) }
+-            return $text
++            $builder=[AllPhp.ByteValues.PhpByteBuilder]::new()
++            $previous=$object.Props['previous']
++            if (Is-PhpObject $previous) {
++                $builder.Append((Get-PhpThrowableString $previous))
++                $builder.AppendUtf8("`n`nNext ")
++            }
++            $builder.AppendUtf8($object.Class+': ')
++            $builder.Append((To-PhpBytes $object.Props['message']))
++            $builder.AppendUtf8(' in ');$builder.Append((To-PhpBytes $object.Props['file']))
++            $builder.AppendUtf8(':');$builder.Append((To-PhpBytes $object.Props['line']))
++            $builder.AppendUtf8("`nStack trace:`n")
++            $builder.Append((To-PhpBytes $object.Props['__trace']))
++            return $builder.ToPhpBytes()
+         }
+         # A thrown PHP object travels inside a .NET exception. The message is what a caller that does
+         # not understand PHP exceptions sees (and what the legacy regression fixtures match on).
+         function Throw-PhpObject($object, [string]$legacyText = '') {
+             if ($legacyText.Length -eq 0) {
+-                $legacyText = 'ALL PHP: Uncaught ' + $object.Class + ': ' + (To-PhpText $object.Props['message'])
++                $carrierMessage=To-PhpBytes $object.Props['message']
++                $carrierText=$null
++                if ($carrierMessage.TryDecodeUtf8([ref]$carrierText)) {
++                    $legacyText='ALL PHP: Uncaught '+$object.Class+': '+$carrierText
++                } else {
++                    # The raw PHP message is kept on the PHP object. This is
++                    # only a host control carrier and never rendered to PHP.
++                    $legacyText='ALL PHP: Uncaught '+$object.Class+' (raw PHP message retained)'
++                }
+             }
+             $state.ThrownSeq++
+             $id = [string]$state.ThrownSeq
+@@ -2624,7 +2900,7 @@
+             return $null
+         }
+         # Raise a built-in PHP error from inside the interpreter.
+-        function Throw-PhpError([string]$className, [string]$message, [string]$legacyText = '') {
++        function Throw-PhpError([string]$className, $message, [string]$legacyText = '') {
+             Ensure-PhpPrelude
+             $object = Invoke-PhpExpr ([pscustomobject]@{
+                 Kind='new'; Name=$className
+@@ -2677,6 +2953,7 @@
+             return $className
+         }
+         function Assert-PhpValueCallable($callee, [string]$callbackFunction='') {
++            if (Is-PhpBytes $callee) { $callee=Get-PhpHostText $callee }
+             if ($null -ne $callee -and $callee.PSObject.Properties['PhpType'] -and
+                 $callee.PhpType -in @('closure','first_class_callable')) { return $callee }
+             if ($callee -is [string]) {
+@@ -2703,7 +2980,7 @@
+                 if ($callee.Items.Count -ne 2) {
+                     Throw-PhpInvalidValueCallable 'Array callback must have exactly two elements' 'array callback must have exactly two members' $callbackFunction 'ALL PHP: Array is not a valid callable'
+                 }
+-                if (-not $callee.Items.Contains('i:0') -or -not $callee.Items.Contains('i:1')) {
++                if (-not $callee.Items.Contains((New-PhpIntegerKey 0)) -or -not $callee.Items.Contains((New-PhpIntegerKey 1))) {
+                     Throw-PhpInvalidValueCallable 'Array callback has to contain indices 0 and 1' 'array callback has to contain indices 0 and 1' $callbackFunction 'ALL PHP: Array is not a valid callable'
+                 }
+                 $target=Get-PhpArrayItem $callee ([long]0)
+@@ -2729,6 +3006,7 @@
+             Throw-PhpInvalidValueCallable ('Value of type '+$type+' is not callable') 'no array or string given' $callbackFunction
+         }
+         function Get-PhpValueCallableDefinition($callee) {
++            if (Is-PhpBytes $callee) { $callee=Get-PhpHostText $callee }
+             if ($null -ne $callee -and $callee.PSObject.Properties['PhpType']) {
+                 if ($callee.PhpType -ceq 'closure') { return $callee.Definition }
+                 if ($callee.PhpType -ceq 'first_class_callable') {
+@@ -2754,8 +3032,8 @@
+             $values=[System.Collections.Generic.List[object]]::new()
+             foreach ($key in $array.Items.Keys) {
+                 $value=$array.Items[$key]
+-                if ($key.StartsWith('s:')) {
+-                    [void]$values.Add([pscustomobject]@{ PhpType='named_argument';Name=$key.Substring(2);Value=$value })
++                if (-not $key.IsInteger) {
++                    [void]$values.Add([pscustomobject]@{ PhpType='named_argument';Name=(Get-PhpHostText $key.BytesValue);Value=$value })
+                 } else { [void]$values.Add($value) }
+             }
+             return ,($values.ToArray())
+@@ -2796,6 +3074,7 @@
+         # Call a PHP callable value (closure, function name, [object, method], invokable object)
+         # with already evaluated arguments.
+         function Invoke-PhpValueCallable($callee, $values, [string]$callbackFunction='') {
++            if (Is-PhpBytes $callee) { $callee=Get-PhpHostText $callee }
+             $callee = Assert-PhpValueCallable $callee $callbackFunction
+             $values = @($values)
+             if ($callbackFunction.Length -gt 0) { $values=Prepare-PhpCallbackValues $callee $values }
+@@ -2850,31 +3129,34 @@
+         # Raise a PHP diagnostic (E_WARNING, E_NOTICE, E_DEPRECATED, E_USER_*).
+         # A user error handler sees it first. Otherwise it is printed in the PHP CLI format, but only
+         # when the adapter runs with -PhpDiagnostics; the default mode stays silent.
+-        function Write-PhpDiagnostic([long]$level, [string]$message) {
++        function Write-PhpDiagnostic([long]$level, $message) {
++            $messageBytes=To-PhpBytes $message
+             if ($null -ne $state.ErrorHandler -and -not $state.InErrorHandler -and
+                 (($state.ErrorHandlerMask -band $level) -ne 0)) {
+-                $handlerArgs = @($level, $message, [string]$state.ScriptName, [long]$state.Line)
+-                $arity = Get-PhpCallableArity $state.ErrorHandler
++                $handlerArgs=@($level,$messageBytes,(To-PhpBytes ([string]$state.ScriptName)),[long]$state.Line)
++                $arity=Get-PhpCallableArity $state.ErrorHandler
+                 if ($arity -ge 0 -and $arity -lt 4) {
+-                    if ($arity -eq 0) { $handlerArgs = @() } else { $handlerArgs = @($handlerArgs[0..($arity - 1)]) }
+-                }
+-                $state.InErrorHandler = $true
+-                $handled = $null
+-                $savedLine = $state.Line
+-                try { $handled = Invoke-PhpValueCallable $state.ErrorHandler $handlerArgs }
+-                finally { $state.InErrorHandler = $false; $state.Line = $savedLine }
++                    if ($arity -eq 0) { $handlerArgs=@() } else { $handlerArgs=@($handlerArgs[0..($arity-1)]) }
++                }
++                $state.InErrorHandler=$true
++                $handled=$null
++                $savedLine=$state.Line
++                try { $handled=Invoke-PhpValueCallable $state.ErrorHandler $handlerArgs }
++                finally { $state.InErrorHandler=$false;$state.Line=$savedLine }
+                 if (-not ($handled -is [bool] -and -not $handled)) { return }
+             }
+             if (-not $PhpDiagnostics -and -not $isCli) { return }
+             if ($state.SilenceDepth -gt 0) { return }
+             if (($state.ErrorReporting -band $level) -eq 0) { return }
+-            $label = 'Warning'
+-            if ($level -eq 8 -or $level -eq 1024) { $label = 'Notice' }
+-            elseif ($level -eq 8192 -or $level -eq 16384) { $label = 'Deprecated' }
+-            elseif ($level -eq 256) { $label = 'Fatal error' }
+-            $diagnostic = $label + ': ' + $message + ' in ' + $state.ScriptName + ' on line ' + $state.Line + "`n"
+-            if ($isCli) { [Console]::Error.Write($diagnostic) }
+-            else { [Console]::Write("`n" + $diagnostic) }
++            $label='Warning'
++            if ($level -eq 8 -or $level -eq 1024) { $label='Notice' }
++            elseif ($level -eq 8192 -or $level -eq 16384) { $label='Deprecated' }
++            elseif ($level -eq 256) { $label='Fatal error' }
++            $builder=[AllPhp.ByteValues.PhpByteBuilder]::new()
++            if (-not $isCli) { $builder.AppendUtf8("`n") }
++            $builder.AppendUtf8($label+': ');$builder.Append($messageBytes)
++            $builder.AppendUtf8(' in '+$state.ScriptName+' on line '+$state.Line+"`n")
++            Write-PhpBytes ($builder.ToPhpBytes()) $isCli
+         }
+         function Test-PhpObjectHasProp($object, [string]$name) {
+             if ($object.Props -is [System.Collections.Specialized.OrderedDictionary]) {
+@@ -2926,7 +3208,7 @@
+                 $sb = [System.Text.StringBuilder]::new()
+                 [void]$sb.Append("Array`n" + $pad + "(`n")
+                 foreach ($key in @($value.Items.Keys)) {
+-                    [void]$sb.Append($pad + '    [' + ([string]$key).Substring(2) + '] => ' +
++                    [void]$sb.Append($pad + '    [' + (Get-PhpKeyHostText $key) + '] => ' +
+                         (Format-PhpPrintR $value.Items[$key] ($indent + 8)) + "`n")
+                 }
+                 [void]$sb.Append($pad + ")`n")
+@@ -2970,7 +3252,7 @@
+                 $value.PhpType -ceq 'object')
+         }
+         function Copy-PhpValue($value, [int]$depth = 0) {
+-            if (-not (Is-PhpArray $value)) { return $value }
++            if (-not (Is-PhpArray $value)) { return (ConvertTo-PhpOwnedValue $value) }
+             if ($depth -ge 64) {
+                 throw 'ALL PHP: Array nesting exceeds supported copy depth (64)'
+             }
+@@ -2978,7 +3260,7 @@
+             # Clone directly to preserve insertion order and NextIndex. Do not
+             # call Set-PhpArrayItem, which also copies incoming array values.
+             foreach ($key in $value.Items.Keys) {
+-                $copy.Items[[string]$key] = Copy-PhpValue $value.Items[$key] ($depth + 1)
++                $copy.Items[$key] = Copy-PhpValue $value.Items[$key] ($depth + 1)
+             }
+             $copy.NextIndex = $value.NextIndex
+             return $copy
+@@ -3077,12 +3359,12 @@
+                 $array=Invoke-PhpExpr $node.Base
+                 if (-not (Is-PhpArray $array)) { throw 'ALL PHP: Reference index requires array' }
+                 if ($null -eq $node.Key) {
+-                    $key='i:' + [string]$array.NextIndex
++                    $key=New-PhpIntegerKey $array.NextIndex
+                     $array.NextIndex++
+                 } else {
+                     $key=To-PhpKey (Invoke-PhpExpr $node.Key)
+-                    if ($key.StartsWith('i:')) {
+-                        $numeric=[long]$key.Substring(2)
++                    if ($key.IsInteger) {
++                        $numeric=[long]$key.IntegerValue
+                         if ($numeric -ge $array.NextIndex) { $array.NextIndex=$numeric+1 }
+                     }
+                 }
+@@ -3240,7 +3522,7 @@
+                 $index = [long]0
+                 $isList = $true
+                 foreach ($key in $value.Items.Keys) {
+-                    if ([string]$key -cne "i:$index") { $isList = $false; break }
++                    if (-not $key.IsInteger -or $key.IntegerValue -ne $index) { $isList = $false; break }
+                     $index++
+                 }
+                 $parts = [System.Collections.Generic.List[string]]::new()
+@@ -3249,9 +3531,7 @@
+                     if ($isList) {
+                         [void]$parts.Add($encoded)
+                     } else {
+-                        $name = if (([string]$key).StartsWith('i:')) {
+-                            ([string]$key).Substring(2)
+-                        } else { ([string]$key).Substring(2) }
++                        $name = Get-PhpKeyHostText $key
+                         [void]$parts.Add((Encode-JsonQuoted $name) + ':' + $encoded)
+                     }
+                 }
+@@ -3432,7 +3712,8 @@
+             return ($sign + $dg.Substring(0, $pt) + '.' + $dg.Substring($pt))
+         }
+         # Numeric string -> int/float, or $null when the string is not numeric.
+-        function ConvertFrom-PhpNumericString([string]$text, [bool]$leadingOnly) {
++        function ConvertFrom-PhpNumericString($text, [bool]$leadingOnly) {
++            $text = Get-PhpNumericView $text
+             $m = if ($leadingOnly) { $phpLeadingNumericRx.Match($text) } else { $phpNumericStringRx.Match($text) }
+             if (-not $m.Success) { return $null }
+             $body = $m.Groups[1].Value
+@@ -3571,11 +3852,11 @@
+                     if ($null -eq $value) { return [long]0 }
+                     if ($value -is [bool]) { if ($value) { return [long]1 }; return [long]0 }
+                     if (Is-PhpNum $value) { return (To-PhpInt $value) }
+-                    if ($value -is [string]) {
++                    if ((Is-PhpStringValue $value)) {
+                         $parsed = ConvertFrom-PhpNumericString $value $true
+                         if ($null -eq $parsed) { return [long]0 }
+                         if ($parsed -is [double] -and
+-                            $phpLeadingNumericRx.Match($value).Groups[1].Value.IndexOfAny([char[]]'.eE') -lt 0) {
++                            $phpLeadingNumericRx.Match((Get-PhpNumericView $value)).Groups[1].Value.IndexOfAny([char[]]'.eE') -lt 0) {
+                             # integer syntax too large for 64 bits saturates, like strtol()
+                             if ($parsed -lt 0) { return [long]::MinValue }
+                             return [long]::MaxValue
+@@ -3589,10 +3870,10 @@
+                     if ($null -eq $value) { return [double]0 }
+                     if ($value -is [bool]) { if ($value) { return [double]1 }; return [double]0 }
+                     if (Is-PhpNum $value) { return [double]$value }
+-                    if ($value -is [string]) {
++                    if ((Is-PhpStringValue $value)) {
+                         $parsed = ConvertFrom-PhpNumericString $value $true
+                         if ($null -eq $parsed) { return [double]0 }
+-                        if ($parsed -eq 0 -and $value.TrimStart().StartsWith('-')) {
++                        if ($parsed -eq 0 -and (Get-PhpNumericView $value).TrimStart().StartsWith('-')) {
+                             return ([double]0 * -1.0)
+                         }
+                         return [double]$parsed
+@@ -3600,7 +3881,7 @@
+                     if (Is-PhpArray $value) { if ($value.Items.Count -gt 0) { return [double]1 }; return [double]0 }
+                     return [double]1
+                 }
+-                'string' { return (To-PhpText $value) }
++                'string' { return (To-PhpBytes $value) }
+                 default { return [bool](Is-Truthy $value) }
+             }
+         }
+@@ -3623,9 +3904,9 @@
+                 $sb = [System.Text.StringBuilder]::new()
+                 [void]$sb.Append($pad + 'array(' + $value.Items.Count + ") {`n")
+                 foreach ($key in @($value.Items.Keys)) {
+-                    $name = [string]$key
+-                    if ($name.StartsWith('i:')) { [void]$sb.Append($pad + '  [' + $name.Substring(2) + "]=>`n") }
+-                    else { [void]$sb.Append($pad + '  ["' + $name.Substring(2) + "`"]=>`n") }
++                    $name = Get-PhpKeyHostText $key
++                    if ($key.IsInteger) { [void]$sb.Append($pad + '  [' + $name + "]=>`n") }
++                    else { [void]$sb.Append($pad + '  ["' + $name + "`"]=>`n") }
+                     [void]$sb.Append((Format-PhpVarDump $value.Items[$key] ($pad + '  ')))
+                 }
+                 [void]$sb.Append($pad + "}`n")
+@@ -3661,30 +3942,9 @@
+             throw 'ALL PHP: var_dump() of this value type is not implemented'
+         }
+         function To-PhpText($value) {
+-            if (Is-PhpRefCell $value) { $value=$value.Value }
+-            if ($null -eq $value) { return '' }
+-            if ($value -is [bool]) {
+-                if ($value) { return '1' }
+-                return ''
+-            }
+-            if ($value -is [long]) {
+-                return $value.ToString([System.Globalization.CultureInfo]::InvariantCulture)
+-            }
+-            if ($value -is [double]) { return (Format-PhpFloat $value 14) }
+-            if (Is-PhpArray $value) { throw 'ALL PHP: Array to string conversion is not supported' }
+-            if (Is-PhpObject $value) {
+-                $magic=Find-OptionalPhpMethod $value.Class '__toString'
+-                if ($null -ne $magic) {
+-                    $converted=Invoke-PhpMethod $value '__toString' @()
+-                    if ($converted -is [string]) { return $converted }
+-                    if ((Is-PhpNum $converted) -or $converted -is [bool]) {
+-                        return (To-PhpText $converted)
+-                    }
+-                    throw 'ALL PHP: __toString must return string'
+-                }
+-                throw 'ALL PHP: Object to string conversion is not supported'
+-            }
+-            return [string]$value
++            # Explicit legacy host-text boundary. Raw PHP operations use bytes.
++            # Never decode invalid data with replacement or implicit ToString().
++            return (Get-PhpHostText (To-PhpBytes $value))
+         }
+         function To-Number($value) {
+             if (Is-PhpRefCell $value) { $value=$value.Value }
+@@ -3694,7 +3954,7 @@
+                 if ($value) { return [long]1 }
+                 return [long]0
+             }
+-            if ($value -is [string]) {
++            if ((Is-PhpStringValue $value)) {
+                 $parsed = ConvertFrom-PhpNumericString $value $false
+                 if ($null -ne $parsed) { return $parsed }
+             }
+@@ -3705,41 +3965,31 @@
+             if ($null -eq $value) { return $false }
+             if ($value -is [bool]) { return $value }
+             if ($value -is [long] -or $value -is [double]) { return ($value -ne 0) }
+-            if ($value -is [string]) {
+-                return ($value.Length -gt 0 -and $value -cne '0')
+-            }
++            if (Is-PhpStringValue $value) { return (To-PhpBytes $value).Truthy }
+             if (Is-PhpArray $value) { return ($value.Items.Count -gt 0) }
+             return $true
+         }
+         function To-PhpKey($value) {
++            if (Is-PhpRefCell $value) { $value=$value.Value }
+             if ($value -is [bool]) {
+-                if ($value) { return 'i:1' }
+-                return 'i:0'
+-            }
+-            if ($null -eq $value) { return 's:' }
+-            if ($value -is [long]) { return "i:$value" }
+-            if ($value -is [double]) {
+-                $num = To-PhpInt $value
+-                return "i:$num"
+-            }
+-            if ($value -is [string]) {
+-                if ($value -cmatch '^(?:0|-?[1-9][0-9]*)$') {
+-                    $num = [long]0
+-                    if ([long]::TryParse($value, [ref]$num)) { return "i:$num" }
+-                }
+-                return ('s:' + $value)
+-            }
++                if ($value) { return (New-PhpIntegerKey 1) }
++                return (New-PhpIntegerKey 0)
++            }
++            if ($null -eq $value) { return [AllPhp.ByteValues.PhpKey]::FromString([AllPhp.ByteValues.PhpBytes]::Empty) }
++            if ($value -is [long]) { return (New-PhpIntegerKey $value) }
++            if ($value -is [double]) { return (New-PhpIntegerKey (To-PhpInt $value)) }
++            if (Is-PhpStringValue $value) { return [AllPhp.ByteValues.PhpKey]::FromString((To-PhpBytes $value)) }
+             throw 'ALL PHP: Unsupported array key type'
+         }
+         function Set-PhpArrayItem($array, $key, $value, [bool]$append) {
+             if (-not (Is-PhpArray $array)) { throw 'ALL PHP: Index assignment requires array' }
+             if ($append) {
+-                $keyString = "i:$($array.NextIndex)"
++                $keyString = New-PhpIntegerKey $array.NextIndex
+                 $array.NextIndex++
+             } else {
+                 $keyString = To-PhpKey $key
+-                if ($keyString.StartsWith('i:')) {
+-                    $intKey = [long]$keyString.Substring(2)
++                if ($keyString.IsInteger) {
++                    $intKey = [long]$keyString.IntegerValue
+                     if ($intKey -ge $array.NextIndex) { $array.NextIndex = $intKey + 1 }
+                 }
+             }
+@@ -3755,11 +4005,12 @@
+             $keyString = To-PhpKey $key
+             if (-not $array.Items.Contains($keyString)) {
+                 if (($PhpDiagnostics -or $isCli) -and $state.QuietDepth -eq 0) {
+-                    if ($keyString.StartsWith('i:')) { Write-PhpDiagnostic 2 ('Undefined array key ' + $keyString.Substring(2)) }
+-                    else { Write-PhpDiagnostic 2 ('Undefined array key "' + $keyString.Substring(2) + '"') }
++                    if ($keyString.IsInteger) { Write-PhpDiagnostic 2 ('Undefined array key ' + (Get-PhpKeyHostText $keyString)) }
++                    else { Write-PhpDiagnostic 2 ('Undefined array key "' + (Get-PhpKeyHostText $keyString) + '"') }
+                     return $null
+                 }
+-                throw "ALL PHP: Undefined array key '$keyString'"
++                $legacyKey = if ($keyString.IsInteger) { 'i:' + (Get-PhpKeyHostText $keyString) } else { 's:' + (Get-PhpKeyHostText $keyString) }
++                throw "ALL PHP: Undefined array key '$legacyKey'"
+             }
+             $value = $array.Items[$keyString]
+             if (Is-PhpRefCell $value) { return $value.Value }
+@@ -3772,7 +4023,7 @@
+                 $aKeys = @($a.Items.Keys)
+                 $bKeys = @($b.Items.Keys)
+                 for ($i=0; $i -lt $aKeys.Count; $i++) {
+-                    if ([string]$aKeys[$i] -cne [string]$bKeys[$i]) { return $false }
++                    if (-not $aKeys[$i].Equals($bKeys[$i])) { return $false }
+                     $x = $a.Items[$aKeys[$i]]
+                     $y = $b.Items[$bKeys[$i]]
+                     if (-not (Php-Equal $x $y $true ($depth + 1))) { return $false }
+@@ -3815,8 +4066,11 @@
+                 if ($null -eq $a -or $null -eq $b) {
+                     return ($null -eq $a -and $null -eq $b)
+                 }
++                if ((Is-PhpStringValue $a) -or (Is-PhpStringValue $b)) {
++                    if (-not (Is-PhpStringValue $a) -or -not (Is-PhpStringValue $b)) { return $false }
++                    return (To-PhpBytes $a).Equals((To-PhpBytes $b))
++                }
+                 if ($a.GetType() -ne $b.GetType()) { return $false }
+-                if ($a -is [string]) { return ($a -ceq $b) }
+                 return ($a -eq $b)
+             }
+             return ((Compare-Values $a $b) -eq 0)
+@@ -3834,23 +4088,23 @@
+             $aNum = ($a -is [long] -or $a -is [double])
+             $bNum = ($b -is [long] -or $b -is [double])
+             if ($aNum -and $bNum) { return (Compare-PhpNumbers $a $b) }
+-            if ($a -is [string] -and $b -is [string]) {
++            if ((Is-PhpStringValue $a) -and (Is-PhpStringValue $b)) {
+                 $x = ConvertFrom-PhpNumericString $a $false
+                 if ($null -ne $x) {
+                     $y = ConvertFrom-PhpNumericString $b $false
+                     if ($null -ne $y) { return (Compare-PhpNumbers $x $y) }
+                 }
+-                return [Math]::Sign([string]::CompareOrdinal($a, $b))
+-            }
+-            if (($aNum -and $b -is [string]) -or ($a -is [string] -and $bNum)) {
+-                if ($a -is [string]) {
++                return (To-PhpBytes $a).CompareBinary((To-PhpBytes $b))
++            }
++            if (($aNum -and (Is-PhpStringValue $b)) -or ((Is-PhpStringValue $a) -and $bNum)) {
++                if ((Is-PhpStringValue $a)) {
+                     $x = ConvertFrom-PhpNumericString $a $false
+                     if ($null -ne $x) { return (Compare-PhpNumbers $x $b) }
+                 } else {
+                     $y = ConvertFrom-PhpNumericString $b $false
+                     if ($null -ne $y) { return (Compare-PhpNumbers $a $y) }
+                 }
+-                return [Math]::Sign([string]::CompareOrdinal((To-PhpText $a),(To-PhpText $b)))
++                return (To-PhpBytes $a).CompareBinary((To-PhpBytes $b))
+             }
+             throw 'ALL PHP: Comparison for these types is not supported'
+         }
+@@ -3893,7 +4147,7 @@
+                 'true' { return ($value -is [bool] -and $value) }
+                 'false' { return ($value -is [bool] -and -not $value) }
+                 'bool' { return ($value -is [bool]) }
+-                'string' { return ($value -is [string]) }
++                'string' { return (Is-PhpStringValue $value) }
+                 'int' {
+                     return ($value -is [long])
+                 }
+@@ -3902,7 +4156,7 @@
+                 'object' { return (Is-PhpObject $value) }
+                 'iterable' { return (Is-PhpArray $value) }
+                 'callable' {
+-                    if ($value -is [string]) { return ($state.Functions.ContainsKey($value) -or (Test-PhpNativeFunction $value)) }
++                    if (Is-PhpStringValue $value) { $symbol=Get-PhpHostText $value;return ($state.Functions.ContainsKey($symbol) -or (Test-PhpNativeFunction $symbol)) }
+                     if ($null -eq $value) { return $false }
+                     if ($value.PSObject.Properties['PhpType']) {
+                         if ($value.PhpType -in @('closure','first_class_callable')) { return $true }
+@@ -3925,6 +4179,7 @@
+             }
+         }
+         function Convert-PhpTypedValue($value, [string]$typeName, [string]$location) {
++            $value=ConvertTo-PhpOwnedValue $value
+             if ([string]::IsNullOrEmpty($typeName)) { return $value }
+             if ($typeName.StartsWith('?')) {
+                 if ($null -eq $value) { return $null }
+@@ -3962,12 +4217,12 @@
+                         $value -ge -9223372036854775808.0 -and $value -lt 9223372036854775808.0) {
+                         return (To-PhpInt $value)
+                     }
+-                    if ($hasString) { return (To-PhpText $value) }
++                    if ($hasString) { return (To-PhpBytes $value) }
+                     if ($hasBool) { return (Is-Truthy $value) }
+                 } elseif ($value -is [long]) {
+-                    if ($hasString) { return (To-PhpText $value) }
++                    if ($hasString) { return (To-PhpBytes $value) }
+                     if ($hasBool) { return (Is-Truthy $value) }
+-                } elseif ($value -is [string]) {
++                } elseif ((Is-PhpStringValue $value)) {
+                     $parsed = ConvertFrom-PhpNumericString $value $false
+                     if ($parsed -is [long] -and $hasInt) { return $parsed }
+                     if ($null -ne $parsed -and $hasFloat) { return [double]$parsed }
+@@ -3979,7 +4234,7 @@
+                 } elseif ($value -is [bool]) {
+                     if ($hasInt) { if ($value) { return [long]1 }; return [long]0 }
+                     if ($hasFloat) { if ($value) { return [double]1 }; return [double]0 }
+-                    if ($hasString) { return (To-PhpText $value) }
++                    if ($hasString) { return (To-PhpBytes $value) }
+                 }
+             }
+             # Weak PHP scalar conversions for a single primitive annotation.
+@@ -3988,11 +4243,11 @@
+                 switch ($typeName.ToLowerInvariant()) {
+                     'string' {
+                         if ((Is-PhpNum $value) -or $value -is [bool]) {
+-                            return (To-PhpText $value)
++                            return (To-PhpBytes $value)
+                         }
+                     }
+                     'bool' {
+-                        if ((Is-PhpNum $value) -or $value -is [string]) {
++                        if ((Is-PhpNum $value) -or (Is-PhpStringValue $value)) {
+                             return (Is-Truthy $value)
+                         }
+                     }
+@@ -4005,7 +4260,7 @@
+                             -not [double]::IsInfinity($value)) {
+                             return (To-PhpInt $value)
+                         }
+-                        if ($value -is [string]) {
++                        if ((Is-PhpStringValue $value)) {
+                             $parsed = ConvertFrom-PhpNumericString $value $false
+                             if ($null -ne $parsed) { return (To-PhpInt $parsed) }
+                         }
+@@ -4015,7 +4270,7 @@
+                             if ($value) { return [double]1 }
+                             return [double]0
+                         }
+-                        if ($value -is [string]) {
++                        if ((Is-PhpStringValue $value)) {
+                             $parsed = ConvertFrom-PhpNumericString $value $false
+                             if ($null -ne $parsed) { return [double]$parsed }
+                         }
+@@ -4509,13 +4764,13 @@
+                 switch ($op) {
+                     '+=' { $value = Php-Add (To-Number $previous) (To-Number $value) }
+                     '-=' { $value = Php-Sub (To-Number $previous) (To-Number $value) }
+-                    '.=' { $value = (To-PhpText $previous) + (To-PhpText $value) }
++                    '.=' { $value = (To-PhpBytes $previous).Concat((To-PhpBytes $value)) }
+                     '*=' { $value = Php-Mul (To-Number $previous) (To-Number $value) }
+                     '/=' { $value = Php-Div (To-Number $previous) (To-Number $value) }
+                     '%=' { $value = Php-Mod (To-Number $previous) (To-Number $value) }
+-                    '&=' { $value = [long]((To-PhpInt $previous) -band (To-PhpInt $value)) }
+-                    '|=' { $value = [long]((To-PhpInt $previous) -bor (To-PhpInt $value)) }
+-                    '^=' { $value = [long]((To-PhpInt $previous) -bxor (To-PhpInt $value)) }
++                    '&=' { if ((Is-PhpStringValue $previous) -and (Is-PhpStringValue $value)) { $value=(To-PhpBytes $previous).Bitwise((To-PhpBytes $value),[char]'&') } else { $value = [long]((To-PhpInt $previous) -band (To-PhpInt $value)) } }
++                    '|=' { if ((Is-PhpStringValue $previous) -and (Is-PhpStringValue $value)) { $value=(To-PhpBytes $previous).Bitwise((To-PhpBytes $value),[char]'|') } else { $value = [long]((To-PhpInt $previous) -bor (To-PhpInt $value)) } }
++                    '^=' { if ((Is-PhpStringValue $previous) -and (Is-PhpStringValue $value)) { $value=(To-PhpBytes $previous).Bitwise((To-PhpBytes $value),[char]'^') } else { $value = [long]((To-PhpInt $previous) -bxor (To-PhpInt $value)) } }
+                     '<<=' { $value = Php-Shift $previous $value $true }
+                     '>>=' { $value = Php-Shift $previous $value $false }
+                     '**=' { $value = Php-Pow (To-Number $previous) (To-Number $value) }
+@@ -4853,9 +5108,8 @@
+                 $state.ReturnByRef = $oldReturnByRef
+             }
+         }
+-        function KeyString-ToValue([string]$encoded) {
+-            if ($encoded.StartsWith('i:')) { return [long]$encoded.Substring(2) }
+-            return $encoded.Substring(2)
++        function KeyString-ToValue($encoded) {
++            return (Get-PhpKeyValue $encoded)
+         }
+         function Invoke-PhpCliExit($callArgs) {
+             if ($callArgs.Count -gt 1) {
+@@ -4871,7 +5125,7 @@
+                 }
+                 if (Is-PhpRefCell $argument) { $argument = $argument.Value }
+                 if ($argument -is [long]) { $status = $argument }
+-                elseif ($argument -is [string]) { [Console]::Write($argument) }
++                elseif (Is-PhpStringValue $argument) { Write-PhpBytes $argument }
+                 elseif ($argument -is [bool]) { if ($argument) { $status = [long]1 } }
+                 elseif ($null -eq $argument) {
+                     Write-PhpDiagnostic 8192 'exit(): Passing null to parameter #1 ($status) of type string|int is deprecated'
+@@ -4879,10 +5133,10 @@
+                 elseif ($argument -is [double]) {
+                     if ([double]::IsNaN($argument)) {
+                         Write-PhpDiagnostic 2 'unexpected NAN value was coerced to string'
+-                        [Console]::Write('NAN')
++                        Write-PhpBytes 'NAN'
+                     } elseif ([double]::IsInfinity($argument) -or
+                         $argument -lt -9223372036854775808.0 -or $argument -ge 9223372036854775808.0) {
+-                        [Console]::Write((To-PhpText $argument))
++                        Write-PhpBytes $argument
+                     } else {
+                         $status = To-PhpInt $argument
+                         if ([double]$status -ne $argument) {
+@@ -4891,7 +5145,7 @@
+                     }
+                 }
+                 elseif ((Is-PhpObject $argument) -and $null -ne (Find-OptionalPhpMethod $argument.Class '__toString')) {
+-                    [Console]::Write((To-PhpText $argument))
++                    Write-PhpBytes $argument
+                 } else {
+                     $type = if (Is-PhpArray $argument) { 'array' } elseif (Is-PhpObject $argument) { $argument.Class } else { $argument.GetType().Name }
+                     Throw-PhpError 'TypeError' ('exit(): Argument #1 ($status) must be of type string|int, ' + $type + ' given')
+@@ -4906,6 +5160,154 @@
+             $signal = [System.Exception]::new('ALL PHP: private CLI exit control signal')
+             $signal.Data['AllPhpCliExit'] = $cliExitToken
+             throw $signal
++        }
++        function Get-PhpBuiltinTypeName($value) {
++            if (Is-PhpRefCell $value) { $value=$value.Value }
++            if ($null -eq $value) { return 'null' }
++            if (Is-PhpStringValue $value) { return 'string' }
++            if ($value -is [long]) { return 'int' }
++            if ($value -is [double]) { return 'float' }
++            if ($value -is [bool]) { return 'bool' }
++            if (Is-PhpArray $value) { return 'array' }
++            if (Is-PhpObject $value) { return $value.Class }
++            return $value.GetType().Name
++        }
++        function Assert-PhpStringBuiltinArity([string]$function, $arguments, [int]$minimum, [int]$maximum) {
++            $actual=$arguments.Count
++            if ($actual -ge $minimum -and $actual -le $maximum) { return }
++            $mode=if($minimum -eq $maximum){'exactly'}elseif($actual -lt $minimum){'at least'}else{'at most'}
++            $expected=if($actual -gt $maximum){$maximum}else{$minimum}
++            $noun=if($expected -eq 1){'argument'}else{'arguments'}
++            Throw-PhpError 'ArgumentCountError' ($function+'() expects '+$mode+' '+$expected+' '+$noun+', '+$actual+' given')
++        }
++        function ConvertTo-PhpBuiltinBytes($value, [string]$function, [int]$number, [string]$parameter, [string]$accepted='string') {
++            if (Is-PhpRefCell $value) { $value=$value.Value }
++            if ($null -eq $value) {
++                Write-PhpDiagnostic 8192 ($function+'(): Passing null to parameter #'+$number+' ($'+$parameter+') of type '+$accepted+' is deprecated')
++                return [AllPhp.ByteValues.PhpBytes]::Empty
++            }
++            if ((Is-PhpStringValue $value) -or (Is-PhpNum $value) -or $value -is [bool]) { return (To-PhpBytes $value) }
++            if ((Is-PhpObject $value) -and $null -ne (Find-OptionalPhpMethod $value.Class '__toString')) { return (To-PhpBytes $value) }
++            Throw-PhpError 'TypeError' ($function+'(): Argument #'+$number+' ($'+$parameter+') must be of type '+$accepted+', '+(Get-PhpBuiltinTypeName $value)+' given')
++        }
++        function ConvertTo-PhpBuiltinInteger($value, [string]$function, [int]$number, [string]$parameter) {
++            if (Is-PhpRefCell $value) { $value=$value.Value }
++            if ($value -is [long]) { return $value }
++            if ($null -eq $value) {
++                Write-PhpDiagnostic 8192 ($function+'(): Passing null to parameter #'+$number+' ($'+$parameter+') of type int is deprecated')
++                return [long]0
++            }
++            if ($value -is [bool]) { if($value){return [long]1};return [long]0 }
++            $numeric=$null;$fromString=Is-PhpStringValue $value
++            if ($fromString) { $numeric=ConvertFrom-PhpNumericString $value $false }
++            elseif ($value -is [double]) { $numeric=$value }
++            if ($null -ne $numeric) {
++                if ($numeric -is [long]) { return $numeric }
++                if (-not [double]::IsNaN($numeric) -and -not [double]::IsInfinity($numeric) -and
++                    $numeric -ge -9223372036854775808.0 -and $numeric -lt 9223372036854775808.0) {
++                    $integer=To-PhpInt $numeric
++                    if ([double]$integer -ne $numeric) {
++                        $shown=if($fromString){'float-string "'+(Get-PhpHostText (To-PhpBytes $value))+'"'}else{'float '+(Format-PhpFloat $numeric 14)}
++                        Write-PhpDiagnostic 8192 ('Implicit conversion from '+$shown+' to int loses precision')
++                    }
++                    return [long]$integer
++                }
++            }
++            Throw-PhpError 'TypeError' ($function+'(): Argument #'+$number+' ($'+$parameter+') must be of type int, '+(Get-PhpBuiltinTypeName $value)+' given')
++        }
++        function Test-PhpBytesAt($haystack, $needle, [long]$position) {
++            if ($position -lt 0 -or $position -gt $haystack.Length -or $needle.Length -gt $haystack.Length-$position) { return $false }
++            return $haystack.Slice($position,$needle.Length).Equals($needle)
++        }
++        function Find-PhpBytes($haystack, $needle, [long]$start) {
++            if ($start -lt 0 -or $start -gt $haystack.Length) { throw 'ALL PHP byte builtin: invalid internal search start' }
++            if ($needle.Length -eq 0) { return [long]$start }
++            if ($needle.Length -gt $haystack.Length-$start) { return [long]-1 }
++            $first=[byte]$needle.GetByte(0);$buffer=[byte[]]::new(65536)
++            $last=[long]($haystack.Length-$needle.Length);$position=[long]$start
++            while ($position -le $last) {
++                $count=[int][Math]::Min([long]65536,$last-$position+1)
++                $haystack.CopyTo($position,$buffer,0,$count);$cursor=0
++                while ($cursor -lt $count) {
++                    $found=[Array]::IndexOf($buffer,$first,[int]$cursor,[int]($count-$cursor))
++                    if ($found -lt 0) { break }
++                    $absolute=[long]($position+$found)
++                    if (Test-PhpBytesAt $haystack $needle $absolute) { return $absolute }
++                    $cursor=$found+1
++                }
++                $position+=$count
++            }
++            return [long]-1
++        }
++        function New-PhpTrimMask($characters, [bool]$hasCharacters) {
++            $mask=[bool[]]::new(256)
++            if (-not $hasCharacters) { foreach($b in @(0,9,10,11,13,32)){$mask[$b]=$true};return ,$mask }
++            $length=$characters.Length
++            for($i=[long]0;$i -lt $length;$i++) {
++                $byte=[int]$characters.GetByte($i)
++                if($i+3 -lt $length -and $characters.GetByte($i+1)-eq46 -and $characters.GetByte($i+2)-eq46 -and $byte-le$characters.GetByte($i+3)) {
++                    $end=[int]$characters.GetByte($i+3)
++                    for($b=$byte;$b-le$end;$b++){$mask[$b]=$true}
++                    $i+=3;continue
++                }
++                $mask[$byte]=$true
++                if($byte-eq46 -and $i+1-lt$length -and $characters.GetByte($i+1)-eq46) {
++                    $detail=''
++                    if($i-eq0){$detail=", no character to the left of '..'"}
++                    elseif($i+2-ge$length){$detail=", no character to the right of '..'"}
++                    elseif($characters.GetByte($i-1)-gt$characters.GetByte($i+2)){$detail=", '..'-range needs to be incrementing"}
++                    Write-PhpDiagnostic 2 ("trim(): Invalid '..'-range"+$detail)
++                    $i++
++                }
++            }
++            return ,$mask
++        }
++        function Trim-PhpBytes($value, $mask) {
++            $start=[long]0;$end=[long]$value.Length;$buffer=[byte[]]::new(65536)
++            while($start-lt$end) {
++                $count=[int][Math]::Min([long]65536,$end-$start);$value.CopyTo($start,$buffer,0,$count);$i=0
++                while($i-lt$count -and $mask[[int]$buffer[$i]]){$i++}
++                $start+=$i;if($i-lt$count){break}
++            }
++            while($end-gt$start) {
++                $count=[int][Math]::Min([long]65536,$end-$start);$value.CopyTo($end-$count,$buffer,0,$count);$i=$count-1
++                while($i-ge0 -and $mask[[int]$buffer[$i]]){$i--}
++                $end-=($count-1-$i);if($i-ge0){break}
++            }
++            return $value.Slice($start,$end-$start)
++        }
++        function Replace-PhpByteSequence($subject, $needle, $replacement) {
++            if ($needle.Length-eq0) { return $subject }
++            $builder=[AllPhp.ByteValues.PhpByteBuilder]::new();$start=[long]0
++            while($start-le$subject.Length) {
++                $found=Find-PhpBytes $subject $needle $start
++                if($found-lt0){$builder.Append($subject.Slice($start,$null));break}
++                $builder.Append($subject.Slice($start,$found-$start));$builder.Append($replacement)
++                $start=$found+$needle.Length
++            }
++            return $builder.ToPhpBytes()
++        }
++        function Invoke-PhpByteReplace($search, $replace, $subject) {
++            $searchArray=Is-PhpArray $search;$replaceArray=Is-PhpArray $replace
++            if(-not $searchArray -and $replaceArray) {
++                Throw-PhpError 'TypeError' 'str_replace(): Argument #2 ($replace) must be of type string when argument #1 ($search) is a string'
++            }
++            $needles=[Collections.Generic.List[object]]::new();$replacements=[Collections.Generic.List[object]]::new()
++            if($searchArray){foreach($k in $search.Items.Keys){[void]$needles.Add((To-PhpBytes $search.Items[$k]))}}
++            else{[void]$needles.Add((ConvertTo-PhpBuiltinBytes $search 'str_replace' 1 'search' 'array|string'))}
++            if($replaceArray){foreach($k in $replace.Items.Keys){[void]$replacements.Add((To-PhpBytes $replace.Items[$k]))}}
++            else{[void]$replacements.Add((ConvertTo-PhpBuiltinBytes $replace 'str_replace' 2 'replace' 'array|string'))}
++            $subjectArray=Is-PhpArray $subject
++            if($subjectArray){$out=New-PhpArray;$keys=@($subject.Items.Keys)}else{$keys=@($null)}
++            foreach($key in $keys) {
++                $entry=if($subjectArray){To-PhpBytes $subject.Items[$key]}else{ConvertTo-PhpBuiltinBytes $subject 'str_replace' 3 'subject' 'array|string'}
++                for($i=0;$i-lt$needles.Count;$i++) {
++                    $replacement=if(-not$replaceArray){$replacements[0]}elseif($i-lt$replacements.Count){$replacements[$i]}else{[AllPhp.ByteValues.PhpBytes]::Empty}
++                    $entry=Replace-PhpByteSequence $entry $needles[$i] $replacement
++                }
++                if($subjectArray){Set-PhpArrayItem $out (Get-PhpKeyValue $key) $entry $false}else{return $entry}
++            }
++            return $out
+         }
+         function Invoke-PhpFunction([string]$name, $callArgs) {
+             if ($isCli -and $name -in @('exit','die')) { Invoke-PhpCliExit $callArgs }
+@@ -4975,20 +5377,24 @@
+                     return [long]$callArgs[0].Items.Count
+                 }
+                 'strlen' {
+-                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: strlen() requires one argument' }
+-                    return [long]([System.Text.Encoding]::UTF8.GetByteCount((To-PhpText $callArgs[0])))
++                    Assert-PhpStringBuiltinArity 'strlen' $callArgs 1 1
++                    return [long](ConvertTo-PhpBuiltinBytes $callArgs[0] 'strlen' 1 'string').Length
+                 }
+                 'strtoupper' {
+-                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: strtoupper() requires one argument' }
+-                    return (To-PhpText $callArgs[0]).ToUpperInvariant()
++                    Assert-PhpStringBuiltinArity 'strtoupper' $callArgs 1 1
++                    return (ConvertTo-PhpBuiltinBytes $callArgs[0] 'strtoupper' 1 'string').UpperAscii()
+                 }
+                 'strtolower' {
+-                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: strtolower() requires one argument' }
+-                    return (To-PhpText $callArgs[0]).ToLowerInvariant()
++                    Assert-PhpStringBuiltinArity 'strtolower' $callArgs 1 1
++                    return (ConvertTo-PhpBuiltinBytes $callArgs[0] 'strtolower' 1 'string').LowerAscii()
+                 }
+                 'trim' {
+-                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: trim() supports one argument' }
+-                    return (To-PhpText $callArgs[0]).Trim(@([char]32,[char]9,[char]10,[char]13,[char]0,[char]11))
++                    Assert-PhpStringBuiltinArity 'trim' $callArgs 1 2
++                    $bytes=ConvertTo-PhpBuiltinBytes $callArgs[0] 'trim' 1 'string'
++                    $characters=$null
++                    if($callArgs.Count-eq2){$characters=ConvertTo-PhpBuiltinBytes $callArgs[1] 'trim' 2 'characters'}
++                    $mask=New-PhpTrimMask $characters ($callArgs.Count-eq2)
++                    return (Trim-PhpBytes $bytes $mask)
+                 }
+                 'abs' {
+                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: abs() requires one argument' }
+@@ -5021,8 +5427,8 @@
+                     return (Is-PhpArray $callArgs[0])
+                 }
+                 'is_string' {
+-                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_string() requires one argument' }
+-                    return ($callArgs[0] -is [string])
++                    Assert-PhpStringBuiltinArity 'is_string' $callArgs 1 1
++                    return (Is-PhpStringValue $callArgs[0])
+                 }
+                 'is_bool' {
+                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_bool() requires one argument' }
+@@ -5044,14 +5450,14 @@
+                     $arr = $callArgs[0]
+                     if ($arr.Items.Count -eq 0) { return $null }
+                     $keys = @($arr.Items.Keys)
+-                    $lastKey = [string]$keys[$arr.Items.Count - 1]
++                    $lastKey = $keys[$arr.Items.Count - 1]
+                     $lastValue = $arr.Items[$lastKey]
+                     $arr.Items.Remove($lastKey)
+                     # PHP resets the next free index after array_pop().
+                     $high = [long]-1
+                     foreach ($k in $arr.Items.Keys) {
+-                        if ($k.StartsWith('i:')) {
+-                            $number = [long]$k.Substring(2)
++                        if ($k.IsInteger) {
++                            $number = [long]$k.IntegerValue
+                             if ($number -gt $high) { $high = $number }
+                         }
+                     }
+@@ -5066,16 +5472,16 @@
+                     $arr = $callArgs[0]
+                     if ($arr.Items.Count -eq 0) { return $null }
+                     $keys = @($arr.Items.Keys)
+-                    $firstKey = [string]$keys[0]
++                    $firstKey = $keys[0]
+                     $firstValue = $arr.Items[$firstKey]
+                     $arr.Items.Remove($firstKey)
+                     $replacement = New-PhpArray
+                     foreach ($k in $arr.Items.Keys) {
+                         $v = $arr.Items[$k]
+-                        if ($k.StartsWith('i:')) {
++                        if ($k.IsInteger) {
+                             Set-PhpArrayItem $replacement $null $v $true
+                         } else {
+-                            Set-PhpArrayItem $replacement (KeyString-ToValue ([string]$k)) $v $false
++                            Set-PhpArrayItem $replacement (Get-PhpKeyValue $k) $v $false
+                         }
+                     }
+                     $arr.Items = $replacement.Items
+@@ -5094,10 +5500,10 @@
+                     }
+                     foreach ($k in $arr.Items.Keys) {
+                         $v = $arr.Items[$k]
+-                        if ($k.StartsWith('i:')) {
++                        if ($k.IsInteger) {
+                             Set-PhpArrayItem $replacement $null $v $true
+                         } else {
+-                            Set-PhpArrayItem $replacement (KeyString-ToValue ([string]$k)) $v $false
++                            Set-PhpArrayItem $replacement (Get-PhpKeyValue $k) $v $false
+                         }
+                     }
+                     $arr.Items = $replacement.Items
+@@ -5114,12 +5520,12 @@
+                     $out = New-PhpArray
+                     $keys = @($callArgs[0].Items.Keys)
+                     for ($i=$keys.Count - 1; $i -ge 0; $i--) {
+-                        $k = [string]$keys[$i]
++                        $k = $keys[$i]
+                         $v = $callArgs[0].Items[$k]
+-                        if (-not $preserve -and $k.StartsWith('i:')) {
++                        if (-not $preserve -and $k.IsInteger) {
+                             Set-PhpArrayItem $out $null $v $true
+                         } else {
+-                            Set-PhpArrayItem $out (KeyString-ToValue $k) $v $false
++                            Set-PhpArrayItem $out (Get-PhpKeyValue $k) $v $false
+                         }
+                     }
+                     return $out
+@@ -5132,10 +5538,10 @@
+                         }
+                         foreach ($k in $arr.Items.Keys) {
+                             $v = $arr.Items[$k]
+-                            if ($k.StartsWith('i:')) {
++                            if ($k.IsInteger) {
+                                 Set-PhpArrayItem $out $null $v $true
+                             } else {
+-                                Set-PhpArrayItem $out (KeyString-ToValue ([string]$k)) $v $false
++                                Set-PhpArrayItem $out (Get-PhpKeyValue $k) $v $false
+                             }
+                         }
+                     }
+@@ -5162,12 +5568,12 @@
+                     $out = New-PhpArray
+                     $keys = @($arr.Items.Keys)
+                     for ($i=$start; $i -lt $end; $i++) {
+-                        $k = [string]$keys[$i]
++                        $k = $keys[$i]
+                         $v = $arr.Items[$k]
+-                        if ($k.StartsWith('i:') -and -not $preserve) {
++                        if ($k.IsInteger -and -not $preserve) {
+                             Set-PhpArrayItem $out $null $v $true
+                         } else {
+-                            Set-PhpArrayItem $out (KeyString-ToValue $k) $v $false
++                            Set-PhpArrayItem $out (Get-PhpKeyValue $k) $v $false
+                         }
+                     }
+                     return $out
+@@ -5178,7 +5584,7 @@
+                     }
+                     $output = New-PhpArray
+                     foreach ($key in $callArgs[0].Items.Keys) {
+-                        Set-PhpArrayItem $output $null (KeyString-ToValue ([string]$key)) $true
++                        Set-PhpArrayItem $output $null (Get-PhpKeyValue $key) $true
+                     }
+                     return $output
+                 }
+@@ -5197,7 +5603,7 @@
+                         throw 'ALL PHP: array_key_first() requires one array argument'
+                     }
+                     foreach ($key in $callArgs[0].Items.Keys) {
+-                        return (KeyString-ToValue ([string]$key))
++                        return (Get-PhpKeyValue $key)
+                     }
+                     return $null
+                 }
+@@ -5206,8 +5612,8 @@
+                         throw 'ALL PHP: array_key_last() requires one array argument'
+                     }
+                     $last = $null
+-                    foreach ($key in $callArgs[0].Items.Keys) { $last = [string]$key }
+-                    if ($null -ne $last) { return (KeyString-ToValue $last) }
++                    foreach ($key in $callArgs[0].Items.Keys) { $last = $key }
++                    if ($null -ne $last) { return (Get-PhpKeyValue $last) }
+                     return $null
+                 }
+                 'array_first' {
+@@ -5250,84 +5656,93 @@
+                     return $false
+                 }
+                 'str_contains' {
+-                    if ($callArgs.Count -ne 2) { throw 'ALL PHP: str_contains() requires two arguments' }
+-                    $haystack = To-PhpText $callArgs[0]
+-                    $needle = To-PhpText $callArgs[1]
+-                    return ($haystack.IndexOf($needle, [StringComparison]::Ordinal) -ge 0)
++                    Assert-PhpStringBuiltinArity 'str_contains' $callArgs 2 2
++                    $haystack=ConvertTo-PhpBuiltinBytes $callArgs[0] 'str_contains' 1 'haystack'
++                    $needle=ConvertTo-PhpBuiltinBytes $callArgs[1] 'str_contains' 2 'needle'
++                    return ((Find-PhpBytes $haystack $needle 0)-ge0)
+                 }
+                 'str_starts_with' {
+-                    if ($callArgs.Count -ne 2) { throw 'ALL PHP: str_starts_with() requires two arguments' }
+-                    return (To-PhpText $callArgs[0]).StartsWith(
+-                        (To-PhpText $callArgs[1]), [StringComparison]::Ordinal)
++                    Assert-PhpStringBuiltinArity 'str_starts_with' $callArgs 2 2
++                    $haystack=ConvertTo-PhpBuiltinBytes $callArgs[0] 'str_starts_with' 1 'haystack'
++                    $needle=ConvertTo-PhpBuiltinBytes $callArgs[1] 'str_starts_with' 2 'needle'
++                    return (Test-PhpBytesAt $haystack $needle 0)
+                 }
+                 'str_ends_with' {
+-                    if ($callArgs.Count -ne 2) { throw 'ALL PHP: str_ends_with() requires two arguments' }
+-                    return (To-PhpText $callArgs[0]).EndsWith(
+-                        (To-PhpText $callArgs[1]), [StringComparison]::Ordinal)
++                    Assert-PhpStringBuiltinArity 'str_ends_with' $callArgs 2 2
++                    $haystack=ConvertTo-PhpBuiltinBytes $callArgs[0] 'str_ends_with' 1 'haystack'
++                    $needle=ConvertTo-PhpBuiltinBytes $callArgs[1] 'str_ends_with' 2 'needle'
++                    return (Test-PhpBytesAt $haystack $needle ($haystack.Length-$needle.Length))
+                 }
+                 'strpos' {
+-                    if ($callArgs.Count -lt 2 -or $callArgs.Count -gt 3) {
+-                        throw 'ALL PHP: strpos() requires two or three arguments'
+-                    }
+-                    $haystack = To-PhpText $callArgs[0]
+-                    $needle = To-PhpText $callArgs[1]
+-                    $offset = 0
+-                    if ($callArgs.Count -eq 3) { $offset = [int](To-Number $callArgs[2]) }
+-                    if ($offset -lt 0) { $offset = [Math]::Max(0, $haystack.Length + $offset) }
+-                    if ($offset -gt $haystack.Length) { throw 'ALL PHP: strpos offset is out of range' }
+-                    $pos = $haystack.IndexOf($needle, $offset, [StringComparison]::Ordinal)
+-                    if ($pos -lt 0) { return $false }
+-                    return [long]$pos
++                    Assert-PhpStringBuiltinArity 'strpos' $callArgs 2 3
++                    $haystack=ConvertTo-PhpBuiltinBytes $callArgs[0] 'strpos' 1 'haystack'
++                    $needle=ConvertTo-PhpBuiltinBytes $callArgs[1] 'strpos' 2 'needle'
++                    $offset=[long]0
++                    if($callArgs.Count-eq3){$offset=ConvertTo-PhpBuiltinInteger $callArgs[2] 'strpos' 3 'offset'}
++                    if($offset-lt0){$offset=$haystack.Length+$offset}
++                    if($offset-lt0 -or $offset-gt$haystack.Length) {
++                        Throw-PhpError 'ValueError' 'strpos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)'
++                    }
++                    $position=Find-PhpBytes $haystack $needle $offset
++                    if($position-lt0){return $false};return [long]$position
+                 }
+                 'substr' {
+-                    if ($callArgs.Count -lt 2 -or $callArgs.Count -gt 3) {
+-                        throw 'ALL PHP: substr() requires two or three arguments'
+-                    }
+-                    $s = To-PhpText $callArgs[0]
+-                    $start = [int](To-Number $callArgs[1])
+-                    if ($start -lt 0) { $start = [Math]::Max(0, $s.Length + $start) }
+-                    if ($start -gt $s.Length) { $start = $s.Length }
+-                    $end = $s.Length
+-                    if ($callArgs.Count -eq 3 -and $null -ne $callArgs[2]) {
+-                        $size = [int](To-Number $callArgs[2])
+-                        if ($size -ge 0) { $end = [Math]::Min($end, $start + $size) }
+-                        else { $end = [Math]::Max($start, $end + $size) }
+-                    }
+-                    return $s.Substring($start, [Math]::Max(0, $end - $start))
++                    Assert-PhpStringBuiltinArity 'substr' $callArgs 2 3
++                    $bytes=ConvertTo-PhpBuiltinBytes $callArgs[0] 'substr' 1 'string'
++                    $offset=ConvertTo-PhpBuiltinInteger $callArgs[1] 'substr' 2 'offset'
++                    $length=$null
++                    if($callArgs.Count-eq3 -and $null-ne$callArgs[2]){$length=ConvertTo-PhpBuiltinInteger $callArgs[2] 'substr' 3 'length'}
++                    return $bytes.Slice($offset,$length)
+                 }
+                 'str_replace' {
+-                    if ($callArgs.Count -ne 3) { throw 'ALL PHP: str_replace() supports three scalar arguments' }
+-                    $needle = To-PhpText $callArgs[0]
+-                    $replacement = To-PhpText $callArgs[1]
+-                    $subject = To-PhpText $callArgs[2]
+-                    return $subject.Replace($needle, $replacement)
++                    # Fourth by-reference count is a separate call-binding obligation.
++                    if($callArgs.Count-ne3){throw 'ALL PHP: str_replace() count-reference binding is not implemented; three arguments are supported'}
++                    return (Invoke-PhpByteReplace $callArgs[0] $callArgs[1] $callArgs[2])
+                 }
+                 'explode' {
+-                    if ($callArgs.Count -ne 2) { throw 'ALL PHP: explode() supports two arguments' }
+-                    $separator = To-PhpText $callArgs[0]
+-                    if ($separator.Length -eq 0) { throw 'ALL PHP: explode separator cannot be empty' }
+-                    $subject = To-PhpText $callArgs[1]
+-                    $parts = $subject.Split([string[]]@($separator), [StringSplitOptions]::None)
+-                    $out = New-PhpArray
+-                    foreach ($part in $parts) { Set-PhpArrayItem $out $null $part $true }
++                    Assert-PhpStringBuiltinArity 'explode' $callArgs 2 3
++                    $separator=ConvertTo-PhpBuiltinBytes $callArgs[0] 'explode' 1 'separator'
++                    $subject=ConvertTo-PhpBuiltinBytes $callArgs[1] 'explode' 2 'string'
++                    $limit=[long]::MaxValue
++                    if($callArgs.Count-eq3){$limit=ConvertTo-PhpBuiltinInteger $callArgs[2] 'explode' 3 'limit'}
++                    if($separator.Length-eq0){Throw-PhpError 'ValueError' 'explode(): Argument #1 ($separator) must not be empty'}
++                    if($limit-eq0){$limit=[long]1}
++                    $parts=[Collections.Generic.List[object]]::new();$start=[long]0
++                    while($start-le$subject.Length) {
++                        if($limit-gt0 -and [long]$parts.Count-ge$limit-1){[void]$parts.Add($subject.Slice($start,$null));break}
++                        $found=Find-PhpBytes $subject $separator $start
++                        if($found-lt0){[void]$parts.Add($subject.Slice($start,$null));break}
++                        [void]$parts.Add($subject.Slice($start,$found-$start));$start=$found+$separator.Length
++                    }
++                    $take=[long]$parts.Count
++                    if($limit-lt0){$take=[Math]::Max([long]0,$take+$limit)}
++                    $out=New-PhpArray
++                    for($i=0;$i-lt$take;$i++){Set-PhpArrayItem $out $null $parts[$i] $true}
+                     return $out
+                 }
+                 'implode' {
+-                    if ($callArgs.Count -ne 2 -or -not (Is-PhpArray $callArgs[1])) {
+-                        throw 'ALL PHP: implode() requires separator and array'
+-                    }
+-                    $separator = To-PhpText $callArgs[0]
+-                    $items = [System.Collections.Generic.List[string]]::new()
+-                    foreach ($key in $callArgs[1].Items.Keys) {
+-                        [void]$items.Add((To-PhpText $callArgs[1].Items[$key]))
+-                    }
+-                    return [string]::Join($separator, $items.ToArray())
++                    Assert-PhpStringBuiltinArity 'implode' $callArgs 1 2
++                    $separator=[AllPhp.ByteValues.PhpBytes]::Empty;$items=$null
++                    if($callArgs.Count-eq1) {
++                        $items=$callArgs[0]
++                        if(-not(Is-PhpArray $items)){Throw-PhpError 'TypeError' ('implode(): Argument #1 ($array) must be of type array, '+(Get-PhpBuiltinTypeName $items)+' given')}
++                    } else {
++                        $separator=ConvertTo-PhpBuiltinBytes $callArgs[0] 'implode' 1 'separator' 'array|string'
++                        $items=$callArgs[1]
++                        if(-not(Is-PhpArray $items)){Throw-PhpError 'TypeError' ('implode(): Argument #2 ($array) must be of type ?array, '+(Get-PhpBuiltinTypeName $items)+' given')}
++                    }
++                    $builder=[AllPhp.ByteValues.PhpByteBuilder]::new();$first=$true
++                    foreach($key in $items.Items.Keys) {
++                        if(-not$first){$builder.Append($separator)};$first=$false
++                        $builder.Append((To-PhpBytes $items.Items[$key]))
++                    }
++                    return $builder.ToPhpBytes()
+                 }
+                 'print_r' {
+                     if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 2) { throw 'ALL PHP: print_r() requires one or two arguments' }
+-                    $printed = Format-PhpPrintR $callArgs[0] 0
++                    $printed = Format-PhpBytesPrintR $callArgs[0] 0
+                     if ($callArgs.Count -eq 2 -and (Is-Truthy $callArgs[1])) { return $printed }
+-                    [Console]::Write($printed)
++                    Write-PhpBytes $printed
+                     return $true
+                 }
+                 'define' {
+@@ -5415,12 +5830,11 @@
+                     return $true
+                 }
+                 'str_repeat' {
+-                    if ($callArgs.Count -ne 2) { throw 'ALL PHP: str_repeat() requires two arguments' }
+-                    $times = To-PhpInt (To-Number $callArgs[1])
+-                    if ($times -lt 0) {
+-                        Throw-PhpError 'ValueError' 'str_repeat(): Argument #2 ($times) must be greater than or equal to 0'
+-                    }
+-                    return ((To-PhpText $callArgs[0]) * [int]$times)
++                    Assert-PhpStringBuiltinArity 'str_repeat' $callArgs 2 2
++                    $bytes=ConvertTo-PhpBuiltinBytes $callArgs[0] 'str_repeat' 1 'string'
++                    $times=ConvertTo-PhpBuiltinInteger $callArgs[1] 'str_repeat' 2 'times'
++                    if($times-lt0){Throw-PhpError 'ValueError' 'str_repeat(): Argument #2 ($times) must be greater than or equal to 0'}
++                    return $bytes.Repeat($times)
+                 }
+                 'function_exists' {
+                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: function_exists() requires one argument' }
+@@ -5447,19 +5861,15 @@
+                 }
+                 'var_dump' {
+                     if ($callArgs.Count -lt 1) { throw 'ALL PHP: var_dump() requires at least one argument' }
+-                    foreach ($item in $callArgs) { [Console]::Write((Format-PhpVarDump $item '')) }
++                    foreach ($item in $callArgs) { Write-PhpBytes (Format-PhpBytesDump $item '') }
+                     return $null
+                 }
+                 'gettype' {
+-                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: gettype() requires one argument' }
+-                    $item = $callArgs[0]
+-                    if ($null -eq $item) { return 'NULL' }
+-                    if ($item -is [bool]) { return 'boolean' }
+-                    if ($item -is [long]) { return 'integer' }
+-                    if ($item -is [double]) { return 'double' }
+-                    if ($item -is [string]) { return 'string' }
+-                    if (Is-PhpArray $item) { return 'array' }
+-                    return 'object'
++                    Assert-PhpStringBuiltinArity 'gettype' $callArgs 1 1
++                    $item=$callArgs[0]
++                    if(Is-PhpRefCell $item){$item=$item.Value}
++                    $type=if($null-eq$item){'NULL'}elseif($item-is[bool]){'boolean'}elseif($item-is[long]){'integer'}elseif($item-is[double]){'double'}elseif(Is-PhpStringValue $item){'string'}elseif(Is-PhpArray $item){'array'}else{'object'}
++                    return [AllPhp.ByteValues.PhpBytes]::FromUtf8($type)
+                 }
+                 { $_ -in @('is_int', 'is_integer', 'is_long') } {
+                     if ($callArgs.Count -ne 1) { throw "ALL PHP: $name() requires one argument" }
+@@ -5540,8 +5950,8 @@
+                     return (-not [double]::IsNaN($number) -and -not [double]::IsInfinity($number))
+                 }
+                 'strval' {
+-                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: strval() requires one argument' }
+-                    return (To-PhpText $callArgs[0])
++                    Assert-PhpStringBuiltinArity 'strval' $callArgs 1 1
++                    return (To-PhpBytes $callArgs[0])
+                 }
+             }
+             if (-not $state.Functions.ContainsKey($name)) {
+@@ -5683,7 +6093,7 @@
+         }
+         function Invoke-PhpExpr($node) {
+             switch ($node.Kind) {
+-                'literal' { return $node.Value }
++                'literal' { return (ConvertTo-PhpOwnedValue $node.Value) }
+                 'internal_throwable_string' {
+                     return (Get-PhpThrowableString (Invoke-PhpExpr $node.Object))
+                 }
+@@ -5867,11 +6277,11 @@
+                 }
+                 'static_property' { return (Get-LValue $node) }
+                 'class_const' {
+-                    $klass=[string](Invoke-PhpExpr $node.Base)
++                    $klass=Get-PhpHostText (Invoke-PhpExpr $node.Base)
+                     return (Get-PhpClassConstant $klass $node.Name)
+                 }
+                 'static_method' {
+-                    $klass=[string](Invoke-PhpExpr $node.Base)
++                    $klass=Get-PhpHostText (Invoke-PhpExpr $node.Base)
+                     $klass=Resolve-PhpClass $klass
+                     if ($state.Classes.ContainsKey($klass) -and
+                         $state.Classes[$klass].PSObject.Properties['Enum'] -and
+@@ -6014,10 +6424,10 @@
+                                 throw 'ALL PHP: Only arrays can be unpacked in array literals'
+                             }
+                             foreach ($key in $value.Items.Keys) {
+-                                if (([string]$key).StartsWith('i:')) {
++                                if ($key.IsInteger) {
+                                     Set-PhpArrayItem $array $null $value.Items[$key] $true
+                                 } else {
+-                                    Set-PhpArrayItem $array (KeyString-ToValue ([string]$key)) $value.Items[$key] $false
++                                    Set-PhpArrayItem $array (Get-PhpKeyValue $key) $value.Items[$key] $false
+                                 }
+                             }
+                             continue
+@@ -6160,18 +6570,8 @@
+                         $args=Evaluate-PhpUserArguments $node.Args $state.Functions[$callName]
+                         return (Invoke-PhpCallable $state.Functions[$callName] $args $null)
+                     }
+-                    $callArgs = [System.Collections.Generic.List[object]]::new()
+-                    foreach ($arg in $node.Args) {
+-                        if ($arg.Kind -ceq 'named_argument') {
+-                            [void]$callArgs.Add([pscustomobject]@{
+-                                PhpType='named_argument'; Name=$arg.Name
+-                                Value=(Invoke-PhpExpr $arg.Expr)
+-                            })
+-                        } else {
+-                            [void]$callArgs.Add((Invoke-PhpExpr $arg))
+-                        }
+-                    }
+-                    return (Invoke-PhpFunction $callName ($callArgs.ToArray()))
++                    $callArgs = Evaluate-PhpBuiltinArguments $node.Args $callName
++                    return (Invoke-PhpFunction $callName $callArgs)
+                 }
+                 'method' {
+                     $base = Invoke-PhpExpr $node.Base
+@@ -6254,7 +6654,7 @@
+                         '!' { return (-not (Is-Truthy $value)) }
+                         '+' { return (To-Number $value) }
+                         '-' { return (Php-Neg (To-Number $value)) }
+-                        '~' { return [long](-bnot (To-PhpInt $value)) }
++                        '~' { if (Is-PhpStringValue $value) { return (To-PhpBytes $value).BitwiseNot() };return [long](-bnot (To-PhpInt $value)) }
+                     }
+                 }
+                 'ternary' {
+@@ -6307,13 +6707,13 @@
+                     $b = Invoke-PhpExpr $node.Right
+                     switch ($node.Op) {
+                         '**' { return (Php-Pow (To-Number $a) (To-Number $b)) }
+-                        '.' { return ((To-PhpText $a) + (To-PhpText $b)) }
++                        '.' { return (To-PhpBytes $a).Concat((To-PhpBytes $b)) }
+                         '+' {
+                             if ((Is-PhpArray $a) -and (Is-PhpArray $b)) {
+                                 $union = Copy-PhpValue $a
+                                 foreach ($key in $b.Items.Keys) {
+                                     if (-not $union.Items.Contains($key)) {
+-                                        Set-PhpArrayItem $union (KeyString-ToValue ([string]$key)) $b.Items[$key] $false
++                                        Set-PhpArrayItem $union (Get-PhpKeyValue $key) $b.Items[$key] $false
+                                     }
+                                 }
+                                 return $union
+@@ -6335,9 +6735,9 @@
+                         '<=>' { return [long](Compare-Values $a $b) }
+                         '<<' { return (Php-Shift $a $b $true) }
+                         '>>' { return (Php-Shift $a $b $false) }
+-                        '&' { return [long]((To-PhpInt $a) -band (To-PhpInt $b)) }
+-                        '|' { return [long]((To-PhpInt $a) -bor (To-PhpInt $b)) }
+-                        '^' { return [long]((To-PhpInt $a) -bxor (To-PhpInt $b)) }
++                        '&' { if ((Is-PhpStringValue $a) -and (Is-PhpStringValue $b)) { return (To-PhpBytes $a).Bitwise((To-PhpBytes $b),[char]'&') };return [long]((To-PhpInt $a) -band (To-PhpInt $b)) }
++                        '|' { if ((Is-PhpStringValue $a) -and (Is-PhpStringValue $b)) { return (To-PhpBytes $a).Bitwise((To-PhpBytes $b),[char]'|') };return [long]((To-PhpInt $a) -bor (To-PhpInt $b)) }
++                        '^' { if ((Is-PhpStringValue $a) -and (Is-PhpStringValue $b)) { return (To-PhpBytes $a).Bitwise((To-PhpBytes $b),[char]'^') };return [long]((To-PhpInt $a) -bxor (To-PhpInt $b)) }
+                         'instanceof' {
+                             if (-not (Is-PhpObject $a)) { return $false }
+                             if ($b -isnot [string]) { throw 'ALL PHP: instanceof class name required' }
+@@ -6355,7 +6755,7 @@
+             }
+             if ($null -ne $node.Line) { $state.Line = $node.Line }
+             switch ($node.Kind) {
+-                'inline_html' { [Console]::Write($node.Text); return }
++                'inline_html' { Write-PhpBytes $node.Text; return }
+                 'constdecl' {
+                     foreach ($decl in $node.Decls) {
+                         if ($state.Constants.ContainsKey($decl.Name) -or $phpConstants.ContainsKey($decl.Name)) {
+@@ -6836,12 +7236,12 @@
+                 }
+                 'echo' {
+                     foreach ($e in $node.Args) {
+-                        [Console]::Write((To-PhpText (Invoke-PhpExpr $e)))
++                        Write-PhpBytes (Invoke-PhpExpr $e)
+                     }
+                     return
+                 }
+                 'print' {
+-                    [Console]::Write((To-PhpText (Invoke-PhpExpr $node.Expr)))
++                    Write-PhpBytes (Invoke-PhpExpr $node.Expr)
+                     return
+                 }
+                 'if' {
+@@ -6976,11 +7376,7 @@
+                                 Set-PhpVariableValue $node.ValueName $value
+                             }
+                             if ($null -ne $node.KeyName) {
+-                                if ($key.StartsWith('i:')) {
+-                                    Set-PhpVariableValue $node.KeyName ([long]$key.Substring(2))
+-                                } else {
+-                                    Set-PhpVariableValue $node.KeyName ($key.Substring(2))
+-                                }
++                                Set-PhpVariableValue $node.KeyName (Get-PhpKeyValue $key)
+                             }
+                             Invoke-PhpStatement $node.Body
+                             if ($state.Flow.LoopControl -ceq 'break') {
+@@ -7034,14 +7430,26 @@
+         # installed-handler rejection. Do not call an absent optional interface.
+         $nativeCallbackInstalled = $false
+         if ($null -ne $NativeContext -and
+-            $null -ne $NativeContext.PSObject.Methods['SetDiagnosticHandler'] -and
+             $null -ne $NativeContext.PSObject.Methods['ClearDiagnosticHandler']) {
+-            $nativeDiagnosticAction = [System.Action[long,string]] {
+-                param([long]$nativeLevel, [string]$nativeMessage)
+-                Write-PhpDiagnostic $nativeLevel $nativeMessage
+-            }
+-            $NativeContext.SetDiagnosticHandler($nativeDiagnosticAction)
+-            $nativeCallbackInstalled = $true
++            if ($null -ne $NativeContext.PSObject.Methods['SetByteDiagnosticHandler']) {
++                $nativeByteDiagnosticAction=[System.Action[long,AllPhp.ByteValues.PhpBytes]] {
++                    param([long]$nativeLevel,[AllPhp.ByteValues.PhpBytes]$nativeMessage)
++                    Write-PhpDiagnostic $nativeLevel $nativeMessage
++                }
++                $nativeByteOutputAction=[System.Action[AllPhp.ByteValues.PhpBytes]] {
++                    param([AllPhp.ByteValues.PhpBytes]$nativeOutput)
++                    Write-PhpBytes $nativeOutput
++                }
++                $NativeContext.SetByteDiagnosticHandler($nativeByteDiagnosticAction,$nativeByteOutputAction)
++                $nativeCallbackInstalled=$true
++            } elseif ($null -ne $NativeContext.PSObject.Methods['SetDiagnosticHandler']) {
++                $nativeDiagnosticAction=[System.Action[long,string]] {
++                    param([long]$nativeLevel,[string]$nativeMessage)
++                    Write-PhpDiagnostic $nativeLevel $nativeMessage
++                }
++                $NativeContext.SetDiagnosticHandler($nativeDiagnosticAction)
++                $nativeCallbackInstalled=$true
++            }
+         }
+         try {
+ 
+@@ -7085,15 +7493,21 @@
+             }
+             if ($null -eq $uncaught -or (-not $PhpDiagnostics -and -not $isCli)) { throw }
+             # Same text the PHP CLI writes with display_errors=1 and html_errors=0.
+-            $fatal = 'Fatal error: Uncaught ' + (Get-PhpThrowableString $uncaught) +
+-                "`n  thrown in " + (To-PhpText $uncaught.Props['file']) +
+-                ' on line ' + (To-PhpText $uncaught.Props['line']) + "`n"
++            $fatalBuilder=[AllPhp.ByteValues.PhpByteBuilder]::new()
++            if (-not $isCli) { $fatalBuilder.AppendUtf8("`n") }
++            $fatalBuilder.AppendUtf8('Fatal error: Uncaught ')
++            $fatalBuilder.Append((Get-PhpThrowableString $uncaught))
++            $fatalBuilder.AppendUtf8("`n  thrown in ")
++            $fatalBuilder.Append((To-PhpBytes $uncaught.Props['file']))
++            $fatalBuilder.AppendUtf8(' on line ')
++            $fatalBuilder.Append((To-PhpBytes $uncaught.Props['line']))
++            $fatalBuilder.AppendUtf8("`n")
++            Write-PhpBytes ($fatalBuilder.ToPhpBytes()) $isCli
+             if ($isCli) {
+-                [Console]::Error.Write($fatal)
+                 $CliContext['ExitCode'] = [long]255
+                 $CliContext['Terminated'] = $true
+                 $CliContext['TerminationReason'] = 'uncaught_php_throwable'
+-            } else { [Console]::Write("`n" + $fatal) }
++            }
+         } finally {
+             if ($nativeCallbackInstalled) { $NativeContext.ClearDiagnosticHandler() }
+         }

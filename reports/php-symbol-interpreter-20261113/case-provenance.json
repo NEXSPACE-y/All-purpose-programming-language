@@ -1,0 +1,9 @@
+{
+  "unchanged_original_cases": 29,
+  "new_original_sources": 11,
+  "exclusions": {
+    "raw_byte_0x80_0xff": "Outside valid-UTF8 decoder scope; old failing audit retained",
+    "strtolower_nonascii": "String builtin byte migration owned separately"
+  },
+  "total": 40
+}

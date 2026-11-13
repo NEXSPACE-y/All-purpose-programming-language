@@ -1,0 +1,1 @@
+<?php class C{public $値=9;}$x=new C();echo $x->値;

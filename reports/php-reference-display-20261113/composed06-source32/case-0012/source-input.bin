@@ -1,0 +1,1 @@
+$v="\xFF\0";$w="\xFF\0";$a=[&$v,&$w];unset($v,$w);var_dump($a);

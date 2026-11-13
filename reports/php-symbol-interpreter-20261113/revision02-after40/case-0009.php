@@ -1,0 +1,1 @@
+<?php class C{function 実行(){return 9;}}$x=new C();echo $x->実行();

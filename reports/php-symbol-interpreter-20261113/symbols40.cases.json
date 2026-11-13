@@ -1,0 +1,162 @@
+[
+  {
+    "id": "identifier.ascii-function",
+    "code": "<?php function MiXeD(){return 1;}echo mixed();"
+  },
+  {
+    "id": "identifier.ascii-variable-case",
+    "code": "<?php $A=1;$a=2;echo $A.$a;"
+  },
+  {
+    "id": "identifier.variable-japanese",
+    "code": "<?php $変数=7;echo $変数;"
+  },
+  {
+    "id": "identifier.dynamic-variable-case",
+    "code": "<?php ${'É'}=1;${'é'}=2;echo ${'É'}.${'é'};"
+  },
+  {
+    "id": "identifier.dynamic-variable-normalization",
+    "code": "<?php ${'é'}=1;${'é'}=2;echo ${'é'}.${'é'};"
+  },
+  {
+    "id": "identifier.function-japanese",
+    "code": "<?php function 関数(){return 7;}echo 関数();"
+  },
+  {
+    "id": "identifier.class-japanese",
+    "code": "<?php class 猫{}echo get_class(new 猫());"
+  },
+  {
+    "id": "identifier.constant-japanese",
+    "code": "<?php const 値=8;echo 値;"
+  },
+  {
+    "id": "identifier.namespace-japanese",
+    "code": "<?php namespace 名前;function 関数(){return __NAMESPACE__;}echo 関数();"
+  },
+  {
+    "id": "identifier.method-japanese",
+    "code": "<?php class C{function 実行(){return 9;}}$x=new C();echo $x->実行();"
+  },
+  {
+    "id": "identifier.property-japanese",
+    "code": "<?php class C{public $値=9;}$x=new C();echo $x->値;"
+  },
+  {
+    "id": "identifier.function-unicode-case",
+    "code": "<?php function É(){return 1;}function é(){return 2;}echo É().é();"
+  },
+  {
+    "id": "identifier.function-kelvin",
+    "code": "<?php function K(){return 1;}function K(){return 2;}echo k().K();"
+  },
+  {
+    "id": "identifier.function-emoji",
+    "code": "<?php function 😀(){return 3;}echo 😀();"
+  },
+  {
+    "id": "identifier.function-nbsp",
+    "code": "<?php function a b(){return 4;}echo a b();"
+  },
+  {
+    "id": "identifier.function-combining-start",
+    "code": "<?php function ́x(){return 5;}echo ́x();"
+  },
+  {
+    "id": "identifier.function-normalization",
+    "code": "<?php function é(){return 1;}function é(){return 2;}echo é().é();"
+  },
+  {
+    "id": "identifier.keyword-long-s",
+    "code": "<?php function ſtatic(){return 6;}echo ſtatic();"
+  },
+  {
+    "id": "identifier.function-sigma",
+    "code": "<?php function Σ(){return 1;}function σ(){return 2;}echo Σ().σ();"
+  },
+  {
+    "id": "identifier.dynamic-constant-normalization",
+    "code": "<?php define('é',1);define('é',2);echo constant('é').constant('é');"
+  },
+  {
+    "id": "identifier.namespace-unicode-case",
+    "code": "<?php namespace É{function f(){return 1;}}namespace é{function f(){return 2;}}namespace{echo \\É\\f().\\é\\f();}"
+  },
+  {
+    "id": "identifier.ascii-class-canonical",
+    "code": "<?php class CaT{}echo get_class(new cAt());"
+  },
+  {
+    "id": "identifier.ascii-function-exists",
+    "code": "<?php function MiXeD(){return 1;}var_dump(function_exists('mixed'),function_exists('MIXED'));"
+  },
+  {
+    "id": "identifier.method-unicode-case",
+    "code": "<?php class C{function mÉ(){return 1;}function mé(){return 2;}}$x=new C();echo $x->mÉ().$x->mé();"
+  },
+  {
+    "id": "identifier.strict-unicode-values",
+    "code": "<?php var_dump(\"K\"===\"K\",\"é\"===\"é\");"
+  },
+  {
+    "id": "identifier.loose-unicode-values",
+    "code": "<?php var_dump(\"K\"==\"K\",\"é\"==\"é\");"
+  },
+  {
+    "id": "identifier.strict-array-key",
+    "code": "<?php var_dump([\"é\"=>1]===[\"é\"=>1],[\"K\"=>1]===[\"K\"=>1]);"
+  },
+  {
+    "id": "identifier.distinct-array-keys",
+    "code": "<?php var_dump(count([\"é\"=>1,\"é\"=>2]),count([\"K\"=>1,\"K\"=>2]));"
+  },
+  {
+    "id": "identifier.unicode-value-order",
+    "code": "<?php var_dump(\"𐀀\">\"\");"
+  },
+  {
+    "id": "symbols.parameter-nfc-distinct",
+    "code": "<?php function f($é=1,$é=2){return $é+$é;}echo f();"
+  },
+  {
+    "id": "symbols.parameter-nfc-named",
+    "code": "<?php function f($é=1,$é=2){return $é+$é;}echo f(é:5);"
+  },
+  {
+    "id": "symbols.property-nfc-distinct",
+    "code": "<?php class C{public $é=1;public $é=2;} $x=new C();echo $x->é,\":\",$x->é;"
+  },
+  {
+    "id": "symbols.class-unicode-distinct",
+    "code": "<?php class É{public function x(){return 1;}}class é{public function x(){return 2;}}echo (new É())->x(),\":\",(new é())->x();"
+  },
+  {
+    "id": "symbols.method-nfc-distinct",
+    "code": "<?php class C{function é(){return 1;}function é(){return 2;}}$x=new C();echo $x->é(),\":\",$x->é();"
+  },
+  {
+    "id": "symbols.constant-prefix-ascii",
+    "code": "<?php namespace MiXeD;const VaL=7;echo \\mixed\\VaL;"
+  },
+  {
+    "id": "symbols.constant-leaf-sensitive",
+    "code": "<?php define(\"MiXeD\\\\VaL\",7);var_dump(defined(\"mixed\\\\VaL\"),defined(\"mixed\\\\val\"));"
+  },
+  {
+    "id": "symbols.array-callable-japanese",
+    "code": "<?php class 猫{static function 鳴く($x){return $x+1;}}$f=[\"猫\",\"鳴く\"];echo $f(4),\":\",call_user_func_array($f,[\"x\"=>6]);"
+  },
+  {
+    "id": "symbols.arabic-digit-label",
+    "code": "<?php function ١(){return 5;}echo ١();"
+  },
+  {
+    "id": "symbols.keyword-kelvin-control",
+    "code": "<?php function breaK(){return 9;}echo breaK();"
+  },
+  {
+    "id": "symbols.ascii-keyword-case",
+    "code": "<?php FuNcTiOn f(){ReTuRn 8;}EcHo f();"
+  }
+]

@@ -1,0 +1,1 @@
+<?php function f($é=1,$é=2){return $é+$é;}echo f(é:5);

@@ -1,0 +1,350 @@
+{
+  "status": "FROZEN_FIRST_MEASUREMENT_WITH_DIFFERENCES",
+  "files": [
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/additional-input-pins.json",
+      "size": 35798,
+      "sha256": "a7658502719115ea9500dfa25ac2b3c01426468bede03b0a8ad14a00bf0e7220"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0000/script.php",
+      "size": 226,
+      "sha256": "4bb06b4e6803a7bf8453feca57ead5dd3d1f72b2250a5605d553c59e43182f13"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0000/source-input.bin",
+      "size": 226,
+      "sha256": "4bb06b4e6803a7bf8453feca57ead5dd3d1f72b2250a5605d553c59e43182f13"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0001/script.php",
+      "size": 227,
+      "sha256": "cbb19c863273877580ae991c3e00ac9da9555af1e949003803541bcf6f5b1229"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0001/source-input.bin",
+      "size": 227,
+      "sha256": "cbb19c863273877580ae991c3e00ac9da9555af1e949003803541bcf6f5b1229"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0002/script.php",
+      "size": 209,
+      "sha256": "74c054654c1d5661f6a762759570d6ab8c0dc177b0a486ec8bc1b11e298983c6"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0002/source-input.bin",
+      "size": 209,
+      "sha256": "74c054654c1d5661f6a762759570d6ab8c0dc177b0a486ec8bc1b11e298983c6"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0003/script.php",
+      "size": 210,
+      "sha256": "c3f0c89be2454f564d3c59eb38c6815a08d0421c5789840b0484f418a52c32ba"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0003/source-input.bin",
+      "size": 210,
+      "sha256": "c3f0c89be2454f564d3c59eb38c6815a08d0421c5789840b0484f418a52c32ba"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0004/script.php",
+      "size": 235,
+      "sha256": "4110ec1ab00a7481702ac2bbfe600aaffe89e2e68b32b7306862c22e6fd84b08"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0004/source-input.bin",
+      "size": 235,
+      "sha256": "4110ec1ab00a7481702ac2bbfe600aaffe89e2e68b32b7306862c22e6fd84b08"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0005/script.php",
+      "size": 250,
+      "sha256": "3a8e75511ae1a26cb39e823026c7df180a8782772c7612f92f3db8f28b860288"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0005/source-input.bin",
+      "size": 250,
+      "sha256": "3a8e75511ae1a26cb39e823026c7df180a8782772c7612f92f3db8f28b860288"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0006/script.php",
+      "size": 253,
+      "sha256": "fe87e6f2f15e316052f077056b3f7092b28eb1de6289fc24cd801bff3355ad08"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0006/source-input.bin",
+      "size": 253,
+      "sha256": "fe87e6f2f15e316052f077056b3f7092b28eb1de6289fc24cd801bff3355ad08"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0007/script.php",
+      "size": 252,
+      "sha256": "45eef4662d91132931a4f57cdf6a2d0b3edcab32b70efb3a8615af3be9631997"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0007/source-input.bin",
+      "size": 252,
+      "sha256": "45eef4662d91132931a4f57cdf6a2d0b3edcab32b70efb3a8615af3be9631997"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0008/script.php",
+      "size": 111,
+      "sha256": "9bd343a1db7e607ba8d89c79960463114a124561e487338b335ae4d99523bf5b"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0008/source-input.bin",
+      "size": 111,
+      "sha256": "9bd343a1db7e607ba8d89c79960463114a124561e487338b335ae4d99523bf5b"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0009/script.php",
+      "size": 112,
+      "sha256": "cadd073a13ad6ea2218519c7ac4df0fa95855aaf759dbd94e3aa5c625fbed0e0"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0009/source-input.bin",
+      "size": 112,
+      "sha256": "cadd073a13ad6ea2218519c7ac4df0fa95855aaf759dbd94e3aa5c625fbed0e0"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0010/script.php",
+      "size": 117,
+      "sha256": "de329245a677df658a16c9110c234604ae020cb5a40257093059cfbeeca8801e"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0010/source-input.bin",
+      "size": 117,
+      "sha256": "de329245a677df658a16c9110c234604ae020cb5a40257093059cfbeeca8801e"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0011/script.php",
+      "size": 118,
+      "sha256": "0556aec383e4fb7806fd8576395a0572120f872e721c2fc86384fac6109298b8"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0011/source-input.bin",
+      "size": 118,
+      "sha256": "0556aec383e4fb7806fd8576395a0572120f872e721c2fc86384fac6109298b8"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0012/script.php",
+      "size": 135,
+      "sha256": "680b5e741b8ee1c10230abbf4bab0a87f683d7df25239d93a34fc45d88a9f5cc"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0012/source-input.bin",
+      "size": 135,
+      "sha256": "680b5e741b8ee1c10230abbf4bab0a87f683d7df25239d93a34fc45d88a9f5cc"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0013/script.php",
+      "size": 199,
+      "sha256": "bb4534357d62965699f8b157f891c7496d1bd637a5822b0abf5ec76775c2757d"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0013/source-input.bin",
+      "size": 199,
+      "sha256": "bb4534357d62965699f8b157f891c7496d1bd637a5822b0abf5ec76775c2757d"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0014/script.php",
+      "size": 205,
+      "sha256": "32232f42b6e3e8b367c35175a464f0bb2db0d28e2428b07a9ba38a09f4155272"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0014/source-input.bin",
+      "size": 205,
+      "sha256": "32232f42b6e3e8b367c35175a464f0bb2db0d28e2428b07a9ba38a09f4155272"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0015/script.php",
+      "size": 231,
+      "sha256": "a9a52417e91bbf0b9be62ed42fe9fec9dd112c285d591d2724190446def0b267"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0015/source-input.bin",
+      "size": 231,
+      "sha256": "a9a52417e91bbf0b9be62ed42fe9fec9dd112c285d591d2724190446def0b267"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0016/source-input.bin",
+      "size": 73,
+      "sha256": "c60526ec71533b8e1b62b439c17cc78c2eb9fda60ddbc0f96f2d39063946a83b"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0017/source-input.bin",
+      "size": 40,
+      "sha256": "aca48e0a78931495bf1b311315c2f1b97203700b7aa8a497f6b1c2ee9ade9879"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0018/source-input.bin",
+      "size": 25,
+      "sha256": "d42f30a694861e4a42dc36df692ebe17ac642b59a103eb54142b030d034cbaef"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0019/source-input.bin",
+      "size": 24,
+      "sha256": "0e78fe1aaad132801957eaca79bd99031aa484d404f22ff02e1cbab1bedf2b2b"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0020/source-input.bin",
+      "size": 64,
+      "sha256": "db0747d782e154ad04411d10252caad820613371abab13da185e33a96254ce46"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0021/source-input.bin",
+      "size": 73,
+      "sha256": "a155a98556ac817fa079de41b779c982df77853c2050a1bbc8a648e103c008ea"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0022/source-input.bin",
+      "size": 159,
+      "sha256": "c17481d9b9cb2cb29a2f5f87610f7378c9fb5e615d31992f7810ff67d99dd9d5"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0023/source-input.bin",
+      "size": 41,
+      "sha256": "236e3d0544006270e32011f932c3666d2dfde33979eacc8372c6676456728440"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0024/source-input.bin",
+      "size": 102,
+      "sha256": "c550eac50dd29618fd08753ffdc182f7ceb29a74852cdfb92334799db297ef34"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0025/source-input.bin",
+      "size": 90,
+      "sha256": "ea4639b786163cb53dc55a86167cf5becf913293dfd2ce019942841fcd8f4276"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0026/source-input.bin",
+      "size": 100,
+      "sha256": "1676d67100c7cd25124df59d515af17a806b676d97719920e43082e0353aaf10"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0027/source-input.bin",
+      "size": 67,
+      "sha256": "9a18518db45b380f559821c831c66f368d960bc148c083ce0333eb5ebc37321c"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0028/source-input.bin",
+      "size": 48,
+      "sha256": "6424f2a289769cb53ca74ddcccd01b363cf124516704e4bf6ec7109c3adbf536"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0029/source-input.bin",
+      "size": 82,
+      "sha256": "a9ddaf6905b2baffdd3a99a05be03c0ab6aac5f2879b47ddf6a6cccf1ac15e2a"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0030/source-input.bin",
+      "size": 79,
+      "sha256": "09ae9b5c19a5d5b09c093c54cb4c30fe45a335256eea16c7c311c3760b1ff790"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0031/source-input.bin",
+      "size": 83,
+      "sha256": "701c637f3eb35eb646f23fd7be8b24ec7a1debb47c24c0a86f432b946f14caee"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0032/source-input.bin",
+      "size": 60,
+      "sha256": "ce5992859d1dcb0799533ea436bf3b0805ae494c3442ff42e755a6a65f319e7b"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0033/source-input.bin",
+      "size": 144,
+      "sha256": "2da0a8b589c43d1c2b35e8e5b509d2aeb866ab9ee27042f0359b046a8fe89593"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0034/source-input.bin",
+      "size": 84,
+      "sha256": "d7ac8ff643b0b75f0e83355837b370338ac34036750ba82d6fbf8c15b0c8d909"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0035/source-input.bin",
+      "size": 129,
+      "sha256": "8b8ed7dcdf49e8e02b67fb76e3a628610e1ebfb32d77c7da25656032be2225e2"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0036/source-input.bin",
+      "size": 118,
+      "sha256": "cbd17765f1f869eceda4128f3ce84b546804b961adb0477e275d9bce556e28f5"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0037/source-input.bin",
+      "size": 150,
+      "sha256": "6dbce40bffbcf47a3f099738cc5ad8450c6b251adaba579730a9c5db7e4d1f3d"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0038/source-input.bin",
+      "size": 158,
+      "sha256": "86a0a1462d239f4700376b02fe639058515ce1f254ec0a0e0f9418d0c95a96e0"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/case-0039/source-input.bin",
+      "size": 122,
+      "sha256": "e674d17d66f32a65f0998b1be3bcd3970275c4620f02a3bf08ef882acaf6708d"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/group-summary.json",
+      "size": 3908,
+      "sha256": "d4dae037006c723af36ac9578083ab3cd9e4e3da7e060cc6419eddbe336ad717"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/README.md",
+      "size": 2231,
+      "sha256": "2c361293f2b604de366d2aa847330147f74e767b1e93eedc2df8ecb59dbe3459"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/report.json",
+      "size": 431895,
+      "sha256": "0b98f4a3423fd33a7a61198394668493044dfb71c7f677330a8b0ede3e028fe6"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/results.jsonl",
+      "size": 411016,
+      "sha256": "50b108c7215eb053c4f2d9eed9bd6fac72b278a42775b269359773f13918511b"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-40/run-context.json",
+      "size": 1294,
+      "sha256": "de5897c3082d06ad8a119d332e8f4e257f35f771a6124d62ec68d08ed4245696"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-preparation/additional-pins-before.json",
+      "size": 17644,
+      "sha256": "27f1178597ef6e09bdb0eb041eb964a313cd42f99f2f2f7d7095d8b5a70fe1fc"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-preparation/Build-Cases.py",
+      "size": 4444,
+      "sha256": "04b898a79698844d551888f6bd59274b11b1b4798ae0940deef7d63b0c736fd7"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-preparation/case-provenance.json",
+      "size": 21934,
+      "sha256": "647420baa06c7e14d830a50f94a32ef2ad1530f4ae35247c4fc7dfcd0fdd25d7"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-preparation/composed07-boundaries40.cases.json",
+      "size": 9130,
+      "sha256": "61f60e2dd3423389ec6f8ece784962372c75523150fc4e61aa50e1bd7193683e"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-preparation/INPUT-INTERPRETATION-CORRECTION.md",
+      "size": 1154,
+      "sha256": "4bf911117868033936bc3c2ee604255b41741402a46fe833e16563e3f1305206"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-preparation/new-boundary16.cases.json",
+      "size": 3179,
+      "sha256": "971c86396b93bc4c847a03c9f3aecf24a4cf5e8ef374dec919f937d5ed020dc7"
+    },
+    {
+      "path": "reports/php-byte-interpreter-20261113/composed07-boundaries-preparation/Run-Pinned.py",
+      "size": 3720,
+      "sha256": "effb8de0fd51b70740bf0d78a6ededc97379e082354a3ffa554715685038ced2"
+    }
+  ]
+}

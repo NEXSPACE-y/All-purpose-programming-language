@@ -1,0 +1,398 @@
+[
+  {
+    "name": "typed int basic",
+    "code": "<?php function f(int $x) {return $x+2;} echo f(3);",
+    "expected": "5",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed int numeric string",
+    "code": "<?php function f(int $x) {return $x+2;} echo f(\"3\");",
+    "expected": "5",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed int fractional decimal",
+    "code": "<?php function f(int $x) {echo $x;} f(3.9);",
+    "expected": "3",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed int bool to int",
+    "code": "<?php function f(int $x) {echo $x;} f(true);",
+    "expected": "1",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed float numeric string",
+    "code": "<?php function f(float $x) {echo $x+0.5;} f(\"2\");",
+    "expected": "2.5",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed bool string zero",
+    "code": "<?php function f(bool $x) {echo $x ? \"yes\":\"no\";} f(\"0\");",
+    "expected": "no",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed bool string nonzero",
+    "code": "<?php function f(bool $x) {echo $x ? \"yes\":\"no\";} f(\"hello\");",
+    "expected": "yes",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed string numeric",
+    "code": "<?php function f(string $x) {echo $x;} f(12);",
+    "expected": "12",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed string boolean",
+    "code": "<?php function f(string $x) {echo $x;} f(true);",
+    "expected": "1",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed nullable int null",
+    "code": "<?php function f(?int $x) {echo $x === null ? \"null\":\"value\";} f(null);",
+    "expected": "null",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed nullable int value",
+    "code": "<?php function f(?int $x) {echo $x === null ? \"null\":\"value\";} f(4);",
+    "expected": "value",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed nullable string null",
+    "code": "<?php function f(?string $x) {echo $x === null ? \"null\":\"value\";} f(null);",
+    "expected": "null",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed union int|string integer",
+    "code": "<?php function f(int|string $x) {echo $x;} f(4);",
+    "expected": "4",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed union int|string string",
+    "code": "<?php function f(int|string $x) {echo $x;} f(\"test\");",
+    "expected": "test",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed union int|float fractional",
+    "code": "<?php function f(int|float $x) {echo $x;} f(2.5);",
+    "expected": "2.5",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed bool|string bool",
+    "code": "<?php function f(bool|string $x) {echo $x ? \"yes\":\"no\";} f(true);",
+    "expected": "yes",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed union null|int null",
+    "code": "<?php function f(null|int $x) {echo $x === null ? \"nil\":\"no\";} f(null);",
+    "expected": "nil",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed mixed accepts int",
+    "code": "<?php function f(mixed $x) {echo $x;} f(3);",
+    "expected": "3",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed mixed accepts null",
+    "code": "<?php function f(mixed $x) {echo $x === null ? \"nil\":\"no\";} f(null);",
+    "expected": "nil",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed array input",
+    "code": "<?php function f(array $x) {echo count($x);} f([1,2,3]);",
+    "expected": "3",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed object input",
+    "code": "<?php function f(object $x) {echo $x->v;} $o = new stdClass(); $o->v=\"ok\"; f($o);",
+    "expected": "ok",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed class input",
+    "code": "<?php class A {} function f(A $x){echo \"ok\";} f(new A());",
+    "expected": "ok",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed parent class input",
+    "code": "<?php class A {} class B extends A {} function f(A $x){echo \"ok\";} f(new B());",
+    "expected": "ok",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed interface input",
+    "code": "<?php interface I {} class A implements I {} function f(I $x){echo \"ok\";} f(new A());",
+    "expected": "ok",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed callable closure",
+    "code": "<?php function f(callable $x){echo $x(3);} f(fn($v)=>$v+1);",
+    "expected": "4",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed closure argument",
+    "code": "<?php  $f=function (int $x){echo $x;}; $f(\"4\");",
+    "expected": "4",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed closure return",
+    "code": "<?php  $f=function (): int{return \"4\";}; echo $f();",
+    "expected": "4",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed arrow argument",
+    "code": "<?php  $f=fn(int $x)=>$x+1; echo $f(7);",
+    "expected": "8",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed arrow return",
+    "code": "<?php  $f=fn(): string=>5; echo $f();",
+    "expected": "5",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed instance method",
+    "code": "<?php class A {public function f(int $x): string{return $x;}} echo (new A())->f(4);",
+    "expected": "4",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed static method",
+    "code": "<?php class A {public static function f(string $x): int{return $x;}} echo A::f(\"4\");",
+    "expected": "4",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed inheritance call",
+    "code": "<?php class A {public function f(int $x): int{return $x+1;}} class B extends A{} echo (new B())->f(\"2\");",
+    "expected": "3",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed named args",
+    "code": "<?php function f(int $x, string $y){echo $x.$y;} f(y:\"b\",x:\"2\");",
+    "expected": "2b",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed default arg",
+    "code": "<?php function f(int $x=3){echo $x;} f();",
+    "expected": "3",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed variadic args",
+    "code": "<?php function f(int ...$x){foreach($x as $v){echo $v;}} f(\"2\",3,4);",
+    "expected": "234",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed byref arg",
+    "code": "<?php function f(int &$x){$x=$x+3;} $v=4; f($v); echo $v;",
+    "expected": "7",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed return int conversion",
+    "code": "<?php function f(): int{return \"3\";} echo f()+2;",
+    "expected": "5",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed return float",
+    "code": "<?php function f(): float{return 2.5;} echo f();",
+    "expected": "2.5",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed return bool",
+    "code": "<?php function f(): bool{return 1;} echo f() ? \"yes\":\"no\";",
+    "expected": "yes",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed return string",
+    "code": "<?php function f(): string{return 17;} echo f();",
+    "expected": "17",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed return nullable",
+    "code": "<?php function f(): ?int {return null;} echo f() === null ? \"ok\":\"no\";",
+    "expected": "ok",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed return array",
+    "code": "<?php function f(): array {return [1,2];} echo count(f());",
+    "expected": "2",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed return object",
+    "code": "<?php function f(): object {return new stdClass();} echo f() instanceof stdClass ? \"ok\":\"no\";",
+    "expected": "ok",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed return class",
+    "code": "<?php class A {} function f(): A {return new A();} echo f() instanceof A ? \"ok\":\"no\";",
+    "expected": "ok",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed return callable",
+    "code": "<?php function f(): callable {return fn($x)=>$x+1;} $g=f(); echo $g(3);",
+    "expected": "4",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed return mixed",
+    "code": "<?php function f(): mixed {return \"done\";} echo f();",
+    "expected": "done",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed void return",
+    "code": "<?php function f(): void {return;} f(); echo \"done\";",
+    "expected": "done",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed void fallthrough",
+    "code": "<?php function f(): void {} f(); echo \"done\";",
+    "expected": "done",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed closure captured value",
+    "code": "<?php  $x=2; $f=function(int $v) use ($x): int {return $v+$x;}; echo $f(3);",
+    "expected": "5",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed nullable class",
+    "code": "<?php class A {} function f(?A $v){echo $v===null?\"nil\":\"ok\";} f(new A());",
+    "expected": "ok",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed union classes",
+    "code": "<?php class A {} class B {} function f(A|B $v){echo \"ok\";} f(new B());",
+    "expected": "ok",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed false literal",
+    "code": "<?php function f(false $v){echo $v===false?\"ok\":\"no\";} f(false);",
+    "expected": "ok",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "typed true literal",
+    "code": "<?php function f(true $v){echo $v===true?\"ok\":\"no\";} f(true);",
+    "expected": "ok",
+    "oracle_php_exit": 0
+  },
+  {
+    "name": "reject int nonnumeric",
+    "code": "<?php function f(int $x){} f(\"abc\");",
+    "error_contains": "ALL PHP: Type mismatch",
+    "oracle_php_exit": 255
+  },
+  {
+    "name": "reject array scalar",
+    "code": "<?php function f(array $x){} f(1);",
+    "error_contains": "ALL PHP: Type mismatch",
+    "oracle_php_exit": 255
+  },
+  {
+    "name": "reject object scalar",
+    "code": "<?php function f(object $x){} f(\"abc\");",
+    "error_contains": "ALL PHP: Type mismatch",
+    "oracle_php_exit": 255
+  },
+  {
+    "name": "reject string array",
+    "code": "<?php function f(string $x){} f([1]);",
+    "error_contains": "ALL PHP: Type mismatch",
+    "oracle_php_exit": 255
+  },
+  {
+    "name": "reject custom class wrong",
+    "code": "<?php class A{} class B{} function f(A $x){} f(new B());",
+    "error_contains": "ALL PHP: Type mismatch",
+    "oracle_php_exit": 255
+  },
+  {
+    "name": "reject return int null",
+    "code": "<?php function f(): int {return null;} f();",
+    "error_contains": "ALL PHP: Type mismatch",
+    "oracle_php_exit": 255
+  },
+  {
+    "name": "reject return array string",
+    "code": "<?php function f(): array{return \"abc\";} f();",
+    "error_contains": "ALL PHP: Type mismatch",
+    "oracle_php_exit": 255
+  },
+  {
+    "name": "reject return object scalar",
+    "code": "<?php function f(): object{return 3;} f();",
+    "error_contains": "ALL PHP: Type mismatch",
+    "oracle_php_exit": 255
+  },
+  {
+    "name": "reject return class wrong",
+    "code": "<?php class A{} class B{} function f(): A{return new B();} f();",
+    "error_contains": "ALL PHP: Type mismatch",
+    "oracle_php_exit": 255
+  },
+  {
+    "name": "reject variadic wrong element",
+    "code": "<?php function f(int ...$x){} f(1, \"abc\");",
+    "error_contains": "ALL PHP: Type mismatch",
+    "oracle_php_exit": 255
+  },
+  {
+    "name": "reject nullable int string",
+    "code": "<?php function f(?int $x){} f(\"abc\");",
+    "error_contains": "ALL PHP: Type mismatch",
+    "oracle_php_exit": 255
+  },
+  {
+    "name": "reject return union mismatch",
+    "code": "<?php function f(): int|string{return [1,2];} f();",
+    "error_contains": "ALL PHP: Type mismatch",
+    "oracle_php_exit": 255
+  },
+  {
+    "name": "reject void return value",
+    "code": "<?php function f(): void {return 1;} f();",
+    "error_contains": "ALL PHP: void function cannot return a value",
+    "oracle_php_exit": 255
+  }
+]

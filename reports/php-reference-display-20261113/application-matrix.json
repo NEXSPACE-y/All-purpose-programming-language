@@ -1,0 +1,24 @@
+{
+  "status": "GENERATOR_APPLICATION_ONLY_NOT_EXECUTION",
+  "module_sha256": "e67f7c1cd642bb54b8c6a292b6d9b7f01f49fbe24186507534103589e8c85c35",
+  "results": [
+    {
+      "revision": "typed02",
+      "base_sha256": "07951c5730cb66b14173e487bab9886cec109389dab86fab21b3347b1b4ef16c",
+      "applied": false,
+      "error": "Expected one reference function Evaluate-PhpBuiltinArguments, found 0"
+    },
+    {
+      "revision": "combined03",
+      "base_sha256": "4d120c8ff1e6f2179e2dee5cd2ef4726d2ff05d168fac536f34721c8c9e13a9c",
+      "applied": true,
+      "output_sha256": "4e022ac0e63d45b84e9f48c99b3afd089a6fb90164f0c434e5d948da0284e82b"
+    },
+    {
+      "revision": "offsets04",
+      "base_sha256": "257f9b94869f84dfc533eb77db695a08a0a9d86b2168d23f9a3798f8d8da8143",
+      "applied": true,
+      "output_sha256": "49a3a23413464d177fe82a0e0929043f295809b48e53fde367abae3c0d389e22"
+    }
+  ]
+}

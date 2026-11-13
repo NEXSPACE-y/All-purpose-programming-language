@@ -1,0 +1,23 @@
+# Reference display and local separation candidate
+
+Final generator: `tools/candidates/php-byte-interpreter/ReferenceDisplayEdits.py`, SHA256 `e67f7c1cd642bb54b8c6a292b6d9b7f01f49fbe24186507534103589e8c85c35`. The matching snapshot is in `revision02/ReferenceDisplayEdits.py.snapshot`. The immutable byte runtime remains unchanged at SHA256 `18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b`.
+
+The final measured executable is the same composed06 CLI artifact used by the parent's 55-case integration run. Its adapter SHA256 is `2c9e9813ffb2f2ee6b3a23ccb542157a5275da3989fd8feef1cc4542fe0b6be5`; executable SHA256 is `1f996faf27151d15aedb6a70215502b872846ea9e85d8f8c7bd36b598b87fee7`. Core, typed keys, string builtins, native bytes, offsets, JSON, valid-text symbols and this reference module are composed in that artifact.
+
+Measured results:
+
+- `composed06-source32/report.json`: **32/32 exact matches**, terminal exit 0, all input hashes unchanged. The original `oracle01/cases.json` SHA256 remains `0abed1ae61b4dfcf635a9c3189b15ef2bbbb6c4db04e5ceae2b74eb5b63a556e`.
+- `composed06-pending04/report.json`: **4/4 exact matches**, terminal exit 0, all input hashes unchanged. These four additional programs exercise pending ownership during intra-array reference binding and by-reference argument evaluation. They do not replace any original case.
+- Both runs compare identical PHP source / CLI arguments against PHP 8.5.12, preserving raw stdout, stderr and actual process status. The per-process timeout stays 30 seconds. No normalization, retry, input substitution or expected-value edit was used. Incremental raw journals and individual source-input files are retained.
+- `revision02/direct-contract01/report.json`: 13/13 logical-graph outputs match the separately captured oracle bytes. This is a direct helper contract, not PHP source interpretation. Revision01 and its earlier direct proof are preserved.
+- The parent's separate `reports/php-byte-interpreter-20261113/composed06-byte55/report.json` reports terminal 55/55 with the same adapter pin and unchanged inputs, including the previously differing typed-array reference display. That result was produced by the parent; this task did not rerun or rewrite it.
+
+Behavior now measured includes shared and single-owner array/object cells, top-level scalar dereferencing, array copy before/after unsetting the external alias, separation before/after that unset, independent writes after a single-owner copy, repeated slots, nested copies, live and expired caller locals, reference parameters, function statics, closure captures, foreach's last alias, repeated var_dump arguments and self recursion. An ampersand is emitted for a nested shared reference; merely retaining a single cell wrapper does not produce one.
+
+Implementation retains eager array value copies and existing refcells. Private logical backing metadata identifies copies that still represent one PHP hashtable. Write/bind/remove paths separate that backing and unwrap only cells with a single live logical owner. Active/suspended variables, persistent statics, object properties, closure captures and explicitly scoped arguments provide the live roots. Traversal counts actual slots while deduplicating shared backings; CLR GC reference counts and arbitrary PS locals are not used. A maintained reference-absence bit skips graph scans for reference-free arrays. The byte formatter shares one ownership snapshot per dump and checks recursion before printing a reference mark. All new temporary/frame roots leave through try/finally.
+
+`application-matrix.json` records successful application to combined03 and offsets04. The older typed02 adapter is explicitly rejected because it lacks the builtin argument snapshot helper; it was not silently reinterpreted as a supported profile. The revision02 standalone offsets04+Reference CLI build was prepared but never executed as a PHP-source loop. `composed06-run-preparation.json` records the switch to the parent's already-composed executable before the 32-case run; the original 32 programs and timeout were preserved.
+
+The work does not implement Zend/native zval ownership, PHP GC/destructor timing, resource ownership, generators/fibers, exception trace retention, ReflectionReference identity or every PHP reference behavior. Linux execution and full PHP compatibility remain unverified/incomplete. No native ABI architecture or byte assembly change was introduced. Package source, old 75 byte proofs, original typed-array fixtures and historical failure reports were not modified.
+
+Rollback consists of omitting ReferenceDisplayEdits from a fresh composed candidate. Do not overwrite the pinned candidate, snapshots or completed measurements.

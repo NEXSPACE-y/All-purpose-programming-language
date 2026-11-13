@@ -1,0 +1,80 @@
+{
+  "status": "FROZEN_ISOLATED_VALID_UTF8_SYMBOL_PATCH_NOT_PACKAGE_ADOPTED",
+  "module_sha256": "4853ac24f16c2a792dd5836bc8eaeba05335a9e255b9810b898999751ab634c3",
+  "selected_candidate_sha256": "bfb9fb18b56bb7359cac8abe2a06547a152bbe6b23150f44ff1ffb6d80e75297",
+  "measurements": {
+    "before10": {
+      "passed": 0,
+      "total": 10,
+      "inputs_unchanged": true,
+      "candidate_states": {
+        "EXITED": 10
+      },
+      "oracle_states": {
+        "EXITED": 10
+      },
+      "failed_ids": [
+        "identifier.variable-japanese",
+        "identifier.function-japanese",
+        "identifier.class-japanese",
+        "identifier.namespace-japanese",
+        "identifier.function-unicode-case",
+        "identifier.function-emoji",
+        "identifier.function-nbsp",
+        "identifier.ascii-class-canonical",
+        "symbols.constant-prefix-ascii",
+        "symbols.keyword-kelvin-control"
+      ]
+    },
+    "revision02-critical3": {
+      "passed": 3,
+      "total": 3,
+      "inputs_unchanged": true,
+      "candidate_states": {
+        "EXITED": 3
+      },
+      "oracle_states": {
+        "EXITED": 3
+      },
+      "failed_ids": []
+    },
+    "revision02-after40": {
+      "passed": 38,
+      "total": 40,
+      "inputs_unchanged": true,
+      "candidate_states": {
+        "EXITED": 40
+      },
+      "oracle_states": {
+        "EXITED": 40
+      },
+      "failed_ids": [
+        "identifier.dynamic-variable-case",
+        "identifier.dynamic-variable-normalization"
+      ]
+    },
+    "revision04-recheck8": {
+      "passed": 8,
+      "total": 8,
+      "inputs_unchanged": true,
+      "candidate_states": {
+        "EXITED": 8
+      },
+      "oracle_states": {
+        "EXITED": 8
+      },
+      "failed_ids": []
+    }
+  },
+  "final_same_hash_40_case_measurement_completed": false,
+  "final_targeted_recheck": "8/8 including both previous failures",
+  "stock_php_execution_delegation": false,
+  "package_modified": false,
+  "all_measurement_processes_terminal": true,
+  "limits": [
+    "valid UTF8 source/text metadata only; all-raw symbol component not yet adopted",
+    "No final full40 same-hash run or whole-interpreter regression by this agent",
+    "combined03 static composition only",
+    "Linux/native-name catalogs/SAPIs/packaging incomplete"
+  ]
+}

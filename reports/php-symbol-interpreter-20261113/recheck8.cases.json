@@ -1,0 +1,34 @@
+[
+  {
+    "id": "identifier.ascii-function",
+    "code": "<?php function MiXeD(){return 1;}echo mixed();"
+  },
+  {
+    "id": "identifier.variable-japanese",
+    "code": "<?php $変数=7;echo $変数;"
+  },
+  {
+    "id": "identifier.dynamic-variable-case",
+    "code": "<?php ${'É'}=1;${'é'}=2;echo ${'É'}.${'é'};"
+  },
+  {
+    "id": "identifier.dynamic-variable-normalization",
+    "code": "<?php ${'é'}=1;${'é'}=2;echo ${'é'}.${'é'};"
+  },
+  {
+    "id": "symbols.parameter-nfc-named",
+    "code": "<?php function f($é=1,$é=2){return $é+$é;}echo f(é:5);"
+  },
+  {
+    "id": "symbols.array-callable-japanese",
+    "code": "<?php class 猫{static function 鳴く($x){return $x+1;}}$f=[\"猫\",\"鳴く\"];echo $f(4),\":\",call_user_func_array($f,[\"x\"=>6]);"
+  },
+  {
+    "id": "symbols.keyword-kelvin-control",
+    "code": "<?php function breaK(){return 9;}echo breaK();"
+  },
+  {
+    "id": "symbols.ascii-keyword-case",
+    "code": "<?php FuNcTiOn f(){ReTuRn 8;}EcHo f();"
+  }
+]

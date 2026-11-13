@@ -1,0 +1,152 @@
+[
+  {
+    "name": "dynamic namespaced constant",
+    "code": "<?php namespace A; define('A\\VALUE', 7); echo VALUE;",
+    "oracle_php_exit": 0,
+    "expected": "7"
+  },
+  {
+    "name": "dynamic constant over global constant",
+    "code": "<?php namespace { const VALUE = 'global'; } namespace A { define('A\\VALUE', 'local'); echo VALUE; }",
+    "oracle_php_exit": 0,
+    "expected": "local"
+  },
+  {
+    "name": "defined null constant does not fall back",
+    "code": "<?php namespace { const VALUE = 'global'; } namespace A { define('A\\VALUE', null); var_dump(VALUE); }",
+    "oracle_php_exit": 0,
+    "expected": "NULL\n"
+  },
+  {
+    "name": "constant fallback remains case sensitive",
+    "code": "<?php namespace { const value = 'global'; } namespace A { define('A\\VALUE', 'local'); echo VALUE, '|', value; }",
+    "oracle_php_exit": 0,
+    "expected": "local|global"
+  },
+  {
+    "name": "dynamic constant in function body",
+    "code": "<?php namespace A; function read(){return VALUE;} define('A\\VALUE', 19); echo read();",
+    "oracle_php_exit": 0,
+    "expected": "19"
+  },
+  {
+    "name": "repeated constant expression after local definition",
+    "code": "<?php namespace { const VALUE = 'global'; } namespace A { function read(){return VALUE;} echo read(), '|'; define('A\\VALUE', 'local'); echo read(); }",
+    "oracle_php_exit": 0,
+    "expected": "global|global"
+  },
+  {
+    "name": "conditional local function not installed",
+    "code": "<?php namespace A; if (false) { function strlen($s){return 9;} } echo strlen('abc');",
+    "oracle_php_exit": 0,
+    "expected": "3"
+  },
+  {
+    "name": "conditional local function installed",
+    "code": "<?php namespace A; if (true) { function strlen($s){return 9;} } echo strlen('abc');",
+    "oracle_php_exit": 0,
+    "expected": "9"
+  },
+  {
+    "name": "two call sites bind independently",
+    "code": "<?php namespace A; echo strlen('abc'), '|'; if (true) { function strlen($s){return 9;} } echo strlen('abc');",
+    "oracle_php_exit": 0,
+    "expected": "3|9"
+  },
+  {
+    "name": "same call site after local function definition",
+    "code": "<?php namespace A; function read(){return strlen('abc');} echo read(), '|'; if (true) { function strlen($s){return 9;} } echo read();",
+    "oracle_php_exit": 0,
+    "expected": "3|3"
+  },
+  {
+    "name": "nested declaration resolves at runtime",
+    "code": "<?php namespace A; function install(){function inner(){return 13;}} install(); echo inner();",
+    "oracle_php_exit": 0,
+    "expected": "13"
+  },
+  {
+    "name": "function fallback into global user function",
+    "code": "<?php namespace { function read(){return 17;} } namespace A { if (false) { function read(){return 3;} } echo read(); }",
+    "oracle_php_exit": 0,
+    "expected": "17"
+  },
+  {
+    "name": "local reference return selected at runtime",
+    "code": "<?php namespace A; $v=1; if (true) { function &read(){global $v; return $v;} } $ref =& read(); $ref=8; echo $v;",
+    "oracle_php_exit": 0,
+    "expected": "8"
+  },
+  {
+    "name": "global reference return fallback",
+    "code": "<?php namespace { $v=1; function &read(){global $v; return $v;} } namespace A { if (false) { function read(){} } $ref =& read(); $ref=8; echo $v; }",
+    "oracle_php_exit": 0,
+    "expected": "8"
+  },
+  {
+    "name": "first class global fallback with unexecuted local declaration",
+    "code": "<?php namespace A; if (false) { function strlen($s){return 9;} } $f=strlen(...); echo $f('abc');",
+    "oracle_php_exit": 0,
+    "expected": "3"
+  },
+  {
+    "name": "first class local function binds when created",
+    "code": "<?php namespace A; if (true) { function strlen($s){return 9;} } $f=strlen(...); echo $f('abc');",
+    "oracle_php_exit": 0,
+    "expected": "9"
+  },
+  {
+    "name": "imported constant is resolved exactly",
+    "code": "<?php namespace X { const VALUE='import'; } namespace A { use const X\\VALUE; define('A\\VALUE','local'); echo VALUE; }",
+    "oracle_php_exit": 0,
+    "expected": "import"
+  },
+  {
+    "name": "imported function is resolved exactly",
+    "code": "<?php namespace X { function read(){return 'import';} } namespace A { use function X\\read; if (true) { function own(){return 'local';} } echo read(), '|', own(); }",
+    "oracle_php_exit": 0,
+    "expected": "import|local"
+  },
+  {
+    "name": "qualified constant has no global fallback",
+    "code": "<?php namespace A; define('A\\Sub\\VALUE', 'qualified'); echo Sub\\VALUE;",
+    "oracle_php_exit": 0,
+    "expected": "qualified"
+  },
+  {
+    "name": "relative function stays in current namespace",
+    "code": "<?php namespace A; if (true) { function read(){return 23;} } echo namespace\\read();",
+    "oracle_php_exit": 0,
+    "expected": "23"
+  },
+  {
+    "name": "failed call lookup is retried after local declaration",
+    "code": "<?php namespace A; function probe($n){try{return late($n);}finally{if($n==0){return 'first';}}} echo probe(0),'|'; if(true){function late($n){return 'local';}} echo probe(1);",
+    "oracle_php_exit": 0,
+    "expected": "first|local"
+  },
+  {
+    "name": "failed first class lookup is retried after local declaration",
+    "code": "<?php namespace A; function factory($n){try{return late(...);}finally{if($n==0){return null;}}} factory(0); if(true){function late(){return 'local';}} $f=factory(1); echo $f();",
+    "oracle_php_exit": 0,
+    "expected": "local"
+  },
+  {
+    "name": "first class unknown function rejected when created",
+    "code": "<?php namespace A; try {$f=missing(...); echo 'created';} catch(\\Error $e){echo 'caught';}",
+    "oracle_php_exit": 0,
+    "expected": "caught"
+  },
+  {
+    "name": "undefined call rejected before argument side effects",
+    "code": "<?php namespace A; function arg(){echo 'arg|';return 1;} try {missing(arg());} catch(\\Error $e){echo 'caught|';} finally {echo 'finally';}",
+    "oracle_php_exit": 0,
+    "expected": "caught|finally"
+  },
+  {
+    "name": "successful builtin binding survives argument exception",
+    "code": "<?php namespace A; function probe($n){return strlen(1/$n);} try{probe(0);}catch(\\DivisionByZeroError $e){echo 'caught|';} if(true){function strlen($s){return 9;}} echo probe(1);",
+    "oracle_php_exit": 0,
+    "expected": "caught|1"
+  }
+]

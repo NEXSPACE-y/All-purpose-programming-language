@@ -1,0 +1,10 @@
+--- a/ALL_PHP_v3_9_1_working.ps1
++++ b/ALL_PHP_v3_9_2_adapter.ps1
+@@ -3788,6 +3788,7 @@
+                                 Params=$method.Params; Body=$method.Body; Expr=$method.Expr
+                                 Visibility=$method.Visibility; Static=$method.Static
+                                 Owner=$node.Name; Abstract=$method.Abstract; Final=$method.Final
++                                ReturnByRef=$method.ReturnByRef
+                             }
+                             if ($null -ne $node.Parent) {
+                                 $inherited=$null

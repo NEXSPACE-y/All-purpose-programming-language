@@ -1,0 +1,1 @@
+<?php set_error_handler("strlen");try{trigger_error("payload\xFF",E_USER_WARNING);}catch(ArgumentCountError $e){echo $e->getMessage();}

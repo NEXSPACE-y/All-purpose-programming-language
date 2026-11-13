@@ -1,0 +1,127 @@
+{
+    "method":  "actual_ALL_source_byte_native_bridge_outer_Main",
+    "mode":  "callback",
+    "native_context_parameter_verified":  true,
+    "failure":  null,
+    "native_unsupported":  false,
+    "powerShell":  "5.1.26100.9818",
+    "clr":  "4.0.30319.42000",
+    "pid":  10788,
+    "inputs_before":  {
+                          "source":  "84f62ccfef067724ae939b897dbacc593d005501ae2b5fa5335a9217e74f7b66",
+                          "adapter":  "4d120c8ff1e6f2179e2dee5cd2ef4726d2ff05d168fac536f34721c8c9e13a9c",
+                          "core":  "88117b8f38dc77d20e638ce573bb83fc6f959c1ad6821f8803c5499969fe234b",
+                          "extension":  "532b9f0944d482a704eb81ac1cb9af3b59aa0f54c753c53a5709c17f57d4e938",
+                          "runtime":  "18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b",
+                          "bridge":  "4bdbb60db0da70140224dac092507aa8d911f7d86738680b53172c979f712932",
+                          "worker":  "43151ca1834e873accad40190498b879d48f645a2eadd3a61e28d76c3d79670a",
+                          "host":  "0bad369da0267a61dcfccfda88ff7b604235d77857d60bfec0d4b476090bb6c8"
+                      },
+    "runtime_assembly_location":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-runtime\\out\\runtime01\\AllPhp.ByteValues.Runtime.dll",
+    "bridge_assembly_location":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-native\\out\\build05\\AllPhp.NativeBytes.Bridges.dll",
+    "core_path":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+    "loaded_php_modules":  [
+                               "C:\\Users\\rinpa\\ALL-php-compat-20261112\\native\\php85abi-callback\\out\\windows-x64-ts\\php8ts.dll",
+                               "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_dl_test.dll"
+                           ],
+    "function_catalog":  {
+                             "value":  [
+                                           {
+                                               "name":  "dl_test_frameless",
+                                               "required_args":  1,
+                                               "declared_args":  1,
+                                               "flags":  0,
+                                               "module":  "dl_test",
+                                               "supports_named_arguments":  false,
+                                               "parameters":  [
+                                                                  {
+                                                                      "position":  1,
+                                                                      "name":  "value"
+                                                                  }
+                                                              ]
+                                           },
+                                           {
+                                               "name":  "dl_test_test1",
+                                               "required_args":  0,
+                                               "declared_args":  0,
+                                               "flags":  0,
+                                               "module":  "dl_test",
+                                               "supports_named_arguments":  false,
+                                               "parameters":  [
+
+                                                              ]
+                                           },
+                                           {
+                                               "name":  "dl_test_test2",
+                                               "required_args":  0,
+                                               "declared_args":  1,
+                                               "flags":  0,
+                                               "module":  "dl_test",
+                                               "supports_named_arguments":  false,
+                                               "parameters":  [
+                                                                  {
+                                                                      "position":  1,
+                                                                      "name":  "str"
+                                                                  }
+                                                              ]
+                                           }
+                                       ],
+                             "Count":  3
+                         },
+    "cli_context":  {
+                        "TerminationReason":  null,
+                        "ExitCode":  0,
+                        "Terminated":  false,
+                        "SourcePath":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\native-integration-combined03-raw4\\case-0000.php"
+                    },
+    "native_stats":  {
+                         "minit":  1,
+                         "mshutdown":  1,
+                         "rinit":  1,
+                         "rshutdown":  1,
+                         "thread_requests_started":  1,
+                         "thread_requests_ended":  1,
+                         "thread_global_ctors":  1,
+                         "tls_contexts_created":  1,
+                         "tls_contexts_destroyed":  1,
+                         "native_invocations":  1,
+                         "registered_functions":  0,
+                         "registered_classes":  0,
+                         "request_allocations_live":  0,
+                         "api_calls":  {
+                                           "OnUpdateLong":  1,
+                                           "OnUpdateString":  1,
+                                           "__zend_malloc":  1,
+                                           "tsrm_get_ls_cache":  2,
+                                           "zend_declare_typed_property":  1,
+                                           "zend_register_functions":  1,
+                                           "zend_register_ini_entries_ex":  1,
+                                           "zend_register_internal_class_with_flags":  4,
+                                           "zend_register_long_constant":  1,
+                                           "zend_string_init_interned":  17,
+                                           "zend_strpprintf":  1,
+                                           "zend_unregister_ini_entries_ex":  1
+                                       }
+                     },
+    "callback_stats":  {
+                           "callbacks":  0,
+                           "aborts":  0,
+                           "owner_rejections":  0,
+                           "flushed_output_bytes":  0,
+                           "contract_started":  0,
+                           "contract_after_diagnostic":  0,
+                           "callback_owner_thread":  0
+                       },
+    "pipeline_count":  0,
+    "exit_code":  0,
+    "inputs_after":  {
+                         "source":  "84f62ccfef067724ae939b897dbacc593d005501ae2b5fa5335a9217e74f7b66",
+                         "adapter":  "4d120c8ff1e6f2179e2dee5cd2ef4726d2ff05d168fac536f34721c8c9e13a9c",
+                         "core":  "88117b8f38dc77d20e638ce573bb83fc6f959c1ad6821f8803c5499969fe234b",
+                         "extension":  "532b9f0944d482a704eb81ac1cb9af3b59aa0f54c753c53a5709c17f57d4e938",
+                         "runtime":  "18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b",
+                         "bridge":  "4bdbb60db0da70140224dac092507aa8d911f7d86738680b53172c979f712932",
+                         "worker":  "43151ca1834e873accad40190498b879d48f645a2eadd3a61e28d76c3d79670a",
+                         "host":  "0bad369da0267a61dcfccfda88ff7b604235d77857d60bfec0d4b476090bb6c8"
+                     }
+}

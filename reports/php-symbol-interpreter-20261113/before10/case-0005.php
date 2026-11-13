@@ -1,0 +1,1 @@
+<?php function 😀(){return 3;}echo 😀();

@@ -1,0 +1,1 @@
+enum E:string{case A="é";case B="é";}echo E::from("é")->name,":",E::from("é")->name;

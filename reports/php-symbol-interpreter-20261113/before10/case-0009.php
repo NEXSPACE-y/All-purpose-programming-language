@@ -1,0 +1,1 @@
+<?php function breaK(){return 9;}echo breaK();

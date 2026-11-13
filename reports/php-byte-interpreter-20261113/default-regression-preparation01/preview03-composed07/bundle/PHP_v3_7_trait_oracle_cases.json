@@ -1,0 +1,102 @@
+[
+  {
+    "name": "trait alias unqualified",
+    "code": "<?php trait A{public function f(){return 'ok';}} class C{use A{f as g;}} $o=new C();echo $o->g();",
+    "expected": "ok"
+  },
+  {
+    "name": "trait alias qualified",
+    "code": "<?php trait A{public function f(){return 5;}} class C{use A{A::f as g;}} echo (new C())->g();",
+    "expected": "5"
+  },
+  {
+    "name": "trait alias keeps original",
+    "code": "<?php trait A{public function f(){return 'a';}} class C{use A{f as g;}} $o=new C();echo $o->f().$o->g();",
+    "expected": "aa"
+  },
+  {
+    "name": "trait alias visibility private",
+    "code": "<?php trait A{public function f(){return 11;}} class C{use A{f as private g;} public function run(){return $this->g();}} echo (new C())->run();",
+    "expected": "11"
+  },
+  {
+    "name": "trait alias visibility only",
+    "code": "<?php trait A{public function f(){return 12;}} class C{use A{f as private;} public function run(){return $this->f();}} echo (new C())->run();",
+    "expected": "12"
+  },
+  {
+    "name": "trait insteadof first",
+    "code": "<?php trait A{public function f(){return 'A';}} trait B{public function f(){return 'B';}} class C{use A,B{A::f insteadof B;}} echo (new C())->f();",
+    "expected": "A"
+  },
+  {
+    "name": "trait insteadof second",
+    "code": "<?php trait A{public function f(){return 'A';}} trait B{public function f(){return 'B';}} class C{use A,B{B::f insteadof A;}} echo (new C())->f();",
+    "expected": "B"
+  },
+  {
+    "name": "trait insteadof and alias loser",
+    "code": "<?php trait A{public function f(){return 'A';}} trait B{public function f(){return 'B';}} class C{use A,B{A::f insteadof B;B::f as other;}} $o=new C();echo $o->f().$o->other();",
+    "expected": "AB"
+  },
+  {
+    "name": "trait insteadof other method",
+    "code": "<?php trait A{public function f(){return 'A';} public function x(){return 'X';}} trait B{public function f(){return 'B';} public function y(){return 'Y';}} class C{use A,B{A::f insteadof B;}} $o=new C();echo $o->x().$o->y();",
+    "expected": "XY"
+  },
+  {
+    "name": "trait nested use",
+    "code": "<?php trait A{public function f(){return 41;}} trait B{use A;} class C{use B;} echo (new C())->f();",
+    "expected": "41"
+  },
+  {
+    "name": "trait nested multi step",
+    "code": "<?php trait A{public function f(){return 'a';}} trait B{use A;} trait C{use B;} class D{use C;} echo (new D())->f();",
+    "expected": "a"
+  },
+  {
+    "name": "trait nested own override",
+    "code": "<?php trait A{public function f(){return 'a';}} trait B{use A;public function f(){return 'b';}} class C{use B;} echo (new C())->f();",
+    "expected": "b"
+  },
+  {
+    "name": "trait nested property",
+    "code": "<?php trait A{public $x=2;} trait B{use A;} class C{use B;} echo (new C())->x;",
+    "expected": "2"
+  },
+  {
+    "name": "trait nested extra method",
+    "code": "<?php trait A{public function a(){return 'a';}} trait B{use A;public function b(){return 'b';}} class C{use B;} $o=new C();echo $o->a().$o->b();",
+    "expected": "ab"
+  },
+  {
+    "name": "trait alias inherited method override",
+    "code": "<?php class Base{public function f(){return 'base';}} trait T{public function f(){return 'trait';}} class C extends Base{use T{f as other;}} $o=new C();echo $o->f().$o->other();",
+    "expected": "traittrait"
+  },
+  {
+    "name": "trait alias method from second",
+    "code": "<?php trait A{public function a(){return 'A';}} trait B{public function b(){return 'B';}} class C{use A,B{B::b as bb;}} echo (new C())->bb();",
+    "expected": "B"
+  },
+  {
+    "name": "trait alias static method",
+    "code": "<?php trait A{public static function f(){return 7;}} class C{use A{f as g;}} echo C::g();",
+    "expected": "7"
+  },
+  {
+    "name": "trait alias and class override",
+    "code": "<?php trait A{public function f(){return 'A';}} class C{use A{f as backup;} public function f(){return 'C';}} $o=new C();echo $o->f().$o->backup();",
+    "expected": "CA"
+  },
+  {
+    "name": "trait alias separate use groups",
+    "code": "<?php trait A{public function a(){return 'A';}} trait B{public function b(){return 'B';}} class C{use A{a as aa;} use B{b as bb;}} $o=new C();echo $o->aa().$o->bb();",
+    "expected": "AB"
+  },
+  {
+    "name": "trait alias nested trait method",
+    "code": "<?php trait A{public function f(){return 'a';}} trait B{use A{f as g;}} class C{use B;} echo (new C())->g();",
+    "expected": "a"
+  }
+]

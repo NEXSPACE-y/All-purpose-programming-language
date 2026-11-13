@@ -1,0 +1,18 @@
+{
+  "status": "FROZEN_CALLBACK_ARGUMENT_PATCH_BUILT_PARSED_NOT_RUNTIME_VERIFIED",
+  "module_sha256": "87e64ea50065e4a52e0a02f63cf0bd0382de01a0d03640f606e3aaec87bb666f",
+  "candidate_sha256": "9dd51fc926e076a592f769ffc19fce5f2ef1642f84c7b9f0f255ebc6bec11aac",
+  "parse_exit": 0,
+  "runtime_measurement_completed": false,
+  "reference_callback_forms": 12,
+  "reference_user_handlers_with_four": 11,
+  "reference_builtin_receives_four": true,
+  "reference_actual_exit": 0,
+  "reference_stderr_bytes": 0,
+  "prepared_original_cases": 14,
+  "additional_raw_controls": 2,
+  "existing_legacy15_expectations_modified": false,
+  "bin2hex_dependency": "Requires root HexBuiltinEdits in later integrated candidate; not supplied by native context; draft source inputs retained unchanged",
+  "package_modified": false,
+  "get_php_callable_arity_function_changed": false
+}
