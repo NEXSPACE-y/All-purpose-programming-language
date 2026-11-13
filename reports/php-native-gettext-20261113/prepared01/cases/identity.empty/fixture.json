@@ -1,0 +1,17 @@
+{
+  "id": "identity.empty",
+  "group": "untranslated_identity",
+  "steps": [
+    {
+      "operation": "call",
+      "function": "gettext",
+      "args": [
+        {
+          "type": "bytes",
+          "base64": ""
+        }
+      ],
+      "strict": false
+    }
+  ]
+}

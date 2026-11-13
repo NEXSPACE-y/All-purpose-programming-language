@@ -1,0 +1,1 @@
+{"observations":[{"operation":"call","function":"dcgettext","ok":false,"value":{"type":"null","value":null},"error_class":"ValueError","error_message_base64":"ZGNnZXR0ZXh0KCk6IEFyZ3VtZW50ICMzICgkY2F0ZWdvcnkpIGNhbm5vdCBiZSBMQ19BTEw=","output_base64":"","events":[]}]}

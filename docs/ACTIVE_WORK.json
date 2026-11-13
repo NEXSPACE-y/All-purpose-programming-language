@@ -110,23 +110,49 @@
       "component": "Lossless native byte boundary",
       "owner": "callback_integration_v320",
       "path": "tools/candidates/php-byte-native/",
-      "state": "Separate bridge: scalar/API34 match,4 separate guards,12 separate contracts. ModuleInfo2 raw comparisons differ by50 header bytes; retained. Interpreter byte wiring built, integration execution pending."
+      "state": "Original scalar/API34 plus4 guards and12 contracts retained. Separate info-v2 corrected module info outputs: selected36/36,4 separate guards; original2 failures retained. Byte interpreter native selected42 plus4 guards passed on composed03; general ABI incomplete."
     },
     {
       "component": "PS interpreter migration to approved byte values and keys",
       "owner": "root",
       "path": "tools/candidates/php-byte-interpreter/",
-      "state": "composed14-array e7cc... actualCLI40/40 matched, inputs unchanged, Root97943 terminal0. This fixes raw-key quiet1 and signed-index history; previous66 f7b... remains56/66 with9TIMEOUT+1quiet difference. Phase01 original/diag3 each all6 EXITED0, no timeout reproduction; Invoke14-21sec, Dispose milliseconds, cause unresolved. Phase02 inner traces in preparation. CLI252/default965 still unexecuted on latest candidate.",
+      "state": "Byte14 e7cc... unchanged default965 allPASS, actualPS exit0, CSharp2 actual loaded types,19/19 checks true. Separate CLI252218match/34TIMEOUT retained, unchanged30s/inputs, no retries. No byte candidate promotion.",
       "latest_built_source": "e7ccae465117179f0a5cf55126e9b43a4f8f448b17f452650a945ab542a460d0",
       "report": "reports/php-byte-interpreter-20261113/README.md",
       "latest_candidate": "tools/candidates/php-byte-interpreter/composed14-array/ALL_PHP_byte_candidate.ps1",
       "validation_plan": [
-        "callback agent phase02 original11 copies, wrapper/adapter inner trace diagnostic3 same30sec; Root40 ended and start authorized",
-        "then decide evidence-based host/precompile change or move to unchanged252/default965; no deadline increases",
-        "strict_types source audit/proposal and PHPT fidelity audit parallel read-only; stage2 not started"
+        "Current strict02 normalCLI original79 once, then separate24 controls, same30s, exact raw channels/status; no gen02 edits during run",
+        "After strict terminal, foreach03 unchanged30 source programs, and native05 new8+8 controls",
+        "Implement root compiler extraction/source unit loader on separately pinned strict02 source; no fresh adapter recursion",
+        "Diagnose retained34 CLI TIMEOUTs without changing deadlines or replacing failures",
+        "Resume same PHPT static ledger conditions after queued runtime work;13860/22280 not complete"
       ],
-      "last_root_process_session": null,
-      "process_liveness_note": "Root97943 terminal0,40/40. No Root-owned live process. Child statuses require direct verification; statefile is not liveness."
+      "last_root_process_session": 31234,
+      "process_liveness_note": {
+        "root252Session": 31234,
+        "runState": "COMPLETED",
+        "exitCode": 1,
+        "total": 252,
+        "passed": 218,
+        "timeout": 34,
+        "nonTimeoutDifferences": 0,
+        "inputsUnchanged": true,
+        "report": "reports/php-byte-interpreter-20261113/composed14-regression252/terminal-summary.json",
+        "reportSha256": "f447143e1ca7a32dbc5cda0b3a665ae30cdaabb3697f3a800c4c45687ec32e90",
+        "timeoutCause": "UNDETERMINED"
+      },
+      "default_regression_live": {
+        "runState": "COMPLETED",
+        "actualPowerShellExitCode": 0,
+        "passed": 965,
+        "total": 965,
+        "checksPassed": 19,
+        "checksTotal": 19,
+        "elapsedSeconds": 751.603,
+        "candidateSha256": "e7ccae465117179f0a5cf55126e9b43a4f8f448b17f452650a945ab542a460d0",
+        "report": "reports/php-byte-interpreter-20261113/default-regression-preparation01/composed14-default965-run01/summary.json",
+        "scope": "Historical default API regression only. Does not erase34CLI timeouts or prove fullPHP."
+      }
     },
     {
       "component": "Remaining core/stdlib/general ABI/Web/Linux",
@@ -134,13 +160,37 @@
     },
     {
       "component": "Native SDK import coverage and info-v2",
-      "state": "Static36 DLL/985 imports separately classified. Info-v2 owncore36/36 selected comparisons plus4 guards, getter6 synthetic payloads all match; old ModuleInfo2 failures preserved. General ABI and Linux/Web incomplete; getter TLS isolation not proven by empty-thread observation.",
+      "state": "Static36officialDLL/985imports separate. Infov2 selected36/36 plus4guards. New gettext05 owncore loaded unchanged extension:49/51 match,0failure,2catalog translations unobserved; run04 bool-vs-true failure retained. Added locale oracle8 observes realtranslation5/identity3; native validation of newprofiles pending. GeneralABI/Linux/Web incomplete.",
       "report": "reports/php-native-coverage-20261113/NEXT_BATCHES.md"
     },
     {
       "component": "Signed64 array next-index semantics",
       "path": "tools/candidates/php-byte-interpreter/ArrayIndexEdits.py",
       "state": "Latest14 e7cc... actual40/40 source matches:quiet4 plus signed history32 and unshift review4. Runtime input hashes unchanged, allprocess EXITED. Old12 draft unexecuted preserved, pre-shipment originalCLI/default and iterator/COW mutation combinations remain."
+    },
+    {
+      "component": "PHP strict_types isolated implementation",
+      "path": "tools/candidates/php-strict-types/",
+      "state": "gen02 fb52e1... normalC#CLI unchanged. Original79 tool session30212 endedexit1 after35 journalrecords:14PASS21FAIL including1TIMEOUT; no finalreport. case035 dir empty, prior attemptunknown; later43 not reached. Source/CLI/driver/oracle hashes unchanged, no ownPython/allPHP child remained on actualCIM check. Stopcause undetermined. Originalpartial retained. Newfile-backed outerwrapper to runcontrols24 then originalindices35-78 in separate44segment; neither substitutes for nor claims one complete uninterrupted79run.",
+      "report": "reports/php-strict-types-20261113/generated02-normal-cli-original79-run01/",
+      "live_process_note": "No own30212 child at last authoritative agentCIM inspection. No replacement was started solely on an observation timeout. New capture/segment plan is preparing."
+    },
+    {
+      "component": "Live reference foreach isolated implementation",
+      "path": "tools/candidates/php-foreach-iterator/",
+      "state": "implementation03 55fb... fixed no-match COW separation;PS5 parse0errors andmetadata15/15, unchanged inputs. Official extra16observations separate. Same bounded14+copy6+edge8+reset2 CLI30 fixtures pinned, source VM execution0; heavy window queued."
+    },
+    {
+      "component": "Unchanged gettext extension native implementation",
+      "path": "tools/candidates/php-native-gettext/",
+      "state": "Owncore05 96df49fe... generated source304d6e... same51 terminal49PASS/0FAIL/2catalog unobserved, all51eachprocessEXITED0, allinputs unchanged. No stock core imported/forwarded; actualmodule identity/lifecycle/rawchannels checked. Catalog env oracle8 additionalonly, no overwrite of old51. Newbool8/catalog8 prepared, runtime queued.",
+      "report": "reports/php-native-gettext-20261113/ASSESSMENT_05.md"
+    },
+    {
+      "component": "Reentrant PHP source compilation and source loader",
+      "path": "tools/candidates/php-source-loader/",
+      "state": "Separateextracted02 fa3b... compiledescriptor retainsunit artifacts; root3renderbodies anduncaughttail guardedbyte-identical. PSparse0, syntheticframe contracts26/26 exit0 includingemptysource/artifactlifetime, input unchanged. Actualsource-loader VM runtime0; include/evalsyntax andIO not connected. Priorprimitiveinterruption andextracted01 preserved.",
+      "report": "reports/php-source-loader-20261113/SOURCE_LOADER_DESIGN.md"
     }
   ],
   "pending_owner_input": [

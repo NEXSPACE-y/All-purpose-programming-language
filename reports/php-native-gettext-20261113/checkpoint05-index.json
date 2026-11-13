@@ -1,0 +1,78 @@
+{
+  "status": "TERMINAL_COMPONENT_EVIDENCE_INDEX_NOT_FULL_COMPATIBILITY",
+  "createdUtc": "2026-11-13T09:06:48.842656+00:00",
+  "files": {
+    "reports/php-byte-interpreter-20261113/composed14-regression252/terminal-summary.json": {
+      "sha256": "2f5b8770f2bde5219d12e0c543237083f684ce60f5af29590800cd8d5f9ddb4a",
+      "bytes": 10624
+    },
+    "reports/php-byte-interpreter-20261113/default-regression-preparation01/composed14-default965-run01/summary.json": {
+      "sha256": "244a52f049e31b60be618aa44dbf448b11fa6fe096ee4db78d91da9ece3d9bd7",
+      "bytes": 126811
+    },
+    "reports/php-native-gettext-20261113/ASSESSMENT_05.md": {
+      "sha256": "0ba265c26cfa02bc00771983b3c40ec96553c475ae0c4807f534ce1f7641041e",
+      "bytes": 3469
+    },
+    "reports/php-native-gettext-20261113/static-verification04.json": {
+      "sha256": "07098eb7b84201ef8370f8db8a9488ed952aeecb93230906b4625a27bd0ff350",
+      "bytes": 895
+    },
+    "reports/php-native-gettext-20261113/static-verification05.json": {
+      "sha256": "475ec8f386b2a40ff3dd29153dc47d64f5f284e3c075ca7be32521bf63fe06e6",
+      "bytes": 923
+    },
+    "reports/php-native-gettext-20261113/terminal-assessment05.json": {
+      "sha256": "e619cb9928d7351e0dec04dbbfad84987544bfc0779185c1c29013294e689852",
+      "bytes": 1927
+    },
+    "reports/php-native-gettext-20261113/run04/report.json": {
+      "sha256": "01359fb85b4677e7acea25089e3ffbc806934fce0933df6c9d10df6ec22c25bb",
+      "bytes": 669937
+    },
+    "reports/php-native-gettext-20261113/run05/report.json": {
+      "sha256": "9ff406585ee6c0ba525a361f75a4ec7bf11ea850ec6830b118906cbe5d7bf932",
+      "bytes": 691433
+    },
+    "reports/php-native-gettext-20261113/build-callback04/build.json": {
+      "sha256": "dd66059baf3c1b722d0ee8f7ebfb1b2c12f9c229c067a8069517d063a0196784",
+      "bytes": 7204
+    },
+    "reports/php-native-gettext-20261113/build-callback05/build.json": {
+      "sha256": "d0000d031ba9109454e18fdc4dc201302884a451a506e83b93ca6dd31a6f1802",
+      "bytes": 7204
+    },
+    "tools/candidates/php-native-gettext/Generate-Gettext04.py": {
+      "sha256": "c894ea3dbdf1f22e35bf6dcef1e7caa87cf2c1f0c82b7ac9089cbcdb2e15af77",
+      "bytes": 7590
+    },
+    "tools/candidates/php-native-gettext/Generate-Gettext05.py": {
+      "sha256": "18978f92034696148604b2a3365ca107eca1dd2db0f2b2480dc7b0152576896e",
+      "bytes": 8197
+    },
+    "tools/candidates/php-native-gettext/Compare-Gettext04.py": {
+      "sha256": "96fc31e3145512dfd94444fa03a911744aa4354506740f6c8682780b8f35108a",
+      "bytes": 8968
+    },
+    "tools/candidates/php-native-gettext/Compare-Gettext05.py": {
+      "sha256": "e6b23ba9ac6dc31da158879cae45997bc086ea11a8a01ee9cab12b51c4f4b0f4",
+      "bytes": 9091
+    },
+    "tools/candidates/php-native-gettext/generated04/provenance.json": {
+      "sha256": "a21a020f8c404a50d042e246378db62289f493827105da3f871a5e914980dcec",
+      "bytes": 2647
+    },
+    "tools/candidates/php-native-gettext/generated05/provenance.json": {
+      "sha256": "a3af4128427c7d1cbdbec687dedab3d41f35f3cb6f58a27e775a88e361a5c007",
+      "bytes": 2647
+    },
+    "reports/php-native-gettext-20261113/checkpoint05-inputs/byte-interpreter-README.md": {
+      "sha256": "f20db3fb8de586548ecdedc24c38f97c34b3c4b40a593ef3d96bf4f27dbb672e",
+      "bytes": 7555,
+      "originalPath": "reports/php-byte-interpreter-20261113/README.md"
+    }
+  },
+  "compiledBinariesCopiedOrStaged": false,
+  "currentWorkFileExcludedAsMutable": true,
+  "newFeatureSourceRuntimeCoverage": "gettext05 selected49/51; sourceLoader and foreach runtime not yet measured"
+}

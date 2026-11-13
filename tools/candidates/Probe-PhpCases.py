@@ -33,13 +33,27 @@ for i,case in enumerate(cases):
     (work/'source-input.bin').write_bytes(raw)
     command=[str(paths['php']),'-n','-d','display_errors=stderr','-d','error_reporting=-1','-d','date.timezone=UTC','-r',case['code']]
     start=time.monotonic()
-    result=subprocess.run(command,cwd=work,capture_output=True,timeout=30,creationflags=subprocess.CREATE_NO_WINDOW)
-    (work/'stdout.bin').write_bytes(result.stdout)
-    (work/'stderr.bin').write_bytes(result.stderr)
-    row={'id':case['id'],'command':command,'source_sha256':hashlib.sha256(raw).hexdigest(),'actual_exit_code':result.returncode,'elapsed_seconds':time.monotonic()-start,'stdout_base64':base64.b64encode(result.stdout).decode('ascii'),'stderr_base64':base64.b64encode(result.stderr).decode('ascii')}
+    state='EXITED'
+    # Keep even nonterminating reference programs' bytes on disk rather than
+    # losing the TimeoutExpired output or accumulating an unbounded RAM buffer.
+    with (work/'stdout.bin').open('wb') as stdout, (work/'stderr.bin').open('wb') as stderr:
+        process=subprocess.Popen(command,cwd=work,stdout=stdout,stderr=stderr,creationflags=subprocess.CREATE_NO_WINDOW)
+        try:actual_code=process.wait(timeout=30)
+        except subprocess.TimeoutExpired:
+            state='TIMEOUT';actual_code=None
+            process.kill();process.wait()
+    row={'id':case['id'],'command':command,'source_sha256':hashlib.sha256(raw).hexdigest(),'actual_exit_code':actual_code,'state':state,'elapsed_seconds':time.monotonic()-start}
+    for channel in ['stdout','stderr']:
+        file=work/(channel+'.bin')
+        hasher=hashlib.sha256()
+        with file.open('rb') as captured:
+            for block in iter(lambda:captured.read(1024*1024),b''):hasher.update(block)
+        row[channel+'_bytes']=file.stat().st_size
+        row[channel+'_sha256']=hasher.hexdigest()
+        row[channel+'_base64']=base64.b64encode(file.read_bytes()).decode('ascii') if file.stat().st_size<=1024*1024 else None
     rows.append(row)
     with (out/'records.jsonl').open('a',encoding='utf-8') as journal:journal.write(json.dumps(row)+'\n')
-    print(case['id']+' '+repr(result.stdout)+' stderr='+repr(result.stderr),flush=True)
+    print(case['id']+' '+state+' stdout='+str(row['stdout_bytes'])+' stderr='+str(row['stderr_bytes']),flush=True)
 after={name:sha(p) for name,p in paths.items()}
 (out/'report.json').write_text(json.dumps({'status':'ORACLE_ONLY_NOT_CANDIDATE_VERIFICATION','candidate_invocations':0,'total':len(rows),'inputs_before':before,'inputs_after':after,'inputs_unchanged':before==after,'records':rows},indent=2)+'\n',encoding='utf-8')
 if before!=after:raise SystemExit('Probe inputs changed')

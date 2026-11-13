@@ -1,0 +1,25 @@
+{
+  "id": "value.strict.ngettext.true",
+  "group": "strict_bool_value_diagnostic",
+  "steps": [
+    {
+      "operation": "call",
+      "function": "ngettext",
+      "args": [
+        {
+          "type": "bytes",
+          "base64": "b25l"
+        },
+        {
+          "type": "bytes",
+          "base64": "bWFueQ=="
+        },
+        {
+          "type": "bool",
+          "value": true
+        }
+      ],
+      "strict": true
+    }
+  ]
+}

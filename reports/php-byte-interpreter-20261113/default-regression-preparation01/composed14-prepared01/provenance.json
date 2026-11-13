@@ -1,0 +1,84 @@
+{
+  "status": "PREPARED_NOT_DEFAULT_RUNTIME_EXECUTED",
+  "createdUtc": "2026-11-13T06:44:03.170660+00:00",
+  "candidate": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\composed14-array\\ALL_PHP_byte_candidate.ps1",
+  "candidateSha256": "e7ccae465117179f0a5cf55126e9b43a4f8f448b17f452650a945ab542a460d0",
+  "sourcePackage": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package",
+  "bundle": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\default-regression-preparation01\\composed14-prepared01\\bundle",
+  "packageFiles": 219,
+  "manifestFiles": 218,
+  "changedBundlePaths": [
+    "ALL_PHP_v3_12_adapter.ps1",
+    "SHA256SUMS.txt"
+  ],
+  "allOtherFilesByteIdentical": true,
+  "old940TrackedPaths": 34,
+  "additionalNamespaceCases": 25,
+  "expectedDefaultCases": 965,
+  "original940GitBase": "9d8171712828a0b57555b8eb1e1ca5c475391244",
+  "byteRuntime": {
+    "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-runtime\\out\\runtime01\\AllPhp.ByteValues.Runtime.dll",
+    "sha256": "18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b",
+    "rewritten": false
+  },
+  "canonicalRuntimeBootstrapRewritten": false,
+  "readmesCopiedUnchanged": true,
+  "readmeScope": "Copied base-package documentation; its assertions are not verification of this candidate. Candidate status and limits live outside bundle.",
+  "installedMainBefore": {
+    "path": "C:\\Users\\rinpa\\ALL\\ALL.ps1",
+    "exists": true,
+    "sha256": "79bf8b7fb4cebb7be2527fa9e61b331b74eb299ee247ed9dc3169e30985c7951",
+    "executed": false
+  },
+  "installedMainAfter": {
+    "path": "C:\\Users\\rinpa\\ALL\\ALL.ps1",
+    "exists": true,
+    "sha256": "79bf8b7fb4cebb7be2527fa9e61b331b74eb299ee247ed9dc3169e30985c7951",
+    "executed": false
+  },
+  "installedALLExecuted": false,
+  "sourcePackageModified": false,
+  "preparationPreflight": {
+    "command": [
+      "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\default-regression\\Check-PreparedBundle.ps1",
+      "-BundlePath",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\default-regression-preparation01\\composed14-prepared01\\bundle",
+      "-VersionPath",
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\default-regression-preparation01\\composed14-prepared01\\preparation-powershell-version.json"
+    ],
+    "actualExitCode": 0,
+    "timeoutSeconds": 120,
+    "compileCSharp": false,
+    "defaultFixturesExecuted": false,
+    "stderrBytes": 0,
+    "state": "EXITED"
+  },
+  "allInputsUnchanged": true,
+  "toolHashes": {
+    "Capture-DefaultRegression.ps1": "a078ab0546177e96e9341ee62b5d7736dc54e0edc5e22a0a385d217a6d7d64dc",
+    "Check-PreparedBundle.ps1": "c919488aeae391fe8e5ee16982506cacbd118c129086aacbb0af8d60ea68a759",
+    "original-inputs.json": "8fe65ad6efc759612f85a67481e36eb83a34ceebdc479cb922d2e411b64ed089",
+    "Prepare-DefaultRegression.py": "bfaac02321a7c36cfd02ab2603791b2daaca8bc42d3a582f9409076160dd12c0",
+    "README.md": "0ea1e7b05563b12ef880bdbe1080778e5dd362ecc717eeaf22725fa9c3d9cb88",
+    "regression_support.py": "4dca3e31b1ab55b65e42df9f8a14af8f32a1365c06ef627bef67b6f30abe203f",
+    "Run-DefaultRegression.py": "ec03a6da47f5d236a632a73fa749c78daaa2210aa4588a8ec5091c12f0ad51fb"
+  },
+  "sourceManifestSha256": "03bb881c4e55d585d73e95fb69f7fef9878016abd6cbd83ae1de3e895a486bb3",
+  "bundleManifestSha256": "8eadd0d0fc766449a4462440442f3da641a16d4bb70c638e2cb2a8385892e215",
+  "toolHashesBefore": {
+    "Capture-DefaultRegression.ps1": "a078ab0546177e96e9341ee62b5d7736dc54e0edc5e22a0a385d217a6d7d64dc",
+    "Check-PreparedBundle.ps1": "c919488aeae391fe8e5ee16982506cacbd118c129086aacbb0af8d60ea68a759",
+    "original-inputs.json": "8fe65ad6efc759612f85a67481e36eb83a34ceebdc479cb922d2e411b64ed089",
+    "Prepare-DefaultRegression.py": "bfaac02321a7c36cfd02ab2603791b2daaca8bc42d3a582f9409076160dd12c0",
+    "README.md": "0ea1e7b05563b12ef880bdbe1080778e5dd362ecc717eeaf22725fa9c3d9cb88",
+    "regression_support.py": "4dca3e31b1ab55b65e42df9f8a14af8f32a1365c06ef627bef67b6f30abe203f",
+    "Run-DefaultRegression.py": "ec03a6da47f5d236a632a73fa749c78daaa2210aa4588a8ec5091c12f0ad51fb"
+  },
+  "preparationVerdict": "PASS"
+}

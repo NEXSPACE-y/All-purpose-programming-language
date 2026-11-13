@@ -1,0 +1,17 @@
+{
+  "id": "identity.embeddedNUL",
+  "group": "untranslated_identity",
+  "steps": [
+    {
+      "operation": "call",
+      "function": "gettext",
+      "args": [
+        {
+          "type": "bytes",
+          "base64": "QQBC"
+        }
+      ],
+      "strict": false
+    }
+  ]
+}

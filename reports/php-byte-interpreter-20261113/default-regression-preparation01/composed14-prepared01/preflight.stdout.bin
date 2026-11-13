@@ -1,0 +1,3 @@
+PASS [PowerShell Syntax]: 102 scripts
+PASS [SHA-256]: 218 packaged files
+ALL preflight PASS. No installed ALL files were changed.

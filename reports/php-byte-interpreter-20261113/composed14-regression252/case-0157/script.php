@@ -1,0 +1,1 @@
+<?php function f(){return 'F';}function g(){return 'G';}$a='f';$f=$a(...);$a='g';echo $f();

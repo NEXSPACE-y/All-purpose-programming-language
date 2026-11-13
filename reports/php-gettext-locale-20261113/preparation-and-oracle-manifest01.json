@@ -1,0 +1,313 @@
+{
+  "status": "OWNED_LOCALE_ORACLE_AND_NEW_NATIVE_PREPARATION",
+  "files": {
+    "reports/php-gettext-locale-20261113/oracle01/00-locale.C-encoding/stderr.bin": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "reports/php-gettext-locale-20261113/oracle01/00-locale.C-encoding/stdout.bin": {
+      "sha256": "75fb6a2a76cdafa1a12bab5080829b1600b4c2272302ed10b9dcf65845f882e5",
+      "bytes": 843
+    },
+    "reports/php-gettext-locale-20261113/oracle01/01-locale.C-exact/stderr.bin": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "reports/php-gettext-locale-20261113/oracle01/01-locale.C-exact/stdout.bin": {
+      "sha256": "c563f55c29119abc4d1c86c81e9c193e0fe769592a68b41c0798fa51c7d0cc31",
+      "bytes": 845
+    },
+    "reports/php-gettext-locale-20261113/oracle01/02-locale.language-nonC/stderr.bin": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "reports/php-gettext-locale-20261113/oracle01/02-locale.language-nonC/stdout.bin": {
+      "sha256": "f910fb06d134311a788c6de91a895dfd258ca42101ede7704280b7f4a5533483",
+      "bytes": 865
+    },
+    "reports/php-gettext-locale-20261113/oracle01/03-locale.all-over-messages/stderr.bin": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "reports/php-gettext-locale-20261113/oracle01/03-locale.all-over-messages/stdout.bin": {
+      "sha256": "8189fd6fa3f84e736ed899cbfe5ca841ed948794da19084f042f402b53fbb8f5",
+      "bytes": 863
+    },
+    "reports/php-gettext-locale-20261113/oracle01/04-locale.messages-over-lang/stderr.bin": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "reports/php-gettext-locale-20261113/oracle01/04-locale.messages-over-lang/stdout.bin": {
+      "sha256": "7459209616d1b720c9a615520de456f427eb0147c57982a7d8ef3bee7606d7dc",
+      "bytes": 861
+    },
+    "reports/php-gettext-locale-20261113/oracle01/05-locale.lang-only/stderr.bin": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "reports/php-gettext-locale-20261113/oracle01/05-locale.lang-only/stdout.bin": {
+      "sha256": "4342063ee69dc7ecf8e999fa2cc22550aadc467326387b3dc81dd685a18b9b7e",
+      "bytes": 856
+    },
+    "reports/php-gettext-locale-20261113/oracle01/06-locale.messages-over-catalog-lang/stderr.bin": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "reports/php-gettext-locale-20261113/oracle01/06-locale.messages-over-catalog-lang/stdout.bin": {
+      "sha256": "db491f9360fe9734761e96069bafcd0d9c50672c38b90a6bf1b66d3af4e23b25",
+      "bytes": 842
+    },
+    "reports/php-gettext-locale-20261113/oracle01/07-locale.language-fallback/stderr.bin": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "reports/php-gettext-locale-20261113/oracle01/07-locale.language-fallback/stdout.bin": {
+      "sha256": "09411f1daa03dc1c60f9b5991d38837d8bfad0d5623e14e0794bdc1e4ced323e",
+      "bytes": 878
+    },
+    "reports/php-gettext-locale-20261113/oracle01/records.jsonl": {
+      "sha256": "adf5702ea5f888303e9d501ded695b6304ca6208c217b4c852b344380f88c4fa",
+      "bytes": 17270
+    },
+    "reports/php-gettext-locale-20261113/oracle01/report.json": {
+      "sha256": "b904ee88c2e6bb894a3eb0f264928cbce6ac6f95cdabc0eb3e1fa6f6df81dd75",
+      "bytes": 28743
+    },
+    "reports/php-gettext-locale-20261113/oracle01/run-context.json": {
+      "sha256": "1a3136bc44f1b22f842117b11f654f60096878e0c69a8d87b04532d1399ecadf",
+      "bytes": 3985
+    },
+    "reports/php-gettext-locale-20261113/prepared01/controls.json": {
+      "sha256": "98548b774eea97fbda998a2c0c4dffdb01843c59001c487bbe7013882ce9c2b1",
+      "bytes": 6593
+    },
+    "reports/php-gettext-locale-20261113/prepared01/locale.all-over-messages/oracle.php": {
+      "sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+      "bytes": 1544
+    },
+    "reports/php-gettext-locale-20261113/prepared01/locale.C-encoding/oracle.php": {
+      "sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+      "bytes": 1544
+    },
+    "reports/php-gettext-locale-20261113/prepared01/locale.C-exact/oracle.php": {
+      "sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+      "bytes": 1544
+    },
+    "reports/php-gettext-locale-20261113/prepared01/locale.lang-only/oracle.php": {
+      "sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+      "bytes": 1544
+    },
+    "reports/php-gettext-locale-20261113/prepared01/locale.language-fallback/oracle.php": {
+      "sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+      "bytes": 1544
+    },
+    "reports/php-gettext-locale-20261113/prepared01/locale.language-nonC/oracle.php": {
+      "sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+      "bytes": 1544
+    },
+    "reports/php-gettext-locale-20261113/prepared01/locale.messages-over-catalog-lang/oracle.php": {
+      "sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+      "bytes": 1544
+    },
+    "reports/php-gettext-locale-20261113/prepared01/locale.messages-over-lang/oracle.php": {
+      "sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+      "bytes": 1544
+    },
+    "reports/php-gettext-locale-20261113/prepared01/manifest.json": {
+      "sha256": "8c96bdfd924e005cdec3b689482810be908c78d0b883ecb6f640816750856a4e",
+      "bytes": 1956
+    },
+    "reports/php-gettext-locale-20261113/prepared01/owned/catalog/zz_ALL/LC_MESSAGES/all_php_gettext_20261113.mo": {
+      "sha256": "a8aa43b7c0fc2c43da96a6e6526952fe508ed42d19ef0a18698e800711643dad",
+      "bytes": 241
+    },
+    "reports/php-gettext-locale-20261113/prepared01/preparation-process-environment.json": {
+      "sha256": "b3f09140db2cf063e20c61bcc49720477bb4a17b457a1b9365cf09a88b3cfc6d",
+      "bytes": 237
+    },
+    "reports/php-gettext-locale-20261113/prepared01/provenance.json": {
+      "sha256": "9acb58f9d16bd11f1169f040f5830f1d1b98e71e1e568c43a5ec6770262925ef",
+      "bytes": 1080
+    },
+    "reports/php-gettext-locale-20261113/SOURCES.md": {
+      "sha256": "70aeb2974bb27925f0ac2d78004fe72fed1a34683a889cd6ab7dc30defb837be",
+      "bytes": 3600
+    },
+    "reports/php-gettext-locale-20261113/verification01.json": {
+      "sha256": "a3e21c08d97aae2317e6007d855589c8be855183b6f10215f3f4f73a16cf2312",
+      "bytes": 3563
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/cases/catalog-control.locale.all-over-messages/fixture.json": {
+      "sha256": "34e0038d769253b978e3874ffd4ce6f13746d7b8ef7217e9181f2b36073e66ad",
+      "bytes": 2216
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/cases/catalog-control.locale.all-over-messages/reference.php": {
+      "sha256": "1ca9cc7327a82b76a21a69bdb32b9a7db538b0c3a632e66522affc5504d301b2",
+      "bytes": 2510
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/cases/catalog-control.locale.C-encoding/fixture.json": {
+      "sha256": "ff63b0be2d36f1afb6957b09430faebcdfbcc9f5f713e56f068f00eeeba4e463",
+      "bytes": 2087
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/cases/catalog-control.locale.C-encoding/reference.php": {
+      "sha256": "1ca9cc7327a82b76a21a69bdb32b9a7db538b0c3a632e66522affc5504d301b2",
+      "bytes": 2510
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/cases/catalog-control.locale.C-exact/fixture.json": {
+      "sha256": "1d39ca540097e47608b9372fa372ac934ffb07e10cdc02810416720641f8f773",
+      "bytes": 2111
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/cases/catalog-control.locale.C-exact/reference.php": {
+      "sha256": "1ca9cc7327a82b76a21a69bdb32b9a7db538b0c3a632e66522affc5504d301b2",
+      "bytes": 2510
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/cases/catalog-control.locale.lang-only/fixture.json": {
+      "sha256": "270461d4cbcc0969d35053921e8eed0724a9bb1acbb26c1460ba3ffe28fddf53",
+      "bytes": 2116
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/cases/catalog-control.locale.lang-only/reference.php": {
+      "sha256": "1ca9cc7327a82b76a21a69bdb32b9a7db538b0c3a632e66522affc5504d301b2",
+      "bytes": 2510
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/cases/catalog-control.locale.language-fallback/fixture.json": {
+      "sha256": "cb6d2a774c140fcbe8517e9574a095a0425d90697fcfff861da5f47dd381f176",
+      "bytes": 2199
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/cases/catalog-control.locale.language-fallback/reference.php": {
+      "sha256": "1ca9cc7327a82b76a21a69bdb32b9a7db538b0c3a632e66522affc5504d301b2",
+      "bytes": 2510
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/cases/catalog-control.locale.language-nonC/fixture.json": {
+      "sha256": "b826078800f7616d6c17533433a754b03d5414b7a89c7a8497456781542ced8a",
+      "bytes": 2165
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/cases/catalog-control.locale.language-nonC/reference.php": {
+      "sha256": "1ca9cc7327a82b76a21a69bdb32b9a7db538b0c3a632e66522affc5504d301b2",
+      "bytes": 2510
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/cases/catalog-control.locale.messages-over-catalog-lang/fixture.json": {
+      "sha256": "c93f8dc872f81f55731103c7bf87ea1c2666e968da577fac6ce32300300848c3",
+      "bytes": 2099
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/cases/catalog-control.locale.messages-over-catalog-lang/reference.php": {
+      "sha256": "1ca9cc7327a82b76a21a69bdb32b9a7db538b0c3a632e66522affc5504d301b2",
+      "bytes": 2510
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/cases/catalog-control.locale.messages-over-lang/fixture.json": {
+      "sha256": "7d09347de08c8c7ef72d6efe53a316754c24ad9a14ef59b828024e1bef341081",
+      "bytes": 2170
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/cases/catalog-control.locale.messages-over-lang/reference.php": {
+      "sha256": "1ca9cc7327a82b76a21a69bdb32b9a7db538b0c3a632e66522affc5504d301b2",
+      "bytes": 2510
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/prepared-manifest.json": {
+      "sha256": "cefd9765453406984aa845c118904037ce3dae60b62476d95b5005f1a3b443a5",
+      "bytes": 3174
+    },
+    "reports/php-native-gettext-20261113/catalog-controls8-prepared01/provenance.json": {
+      "sha256": "d365e0d4931360e064a6f57ae3a13f23eb58bd0d804847a6b5c274eca24aed66",
+      "bytes": 2247
+    },
+    "reports/php-native-gettext-20261113/controls8-preparation-verification01.json": {
+      "sha256": "9b749c834b51569c417067c303fa07b828d6f2f79a483e6d0b425f1bb0d0ac5f",
+      "bytes": 1023
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/cases/value.strict.gettext.false/fixture.json": {
+      "sha256": "882f6cfec70e72e67e04d45c9cdce50f0b165a76bb5bb1d13adc093064d5ca04",
+      "bytes": 304
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/cases/value.strict.gettext.false/reference.php": {
+      "sha256": "9efddd574b74d7c24a9273970b8e7676eb8ce6eae8e8fceba558acc6647ff1b0",
+      "bytes": 1018
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/cases/value.strict.gettext.true/fixture.json": {
+      "sha256": "51949e08a4c04a5a2ec4c56d124e0976db9174cab6deabf5d57b697f5f2b5071",
+      "bytes": 302
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/cases/value.strict.gettext.true/reference.php": {
+      "sha256": "9b12466543451d12a552cd8d2210d586c80633c236c8342c127d4065667607f3",
+      "bytes": 1017
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/cases/value.strict.ngettext.false/fixture.json": {
+      "sha256": "3fe6f765158898c909de0be7bb9f5caa6e238e37ebc4e52319722d41cbf6ea04",
+      "bytes": 468
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/cases/value.strict.ngettext.false/reference.php": {
+      "sha256": "d9a29a96475e81d4736ba15e5212f9eacc757cb8c9818c6c114ae0d1a5a3d9a8",
+      "bytes": 1068
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/cases/value.strict.ngettext.true/fixture.json": {
+      "sha256": "995f487ec3c9e371feb82d5de2d475c69c3a1319c101ad02317f374335a317bd",
+      "bytes": 466
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/cases/value.strict.ngettext.true/reference.php": {
+      "sha256": "3e37e10fd4c540f53e761bff3e984215667191d532151cf88683a7bee3219a28",
+      "bytes": 1067
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/cases/value.strict.textdomain.false/fixture.json": {
+      "sha256": "63e9ca20b99fb03297fa13281d5984d85c858edf637a39a3fee799fda08ccef4",
+      "bytes": 310
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/cases/value.strict.textdomain.false/reference.php": {
+      "sha256": "fe2456be36ad6b7800449bf7cc5db662a6c098be982d9f42006ff91b73c6d4d0",
+      "bytes": 1024
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/cases/value.strict.textdomain.true/fixture.json": {
+      "sha256": "a70c24ed5de660a45d4d154e80ad0c0e87ddb1f34193053bb82c0daec6e692cf",
+      "bytes": 308
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/cases/value.strict.textdomain.true/reference.php": {
+      "sha256": "ba84bbd9bab6a04c459649a7d22e366c0b304d82ff1c8572a6cb0413b68b07cb",
+      "bytes": 1023
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/cases/value.weak.gettext.false/fixture.json": {
+      "sha256": "c6b81ac5d7958617a54f8248c9067c14ca8465fc50a4f633e9d060526c9435b0",
+      "bytes": 293
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/cases/value.weak.gettext.false/reference.php": {
+      "sha256": "93636482090b0ca070c215d43eb4a8d6bc51226183986d34f816b0fa4a118f15",
+      "bytes": 1018
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/cases/value.weak.gettext.true/fixture.json": {
+      "sha256": "fc9ad6f4acbce5dcffa79ddf09b8a65fe7d92919e725de405087f361bcd8c218",
+      "bytes": 291
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/cases/value.weak.gettext.true/reference.php": {
+      "sha256": "bc2016b4f2c35aa70542b0748468605f9480f35b1cf7e47a0c105b623a0271c2",
+      "bytes": 1017
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/prepared-manifest.json": {
+      "sha256": "d3f8077bc5fa146c1d32a6dc47af794a61742563a6203118fdbc95088fe708e2",
+      "bytes": 2980
+    },
+    "reports/php-native-gettext-20261113/value-controls8-prepared01/provenance.json": {
+      "sha256": "1225a2b58b346bab22b4024a656332095b3b13e74967d4cec5eb24a0d6ad8b39",
+      "bytes": 1548
+    },
+    "tools/candidates/php-gettext-controls/Compare-NativeControls.py": {
+      "sha256": "8b1f36ef4f8b42072ac561f4db54accecde8cced084f66ee007034ef8e175d83",
+      "bytes": 3173
+    },
+    "tools/candidates/php-gettext-controls/Prepare-NativeControls.py": {
+      "sha256": "d0397317421cd1e5d8f7610e6fa3812662e61f714e139e01a26c065fd2dc0411",
+      "bytes": 5336
+    },
+    "tools/candidates/php-gettext-controls/prepared-profile-pins.json": {
+      "sha256": "4fbc6707c4337d2d108381f72b55028a99bb8538fe35c6293cc5f61439cfbbca",
+      "bytes": 163
+    },
+    "tools/candidates/php-gettext-controls/Verify-PreparedControls.py": {
+      "sha256": "a3aa50cf3e471af9924aa4b963eef500fdf233fc1182af01550e937722f6bc5c",
+      "bytes": 6828
+    },
+    "tools/candidates/php-gettext-locale/Observe-Locale.py": {
+      "sha256": "9c710ee3f6810d3b39f50b3c593bfb60c2c3c4a2a34cfc3517e93ba5f3ace3bf",
+      "bytes": 5315
+    },
+    "tools/candidates/php-gettext-locale/Prepare-LocaleControls.py": {
+      "sha256": "26861e4ad006f412b6e6cd28a858d7849dc448e055c99c533d796e43a28910ab",
+      "bytes": 5020
+    }
+  }
+}

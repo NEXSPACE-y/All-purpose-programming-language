@@ -1,0 +1,132 @@
+
+Dump of file C:\Users\rinpa\ALL_php_oracle\php-8.5.12-ts-x64\ext\php_enchant.dll
+
+File Type: DLL
+
+  Section contains the following imports:
+
+    php8ts.dll
+             1800041A8 Import Address Table
+             1800062D0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                        16ED zend_register_internal_class_with_flags
+                        160D zend_known_strings
+                         B36 php_info_print_table_start
+                          B6 _emalloc@@8
+                        1675 zend_object_std_init@@16
+                        1768 zend_throw_error
+                         E1E std_object_handlers
+                        167C zend_objects_not_comparable
+                        17E9 zend_wrong_parameters_none_error@@0
+                         A53 object_properties_init
+                        16F9 zend_register_string_constant
+                        15B3 zend_hash_str_find@@24
+                        17C0 zend_value_error
+                         A99 php_check_open_basedir
+                        1807 zval_ptr_safe_dtor
+                        159D zend_hash_next_index_insert@@16
+                         125 _zend_new_array@@8
+                         E31 tsrm_get_ls_cache
+                        16BB zend_parse_parameters
+                        16F3 zend_register_long_constant
+                          AF __zend_malloc
+                         194 compiler_globals_offset
+                        175B zend_string_init_interned
+                        177A zend_try_assign_typed_ref_arr
+                        1806 zval_ptr_dtor
+                         B32 php_info_print_table_end
+                         B34 php_info_print_table_row
+                        1674 zend_object_std_dtor
+                         14B add_next_index_string
+                         133 add_assoc_string_ex
+                        13EA zend_argument_must_not_be_empty_error
+                         A51 object_init_ex
+                        13DB zend_add_attribute
+
+    libenchant2.dll
+             1800040F0 Import Address Table
+             180006218 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          1C enchant_dict_check
+                          2B enchant_dict_suggest
+                          12 enchant_broker_request_dict
+                          23 enchant_dict_is_added
+                           A enchant_broker_free
+                          20 enchant_dict_get_error
+                           8 enchant_broker_describe
+                          1A enchant_dict_add
+                          16 enchant_broker_set_ordering
+                           F enchant_broker_list_dicts
+                          1F enchant_dict_free_string_list
+                          27 enchant_dict_remove
+                           B enchant_broker_free_dict
+                           9 enchant_broker_dict_exists
+                          1B enchant_dict_add_to_session
+                          31 enchant_get_version
+                          2A enchant_dict_store_replacement
+                          28 enchant_dict_remove_from_session
+                           C enchant_broker_get_error
+                          14 enchant_broker_request_pwl_dict
+                          1E enchant_dict_describe
+                           E enchant_broker_init
+
+    VCRUNTIME140.dll
+             180004080 Import Address Table
+             1800061A8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          3C memcpy
+                          25 __std_type_info_destroy_list
+                          3E memset
+                           8 __C_specific_handler
+
+    api-ms-win-crt-runtime-l1-1-0.dll
+             1800040A8 Import Address Table
+             1800061D0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          34 _initialize_onexit_table
+                          33 _initialize_narrow_environment
+                          18 _configure_narrow_argv
+                          3F _seh_filter_dll
+                          36 _initterm
+                          22 _execute_onexit_table
+                          16 _cexit
+                          37 _initterm_e
+
+    KERNEL32.dll
+             180004000 Import Address Table
+             180006128 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         242 GetCurrentProcessId
+                         511 RtlLookupFunctionEntry
+                         3B0 IsDebuggerPresent
+                         39A InitializeSListHead
+                         142 DisableThreadLibraryCalls
+                         31A GetSystemTimeAsFileTime
+                         246 GetCurrentThreadId
+                         509 RtlCaptureContext
+                         481 QueryPerformanceCounter
+                         3B8 IsProcessorFeaturePresent
+                         5D8 TerminateProcess
+                         241 GetCurrentProcess
+                         5B8 SetUnhandledExceptionFilter
+                         5FB UnhandledExceptionFilter
+                         518 RtlVirtualUnwind
+
+  Summary
+
+        1000 .data
+        1000 .pdata
+        3000 .rdata
+        1000 .reloc
+        1000 .rsrc
+        3000 .text

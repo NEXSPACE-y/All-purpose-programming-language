@@ -1,0 +1,1 @@
+function f(string $a):string{return $a . "\xFF";}var_dump(f("\x80"),f(12));

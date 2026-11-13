@@ -1,0 +1,80 @@
+{
+  "id": "catalog-control.locale.language-nonC",
+  "group": "catalog_translation_positive",
+  "env": {
+    "LANG": "en_US.UTF-8",
+    "LANGUAGE": "zz_ALL"
+  },
+  "expected_effective_locale_environment": {
+    "LC_ALL": null,
+    "LC_MESSAGES": null,
+    "LANG": "en_US.UTF-8",
+    "LANGUAGE": "zz_ALL",
+    "LC_CTYPE": null
+  },
+  "source_oracle_control_id": "locale.language-nonC",
+  "catalog_mo_input": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-gettext-locale-20261113\\prepared01\\owned\\catalog\\zz_ALL\\LC_MESSAGES\\all_php_gettext_20261113.mo",
+  "catalog_mo_sha256": "a8aa43b7c0fc2c43da96a6e6526952fe508ed42d19ef0a18698e800711643dad",
+  "steps": [
+    {
+      "operation": "locale",
+      "category": 0,
+      "locale": "English_United States.utf8"
+    },
+    {
+      "operation": "call",
+      "function": "bindtextdomain",
+      "args": [
+        {
+          "type": "bytes",
+          "base64": "YWxsX3BocF9nZXR0ZXh0XzIwMjYxMTEz"
+        },
+        {
+          "type": "bytes",
+          "base64": "QzpcVXNlcnNccmlucGFcQUxMLXBocC1jb21wYXQtMjAyNjExMTJccmVwb3J0c1xwaHAtZ2V0dGV4dC1sb2NhbGUtMjAyNjExMTNccHJlcGFyZWQwMVxvd25lZFxjYXRhbG9n"
+        }
+      ],
+      "strict": false
+    },
+    {
+      "operation": "call",
+      "function": "dgettext",
+      "args": [
+        {
+          "type": "bytes",
+          "base64": "YWxsX3BocF9nZXR0ZXh0XzIwMjYxMTEz"
+        },
+        {
+          "type": "bytes",
+          "base64": "cHJvYmU="
+        }
+      ],
+      "strict": false
+    },
+    {
+      "operation": "call",
+      "function": "dngettext",
+      "args": [
+        {
+          "type": "bytes",
+          "base64": "YWxsX3BocF9nZXR0ZXh0XzIwMjYxMTEz"
+        },
+        {
+          "type": "bytes",
+          "base64": "YXBwbGU="
+        },
+        {
+          "type": "bytes",
+          "base64": "YXBwbGVz"
+        },
+        {
+          "type": "int",
+          "value": "2"
+        }
+      ],
+      "strict": false
+    }
+  ],
+  "required_last_translation_base64": "Y2F0YWxvZy1tYW55",
+  "required_singular_translation_base64": "Y2F0YWxvZy10cmFuc2xhdGVk"
+}

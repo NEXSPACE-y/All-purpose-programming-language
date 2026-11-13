@@ -1,0 +1,399 @@
+
+Dump of file C:\Users\rinpa\ALL_php_oracle\php-8.5.12-ts-x64\ext\php_soap.dll
+
+File Type: DLL
+
+  Section contains the following imports:
+
+    php8ts.dll
+             180037200 Import Address Table
+             180040040 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                        158E zend_hash_internal_pointer_reset_ex@@16
+                         B71 php_localtime_r
+                         A8E php_base64_encode_ex
+                        179F zend_update_property
+                        1046 xmlNewTextLen
+                        14EB zend_fetch_class
+                         DDB smart_str_ferealloc@@24
+                        1462 zend_ce_traversable
+                        105F xmlNodeSetContent
+                        1060 xmlNodeSetContentLen
+                        158C zend_hash_index_update@@24
+                         B04 php_get_nan
+                        16D4 zend_read_property
+                        1044 xmlNewText
+                          B5 _efree@@8
+                          B6 _emalloc@@8
+                        1055 xmlNodeDump
+                        1795 zend_unmangle_property_name_ex
+                         15E ap_php_snprintf
+                         19F convert_to_null@@8
+                         D00 php_uri_parse_to_struct
+                         133 add_assoc_string_ex
+                         111 _safe_ferealloc@@32
+                         D05 php_uri_struct_free
+                         C34 php_random_bytes
+                        14F6 zend_fetch_resource_ex
+                         CA5 php_stream_context_set_option
+                         10F _safe_erealloc@@32
+                         1A2 core_globals_offset
+                          42 PHP_MD5InitArgs
+                         CF4 php_uri_get_parser
+                         CA2 php_stream_context_get_option
+                          E7 _php_stream_free
+                          FC _php_stream_read
+                        13EC zend_argument_value_error
+                         13F add_index_str
+                          41 PHP_MD5Final
+                         141 add_index_stringl
+                         B51 php_le_stream_context
+                         10C _php_stream_write
+                          E9 _php_stream_get_line
+                        14F5 zend_fetch_resource2_ex
+                         12D add_assoc_long_ex
+                        143A zend_call_known_function
+                         110 _safe_femalloc@@24
+                          43 PHP_MD5Update
+                         CCE php_stream_xport_crypto_enable
+                         AF2 php_file_le_pstream
+                          D9 _php_stream_eof
+                         CCF php_stream_xport_crypto_setup
+                          EB _php_stream_getc
+                         CA0 php_stream_context_alloc
+                         9F3 make_digest
+                         1F7 file_globals_id
+                         AF3 php_file_le_stream
+                         10D _php_stream_xport_create
+                         138 add_index_bool
+                        1717 zend_spprintf
+                         CB8 php_stream_locate_url_wrapper
+                         F68 xmlGetIntSubset
+                          B3 _convert_to_string@@8
+                        13EE zend_array_destroy@@8
+                         D7A rc_dtor_func@@8
+                        15AD zend_hash_str_add@@32
+                        1761 zend_strpprintf
+                        1583 zend_hash_index_add@@24
+                        1587 zend_hash_index_del@@16
+                         EA9 xmlBuildURI
+                        1057 xmlNodeGetBase
+                        159A zend_hash_move_forward_ex@@16
+                        157D zend_hash_get_current_key_type_ex@@16
+                        15B5 zend_hash_str_update@@32
+                        155F zend_hash_add@@24
+                        157C zend_hash_get_current_key_ex@@32
+                        11A6 xmlStrcmp
+                        156B zend_hash_copy@@24
+                         B92 php_open_temporary_fd_ex
+                        156C zend_hash_del@@16
+                         E62 virtual_realpath
+                        1748 zend_str_tolower_dup@@16
+                         B6B php_libxml_switch_context
+                         E63 virtual_rename
+                         E66 virtual_unlink
+                        1760 zend_strndup@@16
+                         AFE php_get_current_user
+                         F6A xmlGetLastError
+                         EC9 xmlCharStrdup
+                        1084 xmlParseDocument
+                         B59 php_libxml_disable_entity_loader
+                        157B zend_hash_get_current_data_ex@@16
+                         F48 xmlFreeParserCtxt
+                         EF1 xmlCreateFileParserCtxt
+                         EF4 xmlCreateMemoryParserCtxt
+                        13DB zend_add_attribute
+                        176E zend_throw_exception_object
+                         117 _zend_bailout
+                           2 OnUpdateBool
+                         CAF php_stream_filter_remove
+                         C73 php_session_start
+                         E2C ts_resource_ex
+                        16ED zend_register_internal_class_with_flags
+                        1479 zend_clear_exception
+                        16B3 zend_parse_arg_str_or_long_slow@@32
+                        13EA zend_argument_must_not_be_empty_error
+                         11B _zend_handle_numeric_str_ex@@24
+                         AE7 php_escape_html_entities
+                        1577 zend_hash_find_ptr_lc
+                        16E9 zend_register_ini_entries_ex
+                         F35 xmlFindCharEncodingHandler
+                         BB7 php_output_start_default
+                        1674 zend_object_std_dtor
+                         B34 php_info_print_table_row
+                           8 OnUpdateString
+                         B06 php_get_session_status
+                        14C6 zend_error_cb
+                        17EE zend_zval_value_name
+                        1451 zend_ce_error
+                         B08 php_get_session_var_str
+                         B32 php_info_print_table_end
+                        175D zend_string_tolower_ex@@16
+                         E28 ts_allocate_id
+                         D68 php_write
+                        15F8 zend_is_auto_global
+                           3 OnUpdateLong
+                        177A zend_try_assign_typed_ref_arr
+                        15D1 zend_ini_long
+                        175B zend_string_init_interned
+                         194 compiler_globals_offset
+                        15CA zend_ini_boolean_displayer_cb
+                          F6 _php_stream_open_wrapper_ex
+                         BA1 php_output_get_contents
+                        16F3 zend_register_long_constant
+                        16BB zend_parse_parameters
+                         14A add_next_index_str
+                         E31 tsrm_get_ls_cache
+                        14BA zend_empty_array
+                        143C zend_call_method
+                         9F8 module_registry
+                         DB8 sapi_globals_offset
+                         14C add_next_index_stringl
+                        16D5 zend_read_property_ex
+                         100 _php_stream_seek
+                        1807 zval_ptr_safe_dtor
+                         A99 php_check_open_basedir
+                        1027 xmlNewDoc
+                        1025 xmlNewChild
+                        16AA zend_parse_arg_bool_slow@@24
+                        13EB zend_argument_type_error
+                        16F9 zend_register_string_constant
+                         EA7 xmlBuildQName
+                         A53 object_properties_init
+                        1798 zend_unregister_ini_entries_ex
+                         AE3 php_error_docref
+                         EC4 xmlCharEncCloseFunc
+                         1B3 display_ini_entries
+                        17E6 zend_wrong_parameter_error@@40
+                        17E9 zend_wrong_parameters_none_error@@0
+                         DA6 sapi_add_header_ex
+                        167C zend_objects_not_comparable
+                        1788 zend_type_error
+                        1061 xmlNodeSetLang
+                        17E8 zend_wrong_parameters_count_error@@16
+                        149E zend_declare_typed_property
+                         E1E std_object_handlers
+                        15B4 zend_hash_str_find_ptr_lc
+                        172F zend_std_cast_object_tostring
+                         F24 xmlDocSetRootElement
+                        1606 zend_is_unwind_exit
+                         B9A php_output_discard
+                         A98 php_ce_incomplete_class
+                          DC _php_stream_filter_append
+                         CAA php_stream_filter_create
+                          F8 _php_stream_passthru
+                        1768 zend_throw_error
+                        1675 zend_object_std_init@@16
+                         F20 xmlDocDumpMemory
+                         BA2 php_output_get_length
+                        1453 zend_ce_exception
+                        17A2 zend_update_property_ex
+                         B36 php_info_print_table_start
+                        160D zend_known_strings
+                         EC6 xmlCharEncInFunc
+                        142E zend_binary_strncasecmp@@40
+                         179 array_set_zval_key
+                        130C xmlUnlinkNode
+                         B00 php_get_inf
+                         EC7 xmlCharEncOutFunc
+                          AF __zend_malloc
+                          B8 _erealloc@@16
+                         1F2 executor_globals_offset
+                        1514 zend_gcvt
+                         AFA php_format_date_obj
+                         F30 xmlEncodeSpecialChars
+                         11D _zend_hash_init@@32
+                        1184 xmlSetNsProp
+                        119E xmlStrEqual
+                        156F zend_hash_destroy@@8
+                        1179 xmlSearchNs
+                        1806 zval_ptr_dtor
+                         198 concat_function@@24
+                         E97 xmlBufferContent
+                         ECE xmlCheckUTF8
+                        102A xmlNewDocNode
+                        11AF xmlStringTextNoenc
+                        1803 zval_get_long_func@@16
+                         AAD php_date_get_interface_ce
+                        15B3 zend_hash_str_find@@24
+                        17C0 zend_value_error
+                         E98 xmlBufferCreate
+                        1183 xmlSetNs
+                          B9 _estrdup@@8
+                        13EF zend_array_dup@@8
+                         F36 xmlFree
+                        14C3 zend_error
+                        159D zend_hash_next_index_insert@@16
+                         281 instanceof_function_slow@@16
+                         E9E xmlBufferFree
+                         EE8 xmlCopyNode
+                        167E zend_objects_store_del@@8
+                          BA _estrndup@@16
+                        15B8 zend_hash_update@@24
+                         10E _safe_emalloc@@24
+                         200 gc_possible_root@@8
+                        16B4 zend_parse_arg_str_slow@@24
+                         C78 php_set_session_var
+                        1575 zend_hash_find@@16
+                        172A zend_standard_class_def
+                         125 _zend_new_array@@8
+                        1799 zend_unset_property
+                         F3A xmlFreeDoc
+                        1605 zend_is_true@@8
+                         135 add_assoc_zval_ex
+                          BC _femalloc@@8
+                        103B xmlNewNs
+                         E9A xmlBufferCreateStatic
+                          BF _is_numeric_string_ex@@56
+                        1804 zval_get_string_func@@8
+                         A51 object_init_ex
+                        1588 zend_hash_index_find@@16
+                         F43 xmlFreeNode
+                        14BB zend_empty_string
+                         A8C php_base64_decode_ex
+                        1062 xmlNodeSetName
+                        117A xmlSearchNsByHref
+                        11B0 xmlStrlen
+                        1802 zval_get_double_func@@8
+                         F1B xmlDocCopyNode
+                         E71 xmlAddChild
+                          B2 _call_user_function_impl
+                        15B1 zend_hash_str_del@@24
+                        162B zend_long_to_str@@8
+                        1115 xmlResetLastError
+                        1185 xmlSetProp
+
+    VCRUNTIME140.dll
+             180037080 Import Address Table
+             18003FEC0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          3C memcpy
+                          40 strchr
+                          1D __intrinsic_setjmp
+                          3B memcmp
+                          3A memchr
+                          41 strrchr
+                          42 strstr
+                           8 __C_specific_handler
+                          25 __std_type_info_destroy_list
+                          3E memset
+
+    api-ms-win-crt-time-l1-1-0.dll
+             1800371E0 Import Address Table
+             180040020 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           A __timezone
+                          46 strftime
+                          30 _time64
+
+    api-ms-win-crt-string-l1-1-0.dll
+             1800371A8 Import Address Table
+             18003FFE8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          8F strncpy
+                          29 _strdup
+                          2A _stricmp
+                          34 _strnicmp
+                          86 strcmp
+                          8E strncmp
+
+    api-ms-win-crt-runtime-l1-1-0.dll
+             180037128 Import Address Table
+             18003FF68 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          22 _execute_onexit_table
+                          36 _initterm
+                          37 _initterm_e
+                          3F _seh_filter_dll
+                          18 _configure_narrow_argv
+                          16 _cexit
+                          21 _errno
+                          34 _initialize_onexit_table
+                          33 _initialize_narrow_environment
+
+    api-ms-win-crt-heap-l1-1-0.dll
+             180037100 Import Address Table
+             18003FF40 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          18 free
+                          19 malloc
+
+    api-ms-win-crt-convert-l1-1-0.dll
+             1800370D8 Import Address Table
+             18003FF18 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          50 atoi
+
+    api-ms-win-crt-stdio-l1-1-0.dll
+             180037178 Import Address Table
+             18003FFB8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          6B _write
+                          17 _close
+                          10 __stdio_common_vsscanf
+                          52 _read
+                          49 _open
+
+    api-ms-win-crt-filesystem-l1-1-0.dll
+             1800370E8 Import Address Table
+             18003FF28 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          11 _fstat64i32
+                          23 _unlink
+
+    KERNEL32.dll
+             180037000 Import Address Table
+             18003FE40 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         518 RtlVirtualUnwind
+                         511 RtlLookupFunctionEntry
+                         5FB UnhandledExceptionFilter
+                         5B8 SetUnhandledExceptionFilter
+                         241 GetCurrentProcess
+                         5D8 TerminateProcess
+                         3B0 IsDebuggerPresent
+                         39A InitializeSListHead
+                         142 DisableThreadLibraryCalls
+                         31A GetSystemTimeAsFileTime
+                         246 GetCurrentThreadId
+                         242 GetCurrentProcessId
+                         481 QueryPerformanceCounter
+                         3B8 IsProcessorFeaturePresent
+                         509 RtlCaptureContext
+
+    api-ms-win-crt-math-l1-1-0.dll
+             180037118 Import Address Table
+             18003FF58 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          BE floor
+
+  Summary
+
+        2000 .data
+        1000 .pdata
+        C000 .rdata
+        1000 .reloc
+        1000 .rsrc
+       36000 .text

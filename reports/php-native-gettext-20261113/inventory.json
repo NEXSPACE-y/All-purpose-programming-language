@@ -1,0 +1,643 @@
+{
+  "status": "READ_ONLY_STATIC_GETTEXT_DEPENDENCY_NOT_LOAD_OR_COMPATIBILITY_PROOF",
+  "binary": "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_gettext.dll",
+  "sha256": "ed395f80018920ba1b4551cdc33dd89871eb8b8ef362b1515ae93c0e7f1de3ad",
+  "machine": 34404,
+  "module_metadata": {
+    "status": "statically_decoded",
+    "method": "lea_rax_rip_ret_no_execution",
+    "module_entry_rva": 99008,
+    "size": 168,
+    "zend_api": 20250925,
+    "zend_debug": 0,
+    "zts": 1,
+    "name": "gettext",
+    "version": "8.5.12",
+    "build_id": "API20250925,TS,VS17",
+    "has_module_startup": false,
+    "has_request_startup": false,
+    "globals_size": 0
+  },
+  "functions": [
+    {
+      "name": "textdomain",
+      "handler_rva": 71952,
+      "declared_args": 1,
+      "required_args": 0,
+      "flags": 0,
+      "method": "Static SDK48-byte function-entry and module+40 pointer; not execution"
+    },
+    {
+      "name": "gettext",
+      "handler_rva": 71152,
+      "declared_args": 1,
+      "required_args": 1,
+      "flags": 0,
+      "method": "Static SDK48-byte function-entry and module+40 pointer; not execution"
+    },
+    {
+      "name": "_",
+      "handler_rva": 71152,
+      "declared_args": 1,
+      "required_args": 1,
+      "flags": 0,
+      "method": "Static SDK48-byte function-entry and module+40 pointer; not execution"
+    },
+    {
+      "name": "dgettext",
+      "handler_rva": 70112,
+      "declared_args": 2,
+      "required_args": 2,
+      "flags": 0,
+      "method": "Static SDK48-byte function-entry and module+40 pointer; not execution"
+    },
+    {
+      "name": "dcgettext",
+      "handler_rva": 68880,
+      "declared_args": 3,
+      "required_args": 3,
+      "flags": 0,
+      "method": "Static SDK48-byte function-entry and module+40 pointer; not execution"
+    },
+    {
+      "name": "bindtextdomain",
+      "handler_rva": 68192,
+      "declared_args": 2,
+      "required_args": 1,
+      "flags": 0,
+      "method": "Static SDK48-byte function-entry and module+40 pointer; not execution"
+    },
+    {
+      "name": "ngettext",
+      "handler_rva": 71488,
+      "declared_args": 3,
+      "required_args": 3,
+      "flags": 0,
+      "method": "Static SDK48-byte function-entry and module+40 pointer; not execution"
+    },
+    {
+      "name": "dngettext",
+      "handler_rva": 70560,
+      "declared_args": 4,
+      "required_args": 4,
+      "flags": 0,
+      "method": "Static SDK48-byte function-entry and module+40 pointer; not execution"
+    },
+    {
+      "name": "dcngettext",
+      "handler_rva": 69408,
+      "declared_args": 5,
+      "required_args": 5,
+      "flags": 0,
+      "method": "Static SDK48-byte function-entry and module+40 pointer; not execution"
+    },
+    {
+      "name": "bind_textdomain_codeset",
+      "handler_rva": 67744,
+      "declared_args": 2,
+      "required_args": 1,
+      "flags": 0,
+      "method": "Static SDK48-byte function-entry and module+40 pointer; not execution"
+    }
+  ],
+  "imports": [
+    {
+      "dll": "php8ts.dll",
+      "delay_load": false,
+      "symbols": [
+        {
+          "name": "_emalloc@@8"
+        },
+        {
+          "name": "virtual_getcwd"
+        },
+        {
+          "name": "php_info_print_table_start"
+        },
+        {
+          "name": "zend_argument_must_not_be_empty_error"
+        },
+        {
+          "name": "zend_wrong_parameters_count_error@@16"
+        },
+        {
+          "name": "zend_wrong_parameter_error@@40"
+        },
+        {
+          "name": "zend_argument_value_error"
+        },
+        {
+          "name": "virtual_realpath"
+        },
+        {
+          "name": "zend_parse_arg_long_slow@@24"
+        },
+        {
+          "name": "php_info_print_table_end"
+        },
+        {
+          "name": "php_info_print_table_row"
+        },
+        {
+          "name": "zend_parse_arg_str_slow@@24"
+        }
+      ]
+    },
+    {
+      "dll": "KERNEL32.dll",
+      "delay_load": false,
+      "symbols": [
+        {
+          "name": "DisableThreadLibraryCalls"
+        },
+        {
+          "name": "GetSystemTimeAsFileTime"
+        },
+        {
+          "name": "GetCurrentProcessId"
+        },
+        {
+          "name": "QueryPerformanceCounter"
+        },
+        {
+          "name": "IsProcessorFeaturePresent"
+        },
+        {
+          "name": "IsDebuggerPresent"
+        },
+        {
+          "name": "GetCurrentProcess"
+        },
+        {
+          "name": "SetUnhandledExceptionFilter"
+        },
+        {
+          "name": "UnhandledExceptionFilter"
+        },
+        {
+          "name": "RtlVirtualUnwind"
+        },
+        {
+          "name": "RtlLookupFunctionEntry"
+        },
+        {
+          "name": "RtlCaptureContext"
+        },
+        {
+          "name": "InitializeSListHead"
+        },
+        {
+          "name": "TerminateProcess"
+        },
+        {
+          "name": "CloseHandle"
+        },
+        {
+          "name": "InitializeCriticalSection"
+        },
+        {
+          "name": "EnterCriticalSection"
+        },
+        {
+          "name": "LeaveCriticalSection"
+        },
+        {
+          "name": "DeleteCriticalSection"
+        },
+        {
+          "name": "SetEvent"
+        },
+        {
+          "name": "WaitForSingleObject"
+        },
+        {
+          "name": "CreateEventA"
+        },
+        {
+          "name": "Sleep"
+        },
+        {
+          "name": "GetACP"
+        },
+        {
+          "name": "GetLocaleInfoA"
+        },
+        {
+          "name": "GetThreadLocale"
+        },
+        {
+          "name": "EnumSystemLocalesA"
+        },
+        {
+          "name": "GetLastError"
+        },
+        {
+          "name": "GetModuleHandleA"
+        },
+        {
+          "name": "GetProcAddress"
+        },
+        {
+          "name": "EnumResourceLanguagesA"
+        },
+        {
+          "name": "GetCurrentThreadId"
+        }
+      ]
+    },
+    {
+      "dll": "ADVAPI32.dll",
+      "delay_load": false,
+      "symbols": [
+        {
+          "name": "RegCloseKey"
+        },
+        {
+          "name": "RegQueryValueExA"
+        },
+        {
+          "name": "RegOpenKeyExA"
+        }
+      ]
+    },
+    {
+      "dll": "VCRUNTIME140.dll",
+      "delay_load": false,
+      "symbols": [
+        {
+          "name": "__std_type_info_destroy_list"
+        },
+        {
+          "name": "__C_specific_handler"
+        },
+        {
+          "name": "memcpy"
+        },
+        {
+          "name": "strchr"
+        },
+        {
+          "name": "strstr"
+        },
+        {
+          "name": "memset"
+        },
+        {
+          "name": "memcmp"
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-runtime-l1-1-0.dll",
+      "delay_load": false,
+      "symbols": [
+        {
+          "name": "abort"
+        },
+        {
+          "name": "_initterm_e"
+        },
+        {
+          "name": "_execute_onexit_table"
+        },
+        {
+          "name": "_seh_filter_dll"
+        },
+        {
+          "name": "_errno"
+        },
+        {
+          "name": "_cexit"
+        },
+        {
+          "name": "_configure_narrow_argv"
+        },
+        {
+          "name": "_initialize_narrow_environment"
+        },
+        {
+          "name": "_initialize_onexit_table"
+        },
+        {
+          "name": "_initterm"
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-string-l1-1-0.dll",
+      "delay_load": false,
+      "symbols": [
+        {
+          "name": "wcscmp"
+        },
+        {
+          "name": "_wcsdup"
+        },
+        {
+          "name": "strcmp"
+        },
+        {
+          "name": "strnlen"
+        },
+        {
+          "name": "wcslen"
+        },
+        {
+          "name": "tolower"
+        },
+        {
+          "name": "isdigit"
+        },
+        {
+          "name": "isalpha"
+        },
+        {
+          "name": "isspace"
+        },
+        {
+          "name": "strcpy"
+        },
+        {
+          "name": "strncpy"
+        },
+        {
+          "name": "strncmp"
+        },
+        {
+          "name": "_strdup"
+        },
+        {
+          "name": "strlen"
+        },
+        {
+          "name": "isalnum"
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-heap-l1-1-0.dll",
+      "delay_load": false,
+      "symbols": [
+        {
+          "name": "realloc"
+        },
+        {
+          "name": "free"
+        },
+        {
+          "name": "calloc"
+        },
+        {
+          "name": "malloc"
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-convert-l1-1-0.dll",
+      "delay_load": false,
+      "symbols": [
+        {
+          "name": "mbstowcs"
+        },
+        {
+          "name": "wcrtomb"
+        },
+        {
+          "name": "strtoul"
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-environment-l1-1-0.dll",
+      "delay_load": false,
+      "symbols": [
+        {
+          "name": "getenv"
+        },
+        {
+          "name": "_wgetcwd"
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "delay_load": false,
+      "symbols": [
+        {
+          "name": "_fstat64i32"
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-stdio-l1-1-0.dll",
+      "delay_load": false,
+      "symbols": [
+        {
+          "name": "putc"
+        },
+        {
+          "name": "fwrite"
+        },
+        {
+          "name": "__stdio_common_vsprintf"
+        },
+        {
+          "name": "_read"
+        },
+        {
+          "name": "fputs"
+        },
+        {
+          "name": "fopen"
+        },
+        {
+          "name": "fclose"
+        },
+        {
+          "name": "_wopen"
+        },
+        {
+          "name": "_close"
+        },
+        {
+          "name": "_open"
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-locale-l1-1-0.dll",
+      "delay_load": false,
+      "symbols": [
+        {
+          "name": "setlocale"
+        },
+        {
+          "name": "___mb_cur_max_func"
+        },
+        {
+          "name": "localeconv"
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-math-l1-1-0.dll",
+      "delay_load": false,
+      "symbols": [
+        {
+          "name": "frexp"
+        },
+        {
+          "name": "ldexp"
+        },
+        {
+          "name": "_dsign"
+        }
+      ]
+    }
+  ],
+  "current_info_v2_cores": {
+    "legacy": {
+      "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\legacy01\\php8ts.dll",
+      "sha256": "277cd49fce1536369acde5979c4bfa140b22d26ec689eff6768f7366d1c724b5",
+      "missing_names": [
+        "virtual_getcwd",
+        "virtual_realpath",
+        "zend_argument_must_not_be_empty_error",
+        "zend_argument_value_error"
+      ],
+      "present_names": [
+        "_emalloc@@8",
+        "php_info_print_table_end",
+        "php_info_print_table_row",
+        "php_info_print_table_start",
+        "zend_parse_arg_long_slow@@24",
+        "zend_parse_arg_str_slow@@24",
+        "zend_wrong_parameter_error@@40",
+        "zend_wrong_parameters_count_error@@16"
+      ]
+    },
+    "callback": {
+      "path": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\callback01\\php8ts.dll",
+      "sha256": "204f885944390be8e0b1e84a4ae3aafc5d85fd674fc35e9077b63fa5baa77f26",
+      "missing_names": [
+        "virtual_getcwd",
+        "virtual_realpath",
+        "zend_argument_must_not_be_empty_error",
+        "zend_argument_value_error"
+      ],
+      "present_names": [
+        "_emalloc@@8",
+        "php_info_print_table_end",
+        "php_info_print_table_row",
+        "php_info_print_table_start",
+        "zend_parse_arg_long_slow@@24",
+        "zend_parse_arg_str_slow@@24",
+        "zend_wrong_parameter_error@@40",
+        "zend_wrong_parameters_count_error@@16"
+      ]
+    }
+  },
+  "reference_archive": {
+    "path": "C:\\Users\\rinpa\\Downloads\\php-8.5.12-1-src.zip",
+    "sha256": "9dac05f72f328afd0a2b0e795a519ae4cb3d056bc3f3b55147bd048bd64e45e8",
+    "contracts": {
+      "Zend/zend_virtual_cwd.h": {
+        "sha256": "d6ecfad3c94d9386c2783306ecfe628ee3ad9324c4bc689f4fe5933800bd7764",
+        "anchor_lines": {
+          "virtual_getcwd(": [
+            179,
+            273
+          ],
+          "virtual_realpath(": [
+            184,
+            282
+          ]
+        }
+      },
+      "Zend/zend_virtual_cwd.c": {
+        "sha256": "b80a77cf0fde92d9c928d7902d6889fa6f938e2bcf2462480448db59979e39ba",
+        "anchor_lines": {
+          "virtual_getcwd(": [
+            291
+          ],
+          "virtual_realpath(": [
+            1258
+          ]
+        }
+      },
+      "Zend/zend_API.h": {
+        "sha256": "ed9d8f2d31f64f25548a2c16dbb9ef12d591e9d8e324e3364d878c641df80470",
+        "anchor_lines": {
+          "zend_argument_value_error(": [
+            1632
+          ],
+          "zend_argument_must_not_be_empty_error(": [
+            1633
+          ]
+        }
+      },
+      "Zend/zend_API.c": {
+        "sha256": "b4cb01a5b771981572c060436570f2504f02b1647be0090968f6c7f0ad616a2e",
+        "anchor_lines": {
+          "zend_argument_value_error(": [
+            305,
+            441,
+            453,
+            1118
+          ],
+          "zend_argument_must_not_be_empty_error(": [
+            451
+          ],
+          "zend_argument_error_variadic(": [
+            399,
+            426,
+            436,
+            446
+          ]
+        }
+      },
+      "ext/gettext/gettext.c": {
+        "sha256": "bca41f16dd40232d711baa85143d48e4d1e1e800eaefbd00ca9bfe3a12a34382",
+        "anchor_lines": {
+          "PHP_GETTEXT_MAX_DOMAIN_LENGTH": [
+            50,
+            54
+          ],
+          "PHP_GETTEXT_MAX_MSGID_LENGTH": [
+            51,
+            63
+          ],
+          "VCWD_REALPATH": [
+            207
+          ],
+          "VCWD_GETCWD": [
+            210
+          ],
+          "zend_argument_value_error": [
+            55,
+            64,
+            70,
+            95
+          ],
+          "zend_argument_must_not_be_empty_error": [
+            58
+          ]
+        }
+      },
+      "ext/gettext/gettext_arginfo.h": {
+        "sha256": "2a2ee5ebe9bd36b63430524b8bea1b9ea98b37f7ab6b23890ef34757af62de00",
+        "anchor_lines": {
+          "ext_functions": [
+            82
+          ],
+          "ZEND_RAW_FENTRY": [
+            85
+          ]
+        }
+      }
+    }
+  },
+  "extension_or_stock_php_loaded_or_executed": false,
+  "os_or_dependency_installed": false,
+  "implementation_changed": false
+}

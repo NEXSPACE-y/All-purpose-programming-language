@@ -1,0 +1,25 @@
+{
+  "id": "error.category-all",
+  "group": "argument_diagnostics",
+  "steps": [
+    {
+      "operation": "call",
+      "function": "dcgettext",
+      "args": [
+        {
+          "type": "bytes",
+          "base64": "YWxsX3BocF9nZXR0ZXh0XzIwMjYxMTEz"
+        },
+        {
+          "type": "bytes",
+          "base64": "aWQ="
+        },
+        {
+          "type": "int",
+          "value": "0"
+        }
+      ],
+      "strict": false
+    }
+  ]
+}

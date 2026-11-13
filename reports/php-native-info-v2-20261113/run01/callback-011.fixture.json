@@ -1,0 +1,11 @@
+{
+  "id": "strict_integer_typeerror",
+  "function": "dl_test_test2",
+  "args": [
+    {
+      "type": "int",
+      "value": "123"
+    }
+  ],
+  "strict": true
+}

@@ -1,0 +1,1 @@
+$a=["\xFF"=>"\x80\0"];print_r($a);echo print_r($a,true);

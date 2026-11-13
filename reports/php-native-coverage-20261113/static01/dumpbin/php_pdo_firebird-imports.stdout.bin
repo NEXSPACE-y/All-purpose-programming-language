@@ -1,0 +1,222 @@
+
+Dump of file C:\Users\rinpa\ALL_php_oracle\php-8.5.12-ts-x64\ext\php_pdo_firebird.dll
+
+File Type: DLL
+
+  Section contains the following imports:
+
+    php8ts.dll
+             180008290 Import Address Table
+             18000AB70 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         15E ap_php_snprintf
+                        160D zend_known_strings
+                         B36 php_info_print_table_start
+                         E1E std_object_handlers
+                        17E9 zend_wrong_parameters_none_error@@0
+                        1490 zend_declare_class_constant_ex
+                        149D zend_declare_typed_class_constant
+                         A60 pdo_dbh_new
+                        175B zend_string_init_interned
+                         A5F pdo_dbh_ce
+                         B32 php_info_print_table_end
+                        1605 zend_is_true@@8
+                         C1D php_pdo_register_driver_specific_ce
+                         C18 php_pdo_get_dbh_ce
+                         B34 php_info_print_table_row
+                        16ED zend_register_internal_class_with_flags
+                         C1C php_pdo_register_driver
+                         C20 php_pdo_unregister_driver
+                        13DB zend_add_attribute
+                         AF3 php_file_le_stream
+                         AF2 php_file_le_pstream
+                          D6 _php_stream_copy_to_mem
+                        16A2 zend_one_char_string
+                         12D add_assoc_long_ex
+                        14F5 zend_fetch_resource2_ex
+                         10E _safe_emalloc@@24
+                         125 _zend_new_array@@8
+                        142E zend_binary_strncasecmp@@40
+                        1762 zend_strpprintf_unchecked
+                        1806 zval_ptr_dtor
+                        1575 zend_hash_find@@16
+                        1761 zend_strpprintf
+                        180A zval_try_get_string_func@@8
+                         C1F php_pdo_stmt_valid_db_obj_handle
+                          BF _is_numeric_string_ex@@56
+                        1804 zval_get_string_func@@8
+                        14BB zend_empty_string
+                          B6 _emalloc@@8
+                          B5 _efree@@8
+                         A67 pdo_throw_exception
+                        15B5 zend_hash_str_update@@32
+                         11D _zend_hash_init@@32
+                          BA _estrndup@@16
+                        1760 zend_strndup@@16
+                        1803 zval_get_long_func@@16
+                        17C0 zend_value_error
+                         14C add_next_index_stringl
+                          B9 _estrdup@@8
+                         15D ap_php_slprintf
+                         E31 tsrm_get_ls_cache
+                         1F2 executor_globals_offset
+                          B1 __zend_strdup
+                        156F zend_hash_destroy@@8
+                         A62 pdo_get_long_param
+                          AD __zend_calloc
+                         C1B php_pdo_parse_data_source
+                         C19 php_pdo_get_exception
+                         145 add_next_index_long
+                         CDF php_strlcat
+                          B4 _ecalloc@@16
+                        1588 zend_hash_index_find@@16
+                         A61 pdo_get_bool_param
+                        176B zend_throw_exception_ex
+                         A66 pdo_raise_impl_error
+
+    fbclient.dll
+             180008180 Import Address Table
+             18000AA60 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          16 fb_get_master_interface
+                             Ordinal   182
+                             Ordinal   108
+                             Ordinal   144
+                             Ordinal   263
+                             Ordinal   190
+                             Ordinal   262
+                             Ordinal   118
+                             Ordinal   261
+                             Ordinal   139
+                             Ordinal   152
+                             Ordinal   113
+                             Ordinal   270
+                             Ordinal   201
+                             Ordinal   279
+                             Ordinal   181
+                             Ordinal   169
+                             Ordinal   160
+                          1B fb_ping
+                             Ordinal   183
+                             Ordinal   165
+                             Ordinal   115
+                             Ordinal   128
+                             Ordinal   180
+                             Ordinal   103
+                             Ordinal   174
+                             Ordinal   197
+                          1A fb_interpret
+                             Ordinal   194
+                             Ordinal   114
+                             Ordinal   178
+                             Ordinal   173
+                             Ordinal   200
+
+    VCRUNTIME140_1.dll
+             1800080D8 Import Address Table
+             18000A9B8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 __CxxFrameHandler4
+
+    VCRUNTIME140.dll
+             1800080A0 Import Address Table
+             18000A980 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          3C memcpy
+                          3D memmove
+                          36 _purecall
+                           8 __C_specific_handler
+                          25 __std_type_info_destroy_list
+                          3E memset
+
+    api-ms-win-crt-string-l1-1-0.dll
+             180008150 Import Address Table
+             18000AA30 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          34 _strnicmp
+                          2A _stricmp
+                          8E strncmp
+
+    api-ms-win-crt-heap-l1-1-0.dll
+             1800080F8 Import Address Table
+             18000A9D8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          18 free
+
+    api-ms-win-crt-convert-l1-1-0.dll
+             1800080E8 Import Address Table
+             18000A9C8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          50 atoi
+
+    api-ms-win-crt-time-l1-1-0.dll
+             180008170 Import Address Table
+             18000AA50 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          46 strftime
+
+    api-ms-win-crt-runtime-l1-1-0.dll
+             180008108 Import Address Table
+             18000A9E8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          37 _initterm_e
+                          36 _initterm
+                          3F _seh_filter_dll
+                          18 _configure_narrow_argv
+                          34 _initialize_onexit_table
+                          33 _initialize_narrow_environment
+                          22 _execute_onexit_table
+                          16 _cexit
+
+    KERNEL32.dll
+             180008000 Import Address Table
+             18000A8E0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         3B8 IsProcessorFeaturePresent
+                         511 RtlLookupFunctionEntry
+                         518 RtlVirtualUnwind
+                         3B0 IsDebuggerPresent
+                         39A InitializeSListHead
+                         142 DisableThreadLibraryCalls
+                         31A GetSystemTimeAsFileTime
+                         246 GetCurrentThreadId
+                         242 GetCurrentProcessId
+                         481 QueryPerformanceCounter
+                         5CA SleepConditionVariableSRW
+                         62D WakeAllConditionVariable
+                           0 AcquireSRWLockExclusive
+                         4EA ReleaseSRWLockExclusive
+                         5FB UnhandledExceptionFilter
+                         5D8 TerminateProcess
+                         241 GetCurrentProcess
+                         5B8 SetUnhandledExceptionFilter
+                         509 RtlCaptureContext
+
+  Summary
+
+        1000 .data
+        1000 .pdata
+        4000 .rdata
+        1000 .reloc
+        1000 .rsrc
+        7000 .text

@@ -1,0 +1,1 @@
+<?php class C{function f($v){return $v+2;}}$f=[new C(),'f'];echo $f(3);

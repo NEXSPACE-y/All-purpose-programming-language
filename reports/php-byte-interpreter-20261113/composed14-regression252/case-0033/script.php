@@ -1,0 +1,1 @@
+<?php function f(){?>F<?php } f();?>

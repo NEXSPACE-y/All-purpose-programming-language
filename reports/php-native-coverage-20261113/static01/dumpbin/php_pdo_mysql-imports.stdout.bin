@@ -1,0 +1,148 @@
+
+Dump of file C:\Users\rinpa\ALL_php_oracle\php-8.5.12-ts-x64\ext\php_pdo_mysql.dll
+
+File Type: DLL
+
+  Section contains the following imports:
+
+    php8ts.dll
+             180007110 Import Address Table
+             180009000 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         AF3 php_file_le_stream
+                         D7A rc_dtor_func@@8
+                        13DB zend_add_attribute
+                         C20 php_pdo_unregister_driver
+                         C1C php_pdo_register_driver
+                        16ED zend_register_internal_class_with_flags
+                        16E9 zend_register_ini_entries_ex
+                         B34 php_info_print_table_row
+                         C18 php_pdo_get_dbh_ce
+                         C1D php_pdo_register_driver_specific_ce
+                         B32 php_info_print_table_end
+                         A5F pdo_dbh_ce
+                        175B zend_string_init_interned
+                         A67 pdo_throw_exception
+                         E31 tsrm_get_ls_cache
+                         AF2 php_file_le_pstream
+                        149D zend_declare_typed_class_constant
+                        1798 zend_unregister_ini_entries_ex
+                         AE3 php_error_docref
+                        1490 zend_declare_class_constant_ex
+                         A3E mysqlnd_reverse_api_register_api
+                        17E9 zend_wrong_parameters_none_error@@0
+                         E1E std_object_handlers
+                        1768 zend_throw_error
+                         B36 php_info_print_table_start
+                        160D zend_known_strings
+                        1803 zval_get_long_func@@16
+                         A99 php_check_open_basedir
+                          B9 _estrdup@@8
+                         10E _safe_emalloc@@24
+                          D6 _php_stream_copy_to_mem
+                         C1E php_pdo_stmt_set_column_count
+                         12D add_assoc_long_ex
+                        14F5 zend_fetch_resource2_ex
+                         125 _zend_new_array@@8
+                        1806 zval_ptr_dtor
+                        1761 zend_strpprintf
+                         135 add_assoc_zval_ex
+                         C1F php_pdo_stmt_valid_db_obj_handle
+                         133 add_assoc_string_ex
+                        14BB zend_empty_string
+                         A66 pdo_raise_impl_error
+                         9FC mysqlnd_connection_connect
+                          B6 _emalloc@@8
+                          B5 _efree@@8
+                        178B zend_u64_to_str@@8
+                         281 instanceof_function_slow@@16
+                         A0B mysqlnd_get_client_info
+                         9FD mysqlnd_connection_init
+                          B1 __zend_strdup
+                         A62 pdo_get_long_param
+                          AD __zend_calloc
+                         10F _safe_erealloc@@32
+                         A65 pdo_parse_params
+                         C1B php_pdo_parse_data_source
+                         145 add_next_index_long
+                         14B add_next_index_string
+                          B4 _ecalloc@@16
+                        1588 zend_hash_index_find@@16
+                         A61 pdo_get_bool_param
+                         A60 pdo_dbh_new
+                        180A zval_try_get_string_func@@8
+
+    VCRUNTIME140.dll
+             180007080 Import Address Table
+             180008F70 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          25 __std_type_info_destroy_list
+                           8 __C_specific_handler
+                          3E memset
+                          3C memcpy
+
+    api-ms-win-crt-heap-l1-1-0.dll
+             1800070B8 Import Address Table
+             180008FA8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          18 free
+
+    api-ms-win-crt-convert-l1-1-0.dll
+             1800070A8 Import Address Table
+             180008F98 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          50 atoi
+
+    api-ms-win-crt-runtime-l1-1-0.dll
+             1800070C8 Import Address Table
+             180008FB8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          22 _execute_onexit_table
+                          18 _configure_narrow_argv
+                          3F _seh_filter_dll
+                          37 _initterm_e
+                          36 _initterm
+                          33 _initialize_narrow_environment
+                          16 _cexit
+                          34 _initialize_onexit_table
+
+    KERNEL32.dll
+             180007000 Import Address Table
+             180008EF0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         3B0 IsDebuggerPresent
+                         39A InitializeSListHead
+                         142 DisableThreadLibraryCalls
+                         31A GetSystemTimeAsFileTime
+                         246 GetCurrentThreadId
+                         242 GetCurrentProcessId
+                         481 QueryPerformanceCounter
+                         3B8 IsProcessorFeaturePresent
+                         5D8 TerminateProcess
+                         241 GetCurrentProcess
+                         5B8 SetUnhandledExceptionFilter
+                         5FB UnhandledExceptionFilter
+                         518 RtlVirtualUnwind
+                         511 RtlLookupFunctionEntry
+                         509 RtlCaptureContext
+
+  Summary
+
+        1000 .data
+        1000 .pdata
+        3000 .rdata
+        1000 .reloc
+        1000 .rsrc
+        6000 .text

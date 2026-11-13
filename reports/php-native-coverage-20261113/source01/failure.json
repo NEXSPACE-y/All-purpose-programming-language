@@ -1,0 +1,6 @@
+{
+  "status": "STATIC_CLASSIFIER_ANCHOR_FAILURE_NO_DLL_EXECUTION",
+  "failure": "The definition finder required an opening brace and did not accept the real std_object_handlers DATA definition initialized by make_handlers().",
+  "implementation_or_fixture_changed": false,
+  "next_revision": "source02 fixes only the source definition finder to accept DATA initializer lines."
+}

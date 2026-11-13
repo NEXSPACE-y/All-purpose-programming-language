@@ -1,0 +1,60 @@
+{
+  "status": "PARTIAL_COMPONENT_NOT_FULL_PHP",
+  "profiles": {
+    "run04": {
+      "passed": 48,
+      "failed": 1,
+      "catalogTranslationNotObserved": 2,
+      "inputsUnchanged": true,
+      "reportSha256": "01359fb85b4677e7acea25089e3ffbc806934fce0933df6c9d10df6ec22c25bb",
+      "failedIds": [
+        "type.nullable-invalid"
+      ],
+      "fixtureGroups": {
+        "catalog_translation": 2,
+        "codeset": 2,
+        "domain_state": 7,
+        "argument_diagnostics": 16,
+        "module_info": 1,
+        "untranslated_identity": 8,
+        "owned_path": 10,
+        "untranslated_plural": 5
+      },
+      "coreSha256": "d005aa1205e214ad346783546c946e7e0e22a1c3eaa9ea696950dd49e17f328f",
+      "normalProcessExits": 51
+    },
+    "run05": {
+      "passed": 49,
+      "failed": 0,
+      "catalogTranslationNotObserved": 2,
+      "inputsUnchanged": true,
+      "reportSha256": "9ff406585ee6c0ba525a361f75a4ec7bf11ea850ec6830b118906cbe5d7bf932",
+      "failedIds": [],
+      "fixtureGroups": {
+        "catalog_translation": 2,
+        "codeset": 2,
+        "domain_state": 7,
+        "argument_diagnostics": 16,
+        "module_info": 1,
+        "untranslated_identity": 8,
+        "owned_path": 10,
+        "untranslated_plural": 5
+      },
+      "coreSha256": "96df49fe6a7dd83c3462c2b92d0b14922e0f292b2cf80212e47242a8932fdef3",
+      "normalProcessExits": 51,
+      "effectiveLocaleEnvironment": {
+        "LC_ALL": "C.UTF-8",
+        "LANG": "C.UTF-8",
+        "LC_MESSAGES": null,
+        "LANGUAGE": "zz_ALL",
+        "LC_CTYPE": "C.UTF-8"
+      }
+    }
+  },
+  "unchangedExtensionSha256": "ed395f80018920ba1b4551cdc33dd89871eb8b8ef362b1515ae93c0e7f1de3ad",
+  "noOfficialExecutionDelegation": true,
+  "oldFailureRetained": true,
+  "catalogTranslationCoverageComplete": false,
+  "linuxValidated": false,
+  "newBooleanFalseCoverageComplete": false
+}

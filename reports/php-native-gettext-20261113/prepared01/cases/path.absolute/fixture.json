@@ -1,0 +1,22 @@
+{
+  "id": "path.absolute",
+  "group": "owned_path",
+  "steps": [
+    {
+      "operation": "call",
+      "function": "bindtextdomain",
+      "args": [
+        {
+          "type": "bytes",
+          "base64": "YWxsX3BocF9nZXR0ZXh0XzIwMjYxMTEz"
+        },
+        {
+          "type": "bytes",
+          "base64": "QzpcVXNlcnNccmlucGFcQUxMLXBocC1jb21wYXQtMjAyNjExMTJccmVwb3J0c1xwaHAtbmF0aXZlLWdldHRleHQtMjAyNjExMTNccHJlcGFyZWQwMVxvd25lZFxwbGFpbg=="
+        }
+      ],
+      "strict": false
+    }
+  ],
+  "cwd": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-native-gettext-20261113\\prepared01\\owned"
+}

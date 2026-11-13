@@ -1,0 +1,15 @@
+{
+  "status": "STATIC_INSPECTED_NOT_RUNTIME_VERIFIED",
+  "coreSha256": "96df49fe6a7dd83c3462c2b92d0b14922e0f292b2cf80212e47242a8932fdef3",
+  "sourceSha256": "304d6e5178b24c6daa8bf56c6e29c07f892a1e9967e1bb9f0e38fa09a6c59521",
+  "missingImportNames": [],
+  "forwarders": [],
+  "stockCoreImports": [],
+  "managed02ReusedByteIdenticalBridge": true,
+  "driverOriginalSha256": "96fc31e3145512dfd94444fa03a911744aa4354506740f6c8682780b8f35108a",
+  "driverCandidateSha256": "e6b23ba9ac6dc31da158879cae45997bc086ea11a8a01ee9cab12b51c4f4b0f4",
+  "effectiveLocaleEnvironmentObservationAdded": true,
+  "runtimeConditionsOrFixtureChanges": false,
+  "previousActualResult": "run04:48PASS,1bool-vs-true TypeError difference,2catalog unobserved. Original records retained.",
+  "reasonForNewRun": "New own argument-value-name producer; bool literal text follows pinned Zend API contract. Unchanged51 and same30s deadline."
+}

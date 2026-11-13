@@ -1,0 +1,17 @@
+{
+  "id": "type.nullable-invalid",
+  "group": "argument_diagnostics",
+  "steps": [
+    {
+      "operation": "call",
+      "function": "textdomain",
+      "args": [
+        {
+          "type": "bool",
+          "value": true
+        }
+      ],
+      "strict": true
+    }
+  ]
+}

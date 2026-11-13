@@ -1,0 +1,248 @@
+
+Dump of file C:\Users\rinpa\ALL_php_oracle\php-8.5.12-ts-x64\ext\php_sqlite3.dll
+
+File Type: DLL
+
+  Section contains the following imports:
+
+    php8ts.dll
+             18000A358 Import Address Table
+             18000E1D8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         B36 php_info_print_table_start
+                        1453 zend_ce_exception
+                        1717 zend_spprintf
+                        153D zend_get_gc_buffer_grow
+                          B6 _emalloc@@8
+                        1675 zend_object_std_init@@16
+                          B5 _efree@@8
+                        1768 zend_throw_error
+                         AF3 php_file_le_stream
+                        158C zend_hash_index_update@@24
+                         19D convert_to_double@@8
+                        1737 zend_std_get_properties
+                        1625 zend_llist_init
+                         AF2 php_file_le_pstream
+                         E1E std_object_handlers
+                        17D6 zend_vspprintf
+                          D6 _php_stream_copy_to_mem
+                         11B _zend_handle_numeric_str_ex@@24
+                         11D _zend_hash_init@@32
+                        17E8 zend_wrong_parameters_count_error@@16
+                         19E convert_to_long@@8
+                        143A zend_call_known_function
+                        17E9 zend_wrong_parameters_none_error@@0
+                        17E6 zend_wrong_parameter_error@@40
+                         1B3 display_ini_entries
+                         AE3 php_error_docref
+                        1798 zend_unregister_ini_entries_ex
+                        153C zend_get_gc_buffer_create
+                         117 _zend_bailout
+                        1617 zend_llist_add_element
+                        149D zend_declare_typed_class_constant
+                         A53 object_properties_init
+                         12D add_assoc_long_ex
+                        16AA zend_parse_arg_bool_slow@@24
+                        14F5 zend_fetch_resource2_ex
+                         A99 php_check_open_basedir
+                        159D zend_hash_next_index_insert@@16
+                        167E zend_objects_store_del@@8
+                        15B8 zend_hash_update@@24
+                         10E _safe_emalloc@@24
+                         DBC sapi_module
+                        13EC zend_argument_value_error
+                         200 gc_possible_root@@8
+                         125 _zend_new_array@@8
+                         1F3 expand_filepath
+                        14BA zend_empty_array
+                         E31 tsrm_get_ls_cache
+                        16BB zend_parse_parameters
+                        16F3 zend_register_long_constant
+                        1735 zend_std_get_gc
+                          AF __zend_malloc
+                         E62 virtual_realpath
+                        1587 zend_hash_index_del@@16
+                        15CA zend_ini_boolean_displayer_cb
+                         1F2 executor_globals_offset
+                        175B zend_string_init_interned
+                        161C zend_llist_clean
+                        156F zend_hash_destroy@@8
+                        176A zend_throw_exception
+                        1806 zval_ptr_dtor
+                        16AF zend_parse_arg_long_slow@@24
+                        16FB zend_release_fcall_info_cache
+                         B32 php_info_print_table_end
+                         1A2 core_globals_offset
+                        161F zend_llist_del_element
+                         135 add_assoc_zval_ex
+                           8 OnUpdateString
+                         B34 php_info_print_table_row
+                        1674 zend_object_std_dtor
+                          D4 _php_stream_alloc
+                        16E9 zend_register_ini_entries_ex
+                          B4 _ecalloc@@16
+                         133 add_assoc_string_ex
+                        13EA zend_argument_must_not_be_empty_error
+                        1804 zval_get_string_func@@8
+                        16B3 zend_parse_arg_str_or_long_slow@@32
+                         A51 object_init_ex
+                        16ED zend_register_internal_class_with_flags
+                        14BB zend_empty_string
+                           2 OnUpdateBool
+                        176B zend_throw_exception_ex
+                        14E8 zend_fcall_info_init
+                        180A zval_try_get_string_func@@8
+
+    libsqlite3.dll
+             18000A118 Import Address Table
+             18000DF98 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          81 sqlite3_libversion_number
+                          6A sqlite3_extended_result_codes
+                          A4 sqlite3_reset
+                           D sqlite3_bind_int64
+                          24 sqlite3_clear_bindings
+                          E8 sqlite3_threadsafe
+                          31 sqlite3_column_double
+                          F8 sqlite3_value_double
+                           8 sqlite3_backup_step
+                           F sqlite3_bind_parameter_count
+                          62 sqlite3_errmsg
+                          29 sqlite3_column_blob
+                          CC sqlite3_step
+                          1B sqlite3_blob_open
+                          5F sqlite3_enable_load_extension
+                          34 sqlite3_column_name
+                          F6 sqlite3_value_bytes
+                          80 sqlite3_libversion
+                          61 sqlite3_errcode
+                          CD sqlite3_stmt_busy
+                          53 sqlite3_db_config
+                          83 sqlite3_load_extension
+                          26 sqlite3_close_v2
+                          2A sqlite3_column_bytes
+                           E sqlite3_bind_null
+                          65 sqlite3_errstr
+                          49 sqlite3_create_function
+                          33 sqlite3_column_int64
+                          8A sqlite3_mprintf
+                          66 sqlite3_exec
+                          CE sqlite3_stmt_explain
+                          67 sqlite3_expanded_sql
+                          FE sqlite3_value_int64
+                         107 sqlite3_value_type
+                          B3 sqlite3_result_text
+                          4F sqlite3_data_count
+                          19 sqlite3_blob_bytes
+                          B0 sqlite3_result_null
+                          25 sqlite3_close
+                          9C sqlite3_prepare_v2
+                          69 sqlite3_extended_errcode
+                           4 sqlite3_backup_finish
+                          94 sqlite3_open_v2
+                          CF sqlite3_stmt_isexplain
+                          D0 sqlite3_stmt_readonly
+                          13 sqlite3_bind_text
+                           0 sqlite3_aggregate_context
+                           B sqlite3_bind_double
+                          45 sqlite3_create_collation
+                          BD sqlite3_set_authorizer
+                          C9 sqlite3_sql
+                          1A sqlite3_blob_close
+                          3A sqlite3_column_text
+                          7F sqlite3_last_insert_rowid
+                           5 sqlite3_backup_init
+                          70 sqlite3_free
+                          22 sqlite3_changes
+                          A9 sqlite3_result_error
+                          1E sqlite3_blob_write
+                          6F sqlite3_finalize
+                           9 sqlite3_bind_blob
+                          2C sqlite3_column_count
+                          10 sqlite3_bind_parameter_index
+                          3C sqlite3_column_type
+                          F4 sqlite3_user_data
+                          20 sqlite3_busy_timeout
+                          AF sqlite3_result_int64
+                          A8 sqlite3_result_double
+                          55 sqlite3_db_handle
+                          1C sqlite3_blob_read
+                         103 sqlite3_value_text
+
+    VCRUNTIME140.dll
+             18000A080 Import Address Table
+             18000DF00 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          1D __intrinsic_setjmp
+                          3C memcpy
+                          25 __std_type_info_destroy_list
+                           8 __C_specific_handler
+                          3E memset
+
+    api-ms-win-crt-string-l1-1-0.dll
+             18000A108 Import Address Table
+             18000DF88 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          8E strncmp
+
+    api-ms-win-crt-heap-l1-1-0.dll
+             18000A0B0 Import Address Table
+             18000DF30 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          18 free
+
+    api-ms-win-crt-runtime-l1-1-0.dll
+             18000A0C0 Import Address Table
+             18000DF40 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          34 _initialize_onexit_table
+                          33 _initialize_narrow_environment
+                          22 _execute_onexit_table
+                          3F _seh_filter_dll
+                          37 _initterm_e
+                          36 _initterm
+                          18 _configure_narrow_argv
+                          16 _cexit
+
+    KERNEL32.dll
+             18000A000 Import Address Table
+             18000DE80 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         242 GetCurrentProcessId
+                         511 RtlLookupFunctionEntry
+                         518 RtlVirtualUnwind
+                         3B0 IsDebuggerPresent
+                         39A InitializeSListHead
+                         142 DisableThreadLibraryCalls
+                         31A GetSystemTimeAsFileTime
+                         246 GetCurrentThreadId
+                         509 RtlCaptureContext
+                         481 QueryPerformanceCounter
+                         3B8 IsProcessorFeaturePresent
+                         5D8 TerminateProcess
+                         241 GetCurrentProcess
+                         5B8 SetUnhandledExceptionFilter
+                         5FB UnhandledExceptionFilter
+
+  Summary
+
+        1000 .data
+        1000 .pdata
+        6000 .rdata
+        1000 .reloc
+        1000 .rsrc
+        9000 .text

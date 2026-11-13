@@ -1,0 +1,11 @@
+--- C:/Users/rinpa/ALL-php-compat-20261112/native/php85abi/include/all_php_bridge.h
++++ C:/Users/rinpa/ALL-php-compat-20261112/tools/candidates/php-native-info-v2/generated02/legacy/include/all_php_bridge.h
+@@ -29,6 +29,8 @@
+     int strict_types, all_php_value *result);
+ ALL_ABI_EXPORT const char *all_php_error_class(void);
+ ALL_ABI_EXPORT const char *all_php_error_message(void);
++/* v2 additive sized getter; borrowed bytes copied before another operation. */
++ALL_ABI_EXPORT const char *all_php_error_message_bytes(size_t *length);
+ ALL_ABI_EXPORT const char *all_php_output(size_t *length);
+ ALL_ABI_EXPORT const char *all_php_diagnostics(size_t *length);
+ ALL_ABI_EXPORT void all_php_clear_output(void);

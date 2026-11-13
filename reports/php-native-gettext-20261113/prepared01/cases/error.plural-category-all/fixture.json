@@ -1,0 +1,33 @@
+{
+  "id": "error.plural-category-all",
+  "group": "argument_diagnostics",
+  "steps": [
+    {
+      "operation": "call",
+      "function": "dcngettext",
+      "args": [
+        {
+          "type": "bytes",
+          "base64": "YWxsX3BocF9nZXR0ZXh0XzIwMjYxMTEz"
+        },
+        {
+          "type": "bytes",
+          "base64": "b25l"
+        },
+        {
+          "type": "bytes",
+          "base64": "bWFueQ=="
+        },
+        {
+          "type": "int",
+          "value": "2"
+        },
+        {
+          "type": "int",
+          "value": "0"
+        }
+      ],
+      "strict": false
+    }
+  ]
+}

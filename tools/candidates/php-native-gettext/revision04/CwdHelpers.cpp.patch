@@ -1,0 +1,12 @@
+--- C:/Users/rinpa/ALL-php-compat-20261112/tools/candidates/php-native-gettext/CwdHelpers.cpp
++++ C:/Users/rinpa/ALL-php-compat-20261112/tools/candidates/php-native-gettext/revision04/CwdHelpers.cpp
+@@ -31,7 +31,8 @@
+     DWORD needed=GetCurrentDirectoryW(0,nullptr);if(!needed){errno=cwd_win32_errno(GetLastError());return false;}
+     std::vector<wchar_t> current(needed);DWORD size=GetCurrentDirectoryW(needed,current.data());
+     if(!size||size>=needed){errno=EINVAL;return false;}tls.cwd_wide.assign(current.data(),size);
+-    if(!cwd_to_utf8(tls.cwd_wide,tls.cwd_bytes)||tls.cwd_bytes.size()>=MAXPATHLEN)return false;
++    if(!cwd_to_utf8(tls.cwd_wide,tls.cwd_bytes))return false;
++    if(tls.cwd_bytes.size()>=MAXPATHLEN){errno=ENAMETOOLONG;return false;}
+     for(wchar_t drive=L'A';drive<=L'Z';++drive){
+         std::wstring name=L"=";name+=drive;name+=L":";DWORD count=GetEnvironmentVariableW(name.c_str(),nullptr,0);
+         if(count){std::vector<wchar_t> value(count);DWORD actual=GetEnvironmentVariableW(name.c_str(),value.data(),count);if(actual&&actual<count)tls.drive_cwds[drive]=std::wstring(value.data(),actual);}

@@ -1,0 +1,53 @@
+{
+  "id": "catalog.plural",
+  "group": "catalog_translation",
+  "steps": [
+    {
+      "operation": "locale",
+      "category": 0,
+      "locale": "English_United States.utf8"
+    },
+    {
+      "operation": "call",
+      "function": "bindtextdomain",
+      "args": [
+        {
+          "type": "bytes",
+          "base64": "YWxsX3BocF9nZXR0ZXh0XzIwMjYxMTEz"
+        },
+        {
+          "type": "bytes",
+          "base64": "QzpcVXNlcnNccmlucGFcQUxMLXBocC1jb21wYXQtMjAyNjExMTJccmVwb3J0c1xwaHAtbmF0aXZlLWdldHRleHQtMjAyNjExMTNccHJlcGFyZWQwMVxvd25lZFxjYXRhbG9n"
+        }
+      ],
+      "strict": false
+    },
+    {
+      "operation": "call",
+      "function": "dngettext",
+      "args": [
+        {
+          "type": "bytes",
+          "base64": "YWxsX3BocF9nZXR0ZXh0XzIwMjYxMTEz"
+        },
+        {
+          "type": "bytes",
+          "base64": "YXBwbGU="
+        },
+        {
+          "type": "bytes",
+          "base64": "YXBwbGVz"
+        },
+        {
+          "type": "int",
+          "value": "2"
+        }
+      ],
+      "strict": false
+    }
+  ],
+  "env": {
+    "LANGUAGE": "zz_ALL"
+  },
+  "required_last_translation_base64": "Y2F0YWxvZy1tYW55"
+}

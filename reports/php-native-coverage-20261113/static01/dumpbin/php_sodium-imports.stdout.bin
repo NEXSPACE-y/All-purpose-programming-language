@@ -1,0 +1,235 @@
+
+Dump of file C:\Users\rinpa\ALL_php_oracle\php-8.5.12-ts-x64\ext\php_sodium.dll
+
+File Type: DLL
+
+  Section contains the following imports:
+
+    php8ts.dll
+             18000F450 Import Address Table
+             180017BA0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         19F convert_to_null@@8
+                         12D add_assoc_long_ex
+                         BC4 php_password_algo_register
+                        1803 zval_get_long_func@@16
+                        17C0 zend_value_error
+                         BC2 php_password_algo_find
+                        160D zend_known_strings
+                         B36 php_info_print_table_start
+                        1453 zend_ce_exception
+                          B6 _emalloc@@8
+                          B5 _efree@@8
+                         E1E std_object_handlers
+                        17E9 zend_wrong_parameters_none_error@@0
+                        14C7 zend_error_noreturn
+                        13E8 zend_argument_error
+                        16F9 zend_register_string_constant
+                        15B3 zend_hash_str_find@@24
+                        16D5 zend_read_property_ex
+                         14C add_next_index_stringl
+                        14C3 zend_error
+                         125 _zend_new_array@@8
+                        14BA zend_empty_array
+                         E31 tsrm_get_ls_cache
+                         14A add_next_index_str
+                        16BB zend_parse_parameters
+                        16F3 zend_register_long_constant
+                          AF __zend_malloc
+                         194 compiler_globals_offset
+                         1F2 executor_globals_offset
+                        175B zend_string_init_interned
+                        176A zend_throw_exception
+                        1806 zval_ptr_dtor
+                         B32 php_info_print_table_end
+                        1575 zend_hash_find@@16
+                         145 add_next_index_long
+                        1535 zend_get_exception_base
+                         B34 php_info_print_table_row
+                        16ED zend_register_internal_class_with_flags
+                        13DB zend_add_attribute
+
+    libsodium.dll
+             18000F110 Import Address Table
+             180017860 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         2CF sodium_compare
+                          D4 crypto_core_ristretto255_scalar_random
+                         2BF randombytes_close
+                         22D crypto_shorthash
+                         2D7 sodium_library_version_major
+                          D6 crypto_core_ristretto255_scalar_sub
+                         2CA sodium_base642bin
+                          D5 crypto_core_ristretto255_scalar_reduce
+                         25B crypto_sign_seed_keypair
+                         1E1 crypto_pwhash_scryptsalsa208sha256_str
+                         221 crypto_secretstream_xchacha20poly1305_init_push
+                         2D2 sodium_increment
+                         1E8 crypto_pwhash_str_needs_rehash
+                           B crypto_aead_aegis256_decrypt
+                         140 crypto_kdf_derive_from_key
+                         257 crypto_sign_open
+                         220 crypto_secretstream_xchacha20poly1305_init_pull
+                          FD crypto_generichash_init
+                         1DA crypto_pwhash_scryptsalsa208sha256_opslimit_interactive
+                          D0 crypto_core_ristretto255_scalar_complement
+                          D2 crypto_core_ristretto255_scalar_mul
+                         255 crypto_sign_keypair
+                         28C crypto_stream_xchacha20_xor
+                           D crypto_aead_aegis256_encrypt
+                         1E9 crypto_pwhash_str_verify
+                          43 crypto_auth
+                          CE crypto_core_ristretto255_random
+                         260 crypto_stream
+                          D3 crypto_core_ristretto255_scalar_negate
+                         2D3 sodium_init
+                           1 crypto_aead_aegis128l_decrypt
+                          9F crypto_box_seal_open
+                         2DB sodium_memzero
+                         1D9 crypto_pwhash_scryptsalsa208sha256_memlimit_sensitive
+                          E8 crypto_generichash
+                         2D1 sodium_hex2bin
+                         1FA crypto_scalarmult_ristretto255
+                         2CC sodium_bin2base64
+                         2F3 sodium_version_string
+                         28D crypto_stream_xchacha20_xor_ic
+                         247 crypto_sign_ed25519_sk_to_pk
+                         1ED crypto_scalarmult_base
+                         2DA sodium_memcmp
+                         104 crypto_generichash_update
+                         192 crypto_pwhash
+                         2E2 sodium_pad
+                         1FB crypto_scalarmult_ristretto255_base
+                         1AC crypto_pwhash_argon2id
+                         226 crypto_secretstream_xchacha20poly1305_push
+                          63 crypto_auth_verify
+                          2D crypto_aead_chacha20poly1305_ietf_encrypt
+                          D1 crypto_core_ristretto255_scalar_invert
+                          2B crypto_aead_chacha20poly1305_ietf_decrypt
+                         25F crypto_sign_verify_detached
+                          16 crypto_aead_aes256gcm_decrypt
+                         1E3 crypto_pwhash_scryptsalsa208sha256_str_verify
+                          3C crypto_aead_xchacha20poly1305_ietf_encrypt
+                          1A crypto_aead_aes256gcm_encrypt
+                         2CD sodium_bin2hex
+                         1CD crypto_pwhash_opslimit_sensitive
+                         2BD randombytes_buf
+                          FC crypto_generichash_final
+                          9A crypto_box_open_easy
+                         1DD crypto_pwhash_scryptsalsa208sha256_opslimit_sensitive
+                          10 crypto_aead_aegis256_keygen
+                         1D2 crypto_pwhash_scryptsalsa208sha256
+                         1C4 crypto_pwhash_memlimit_interactive
+                          9E crypto_box_seal
+                          26 crypto_aead_chacha20poly1305_decrypt
+                         1C7 crypto_pwhash_memlimit_moderate
+                          3A crypto_aead_xchacha20poly1305_ietf_decrypt
+                         202 crypto_secretbox_easy
+                         2D8 sodium_library_version_minor
+                          C8 crypto_core_ristretto255_add
+                          28 crypto_aead_chacha20poly1305_encrypt
+                         246 crypto_sign_ed25519_sk_to_curve25519
+                          1E crypto_aead_aes256gcm_is_available
+                         1C8 crypto_pwhash_memlimit_sensitive
+                           3 crypto_aead_aegis128l_encrypt
+                         238 crypto_sign
+                          CF crypto_core_ristretto255_scalar_add
+                         20A crypto_secretbox_open_easy
+                          A2 crypto_box_seed_keypair
+                         2C8 sodium_add
+                          90 crypto_box_easy
+                         225 crypto_secretstream_xchacha20poly1305_pull
+                         1CC crypto_pwhash_opslimit_moderate
+                          92 crypto_box_keypair
+                         1D6 crypto_pwhash_scryptsalsa208sha256_memlimit_interactive
+                         28E crypto_stream_xor
+                         227 crypto_secretstream_xchacha20poly1305_rekey
+                          CA crypto_core_ristretto255_from_hash
+                         1EC crypto_scalarmult
+                          D8 crypto_core_ristretto255_sub
+                           6 crypto_aead_aegis128l_keygen
+                         1E6 crypto_pwhash_str
+                         2F2 sodium_unpad
+                         23A crypto_sign_detached
+                         241 crypto_sign_ed25519_pk_to_curve25519
+                         1C9 crypto_pwhash_opslimit_interactive
+                         287 crypto_stream_xchacha20
+                         1E7 crypto_pwhash_str_alg
+                          CC crypto_core_ristretto255_is_valid_point
+
+    VCRUNTIME140.dll
+             18000F080 Import Address Table
+             1800177D0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          3C memcpy
+                           8 __C_specific_handler
+                          25 __std_type_info_destroy_list
+                          3E memset
+
+    api-ms-win-crt-heap-l1-1-0.dll
+             18000F0A8 Import Address Table
+             1800177F8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          18 free
+
+    api-ms-win-crt-stdio-l1-1-0.dll
+             18000F100 Import Address Table
+             180017850 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          10 __stdio_common_vsscanf
+
+    api-ms-win-crt-runtime-l1-1-0.dll
+             18000F0B8 Import Address Table
+             180017808 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          34 _initialize_onexit_table
+                          33 _initialize_narrow_environment
+                          22 _execute_onexit_table
+                          3F _seh_filter_dll
+                          37 _initterm_e
+                          36 _initterm
+                          18 _configure_narrow_argv
+                          16 _cexit
+
+    KERNEL32.dll
+             18000F000 Import Address Table
+             180017750 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         242 GetCurrentProcessId
+                         511 RtlLookupFunctionEntry
+                         3B0 IsDebuggerPresent
+                         39A InitializeSListHead
+                         142 DisableThreadLibraryCalls
+                         31A GetSystemTimeAsFileTime
+                         246 GetCurrentThreadId
+                         509 RtlCaptureContext
+                         481 QueryPerformanceCounter
+                         3B8 IsProcessorFeaturePresent
+                         5D8 TerminateProcess
+                         241 GetCurrentProcess
+                         5B8 SetUnhandledExceptionFilter
+                         5FB UnhandledExceptionFilter
+                         518 RtlVirtualUnwind
+
+  Summary
+
+        1000 .data
+        1000 .pdata
+        B000 .rdata
+        1000 .reloc
+        1000 .rsrc
+        E000 .text

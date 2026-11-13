@@ -1,0 +1,1 @@
+<?php $x=2;$a=['key'=>&$x];$a['key']=6;echo $x;

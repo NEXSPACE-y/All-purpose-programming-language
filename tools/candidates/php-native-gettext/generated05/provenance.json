@@ -1,0 +1,34 @@
+{
+  "status": "GENERATED_NOT_BUILT_OR_LOADED",
+  "inputs": [
+    {
+      "original": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\generated02\\callback\\src\\Runtime.cpp",
+      "original_sha256": "c0c35e44e8d8213142b27bb963756bae2970747b05cec5e0ecd3483e62469c05",
+      "candidate": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-gettext\\generated05\\callback\\src\\Runtime.cpp",
+      "candidate_sha256": "304d6e5178b24c6daa8bf56c6e29c07f892a1e9967e1bb9f0e38fa09a6c59521",
+      "patch_sha256": "5cf7a01772fb00a8a391a812eab7b2a0209650ffaa91885cc6da2b205a9d9b1c"
+    },
+    {
+      "original": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\generated02\\callback\\include\\all_php_bridge.h",
+      "original_sha256": "c67750780f5c0a5eddd5d4a379d1e70165bf8e8c0a077f31348847851e4d7f6f",
+      "candidate": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-gettext\\generated05\\callback\\include\\all_php_bridge.h",
+      "candidate_sha256": "cb1684b199429a3bc17194cab90cc85262ef4ffd9833a62efe463884a54ab2ae",
+      "patch_sha256": "374fc21a6cba6fc6ea41f2e2e95c2b273e8938f4b8a814dbcc67d7d20074ec43"
+    },
+    {
+      "original": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\generated02\\bridge\\AllNativeCallbackBridge.cs",
+      "original_sha256": "234536085e15eab5e78dc8998562fbb9a4cac76cfa6492374bddcce3c286d5ed",
+      "candidate": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-gettext\\generated05\\bridge\\AllNativeCallbackBridge.cs",
+      "candidate_sha256": "bb01294252a3748fab62e027c6bd724de14fca2da5713e8e7de5a95abee461f2",
+      "patch_sha256": "adf07d9d0e708c9efeb8553ec130d94ce5aac6918bb6331b1f7702c97ff672ae"
+    }
+  ],
+  "fragment_hashes": {
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-gettext\\revision04\\CwdHelpers.cpp": "2caca8a91890c6e1e676b9336f93a1df99e66b395033fa8cd444d88a177798f7",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-gettext\\revision04\\GettextExports.cpp": "2d7319ffd8de9f43d6db66032d07ba0bfed5098da74759fb793ef392526fc423",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-gettext\\Generate-Gettext05.py": "18978f92034696148604b2a3365ca107eca1dd2db0f2b2480dc7b0152576896e"
+  },
+  "stock_php_source_adopted": false,
+  "extension_executed": false,
+  "profile": "UTF-8 Windows paths with request/TLS cwd and exact gettext binary only; general PHP code-page/SAPI support not established"
+}

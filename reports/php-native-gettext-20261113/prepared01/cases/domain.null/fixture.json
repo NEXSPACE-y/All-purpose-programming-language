@@ -1,0 +1,16 @@
+{
+  "id": "domain.null",
+  "group": "domain_state",
+  "steps": [
+    {
+      "operation": "call",
+      "function": "textdomain",
+      "args": [
+        {
+          "type": "null"
+        }
+      ],
+      "strict": false
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+owned gettext path fixture

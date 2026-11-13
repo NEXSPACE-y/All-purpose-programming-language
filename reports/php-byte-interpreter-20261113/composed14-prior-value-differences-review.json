@@ -1,0 +1,43 @@
+{
+  "scope": "Same-source selected history cross-reference, not a replacement run or full conformance",
+  "originalReport": "reports/v3_20-validation-20261113/cli197/report.json",
+  "latestReport": "reports/php-byte-interpreter-20261113/composed14-regression252/report.json",
+  "records": [
+    {
+      "originalId": "literal:literal.octal-ascii",
+      "originalDifferences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "latestId": "literal:literal.octal-ascii",
+      "latestVerdict": "PASS",
+      "latestState": "EXITED",
+      "sameSource": true
+    },
+    {
+      "originalId": "literal:literal.binary-invalid-byte",
+      "originalDifferences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "latestId": "literal:literal.binary-invalid-byte",
+      "latestVerdict": "PASS",
+      "latestState": "EXITED",
+      "sameSource": true
+    },
+    {
+      "originalId": "literal:literal.binary-surrogate",
+      "originalDifferences": [
+        "exit_code",
+        "stdout_base64",
+        "stderr_base64"
+      ],
+      "latestId": "literal:literal.binary-surrogate",
+      "latestVerdict": "PASS",
+      "latestState": "EXITED",
+      "sameSource": true
+    }
+  ]
+}

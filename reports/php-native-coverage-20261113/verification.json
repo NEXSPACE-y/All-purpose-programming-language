@@ -1,0 +1,12 @@
+{
+  "status": "VERIFIED_STATIC_EVIDENCE_NO_RUNTIME_COMPATIBILITY_CLAIM",
+  "extension_dlls": 36,
+  "php_import_names": 985,
+  "data_import_names": 59,
+  "own_php_names_each": 29,
+  "missing_names_each": 956,
+  "dumpbin_actual_status_zero": 41,
+  "all_current_input_hashes_match": true,
+  "no_own_core_forwarders_or_php_imports": true,
+  "extensions_loaded_or_executed": false
+}

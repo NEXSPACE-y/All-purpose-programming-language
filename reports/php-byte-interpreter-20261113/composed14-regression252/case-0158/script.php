@@ -1,0 +1,1 @@
+<?php function f($a,$b){return $a.':'.$b;}echo call_user_func_array('f',['b'=>2,'a'=>1]);

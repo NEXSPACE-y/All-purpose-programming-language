@@ -1,0 +1,22 @@
+{
+  "command": [
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-gettext\\out\\managed02\\all-native-gettext-probe.exe",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-gettext\\out\\callback04\\php8ts.dll",
+    "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_gettext.dll",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-native-gettext-20261113\\prepared01\\cases\\domain.NUL\\fixture.json",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-native-gettext-20261113\\run04\\domain.NUL\\native.metadata.json",
+    "d005aa1205e214ad346783546c946e7e0e22a1c3eaa9ea696950dd49e17f328f",
+    "ed395f80018920ba1b4551cdc33dd89871eb8b8ef362b1515ae93c0e7f1de3ad",
+    "48dd184466d91a4fbc9e48d2c5cff13686d63c513bcb43e17bc4fc01c9000fe3"
+  ],
+  "cwd": "C:\\Users\\rinpa\\ALL-php-compat-20261112",
+  "environment_overrides": {},
+  "pid": 16504,
+  "state": "EXITED",
+  "actual_status": 0,
+  "post_cleanup_status": 0,
+  "elapsed_seconds": 0.696192899995367,
+  "timeout_seconds": 30,
+  "stdout_base64": "",
+  "stderr_base64": ""
+}

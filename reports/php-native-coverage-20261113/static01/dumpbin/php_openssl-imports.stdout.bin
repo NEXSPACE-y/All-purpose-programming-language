@@ -1,0 +1,688 @@
+
+Dump of file C:\Users\rinpa\ALL_php_oracle\php-8.5.12-ts-x64\ext\php_openssl.dll
+
+File Type: DLL
+
+  Section contains the following imports:
+
+    php8ts.dll
+             18001AE38 Import Address Table
+             180024C78 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         15E ap_php_snprintf
+                        1784 zend_try_assign_typed_ref_stringl
+                        160D zend_known_strings
+                         B36 php_info_print_table_start
+                         138 add_index_bool
+                          B6 _emalloc@@8
+                         A8C php_base64_decode_ex
+                        13EE zend_array_destroy@@8
+                        1675 zend_object_std_init@@16
+                          B5 _efree@@8
+                        1768 zend_throw_error
+                        1755 zend_string_concat2
+                        1588 zend_hash_index_find@@16
+                          B4 _ecalloc@@16
+                        15DE zend_ini_string
+                         132 add_assoc_str_ex
+                        176A zend_throw_exception
+                         116 _try_convert_to_string@@8
+                         CE0 php_strlcpy
+                         14A add_next_index_str
+                          B9 _estrdup@@8
+                        17C0 zend_value_error
+                         E65 virtual_stat
+                        15B5 zend_hash_str_update@@32
+                         A8E php_base64_encode_ex
+                        1453 zend_ce_exception
+                        1780 zend_try_assign_typed_ref_null
+                        15AC zend_hash_sort_ex@@32
+                        1747 zend_str_tolower_copy@@24
+                        1716 zend_sort
+                         E20 string_compare_function@@16
+                         12B add_assoc_bool_ex
+                          B2 _call_user_function_impl
+                         CC5 php_stream_socket_ops
+                         D4B php_win32_error_to_msg
+                          D4 _php_stream_alloc
+                        1605 zend_is_true@@8
+                        142B zend_binary_strcasecmp@@32
+                         CD6 php_stream_xport_shutdown
+                         CF3 php_uri_get_host
+                         CA5 php_stream_context_set_option
+                        180A zval_try_get_string_func@@8
+                         B81 php_network_accept_incoming
+                          B1 __zend_strdup
+                         CA2 php_stream_context_get_option
+                          DA _php_stream_fill_read_buffer
+                         C79 php_set_sock_blocking
+                          F6 _php_stream_open_wrapper_ex
+                         CFF php_uri_parse
+                          E7 _php_stream_free
+                        159D zend_hash_next_index_insert@@16
+                        14C3 zend_error
+                         D4A php_win32_error_msg_free
+                          E9 _php_stream_get_line
+                        1803 zval_get_long_func@@16
+                         112 _safe_malloc@@24
+                        1760 zend_strndup@@16
+                         C22 php_poll2
+                          BA _estrndup@@16
+                         CBD php_stream_notification_notify
+                         CA3 php_stream_context_get_uri_parser
+                         CF1 php_uri_free
+                         CCE php_stream_xport_crypto_enable
+                         20D get_active_function_name
+                         CCF php_stream_xport_crypto_setup
+                         DDB smart_str_ferealloc@@24
+                         217 gettimeofday
+                         C90 php_socket_strerror
+                         1F7 file_globals_id
+                         D29 php_verror
+                         CB6 php_stream_http_wrapper
+                        158C zend_hash_index_update@@24
+                        1779 zend_try_assign_typed_ref
+                         E1E std_object_handlers
+                        17E8 zend_wrong_parameters_count_error@@16
+                         134 add_assoc_stringl_ex
+                        167C zend_objects_not_comparable
+                        17E9 zend_wrong_parameters_none_error@@0
+                        17E6 zend_wrong_parameter_error@@40
+                         20C get_active_function_arg_name
+                         1B3 display_ini_entries
+                         AE3 php_error_docref
+                        1798 zend_unregister_ini_entries_ex
+                         A53 object_properties_init
+                         12D add_assoc_long_ex
+                        16F9 zend_register_string_constant
+                        16AA zend_parse_arg_bool_slow@@24
+                        1782 zend_try_assign_typed_ref_str
+                        15B3 zend_hash_str_find@@24
+                         CEE php_unregister_url_stream_wrapper
+                         A99 php_check_open_basedir
+                        1807 zval_ptr_safe_dtor
+                         CD7 php_stream_xport_unregister
+                         14C add_next_index_stringl
+                         C5B php_register_url_stream_wrapper
+                         281 instanceof_function_slow@@16
+                         10E _safe_emalloc@@24
+                         CD4 php_stream_xport_register
+                        13EC zend_argument_value_error
+                         140 add_index_string
+                         125 _zend_new_array@@8
+                         1F3 expand_filepath
+                         E31 tsrm_get_ls_cache
+                        16BB zend_parse_parameters
+                        16F3 zend_register_long_constant
+                          AF __zend_malloc
+                         194 compiler_globals_offset
+                         1F2 executor_globals_offset
+                        175B zend_string_init_interned
+                        177A zend_try_assign_typed_ref_arr
+                         CB2 php_stream_ftp_wrapper
+                         9F4 make_digest_ex
+                        1806 zval_ptr_dtor
+                        16AF zend_parse_arg_long_slow@@24
+                          AD __zend_calloc
+                         B32 php_info_print_table_end
+                         10F _safe_erealloc@@32
+                         CB3 php_stream_generic_socket_factory
+                         135 add_assoc_zval_ex
+                         B34 php_info_print_table_row
+                        1674 zend_object_std_dtor
+                         14B add_next_index_string
+                        16E9 zend_register_ini_entries_ex
+                         133 add_assoc_string_ex
+                        16B4 zend_parse_arg_str_slow@@24
+                        13EA zend_argument_must_not_be_empty_error
+                        16B3 zend_parse_arg_str_or_long_slow@@32
+                         A51 object_init_ex
+                        16ED zend_register_internal_class_with_flags
+                        13E9 zend_argument_error_variadic@@32
+                        177B zend_try_assign_typed_ref_bool
+                        1466 zend_ce_value_error
+                        13DB zend_add_attribute
+
+    libcrypto-3-x64.dll
+             18001A1F0 Import Address Table
+             180024030 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                        16B7 i2d_X509
+                         647 ERR_peek_error
+                        1387 X509_STORE_CTX_set_error
+                        12D7 X509_NAME_get_text_by_NID
+                        1392 X509_STORE_add_cert
+                        1369 X509_STORE_CTX_get_error
+                        136A X509_STORE_CTX_get_error_depth
+                        148C X509_verify_cert_error_string
+                         61D ERR_error_string
+                        1353 X509_STORE_CTX_get0_cert
+                         61A ERR_clear_error
+                        143C X509_get_ext_d2i
+                        136B X509_STORE_CTX_get_ex_data
+                         E8B PEM_read_bio_Parameters
+                        1328 X509_REQ_new_ex
+                         588 EC_POINT_oct2point
+                         895 EVP_PKEY_get_utf8_string_param
+                         88E EVP_PKEY_get_octet_string_param
+                         D36 OSSL_LIB_CTX_get0_global_default
+                         7E3 EVP_PKEY_CTX_new_from_pkey
+                         77C EVP_MD_fetch
+                         77D EVP_MD_free
+                         E8E PEM_read_bio_PrivateKey_ex
+                         A6D NCONF_new_ex
+                         6AE EVP_CIPHER_get0_name
+                         539 EC_GROUP_set_seed
+                         6AB EVP_CIPHER_fetch
+                         E97 PEM_read_bio_X509_REQ
+                         86C EVP_PKEY_generate
+                         8CC EVP_PKEY_new
+                        10BD SMIME_read_CMS_ex
+                         38F CONF_modules_load_file_ex
+                         586 EC_POINT_mul
+                         E8A PEM_read_bio_PUBKEY_ex
+                        15AC d2i_X509
+                         2EB CMS_ContentInfo_new_ex
+                         58A EC_POINT_point2buf
+                          64 ASN1_OBJECT_free
+                         D47 OSSL_PARAM_BLD_new
+                         E4F PEM_ASN1_read_bio
+                         6AC EVP_CIPHER_free
+                         6CF EVP_CIPHER_names_do_all
+                         E92 PEM_read_bio_X509
+                         58E EC_POINT_set_affine_coordinates
+                         52C EC_GROUP_new_curve_GFp
+                         57B EC_POINT_free
+                         D48 OSSL_PARAM_BLD_push_BN
+                         D50 OSSL_PARAM_BLD_push_octet_string
+                         50A EC_GROUP_check_named_curve
+                         879 EVP_PKEY_get0_type_name
+                         869 EVP_PKEY_fromdata
+                         D6D OSSL_PARAM_free
+                         D3A OSSL_LIB_CTX_new
+                         50F EC_GROUP_free
+                         587 EC_POINT_new
+                         F91 PKCS7_new_ex
+                         6A9 EVP_CIPHER_do_all_provided
+                         A98 OBJ_nid2obj
+                         D46 OSSL_PARAM_BLD_free
+                         8E7 EVP_PKEY_set1_encoded_public_key
+                         86A EVP_PKEY_fromdata_init
+                         537 EC_GROUP_set_generator
+                        14ED d2i_CMS_bio
+                         E58 PEM_X509_INFO_read_bio_ex
+                         814 EVP_PKEY_CTX_set_params
+                         D59 OSSL_PARAM_BLD_to_param
+                         E86 PEM_read_bio_PKCS7
+                         D35 OSSL_LIB_CTX_free
+                         7E2 EVP_PKEY_CTX_new_from_name
+                         84E EVP_PKEY_check
+                         885 EVP_PKEY_get_bn_param
+                         EB9 PEM_write_bio_CMS
+                         6B3 EVP_CIPHER_get_iv_length
+                         684 EVP_CIPHER_CTX_free
+                         6FA EVP_DigestVerifyInit
+                         81C EVP_PKEY_CTX_set_rsa_padding
+                         340 CMS_final
+                        148A X509_verify
+                        147C X509_sign
+                         F81 PKCS7_decrypt
+                        128F X509_EXTENSION_get_data
+                         349 CMS_get1_certs
+                         599 EC_get_builtin_curves
+                         68A EVP_CIPHER_CTX_get_block_size
+                         69B EVP_CIPHER_CTX_reset
+                        144D X509_gmtime_adj
+                         785 EVP_MD_get_size
+                        1329 X509_REQ_print
+                        16DE i2s_ASN1_INTEGER
+                         70A EVP_EncryptUpdate
+                        1336 X509_REQ_verify
+                        1327 X509_REQ_new
+                        1447 X509_get_signature_nid
+                        140F X509_check_purpose
+                         3D5 CRYPTO_get_ex_new_index
+                         94D EVP_SealInit
+                        1205 X509V3_set_nconf
+                        12DD X509_NAME_oneline
+                         7E1 EVP_PKEY_CTX_new
+                        11E3 X509V3_EXT_add_nconf
+                         1C2 BIO_new_mem_buf
+                        141C X509_free
+                         ECA PEM_write_bio_PUBKEY
+                         ECD PEM_write_bio_PrivateKey
+                         A97 OBJ_nid2ln
+                        10C3 SMIME_write_CMS
+                         6F1 EVP_DigestSign
+                         346 CMS_get0_signers
+                         A75 NETSCAPE_SPKI_b64_encode
+                         A76 NETSCAPE_SPKI_free
+                        14B9 a2i_ASN1_INTEGER
+                        1203 X509V3_set_ctx
+                        1445 X509_get_serialNumber
+                         34F CMS_sign
+                         E3F OpenSSL_version
+                         368 CMS_verify
+                        1481 X509_subject_name_hash
+                         33E CMS_encrypt
+                         9C4 EVP_des_ede3_cbc
+                         244 BN_bn2hex
+                         707 EVP_EncryptInit
+                         EBA PEM_write_bio_CMS_stream
+                         6F3 EVP_DigestSignInit
+                         6EE EVP_DigestInit
+                         B6A OPENSSL_sk_pop_free
+                        140E X509_check_private_key
+                        1316 X509_REQ_free
+                         ED8 PEM_write_bio_X509_REQ
+                         F9A PKCS7_sign
+                        11DE X509V3_EXT_REQ_add_nconf
+                          94 ASN1_STRING_get0_data
+                         61E ERR_error_string_n
+                         17E BIO_free
+                         1FF BIO_write
+                         ED6 PEM_write_bio_X509_CRL
+                        1303 X509_PURPOSE_get_count
+                         6F8 EVP_DigestVerify
+                        146A X509_print
+                         FA2 PKCS7_verify
+                         868 EVP_PKEY_free
+                        1671 i2d_PKCS12_bio
+                        143B X509_get_ext_count
+                        1324 X509_REQ_get_subject_name
+                         A7D NETSCAPE_SPKI_verify
+                         B72 OPENSSL_sk_value
+                         862 EVP_PKEY_encrypt
+                         B6B OPENSSL_sk_push
+                        144A X509_get_version
+                        1566 d2i_PKCS12_bio
+                         767 EVP_MD_CTX_free
+                         3C6 CRYPTO_free
+                         8FC EVP_PKEY_type
+                         A7B NETSCAPE_SPKI_set_pubkey
+                         A7C NETSCAPE_SPKI_sign
+                         F87 PKCS7_free
+                        1290 X509_EXTENSION_get_object
+                         B69 OPENSSL_sk_pop
+                         17F BIO_free_all
+                         1DE BIO_s_mem
+                         B62 OPENSSL_sk_free
+                        1262 X509_CRL_free
+                        12FE X509_PURPOSE_get0
+                         A9B OBJ_obj2txt
+                          5B ASN1_INTEGER_set_int64
+                        1418 X509_dup
+                         81A EVP_PKEY_CTX_set_rsa_oaep_md
+                         2E8 CMS_ContentInfo_free
+                         906 EVP_PKEY_verify_recover
+                         893 EVP_PKEY_get_size
+                         A79 NETSCAPE_SPKI_new
+                         6F7 EVP_DigestUpdate
+                         256 BN_free
+                        11EE X509V3_EXT_print
+                         F84 PKCS7_encrypt
+                        10C4 SMIME_write_PKCS7
+                         A74 NETSCAPE_SPKI_b64_decode
+                        1400 X509_alias_get0
+                        1449 X509_get_subject_name
+                         94C EVP_SealFinal
+                         B68 OPENSSL_sk_num
+                          9C ASN1_STRING_set
+                         F88 PKCS7_get0_signers
+                         620 ERR_get_error
+                         F12 PKCS12_free
+                        147A X509_set_subject_name
+                         1CD BIO_printf
+                         8F5 EVP_PKEY_sign_init
+                        1322 X509_REQ_get_pubkey
+                        10BE SMIME_read_PKCS7
+                        1304 X509_PURPOSE_get_id
+                        145C X509_new
+                         907 EVP_PKEY_verify_recover_init
+                        144B X509_getm_notAfter
+                         A9A OBJ_obj2nid
+                         770 EVP_MD_CTX_new
+                        1478 X509_set_pubkey
+                        15F7 i2d_CMS_bio
+                         F3B PKCS5_PBKDF2_HMAC
+                        143F X509_get_issuer_name
+                         6EB EVP_DigestFinal
+                         F2D PKCS12_parse
+                        1475 X509_set_issuer_name
+                         8F4 EVP_PKEY_sign
+                        12F3 X509_PUBKEY_get
+                        1395 X509_STORE_free
+                        12FF X509_PURPOSE_get0_name
+                         F0D PKCS12_create
+                         7BA EVP_PKEY_CTX_free
+                         884 EVP_PKEY_get_bits
+                        147B X509_set_version
+                         347 CMS_get0_type
+                         6E9 EVP_DecryptUpdate
+                         1BF BIO_new_file
+                         ED3 PEM_write_bio_X509
+                         7A5 EVP_OpenFinal
+                         15B BIO_ctrl
+                         883 EVP_PKEY_get_base_id
+                         854 EVP_PKEY_decrypt
+                         336 CMS_decrypt
+                         1B4 BIO_new
+                         B66 OPENSSL_sk_new_null
+                         863 EVP_PKEY_encrypt_init
+                         A99 OBJ_nid2sn
+                         7A6 EVP_OpenInit
+                          5D ASN1_INTEGER_to_BN
+                         855 EVP_PKEY_decrypt_init
+                         88C EVP_PKEY_get_id
+                        1333 X509_REQ_sign
+                         EC4 PEM_write_bio_PKCS7
+                        1300 X509_PURPOSE_get0_sname
+                         698 EVP_CIPHER_CTX_new
+                        144C X509_getm_notBefore
+                         34A CMS_get1_crls
+                        1437 X509_get_ext
+                         A69 NCONF_load
+                        12D1 X509_NAME_entry_count
+                         8D7 EVP_PKEY_paramgen
+                         7FC EVP_PKEY_CTX_set_dh_paramgen_prime_len
+                         802 EVP_PKEY_CTX_set_dsa_paramgen_bits
+                         2A0 BN_num_bits
+                         9DD EVP_md_null
+                         A9D OBJ_sn2nid
+                         6A2 EVP_CIPHER_CTX_set_padding
+                         210 BN_CTX_free
+                         6B4 EVP_CIPHER_get_key_length
+                         A9E OBJ_txt2nid
+                          A0 ASN1_STRING_set_default_mask_asc
+                        1377 X509_STORE_CTX_new
+                         212 BN_CTX_new
+                         FE2 RAND_load_file
+                          96 ASN1_STRING_length
+                        1296 X509_INFO_free
+                        1433 X509_get_default_cert_file
+                         A66 NCONF_get_section
+                         6A0 EVP_CIPHER_CTX_set_key_length
+                        11E9 X509V3_EXT_get
+                         682 EVP_CIPHER_CTX_ctrl
+                         6B1 EVP_CIPHER_get_block_size
+                        1431 X509_get_default_cert_dir
+                          E8 ASN1_item_d2i
+                        130E X509_REQ_add1_attr_by_txt
+                          A2 ASN1_STRING_type
+                         298 BN_new
+                        1375 X509_STORE_CTX_init
+                        129D X509_LOOKUP_ctrl
+                         65E ERR_set_mark
+                        1435 X509_get_default_private_dir
+                         6E4 EVP_DecryptFinal
+                         1D0 BIO_puts
+                        12C3 X509_NAME_ENTRY_get_object
+                         80A EVP_PKEY_CTX_set_ec_paramgen_curve_nid
+                         A62 NCONF_free
+                         859 EVP_PKEY_derive
+                         85A EVP_PKEY_derive_init
+                         809 EVP_PKEY_CTX_set_ec_param_enc
+                         A12 GENERAL_NAME_print
+                         FD9 RAND_bytes
+                         898 EVP_PKEY_keygen
+                        12CA X509_NAME_add_entry_by_NID
+                         6D9 EVP_CipherInit_ex
+                         8D8 EVP_PKEY_paramgen_init
+                         2CA BN_with_flags
+                         A95 OBJ_ln2nid
+                         899 EVP_PKEY_keygen_init
+                         A65 NCONF_get_number_e
+                        12C2 X509_NAME_ENTRY_get_data
+                         281 BN_mod_exp_mont
+                        1352 X509_STORE_CTX_free
+                         6B6 EVP_CIPHER_get_nid
+                         FDC RAND_file_name
+                         A8F OBJ_create_objects
+                         85C EVP_PKEY_derive_set_peer
+                        1434 X509_get_default_cert_file_env
+                        12D5 X509_NAME_get_index_by_NID
+                         FF1 RAND_write_file
+                        1432 X509_get_default_cert_dir_env
+                        138C X509_STORE_CTX_set_purpose
+                        12A3 X509_LOOKUP_hash_dir
+                         FF0 RAND_status
+                         241 BN_bn2bin
+                        1430 X509_get_default_cert_area
+                        12CC X509_NAME_add_entry_by_txt
+                        131D X509_REQ_get_attr_by_NID
+                         B6F OPENSSL_sk_shift
+                          A1 ASN1_STRING_to_UTF8
+                        13AF X509_STORE_new
+                         654 ERR_pop_to_mark
+                        1330 X509_REQ_set_pubkey
+                        1394 X509_STORE_add_lookup
+                        1416 X509_digest
+                        148B X509_verify_cert
+                         B67 OPENSSL_sk_new_reserve
+                         6B5 EVP_CIPHER_get_mode
+                         A84 OBJ_NAME_do_all_sorted
+                        1443 X509_get_pubkey
+                         6DF EVP_CipherUpdate
+                         A68 NCONF_get_string
+                        1332 X509_REQ_set_version
+                         815 EVP_PKEY_CTX_set_rsa_keygen_bits
+                         A8E OBJ_create
+                        129F X509_LOOKUP_file
+                         705 EVP_EncryptFinal
+                         A0D GENERAL_NAME_free
+                        12D4 X509_NAME_get_entry
+                        130C X509_REQ_add1_attr_by_NID
+                         8FE EVP_PKEY_up_ref
+                         52A EC_GROUP_new_by_curve_name_ex
+                         851 EVP_PKEY_copy_parameters
+                         240 BN_bin2bn
+                         A85 OBJ_NAME_get
+                         D58 OSSL_PARAM_BLD_push_utf8_string
+                         8E1 EVP_PKEY_public_check_quick
+                        145D X509_new_ex
+                         E7D PEM_read_bio_CMS
+
+    libssl-3-x64.dll
+             18001AC68 Import Address Table
+             180024AA8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         1F9 SSL_set_connect_state
+                         175 SSL_get_error
+                         24E TLS_server_method
+                          97 SSL_CTX_set_cert_verify_callback
+                         178 SSL_get_ex_data_X509_STORE_CTX_idx
+                         16D SSL_get_current_cipher
+                         221 SSL_set_shutdown
+                          C2 SSL_CTX_set_security_level
+                         22E SSL_shutdown
+                         1EB SSL_set_SSL_CTX
+                          47 SSL_CTX_check_private_key
+                         15C SSL_get1_peer_certificate
+                         205 SSL_set_info_callback
+                          28 SSL_CIPHER_get_name
+                          E1 SSL_CTX_use_certificate_chain_file
+                          78 SSL_CTX_load_verify_locations
+                         1EC SSL_set_accept_state
+                          98 SSL_CTX_set_cipher_list
+                          2A SSL_CIPHER_get_version
+                         1D4 SSL_read
+                         1D2 SSL_pending
+                         112 SSL_accept
+                          D5 SSL_CTX_set_verify
+                         183 SSL_get_peer_cert_chain
+                          22 SSL_CIPHER_get_bits
+                         138 SSL_ctrl
+                          A4 SSL_CTX_set_default_passwd_cb_userdata
+                          46 SSL_CTX_callback_ctrl
+                         1AE SSL_get_verify_result
+                          6A SSL_CTX_get_options
+                         248 SSL_write
+                          9A SSL_CTX_set_client_CA_list
+                         1DC SSL_select_next_proto
+                          7A SSL_CTX_new
+                         136 SSL_copy_session_id
+                         201 SSL_set_fd
+                          DA SSL_CTX_use_PrivateKey_file
+                         200 SSL_set_ex_data
+                         245 SSL_version
+                         147 SSL_get0_alpn_selected
+                          4C SSL_CTX_ctrl
+                          54 SSL_CTX_free
+                         1C9 SSL_new
+                         1C5 SSL_load_client_CA_file
+                          8F SSL_CTX_set_alpn_protos
+                          90 SSL_CTX_set_alpn_select_cb
+                          B6 SSL_CTX_set_options
+                          5E SSL_CTX_get_cert_store
+                          87 SSL_CTX_set0_tmp_dh_pkey
+                         144 SSL_free
+                          A3 SSL_CTX_set_default_passwd_cb
+                         195 SSL_get_servername
+                         135 SSL_connect
+                         1D0 SSL_peek
+                          14 OPENSSL_init_ssl
+                         177 SSL_get_ex_data
+                         24C TLS_client_method
+
+    CRYPT32.dll
+             18001A000 Import Address Table
+             180023E40 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          1C CertCreateCertificateContext
+                          3D CertFreeCertificateChain
+                          40 CertFreeCertificateContext
+                          45 CertGetCertificateChain
+                          76 CertVerifyCertificateChainPolicy
+
+    KERNEL32.dll
+             18001A030 Import Address Table
+             180023E70 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         3B0 IsDebuggerPresent
+                         39A InitializeSListHead
+                         142 DisableThreadLibraryCalls
+                         31A GetSystemTimeAsFileTime
+                         246 GetCurrentThreadId
+                         242 GetCurrentProcessId
+                         481 QueryPerformanceCounter
+                         3B8 IsProcessorFeaturePresent
+                         5D8 TerminateProcess
+                         241 GetCurrentProcess
+                         5B8 SetUnhandledExceptionFilter
+                         5FB UnhandledExceptionFilter
+                         518 RtlVirtualUnwind
+                         511 RtlLookupFunctionEntry
+                         509 RtlCaptureContext
+                         28D GetLastError
+
+    WS2_32.dll
+             18001A0F0 Import Address Table
+             180023F30 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                             Ordinal    16
+                             Ordinal     3
+                          B7 inet_pton
+                             Ordinal    22
+                             Ordinal   111
+
+    VCRUNTIME140.dll
+             18001A0B8 Import Address Table
+             180023EF8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          3C memcpy
+                          40 strchr
+                           8 __C_specific_handler
+                          25 __std_type_info_destroy_list
+                          3A memchr
+                          3E memset
+
+    api-ms-win-crt-heap-l1-1-0.dll
+             18001A140 Import Address Table
+             180023F80 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          18 free
+
+    api-ms-win-crt-time-l1-1-0.dll
+             18001A1D8 Import Address Table
+             180024018 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          28 _mktime64
+                           A __timezone
+
+    api-ms-win-crt-convert-l1-1-0.dll
+             18001A120 Import Address Table
+             180023F60 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          50 atoi
+
+    api-ms-win-crt-environment-l1-1-0.dll
+             18001A130 Import Address Table
+             180023F70 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          10 getenv
+
+    api-ms-win-crt-string-l1-1-0.dll
+             18001A1B0 Import Address Table
+             180023FF0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          2A _stricmp
+                          34 _strnicmp
+                          8E strncmp
+                          86 strcmp
+
+    api-ms-win-crt-runtime-l1-1-0.dll
+             18001A160 Import Address Table
+             180023FA0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          34 _initialize_onexit_table
+                          33 _initialize_narrow_environment
+                          22 _execute_onexit_table
+                          16 _cexit
+                          18 _configure_narrow_argv
+                          3F _seh_filter_dll
+                          21 _errno
+                          37 _initterm_e
+                          36 _initterm
+
+    api-ms-win-crt-math-l1-1-0.dll
+             18001A150 Import Address Table
+             180023F90 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          21 _fdopen
+
+  Summary
+
+        2000 .data
+        1000 .pdata
+        F000 .rdata
+        1000 .reloc
+        1000 .rsrc
+       19000 .text

@@ -1,0 +1,440 @@
+--- ALL_PHP_v3_10_adapter.ps1
++++ ALL_PHP_v3_11_adapter.ps1
+@@ -895,11 +895,13 @@
+                     Interfaces=$enumInterfaces.ToArray()
+                 }
+             }
+-            if ($token -in @('abstract','final','class','trait')) {
++            if ($token -in @('abstract','final','readonly','class','trait')) {
+                 $isAbstract=$false
+                 $isFinal=$false
+                 $isTrait=($token -eq 'trait')
+-                if ($token -eq 'abstract') { $isAbstract=$true; [void](Next-Token); Expect-Token 'class' }
++                $isReadonlyClass=$false
++                if ($token -eq 'readonly') { $isReadonlyClass=$true; [void](Next-Token); Expect-Token 'class' }
++                elseif ($token -eq 'abstract') { $isAbstract=$true; [void](Next-Token); Expect-Token 'class' }
+                 elseif ($token -eq 'final') { $isFinal=$true; [void](Next-Token); Expect-Token 'class' }
+                 else { [void](Next-Token) }
+                 $name = Next-Token
+@@ -1020,9 +1022,10 @@
+                     $isStatic=$false
+                     $isAbstractMethod=$false
+                     $isFinalMethod=$false
++                    $isReadonlyProperty=$false
+                     $modifiers=[System.Collections.Generic.HashSet[string]]::new(
+                         [System.StringComparer]::Ordinal)
+-                    while ((Peek-Token) -in @('public','private','protected','static','abstract','final')) {
++                    while ((Peek-Token) -in @('public','private','protected','static','abstract','final','readonly')) {
+                         $modifier=Next-Token
+                         if (-not $modifiers.Add($modifier)) {
+                             throw 'ALL PHP: Duplicate class member modifier'
+@@ -1037,8 +1040,10 @@
+                         } elseif ($modifier -eq 'static') { $isStatic=$true }
+                         elseif ($modifier -eq 'abstract') { $isAbstractMethod=$true }
+                         elseif ($modifier -eq 'final') { $isFinalMethod=$true }
++                        elseif ($modifier -eq 'readonly') { $isReadonlyProperty=$true }
+                     }
+                     if ((Peek-Token) -eq 'function') {
++                        if ($isReadonlyProperty) { throw 'ALL PHP: readonly modifier cannot be applied to method' }
+                         if ($isAbstractMethod -and $isFinalMethod) {
+                             throw 'ALL PHP: Method cannot be both abstract and final'
+                         }
+@@ -1048,15 +1053,29 @@
+                         if ($isAbstractMethod -and $visibility -eq 'private') {
+                             throw 'ALL PHP: Abstract methods cannot be private'
+                         }
+-                        $method = Read-Function $isAbstractMethod
++                        $method = Read-Function $isAbstractMethod $true
+                         $method.Visibility=$visibility
+                         $method.Static=$isStatic
+                         $method.Owner=$name
+                         $method.Abstract=$isAbstractMethod
+                         $method.Final=$isFinalMethod
+                         [void]$methods.Add($method)
++                        if ($method.Name -ieq '__construct') {
++                            foreach ($parameter in $method.Params) {
++                                if (-not $parameter.Promoted) { continue }
++                                if ($isReadonlyClass -and [string]::IsNullOrEmpty($parameter.TypeName)) {
++                                    throw 'ALL PHP: readonly class promoted property requires a type'
++                                }
++                                [void]$properties.Add([pscustomobject]@{
++                                    Name=$parameter.Name; Default=$null
++                                    Visibility=$parameter.Visibility; Static=$false
++                                    Owner=$name; TypeName=$parameter.TypeName
++                                    Readonly=([bool]$parameter.Readonly -or $isReadonlyClass)
++                                })
++                            }
++                        }
+                     } elseif ((Peek-Token) -eq 'const') {
+-                        if ($isStatic -or $isAbstractMethod -or $isFinalMethod) {
++                        if ($isStatic -or $isAbstractMethod -or $isFinalMethod -or $isReadonlyProperty) {
+                             throw 'ALL PHP: Unsupported constant modifier'
+                         }
+                         [void](Next-Token)
+@@ -1070,9 +1089,27 @@
+                         [void]$constants.Add([pscustomobject]@{
+                             Name=$constName; Value=$constValue; Visibility=$visibility
+                         })
+-                    } elseif ((Peek-Token) -cmatch '^\$[A-Za-z_][A-Za-z_0-9]*$') {
++                    } else {
++                        $propertyType=''
++                        if ((Peek-Token) -ceq '?' -or
++                            (Peek-Token) -cmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
++                            $propertyType=Read-PhpTypeAnnotation
++                        }
++                        if ((Peek-Token) -cnotmatch '^\$[A-Za-z_][A-Za-z_0-9]*$') {
++                            throw "ALL PHP: Unsupported class member '$(Peek-Token)'"
++                        }
+                         if ($isAbstractMethod -or $isFinalMethod) {
+                             throw 'ALL PHP: Abstract/final modifier not valid for properties'
++                        }
++                        if ($propertyType -in @('void','never')) {
++                            throw 'ALL PHP: void/never cannot be used as property types'
++                        }
++                        $isReadOnly=($isReadonlyProperty -or $isReadonlyClass)
++                        if ($isReadOnly -and $isStatic) {
++                            throw 'ALL PHP: readonly static property is not allowed'
++                        }
++                        if ($isReadOnly -and [string]::IsNullOrEmpty($propertyType)) {
++                            throw 'ALL PHP: readonly property requires a type'
+                         }
+                         $propName = (Next-Token).Substring(1)
+                         $defaultExpr = $null
+@@ -1080,13 +1117,15 @@
+                             [void](Next-Token)
+                             $defaultExpr = Read-Expr 1
+                         }
++                        if ($isReadOnly -and $null -ne $defaultExpr) {
++                            throw 'ALL PHP: readonly property cannot have a default value'
++                        }
+                         Expect-Token ';'
+                         [void]$properties.Add([pscustomobject]@{
+                             Name=$propName; Default=$defaultExpr
+                             Visibility=$visibility; Static=$isStatic; Owner=$name
++                            TypeName=$propertyType; Readonly=$isReadOnly
+                         })
+-                    } else {
+-                        throw "ALL PHP: Unsupported class member '$(Peek-Token)'"
+                     }
+                 }
+                 Expect-Token '}'
+@@ -1094,7 +1133,7 @@
+                     Kind=$(if ($isTrait) { 'traitdef' } else { 'classdef' }); Name=$name; Parent=$parent
+                     Methods=$methods.ToArray(); Properties=$properties.ToArray()
+                     Constants=$constants.ToArray(); Interfaces=$interfaces.ToArray()
+-                    Abstract=$isAbstract; Final=$isFinal; Traits=$traits.ToArray()
++                    Abstract=$isAbstract; Final=$isFinal; Readonly=$isReadonlyClass; Traits=$traits.ToArray()
+                     TraitUses=$traitUses.ToArray()
+                 }
+             }
+@@ -1298,13 +1337,29 @@
+             }
+             return $typeText
+         }
+-        function Read-Parameters {
++        function Read-Parameters([bool]$allowPromotion = $false) {
+             Expect-Token '('
+             $parameters = [System.Collections.Generic.List[object]]::new()
+             $sawVariadic = $false
+             if ((Peek-Token) -cne ')') {
+                 while ($true) {
+                     if ($sawVariadic) { throw 'ALL PHP: Variadic parameter must be last' }
++                    $visibility = ''
++                    $promotedReadonly = $false
++                    if ($allowPromotion) {
++                        while ((Peek-Token) -in @('public','protected','private','readonly')) {
++                            $modifier=Next-Token
++                            if ($modifier -eq 'readonly') {
++                                if ($promotedReadonly) { throw 'ALL PHP: Duplicate readonly parameter modifier' }
++                                $promotedReadonly=$true
++                            } elseif (-not [string]::IsNullOrEmpty($visibility)) {
++                                throw 'ALL PHP: Duplicate promoted parameter visibility'
++                            } else { $visibility=$modifier }
++                        }
++                        if ($promotedReadonly -and [string]::IsNullOrEmpty($visibility)) {
++                            $visibility='public'
++                        }
++                    }
+                     $typeName = ''
+                     if ((Peek-Token) -ceq '?' -or
+                         (Peek-Token) -cmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+@@ -1328,6 +1383,13 @@
+                     if ($param -cnotmatch '^\$[A-Za-z_][A-Za-z_0-9]*$') {
+                         throw "ALL PHP: Expected parameter, got '$param'"
+                     }
++                    if (-not [string]::IsNullOrEmpty($visibility) -and
++                        [string]::IsNullOrEmpty($typeName) -and $promotedReadonly) {
++                        throw 'ALL PHP: Promoted readonly property must have a type'
++                    }
++                    if (-not [string]::IsNullOrEmpty($visibility) -and $variadic) {
++                        throw 'ALL PHP: Promoted property cannot be variadic'
++                    }
+                     $default = $null
+                     if ((Peek-Token) -ceq '=') {
+                         if ($variadic) { throw 'ALL PHP: Variadic parameters cannot have defaults' }
+@@ -1342,6 +1404,8 @@
+                     [void]$parameters.Add([pscustomobject]@{
+                         Name=$param.Substring(1); Default=$default; Variadic=$variadic
+                         ByRef=$byRef; TypeName=$typeName
++                        Promoted=(-not [string]::IsNullOrEmpty($visibility))
++                        Visibility=$visibility; Readonly=$promotedReadonly
+                     })
+                     if ((Peek-Token) -cne ',') { break }
+                     [void](Next-Token)
+@@ -1351,7 +1415,7 @@
+             Expect-Token ')'
+             return ,($parameters.ToArray())
+         }
+-        function Read-Function([bool]$declarationOnly = $false) {
++        function Read-Function([bool]$declarationOnly = $false, [bool]$allowPromotion = $false) {
+             Expect-Token 'function'
+             $returnByRef=$false
+             if ((Peek-Token) -ceq '&') {
+@@ -1362,7 +1426,12 @@
+             if ($name -cnotmatch '^[A-Za-z_][A-Za-z_0-9]*$') {
+                 throw 'ALL PHP: Expected function name'
+             }
+-            $parameters = Read-Parameters
++            $parameters = Read-Parameters $allowPromotion
++            if ($name -ine '__construct') {
++                foreach ($p in $parameters) {
++                    if ($p.Promoted) { throw 'ALL PHP: Only constructor parameters may be promoted' }
++                }
++            }
+             $returnType=''
+             if ((Peek-Token) -ceq ':') {
+                 [void](Next-Token)
+@@ -1511,6 +1580,9 @@
+                     $declared=Find-PhpProperty $object.Class $node.Name $false
+                     if ($null -ne $declared) {
+                         Assert-PhpVisibility $declared.Visibility $declared.Owner
++                        if ($declared.Readonly -or -not [string]::IsNullOrEmpty([string]$declared.TypeName)) {
++                            throw 'ALL PHP: Reference to typed/readonly property requires typed reference tracking'
++                        }
+                     }
+                 }
+                 $present=if ($object.Props -is [System.Collections.Specialized.OrderedDictionary]) {
+@@ -1527,6 +1599,9 @@
+                 $prop=Find-PhpProperty $klass $node.Name $true
+                 if ($null -eq $prop) { throw 'ALL PHP: Undefined static property reference' }
+                 Assert-PhpVisibility $prop.Visibility $prop.Owner
++                if (-not [string]::IsNullOrEmpty([string]$prop.TypeName)) {
++                    throw 'ALL PHP: Reference to typed static property requires typed reference tracking'
++                }
+                 return [pscustomobject]@{
+                     Store=$state.Classes[$prop.Owner].StaticValues; Key=$node.Name
+                 }
+@@ -2033,6 +2108,19 @@
+             }
+             throw "ALL PHP: Type mismatch at $location (expected $typeName)"
+         }
++        function Assert-PhpPropertyDefault($value, [string]$typeName, [string]$propertyName) {
++            if ([string]::IsNullOrEmpty($typeName)) { return }
++            if ($typeName.StartsWith('?') -and $null -eq $value) { return }
++            if ($typeName.StartsWith('?')) { $typeName=$typeName.Substring(1) }
++            foreach ($variant in $typeName.Split([char]'|')) {
++                $all=$true
++                foreach ($part in $variant.Split([char]'&')) {
++                    if (-not (Test-PhpTypeAtom $value $part)) { $all=$false; break }
++                }
++                if ($all) { return }
++            }
++            throw "ALL PHP: Type mismatch at property $propertyName (expected $typeName)"
++        }
+         function Copy-PhpTraitMethod($method, [string]$newName, [string]$visibility) {
+             if ([string]::IsNullOrEmpty($visibility)) { $visibility=$method.Visibility }
+             return [pscustomobject]@{
+@@ -2266,7 +2354,11 @@
+             $prop = Find-PhpProperty $klass $node.Name $true
+             if ($null -eq $prop) { throw "ALL PHP: Undefined static property '$($node.Name)'" }
+             Assert-PhpVisibility $prop.Visibility $prop.Owner
+-            $result = $state.Classes[$prop.Owner].StaticValues[$node.Name]
++            $store=$state.Classes[$prop.Owner].StaticValues
++            if (-not $store.ContainsKey($node.Name)) {
++                throw "ALL PHP: Typed static property '$($node.Name)' must not be accessed before initialization"
++            }
++            $result = $store[$node.Name]
+             if (Is-PhpRefCell $result) { return $result.Value }
+             return $result
+         }
+@@ -2276,7 +2368,8 @@
+             if ($null -eq $prop) { throw "ALL PHP: Undefined static property '$($node.Name)'" }
+             Assert-PhpVisibility $prop.Visibility $prop.Owner
+             $store = $state.Classes[$prop.Owner].StaticValues
+-            if (Is-PhpRefCell $store[$node.Name]) {
++            $value=Convert-PhpTypedValue $value ([string]$prop.TypeName) ('property ' + $node.Name)
++            if ($store.ContainsKey($node.Name) -and (Is-PhpRefCell $store[$node.Name])) {
+                 $store[$node.Name].Value = Copy-PhpValue $value
+             } else { $store[$node.Name] = Copy-PhpValue $value }
+         }
+@@ -2321,6 +2414,10 @@
+                     $base.Props.Contains($node.Name)
+                 } else { $base.Props.ContainsKey($node.Name) }
+                 if (-not $present) {
++                    if ($null -ne $declared -and
++                        -not [string]::IsNullOrEmpty([string]$declared.TypeName)) {
++                        throw "ALL PHP: Typed property '$($node.Name)' must not be accessed before initialization"
++                    }
+                     $magic=Find-OptionalPhpMethod $base.Class '__get'
+                     if ($null -ne $magic) {
+                         $guardKey=([string]$base.GetHashCode() + ':' + $node.Name)
+@@ -2459,6 +2556,17 @@
+                             } finally { [void]$state.MagicSetActive.Remove($guardKey) }
+                         }
+                     }
++                }
++                if ($null -ne $declared) {
++                    if ([bool]$declared.Readonly) {
++                        if ($present) { throw "ALL PHP: Cannot modify readonly property '$($node.Name)'" }
++                        if ($null -eq $state.ClassContext -or $state.ClassContext -ine $declared.Owner) {
++                            throw "ALL PHP: Cannot initialize readonly property '$($node.Name)' outside its declaring class"
++                        }
++                    }
++                    $value=Convert-PhpTypedValue $value ([string]$declared.TypeName) ('property ' + $node.Name)
++                } elseif ($base.Class -ne 'stdClass' -and $state.Classes[$base.Class].Readonly) {
++                    throw 'ALL PHP: Cannot create dynamic property on readonly class'
+                 }
+                 if ($present -and (Is-PhpRefCell $base.Props[$node.Name])) {
+                     $base.Props[$node.Name].Value = Copy-PhpValue $value
+@@ -2616,7 +2724,23 @@
+                         else { $state.Vars[$name]=$checked }
+                     }
+                 }
+-                if ($null -ne $object) { $state.Vars['this'] = $object }
++                if ($null -ne $object) {
++                    $state.Vars['this'] = $object
++                    if ($definition.Name -ieq '__construct') {
++                        foreach ($parameter in $definition.Params) {
++                            if (-not $parameter.Promoted) { continue }
++                            $target=[pscustomobject]@{
++                                Kind='property'
++                                Base=[pscustomobject]@{ Kind='variable'; Name='this' }
++                                Name=$parameter.Name; NullSafe=$false
++                            }
++                            if ($parameter.ByRef) {
++                                throw 'ALL PHP: Promoted by-reference property needs typed reference tracking'
++                            }
++                            Set-LValue $target (Get-PhpVariableValue $parameter.Name) '='
++                        }
++                    }
++                }
+                 $returnType=''
+                 if ($definition.PSObject.Properties['ReturnType']) {
+                     $returnType=[string]$definition.ReturnType
+@@ -3501,6 +3625,15 @@
+                                         $object.Props.Contains($arg.Name)
+                                     } else { $object.Props.ContainsKey($arg.Name) }
+                                     if (-not $present) {
++                                        $typedProperty=$null
++                                        if ($object.Class -ne 'stdClass') {
++                                            $typedProperty=Find-PhpProperty $object.Class $arg.Name $false
++                                        }
++                                        if ($null -ne $typedProperty -and
++                                            -not [string]::IsNullOrEmpty([string]$typedProperty.TypeName)) {
++                                            if ($node.Name -ceq 'isset') { return $false }
++                                            if ($node.Name -ceq 'empty') { return $true }
++                                        }
+                                         $issetMethod=Find-OptionalPhpMethod $object.Class '__isset'
+                                         if ($null -ne $issetMethod) {
+                                             $found=Is-Truthy (Invoke-PhpMethod $object '__isset' @($arg.Name))
+@@ -3558,6 +3691,9 @@
+                                             Assert-PhpVisibility $declared.Visibility $declared.Owner
+                                         }
+                                     }
++                                    if ($null -ne $declared -and $declared.Readonly) {
++                                        throw "ALL PHP: Cannot unset readonly property '$($arg.Name)'"
++                                    }
+                                     [void]$object.Props.Remove($arg.Name)
+                                 } else {
+                                     $magic=Find-OptionalPhpMethod $object.Class '__unset'
+@@ -3635,9 +3771,13 @@
+                     for ($i=$chain.Count - 1; $i -ge 0; $i--) {
+                         foreach ($prop in $chain[$i].Properties) {
+                             if ($prop.Static) { continue }
++                            if ($null -eq $prop.Default -and
++                                -not [string]::IsNullOrEmpty([string]$prop.TypeName)) {
++                                continue # declared but uninitialized typed property
++                            }
+                             $val=$null
+                             if ($null -ne $prop.Default) { $val=Invoke-PhpExpr $prop.Default }
+-                            $object.Props[$prop.Name]=Copy-PhpValue $val
++                            $object.Props[$prop.Name]=Copy-PhpValue (Convert-PhpTypedValue $val ([string]$prop.TypeName) ('property ' + $prop.Name))
+                         }
+                     }
+                     $construct=$null
+@@ -3951,6 +4091,12 @@
+                     if ($null -ne $node.Parent -and $state.Classes[$node.Parent].Final) {
+                         throw "ALL PHP: Cannot extend final class '$($node.Parent)'"
+                     }
++                    if ($null -ne $node.Parent -and $state.Classes[$node.Parent].Readonly -and -not $node.Readonly) {
++                        throw 'ALL PHP: Non-readonly class cannot extend readonly class'
++                    }
++                    if ($node.Readonly -and $null -ne $node.Parent -and -not $state.Classes[$node.Parent].Readonly) {
++                        throw 'ALL PHP: Readonly class cannot extend non-readonly class'
++                    }
+                     foreach ($iface in $node.Interfaces) {
+                         if (-not $state.Interfaces.ContainsKey($iface)) {
+                             throw "ALL PHP: Undefined interface '$iface'"
+@@ -3980,7 +4126,13 @@
+                         $methods[$method.Name]=$method
+                     }
+                     $effectiveProperties=[System.Collections.Generic.List[object]]::new()
+-                    foreach ($prop in $node.Properties) { [void]$effectiveProperties.Add($prop) }
++                    $declaredNames=[System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
++                    foreach ($prop in $node.Properties) {
++                        if (-not $declaredNames.Add($prop.Name)) {
++                            throw "ALL PHP: Duplicate property '$($prop.Name)'"
++                        }
++                        [void]$effectiveProperties.Add($prop)
++                    }
+                     $traitMethods=[System.Collections.Generic.HashSet[string]]::new(
+                         [System.StringComparer]::OrdinalIgnoreCase)
+                     $composition=Get-PhpTraitComposition $node
+@@ -4026,16 +4178,36 @@
+                             [void]$effectiveProperties.Add([pscustomobject]@{
+                                 Name=$prop.Name; Default=$prop.Default
+                                 Visibility=$prop.Visibility; Static=$prop.Static
+-                                Owner=$node.Name
++                                Owner=$node.Name; TypeName=$prop.TypeName
++                                Readonly=([bool]$prop.Readonly -or [bool]$node.Readonly)
+                             })
++                    }
++                    foreach ($prop in $effectiveProperties) {
++                        if ($node.Readonly -and $prop.Static) {
++                            throw 'ALL PHP: readonly static property is not allowed'
++                        }
++                        if ($node.Readonly -and [string]::IsNullOrEmpty([string]$prop.TypeName)) {
++                            throw 'ALL PHP: readonly property requires a type'
++                        }
++                        if (($node.Readonly -or $prop.Readonly) -and $null -ne $prop.Default) {
++                            throw 'ALL PHP: readonly property cannot have a default value'
++                        }
++                        if ($null -ne $prop.Default) {
++                            $defaultValue=Invoke-PhpExpr $prop.Default
++                            Assert-PhpPropertyDefault $defaultValue ([string]$prop.TypeName) $prop.Name
++                        }
+                     }
+                     $statics=[System.Collections.Generic.Dictionary[string,object]]::new(
+                         [System.StringComparer]::Ordinal)
+                     foreach ($prop in $effectiveProperties) {
+                         if ($prop.Static) {
++                            if ($null -eq $prop.Default -and
++                                -not [string]::IsNullOrEmpty([string]$prop.TypeName)) {
++                                continue # typed static property stays uninitialized
++                            }
+                             $default=$null
+                             if ($null -ne $prop.Default) { $default=Invoke-PhpExpr $prop.Default }
+-                            $statics[$prop.Name]=Copy-PhpValue $default
++                            $statics[$prop.Name]=Copy-PhpValue (Convert-PhpTypedValue $default ([string]$prop.TypeName) ('property ' + $prop.Name))
+                         }
+                     }
+                     $constants=[System.Collections.Generic.Dictionary[string,object]]::new(
+@@ -4053,7 +4225,7 @@
+                         Name=$node.Name; Parent=$node.Parent; Methods=$methods
+                         Properties=$effectiveProperties.ToArray(); StaticValues=$statics
+                         Constants=$constants; Interfaces=$node.Interfaces
+-                        Abstract=$node.Abstract; Final=$node.Final
++                        Abstract=$node.Abstract; Final=$node.Final; Readonly=$node.Readonly
+                     }
+                     # A concrete class must supply every abstract ancestor and
+                     # declared-interface method. Validation stays inside registration

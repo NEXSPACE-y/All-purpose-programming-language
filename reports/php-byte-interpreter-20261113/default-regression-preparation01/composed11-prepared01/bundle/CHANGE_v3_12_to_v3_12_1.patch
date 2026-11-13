@@ -1,0 +1,41 @@
+--- ALL_PHP_v3_12_adapter.ps1 (v3.12)
++++ ALL_PHP_v3_12_adapter.ps1 (v3.12.1)
+@@ -1124,6 +1124,10 @@
+                         }
+                         $getHook=$null
+                         $setHook=$null
++                        # Hook names must be unique even when their bodies are empty.
++                        # Check the declaration names independently of hook objects.
++                        $seenHookNames=[System.Collections.Generic.HashSet[string]]::new(
++                            [System.StringComparer]::Ordinal)
+                         $hookBacked=($null -ne $defaultExpr)
+                         if ((Peek-Token) -ceq '{') {
+                             if ($isStatic) { throw 'ALL PHP: Static property hooks are not supported by PHP' }
+@@ -1136,6 +1140,9 @@
+                                 $hookName=Next-Token
+                                 if ($hookName -notin @('get','set')) {
+                                     throw "ALL PHP: Unknown property hook '$hookName'"
++                                }
++                                if (-not $seenHookNames.Add($hookName)) {
++                                    throw 'ALL PHP: Duplicate property hook'
+                                 }
+                                 if ($hookName -ceq 'get' -and $null -ne $getHook -or
+                                     $hookName -ceq 'set' -and $null -ne $setHook) {
+@@ -2535,7 +2542,7 @@
+                     -not $declared.HookBacked -and
+                     -not $state.PropertyHookActive.Contains(
+                         ([string]$base.GetHashCode() + ':' + $node.Name))) {
+-                    throw "ALL PHP: Property '$($node.Name)' is write-only"
++                    throw "ALL PHP: write-only property '$($node.Name)'"
+                 }
+                 if (-not $present) {
+                     if ($null -ne $declared -and
+@@ -2695,7 +2702,7 @@
+                         -not $declared.HookBacked -and
+                         -not $state.PropertyHookActive.Contains(
+                             ([string]$base.GetHashCode() + ':' + $node.Name))) {
+-                        throw "ALL PHP: Property '$($node.Name)' is get-only"
++                        throw "ALL PHP: get-only property '$($node.Name)'"
+                     }
+                     if ([bool]$declared.Readonly) {
+                         if ($present) { throw "ALL PHP: Cannot modify readonly property '$($node.Name)'" }

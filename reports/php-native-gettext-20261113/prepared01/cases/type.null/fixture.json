@@ -1,0 +1,16 @@
+{
+  "id": "type.null",
+  "group": "argument_diagnostics",
+  "steps": [
+    {
+      "operation": "call",
+      "function": "gettext",
+      "args": [
+        {
+          "type": "null"
+        }
+      ],
+      "strict": false
+    }
+  ]
+}

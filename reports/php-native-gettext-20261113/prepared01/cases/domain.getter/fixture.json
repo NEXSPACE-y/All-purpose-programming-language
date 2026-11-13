@@ -1,0 +1,12 @@
+{
+  "id": "domain.getter",
+  "group": "domain_state",
+  "steps": [
+    {
+      "operation": "call",
+      "function": "textdomain",
+      "args": [],
+      "strict": false
+    }
+  ]
+}

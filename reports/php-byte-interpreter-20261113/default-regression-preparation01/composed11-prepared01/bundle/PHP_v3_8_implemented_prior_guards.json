@@ -1,0 +1,7 @@
+[
+  {
+    "name": "array element reference (now supported)",
+    "code": "<?php $a=[1,2];$b=&$a[0];",
+    "expected": ""
+  }
+]

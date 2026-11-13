@@ -1,0 +1,154 @@
+[
+  {
+    "id": "locale.C-encoding",
+    "environment_overrides": {
+      "LC_ALL": "C.UTF-8",
+      "LC_MESSAGES": null,
+      "LANG": "C.UTF-8",
+      "LANGUAGE": "zz_ALL",
+      "LC_CTYPE": null
+    },
+    "null_means_remove_in_child_only": true,
+    "source": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-gettext-locale-20261113\\prepared01\\locale.C-encoding\\oracle.php",
+    "source_sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+    "copied_mo_sha256": "a8aa43b7c0fc2c43da96a6e6526952fe508ed42d19ef0a18698e800711643dad",
+    "expected_catalog_payloads_base64": {
+      "singular": "Y2F0YWxvZy10cmFuc2xhdGVk",
+      "plural": "Y2F0YWxvZy1tYW55"
+    },
+    "interpretation": "Observe selection; untranslated identity is not a translation pass."
+  },
+  {
+    "id": "locale.C-exact",
+    "environment_overrides": {
+      "LC_ALL": "C",
+      "LC_MESSAGES": "zz_ALL",
+      "LANG": "en_US.UTF-8",
+      "LANGUAGE": "zz_ALL",
+      "LC_CTYPE": null
+    },
+    "null_means_remove_in_child_only": true,
+    "source": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-gettext-locale-20261113\\prepared01\\locale.C-exact\\oracle.php",
+    "source_sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+    "copied_mo_sha256": "a8aa43b7c0fc2c43da96a6e6526952fe508ed42d19ef0a18698e800711643dad",
+    "expected_catalog_payloads_base64": {
+      "singular": "Y2F0YWxvZy10cmFuc2xhdGVk",
+      "plural": "Y2F0YWxvZy1tYW55"
+    },
+    "interpretation": "Observe selection; untranslated identity is not a translation pass."
+  },
+  {
+    "id": "locale.language-nonC",
+    "environment_overrides": {
+      "LC_ALL": null,
+      "LC_MESSAGES": null,
+      "LANG": "en_US.UTF-8",
+      "LANGUAGE": "zz_ALL",
+      "LC_CTYPE": null
+    },
+    "null_means_remove_in_child_only": true,
+    "source": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-gettext-locale-20261113\\prepared01\\locale.language-nonC\\oracle.php",
+    "source_sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+    "copied_mo_sha256": "a8aa43b7c0fc2c43da96a6e6526952fe508ed42d19ef0a18698e800711643dad",
+    "expected_catalog_payloads_base64": {
+      "singular": "Y2F0YWxvZy10cmFuc2xhdGVk",
+      "plural": "Y2F0YWxvZy1tYW55"
+    },
+    "interpretation": "Observe selection; untranslated identity is not a translation pass."
+  },
+  {
+    "id": "locale.all-over-messages",
+    "environment_overrides": {
+      "LC_ALL": "en_US.UTF-8",
+      "LC_MESSAGES": "C",
+      "LANG": "C",
+      "LANGUAGE": "zz_ALL",
+      "LC_CTYPE": null
+    },
+    "null_means_remove_in_child_only": true,
+    "source": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-gettext-locale-20261113\\prepared01\\locale.all-over-messages\\oracle.php",
+    "source_sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+    "copied_mo_sha256": "a8aa43b7c0fc2c43da96a6e6526952fe508ed42d19ef0a18698e800711643dad",
+    "expected_catalog_payloads_base64": {
+      "singular": "Y2F0YWxvZy10cmFuc2xhdGVk",
+      "plural": "Y2F0YWxvZy1tYW55"
+    },
+    "interpretation": "Observe selection; untranslated identity is not a translation pass."
+  },
+  {
+    "id": "locale.messages-over-lang",
+    "environment_overrides": {
+      "LC_ALL": null,
+      "LC_MESSAGES": "zz_ALL",
+      "LANG": "C.UTF-8",
+      "LANGUAGE": null,
+      "LC_CTYPE": null
+    },
+    "null_means_remove_in_child_only": true,
+    "source": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-gettext-locale-20261113\\prepared01\\locale.messages-over-lang\\oracle.php",
+    "source_sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+    "copied_mo_sha256": "a8aa43b7c0fc2c43da96a6e6526952fe508ed42d19ef0a18698e800711643dad",
+    "expected_catalog_payloads_base64": {
+      "singular": "Y2F0YWxvZy10cmFuc2xhdGVk",
+      "plural": "Y2F0YWxvZy1tYW55"
+    },
+    "interpretation": "Observe selection; untranslated identity is not a translation pass."
+  },
+  {
+    "id": "locale.lang-only",
+    "environment_overrides": {
+      "LC_ALL": null,
+      "LC_MESSAGES": null,
+      "LANG": "zz_ALL",
+      "LANGUAGE": null,
+      "LC_CTYPE": null
+    },
+    "null_means_remove_in_child_only": true,
+    "source": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-gettext-locale-20261113\\prepared01\\locale.lang-only\\oracle.php",
+    "source_sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+    "copied_mo_sha256": "a8aa43b7c0fc2c43da96a6e6526952fe508ed42d19ef0a18698e800711643dad",
+    "expected_catalog_payloads_base64": {
+      "singular": "Y2F0YWxvZy10cmFuc2xhdGVk",
+      "plural": "Y2F0YWxvZy1tYW55"
+    },
+    "interpretation": "Observe selection; untranslated identity is not a translation pass."
+  },
+  {
+    "id": "locale.messages-over-catalog-lang",
+    "environment_overrides": {
+      "LC_ALL": null,
+      "LC_MESSAGES": "en_US.UTF-8",
+      "LANG": "zz_ALL",
+      "LANGUAGE": null,
+      "LC_CTYPE": null
+    },
+    "null_means_remove_in_child_only": true,
+    "source": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-gettext-locale-20261113\\prepared01\\locale.messages-over-catalog-lang\\oracle.php",
+    "source_sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+    "copied_mo_sha256": "a8aa43b7c0fc2c43da96a6e6526952fe508ed42d19ef0a18698e800711643dad",
+    "expected_catalog_payloads_base64": {
+      "singular": "Y2F0YWxvZy10cmFuc2xhdGVk",
+      "plural": "Y2F0YWxvZy1tYW55"
+    },
+    "interpretation": "Observe selection; untranslated identity is not a translation pass."
+  },
+  {
+    "id": "locale.language-fallback",
+    "environment_overrides": {
+      "LC_ALL": null,
+      "LC_MESSAGES": null,
+      "LANG": "en_US.UTF-8",
+      "LANGUAGE": "not_existing:zz_ALL",
+      "LC_CTYPE": null
+    },
+    "null_means_remove_in_child_only": true,
+    "source": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-gettext-locale-20261113\\prepared01\\locale.language-fallback\\oracle.php",
+    "source_sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+    "copied_mo_sha256": "a8aa43b7c0fc2c43da96a6e6526952fe508ed42d19ef0a18698e800711643dad",
+    "expected_catalog_payloads_base64": {
+      "singular": "Y2F0YWxvZy10cmFuc2xhdGVk",
+      "plural": "Y2F0YWxvZy1tYW55"
+    },
+    "interpretation": "Observe selection; untranslated identity is not a translation pass."
+  }
+]

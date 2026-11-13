@@ -1,0 +1,440 @@
+
+Dump of file C:\Users\rinpa\ALL_php_oracle\php-8.5.12-ts-x64\ext\php_snmp.dll
+
+File Type: DLL
+
+  Section contains the following imports:
+
+    php8ts.dll
+             18006A810 Import Address Table
+             180086AC8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         11D _zend_hash_init@@32
+                        1745 zend_std_write_property
+                        149E zend_declare_typed_property
+                         E07 spl_ce_RuntimeException
+                         E1E std_object_handlers
+                        1553 zend_get_property_info
+                        1737 zend_std_get_properties
+                        17E8 zend_wrong_parameters_count_error@@16
+                        1768 zend_throw_error
+                          B5 _efree@@8
+                        1675 zend_object_std_init@@16
+                         D29 php_verror
+                          B6 _emalloc@@8
+                         B36 php_info_print_table_start
+                         15E ap_php_snprintf
+                        1788 zend_type_error
+                        17E9 zend_wrong_parameters_none_error@@0
+                        17E6 zend_wrong_parameter_error@@40
+                         AE3 php_error_docref
+                         161 ap_php_vsnprintf
+                        149D zend_declare_typed_class_constant
+                        173E zend_std_has_property
+                         A53 object_properties_init
+                        16AA zend_parse_arg_bool_slow@@24
+                        1803 zval_get_long_func@@16
+                        17C0 zend_value_error
+                        1739 zend_std_get_property_ptr_ptr
+                          B9 _estrdup@@8
+                        159D zend_hash_next_index_insert@@16
+                        15B8 zend_hash_update@@24
+                         10E _safe_emalloc@@24
+                        13EC zend_argument_value_error
+                         125 _zend_new_array@@8
+                         158 add_property_zval_ex
+                         E31 tsrm_get_ls_cache
+                        16BB zend_parse_parameters
+                        16F3 zend_register_long_constant
+                        1740 zend_std_read_property
+                          AF __zend_malloc
+                          B8 _erealloc@@16
+                         1F2 executor_globals_offset
+                        175B zend_string_init_interned
+                        156F zend_hash_destroy@@8
+                         150 add_property_long_ex
+                        1806 zval_ptr_dtor
+                         B85 php_network_freeaddresses
+                        16AF zend_parse_arg_long_slow@@24
+                        16FE zend_reset_lc_ctype_locale
+                        155F zend_hash_add@@24
+                        180A zval_try_get_string_func@@8
+                         B32 php_info_print_table_end
+                        1575 zend_hash_find@@16
+                         19C convert_to_boolean@@8
+                        142B zend_binary_strcasecmp@@32
+                         135 add_assoc_zval_ex
+                         B34 php_info_print_table_row
+                        1674 zend_object_std_dtor
+                         B88 php_network_getaddresses
+                        16B4 zend_parse_arg_str_slow@@24
+                        13EA zend_argument_must_not_be_empty_error
+                        16ED zend_register_internal_class_with_flags
+                         A50 object_init
+                        17C9 zend_verify_property_type
+                        176B zend_throw_exception_ex
+
+    KERNEL32.dll
+             18006A038 Import Address Table
+             1800862F0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         242 GetCurrentProcessId
+                         481 QueryPerformanceCounter
+                         3B8 IsProcessorFeaturePresent
+                         5D8 TerminateProcess
+                         241 GetCurrentProcess
+                         5B8 SetUnhandledExceptionFilter
+                         5FB UnhandledExceptionFilter
+                         518 RtlVirtualUnwind
+                         511 RtlLookupFunctionEntry
+                         31A GetSystemTimeAsFileTime
+                         33C GetTickCount
+                         2A2 GetModuleHandleA
+                         2DD GetProcAddress
+                         1C8 FlushFileBuffers
+                          CF CreateDirectoryA
+                         28D GetLastError
+                         19D FindClose
+                         1A1 FindFirstFileA
+                         1B2 FindNextFileA
+                         246 GetCurrentThreadId
+                         142 DisableThreadLibraryCalls
+                         39A InitializeSListHead
+                         3B0 IsDebuggerPresent
+                         509 RtlCaptureContext
+
+    ADVAPI32.dll
+             18006A000 Import Address Table
+             1800862B8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          64 CloseEventLog
+                         2B9 ReportEventA
+                         255 RegCloseKey
+                         285 RegOpenKeyExA
+                         292 RegQueryValueExA
+                         20D OpenEventLogA
+
+    WS2_32.dll
+             18006A158 Import Address Table
+             180086410 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                             Ordinal    14
+                             Ordinal     7
+                             Ordinal    11
+                             Ordinal    10
+                             Ordinal    13
+                             Ordinal    21
+                             Ordinal     2
+                             Ordinal     1
+                          B7 inet_pton
+                          3B WSAIoctl
+                             Ordinal   111
+                             Ordinal    20
+                             Ordinal    17
+                          A5 freeaddrinfo
+                          A6 getaddrinfo
+                             Ordinal    57
+                             Ordinal    52
+                          B6 inet_ntop
+                             Ordinal    51
+                             Ordinal    23
+                             Ordinal    15
+                             Ordinal     9
+                             Ordinal     6
+                             Ordinal     4
+                             Ordinal     3
+                             Ordinal    12
+                             Ordinal    18
+                             Ordinal     8
+
+    VCRUNTIME140.dll
+             18006A100 Import Address Table
+             1800863B8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          40 strchr
+                          41 strrchr
+                          42 strstr
+                          3B memcmp
+                          3C memcpy
+                          3D memmove
+                          3E memset
+                           8 __C_specific_handler
+                          3A memchr
+                          25 __std_type_info_destroy_list
+
+    api-ms-win-crt-runtime-l1-1-0.dll
+             18006A2D0 Import Address Table
+             180086588 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          3F _seh_filter_dll
+                          18 _configure_narrow_argv
+                          36 _initterm
+                          34 _initialize_onexit_table
+                          21 _errno
+                          22 _execute_onexit_table
+                          33 _initialize_narrow_environment
+                          64 strerror
+                          37 _initterm_e
+                          16 _cexit
+
+    api-ms-win-crt-heap-l1-1-0.dll
+             18006A298 Import Address Table
+             180086550 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          19 malloc
+                          1A realloc
+                          18 free
+                          17 calloc
+
+    api-ms-win-crt-convert-l1-1-0.dll
+             18006A240 Import Address Table
+             1800864F8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          64 strtoul
+                          61 strtol
+                          50 atoi
+
+    api-ms-win-crt-string-l1-1-0.dll
+             18006A3B0 Import Address Table
+             180086668 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          97 tolower
+                          8E strncmp
+                          29 _strdup
+                          6C isprint
+                          6B islower
+                          6F isupper
+                          6E isspace
+                          98 toupper
+                          68 isdigit
+                          65 isalpha
+                          8C strncat
+                          88 strcpy
+                          64 isalnum
+                          7E isxdigit
+                          8B strlen
+                          86 strcmp
+
+    api-ms-win-crt-stdio-l1-1-0.dll
+             18006A328 Import Address Table
+             1800865E0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           3 __stdio_common_vfprintf
+                           D __stdio_common_vsprintf
+                          80 fputs
+                          7D fopen
+                          77 fflush
+                          10 __stdio_common_vsscanf
+                          74 fclose
+                          17 _close
+                           0 __acrt_iob_func
+                          98 setvbuf
+                          9D ungetc
+                          7A fgets
+                          37 _get_osfhandle
+                          49 _open
+                          26 _fileno
+                          8B getc
+
+    api-ms-win-crt-time-l1-1-0.dll
+             18006A438 Import Address Table
+             1800866F0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          23 _localtime64
+                          14 _ftime64
+                          30 _time64
+
+    api-ms-win-crt-utility-l1-1-0.dll
+             18006A458 Import Address Table
+             180086710 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          1D srand
+                          1B rand
+                          19 qsort
+
+    api-ms-win-crt-locale-l1-1-0.dll
+             18006A2C0 Import Address Table
+             180086578 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          13 setlocale
+
+    api-ms-win-crt-environment-l1-1-0.dll
+             18006A260 Import Address Table
+             180086518 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          10 getenv
+                           3 _putenv
+
+    api-ms-win-crt-filesystem-l1-1-0.dll
+             18006A278 Import Address Table
+             180086530 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          20 _stat64i32
+                          23 _unlink
+                          40 rename
+
+    libcrypto-3-x64.dll
+             18006A478 Import Address Table
+             180086730 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         3C6 CRYPTO_free
+                         1DE BIO_s_mem
+                         1FF BIO_write
+                         A99 OBJ_nid2sn
+                         1D1 BIO_read
+                         A9A OBJ_obj2nid
+                        1416 X509_digest
+                        1447 X509_get_signature_nid
+                        12D7 X509_NAME_get_text_by_NID
+                         1B8 BIO_new_accept
+                         1BB BIO_new_connect
+                         1CC BIO_pop
+                         17E BIO_free
+                         658 ERR_reason_error_string
+                         61D ERR_error_string
+                         61A ERR_clear_error
+                        143B X509_get_ext_count
+                        1437 X509_get_ext
+                         623 ERR_get_error_line_data
+                         620 ERR_get_error
+                        143C X509_get_ext_d2i
+                        1418 X509_dup
+                        148C X509_verify_cert_error_string
+                        1368 X509_STORE_CTX_get_current_cert
+                        136A X509_STORE_CTX_get_error_depth
+                        1369 X509_STORE_CTX_get_error
+                        136B X509_STORE_CTX_get_ex_data
+                        145A X509_load_crl_file
+                        129F X509_LOOKUP_file
+                        1394 X509_STORE_add_lookup
+                        1290 X509_EXTENSION_get_object
+                        13BB X509_STORE_set_flags
+                          A1 ASN1_STRING_to_UTF8
+                         3D5 CRYPTO_get_ex_new_index
+                         B72 OPENSSL_sk_value
+                         B68 OPENSSL_sk_num
+                        1408 X509_check_ca
+                         E8D PEM_read_bio_PrivateKey
+                         E94 PEM_read_bio_X509_AUX
+                        11EE X509V3_EXT_print
+                        140D X509_check_issued
+                         15E BIO_ctrl_pending
+                         15B BIO_ctrl
+                        1449 X509_get_subject_name
+                        143F X509_get_issuer_name
+                        12DD X509_NAME_oneline
+                         44B DH_free
+                         770 EVP_MD_CTX_new
+                         767 EVP_MD_CTX_free
+                         6F7 EVP_DigestUpdate
+                         6EE EVP_DigestInit
+                         6EB EVP_DigestFinal
+                         707 EVP_EncryptInit
+                         70A EVP_EncryptUpdate
+                         705 EVP_EncryptFinal
+                         6E6 EVP_DecryptInit
+                         6E9 EVP_DecryptUpdate
+                         6E4 EVP_DecryptFinal
+                         698 EVP_CIPHER_CTX_new
+                         684 EVP_CIPHER_CTX_free
+                         9DB EVP_md5
+                         9F1 EVP_sha1
+                         9F2 EVP_sha224
+                         9F3 EVP_sha256
+                         9F4 EVP_sha384
+                         9F9 EVP_sha512
+                         95A EVP_aes_128_cfb128
+                         A19 HMAC
+                         FD9 RAND_bytes
+                         41F DES_cbc_encrypt
+                         431 DES_ncbc_encrypt
+                         430 DES_key_sched
+                         1DC BIO_s_file
+                         1B4 BIO_new
+                         1FB BIO_vfree
+                        141C X509_free
+                         868 EVP_PKEY_free
+                        1392 X509_STORE_add_cert
+                        15C8 d2i_X509_bio
+
+    libssl-3-x64.dll
+             18006A6F8 Import Address Table
+             1800869B0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         183 SSL_get_peer_cert_chain
+                         16D SSL_get_current_cipher
+                         19A SSL_get_shutdown
+                         1EC SSL_set_accept_state
+                         1F9 SSL_set_connect_state
+                           8 DTLS_method
+                          9F SSL_CTX_set_cookie_verify_cb
+                          9E SSL_CTX_set_cookie_generate_cb
+                         20A SSL_set_options
+                         200 SSL_set_ex_data
+                         22E SSL_shutdown
+                         24D TLS_method
+                         138 SSL_ctrl
+                         248 SSL_write
+                         1D4 SSL_read
+                         135 SSL_connect
+                         112 SSL_accept
+                         1C9 SSL_new
+                         1F1 SSL_set_bio
+                         178 SSL_get_ex_data_X509_STORE_CTX_idx
+                         177 SSL_get_ex_data
+                         175 SSL_get_error
+                          4C SSL_CTX_ctrl
+                         144 SSL_free
+                          47 SSL_CTX_check_private_key
+                          DF SSL_CTX_use_certificate
+                          D8 SSL_CTX_use_PrivateKey
+                          D5 SSL_CTX_set_verify
+                         15C SSL_get1_peer_certificate
+                          54 SSL_CTX_free
+                          7A SSL_CTX_new
+                          98 SSL_CTX_set_cipher_list
+                          5E SSL_CTX_get_cert_store
+                          1F SSL_CIPHER_description
+
+  Summary
+
+        7000 .data
+        5000 .pdata
+       1F000 .rdata
+        1000 .reloc
+        1000 .rsrc
+       69000 .text

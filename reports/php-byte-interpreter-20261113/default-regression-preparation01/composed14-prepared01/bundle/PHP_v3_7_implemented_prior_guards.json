@@ -1,0 +1,12 @@
+[
+  {
+    "name": "unsupported trait alias adaptation (now supported)",
+    "code": "<?php trait A {public function f(){return 1;}} class C {use A {f as g;} }",
+    "expected": ""
+  },
+  {
+    "name": "unsupported nested trait use (now supported)",
+    "code": "<?php trait A {public function f(){return 1;}} trait B {use A;}",
+    "expected": ""
+  }
+]

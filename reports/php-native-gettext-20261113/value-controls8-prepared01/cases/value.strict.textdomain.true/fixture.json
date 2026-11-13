@@ -1,0 +1,17 @@
+{
+  "id": "value.strict.textdomain.true",
+  "group": "strict_bool_value_diagnostic",
+  "steps": [
+    {
+      "operation": "call",
+      "function": "textdomain",
+      "args": [
+        {
+          "type": "bool",
+          "value": true
+        }
+      ],
+      "strict": true
+    }
+  ]
+}

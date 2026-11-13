@@ -1,0 +1,17 @@
+{
+  "id": "value.weak.gettext.true",
+  "group": "weak_bool_coercion",
+  "steps": [
+    {
+      "operation": "call",
+      "function": "gettext",
+      "args": [
+        {
+          "type": "bool",
+          "value": true
+        }
+      ],
+      "strict": false
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+Runtime.cpp
+C:\Users\rinpa\ALL-php-compat-20261112\tools\candidates\php-native-info-v2\sdk\sdk01\php-8.5.12-devel-vs17-x64\include\Zend\zend_gc.h(170): warning C4244: '=': conversion from '__int64' to 'int', possible loss of data
+C:\Users\rinpa\ALL-php-compat-20261112\tools\candidates\php-native-info-v2\sdk\sdk01\php-8.5.12-devel-vs17-x64\include\Zend\zend_API.h(546): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\rinpa\ALL-php-compat-20261112\tools\candidates\php-native-info-v2\sdk\sdk01\php-8.5.12-devel-vs17-x64\include\Zend\zend_API.h(557): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\rinpa\ALL-php-compat-20261112\tools\candidates\php-native-gettext\generated02\callback\src\Runtime.cpp(238): warning C4146: unary minus operator applied to unsigned type, result still unsigned
+C:\Users\rinpa\ALL-php-compat-20261112\tools\candidates\php-native-gettext\generated02\callback\src\Runtime.cpp(239): warning C4146: unary minus operator applied to unsigned type, result still unsigned
+C:\Users\rinpa\ALL-php-compat-20261112\tools\candidates\php-native-gettext\generated02\callback\src\Runtime.cpp(251): warning C4146: unary minus operator applied to unsigned type, result still unsigned
+C:\Users\rinpa\ALL-php-compat-20261112\tools\candidates\php-native-gettext\generated02\callback\src\Runtime.cpp(377): error C2732: linkage specification contradicts earlier specification for 'virtual_getcwd'
+C:\Users\rinpa\ALL-php-compat-20261112\tools\candidates\php-native-gettext\generated02\callback\src\Runtime.cpp(377): note: see declaration of 'virtual_getcwd'
+C:\Users\rinpa\ALL-php-compat-20261112\tools\candidates\php-native-gettext\generated02\callback\src\Runtime.cpp(384): error C2732: linkage specification contradicts earlier specification for 'virtual_realpath'
+C:\Users\rinpa\ALL-php-compat-20261112\tools\candidates\php-native-gettext\generated02\callback\src\Runtime.cpp(384): note: see declaration of 'virtual_realpath'

@@ -1,0 +1,19 @@
+{
+  "observedUtc": "2026-11-13T08:17:51.785466+00:00",
+  "runState": "RUNNING_NOT_FINAL",
+  "sessionId": 31234,
+  "totalCases": 252,
+  "completed": 251,
+  "pass": 217,
+  "different": 34,
+  "differentCandidateStates": {
+    "TIMEOUT": 34
+  },
+  "nonTimeoutDifferences": [],
+  "candidateSha256": "e7ccae465117179f0a5cf55126e9b43a4f8f448b17f452650a945ab542a460d0",
+  "deadlineSeconds": 30,
+  "unchangedCases": true,
+  "retryPerformed": false,
+  "timeoutCause": "UNDETERMINED",
+  "fullCompatibility": false
+}

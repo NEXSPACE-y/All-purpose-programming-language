@@ -1,0 +1,17 @@
+{
+  "id": "codeset.query",
+  "group": "codeset",
+  "steps": [
+    {
+      "operation": "call",
+      "function": "bind_textdomain_codeset",
+      "args": [
+        {
+          "type": "bytes",
+          "base64": "YWxsX3BocF9nZXR0ZXh0XzIwMjYxMTEz"
+        }
+      ],
+      "strict": false
+    }
+  ]
+}

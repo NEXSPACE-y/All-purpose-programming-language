@@ -1,0 +1,19 @@
+# Isolated default965 preparation — no new default965 execution
+
+Generic tools are in `tools/candidates/php-byte-interpreter/default-regression/`. The final preparation proof is `preview03-composed07/provenance.json`. It uses the explicitly provided, not fully validated composed07 adapter SHA256 `2236abb15caf624a0ed5c30c0d703d782e455d420d519912595603ff09f52aa9`. This is a preparation preview; a final candidate must be supplied to a fresh destination before its actual run.
+
+Verified during preparation:
+
+- **219 package files** copied as bytes. Exactly two bundle paths differ: the supplied `ALL_PHP_v3_12_adapter.ps1` and its single hash in `SHA256SUMS.txt`. All other bytes, including READMEs, validators, tests, fixture expectations and C# files, are preserved.
+- The unchanged preflight executed under **Windows PowerShell 5.1 x64**, parsing **102 bundled scripts** and verifying **218 manifest entries**. The two external capture/preparation workers also parse under PS5.1 with zero syntax errors.
+- The original **34 tracked input paths** compare cleanly against git base `9d8171712828a0b57555b8eb1e1ca5c475391244` before and after preparation. Their actual byte hashes match source and bundle. Both additional25 input paths and the complete package hash snapshot also match.
+- Source package, supplied candidate, preparation tools, copied bundle and installed/main `C:\Users\rinpa\ALL\ALL.ps1` hashes remain unchanged. The canonical runtime01 absolute path/hash (`18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b`) is retained without rewriting the candidate bootstrap.
+- Static fixture inventory still totals the original940 plus25. The counter parser correctly reads all965 names in original order from a historical frozen capture. Its six parser contracts reject a wrapper banner alone, missing/failed/misnamed cases and invalid UTF-8. These are counter-parser checks on historical/in-memory data, not new PHP fixtures, candidate execution or a new965 pass.
+
+**No default fixture and no C# compilation was executed by this preparation.** The actual execution entry point is `Run-DefaultRegression.py`; it invokes the unchanged `ALL_PHP_v3_20_validate.ps1 -CompileCSharp` only when separately started. It captures raw stdout/stderr, real PID and process exit, ordered case counters, both loaded C# helper types, worker metadata, git comparison and full source/bundle/main hashes before and after. It retains the original unbounded default-validation process policy and performs no retry. Partial/failed runs cannot pass from a hardcoded wrapper965 banner.
+
+`preview-composed07` preserves the first failed preflight: fresh PS5.1 did not autoload Get-FileHash because the utility module had not been explicitly imported by the preparation worker. Its raw stderr/exit1 are retained. The worker was corrected, and `preview02-composed07` passed in a fresh destination. `preview03-composed07` additionally verifies both worker syntaxes under PS5.1, records tool hashes before/after, and preserves partial raw output if the separate120-second preparation preflight reaches its deadline. Earlier directories were not overwritten.
+
+Copied bundle READMEs are base-package documentation, not evidence of byte-candidate correctness. Candidate status, pins, changed paths and limits are recorded outside each manifest-covered bundle. The existing965 includes historical default API assertions, refusal guards and parity examples; it is not965 fresh official-PHP source-equivalence checks or full PHP compatibility. Linux, all SAPIs and full native ABI behavior remain separate.
+
+Await the parent's final candidate pin and start instruction. Keep the preview bundles and completed preparation evidence intact; generate a new bundle for the final pin. Do not point execution at an earlier preview after changing any tool or input.

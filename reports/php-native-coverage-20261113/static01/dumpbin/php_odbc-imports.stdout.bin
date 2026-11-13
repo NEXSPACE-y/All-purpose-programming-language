@@ -1,0 +1,244 @@
+
+Dump of file C:\Users\rinpa\ALL_php_oracle\php-8.5.12-ts-x64\ext\php_odbc.dll
+
+File Type: DLL
+
+  Section contains the following imports:
+
+    php8ts.dll
+             18000B2D8 Import Address Table
+             1800106C8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                        1798 zend_unregister_ini_entries_ex
+                         A53 object_properties_init
+                        16F9 zend_register_string_constant
+                        13EB zend_argument_type_error
+                        15B3 zend_hash_str_find@@24
+                         A99 php_check_open_basedir
+                        1807 zval_ptr_safe_dtor
+                         281 instanceof_function_slow@@16
+                        15B8 zend_hash_update@@24
+                         10E _safe_emalloc@@24
+                        1563 zend_hash_apply@@16
+                        13EC zend_argument_value_error
+                         125 _zend_new_array@@8
+                        14BA zend_empty_array
+                         E31 tsrm_get_ls_cache
+                        16BB zend_parse_parameters
+                        16F3 zend_register_long_constant
+                        1587 zend_hash_index_del@@16
+                        15CA zend_ini_boolean_displayer_cb
+                         194 compiler_globals_offset
+                         1F2 executor_globals_offset
+                        175B zend_string_init_interned
+                          BA _estrndup@@16
+                           3 OnUpdateLong
+                        156F zend_hash_destroy@@8
+                        1806 zval_ptr_dtor
+                        16AF zend_parse_arg_long_slow@@24
+                          AD __zend_calloc
+                        156C zend_hash_del@@16
+                         B32 php_info_print_table_end
+                        1775 zend_tolower_map
+                         1A2 core_globals_offset
+                         10F _safe_erealloc@@32
+                        172A zend_standard_class_def
+                        1569 zend_hash_clean@@8
+                        15AF zend_hash_str_add_new@@32
+                         B34 php_info_print_table_row
+                        1674 zend_object_std_dtor
+                        16E9 zend_register_ini_entries_ex
+                          B4 _ecalloc@@16
+                        1777 zend_toupper_map
+                         133 add_assoc_string_ex
+                        16B3 zend_parse_arg_str_or_long_slow@@32
+                         A51 object_init_ex
+                        17E9 zend_wrong_parameters_none_error@@0
+                         AE3 php_error_docref
+                         1B3 display_ini_entries
+                        167C zend_objects_not_comparable
+                        16F2 zend_register_list_destructors_ex
+                         11D _zend_hash_init@@32
+                        15B5 zend_hash_str_update@@32
+                         B8F php_odbc_connstr_quote
+                         C28 php_printf
+                         15E ap_php_snprintf
+                        160D zend_known_strings
+                         B36 php_info_print_table_start
+                        1717 zend_spprintf
+                        1675 zend_object_std_init@@16
+                          B5 _efree@@8
+                         BBC php_output_write
+                        1768 zend_throw_error
+                         A4E object_and_properties_init
+                        158C zend_hash_index_update@@24
+                        1564 zend_hash_apply_with_argument@@24
+                        172F zend_std_cast_object_tostring
+                        16F6 zend_register_persistent_resource
+                        177A zend_try_assign_typed_ref_arr
+                         E1E std_object_handlers
+                        16ED zend_register_internal_class_with_flags
+                        1585 zend_hash_index_add_new@@24
+                        14BB zend_empty_string
+                           2 OnUpdateBool
+                        15B1 zend_hash_str_del@@24
+                        13DB zend_add_attribute
+                        180A zval_try_get_string_func@@8
+                          B6 _emalloc@@8
+                         B90 php_odbc_connstr_should_quote
+                        17E8 zend_wrong_parameters_count_error@@16
+                        17E6 zend_wrong_parameter_error@@40
+                         B8D php_odbc_connstr_estimate_quote_length
+                          AF __zend_malloc
+                         B8E php_odbc_connstr_is_quoted
+                        16B4 zend_parse_arg_str_slow@@24
+
+    ODBC32.dll
+             18000B080 Import Address Table
+             180010470 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                             Ordinal    11
+                             Ordinal    53
+                             Ordinal    58
+                             Ordinal    56
+                             Ordinal    20
+                             Ordinal    66
+                             Ordinal    47
+                             Ordinal    59
+                             Ordinal    70
+                             Ordinal    10
+                             Ordinal    48
+                             Ordinal    76
+                             Ordinal     9
+                             Ordinal    63
+                             Ordinal    72
+                             Ordinal    52
+                             Ordinal    16
+                             Ordinal    67
+                             Ordinal    49
+                             Ordinal     2
+                             Ordinal    43
+                             Ordinal    19
+                             Ordinal    32
+                             Ordinal    60
+                             Ordinal    39
+                             Ordinal    61
+                             Ordinal    41
+                             Ordinal     7
+                             Ordinal     6
+                             Ordinal    14
+                             Ordinal     4
+                             Ordinal    40
+                             Ordinal    27
+                             Ordinal    18
+                             Ordinal    15
+                             Ordinal    65
+                             Ordinal    23
+                             Ordinal    54
+                             Ordinal     1
+                             Ordinal    12
+                             Ordinal    21
+                             Ordinal    13
+                             Ordinal    57
+                             Ordinal    24
+                             Ordinal    45
+                             Ordinal    17
+                             Ordinal    36
+
+    VCRUNTIME140.dll
+             18000B200 Import Address Table
+             1800105F0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          25 __std_type_info_destroy_list
+                          42 strstr
+                          3E memset
+                          3A memchr
+                          3C memcpy
+                           8 __C_specific_handler
+
+    api-ms-win-crt-string-l1-1-0.dll
+             18000B2C0 Import Address Table
+             1800106B0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          8E strncmp
+                          2A _stricmp
+
+    api-ms-win-crt-heap-l1-1-0.dll
+             18000B248 Import Address Table
+             180010638 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          18 free
+
+    api-ms-win-crt-convert-l1-1-0.dll
+             18000B238 Import Address Table
+             180010628 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          50 atoi
+
+    api-ms-win-crt-runtime-l1-1-0.dll
+             18000B258 Import Address Table
+             180010648 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          36 _initterm
+                          16 _cexit
+                          22 _execute_onexit_table
+                          34 _initialize_onexit_table
+                          33 _initialize_narrow_environment
+                          18 _configure_narrow_argv
+                          3F _seh_filter_dll
+                          37 _initterm_e
+
+    api-ms-win-crt-stdio-l1-1-0.dll
+             18000B2A0 Import Address Table
+             180010690 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          17 _close
+                          52 _read
+                          49 _open
+
+    KERNEL32.dll
+             18000B000 Import Address Table
+             1800103F0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         242 GetCurrentProcessId
+                         511 RtlLookupFunctionEntry
+                         518 RtlVirtualUnwind
+                         3B0 IsDebuggerPresent
+                         39A InitializeSListHead
+                         142 DisableThreadLibraryCalls
+                         31A GetSystemTimeAsFileTime
+                         246 GetCurrentThreadId
+                         509 RtlCaptureContext
+                         481 QueryPerformanceCounter
+                         3B8 IsProcessorFeaturePresent
+                         5D8 TerminateProcess
+                         241 GetCurrentProcess
+                         5B8 SetUnhandledExceptionFilter
+                         5FB UnhandledExceptionFilter
+
+  Summary
+
+        1000 .data
+        1000 .pdata
+        7000 .rdata
+        1000 .reloc
+        1000 .rsrc
+        A000 .text

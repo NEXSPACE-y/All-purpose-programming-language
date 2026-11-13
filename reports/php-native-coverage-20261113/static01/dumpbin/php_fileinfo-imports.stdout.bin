@@ -1,0 +1,259 @@
+
+Dump of file C:\Users\rinpa\ALL_php_oracle\php-8.5.12-ts-x64\ext\php_fileinfo.dll
+
+File Type: DLL
+
+  Section contains the following imports:
+
+    php8ts.dll
+             180014288 Import Address Table
+             1809F9AC8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         C0C php_pcre_free_match_data
+                         C10 php_pcre_mctx
+                        1748 zend_str_tolower_dup@@16
+                         B71 php_localtime_r
+                         B15 php_gmtime_r
+                         15F ap_php_vasprintf
+                         A8B php_asctime_r
+                        17D6 zend_vspprintf
+                         C15 php_pcre_replace_impl
+                          D5 _php_stream_cast
+                         A5D pcre_get_compiled_regex_cache_ex
+                         AAA php_ctime_r
+                         110 _safe_femalloc@@24
+                         111 _safe_ferealloc@@32
+                         D54 php_win32_ioutil_fstat
+                         D58 php_win32_ioutil_normalize_path_w
+                        1717 zend_spprintf
+                          B5 _efree@@8
+                         D3A php_win32_cp_conv_utf8_to_w
+                         D2D php_win32_code_to_errno
+                         D37 php_win32_cp_conv_cur_to_w
+                        14C7 zend_error_noreturn
+                        16ED zend_register_internal_class_with_flags
+                          BA _estrndup@@16
+                         E4E virtual_access
+                          F7 _php_stream_opendir
+                          E9 _php_stream_get_line
+                          B9 _estrdup@@8
+                         C13 php_pcre_pce_re
+                          FC _php_stream_read
+                         CE0 php_strlcpy
+                          B8 _erealloc@@16
+                         D46 php_win32_cp_use_unicode
+                         D36 php_win32_cp_conv_ascii_to_w
+                          B4 _ecalloc@@16
+                         D62 php_win32_ioutil_stat_ex_w
+                         C0B php_pcre_create_match_data
+                          FD _php_stream_readdir
+                         D39 php_win32_cp_conv_to_w
+                         C0F php_pcre_match_impl
+                         A5C pcre_get_compiled_regex_cache
+                         15E ap_php_snprintf
+                        160D zend_known_strings
+                         CB8 php_stream_locate_url_wrapper
+                         B36 php_info_print_table_start
+                         107 _php_stream_tell
+                          B6 _emalloc@@8
+                        1675 zend_object_std_init@@16
+                        1768 zend_throw_error
+                         AF3 php_file_le_stream
+                         1F7 file_globals_id
+                         1F5 expand_filepath_with_mode
+                         CA0 php_stream_context_alloc
+                         AF2 php_file_le_pstream
+                         E1E std_object_handlers
+                        1701 zend_restore_error_handling
+                         AE3 php_error_docref
+                         A53 object_properties_init
+                        13EB zend_argument_type_error
+                         BE2 php_pcre2_match
+                        16B8 zend_parse_method_parameters
+                        1806 zval_ptr_dtor
+                        14F5 zend_fetch_resource2_ex
+                        15B3 zend_hash_str_find@@24
+                         D41 php_win32_cp_get_by_id
+                         A99 php_check_open_basedir
+                        16FC zend_replace_error_handling
+                        1588 zend_hash_index_find@@16
+                         100 _php_stream_seek
+                         B51 php_le_stream_context
+                         E31 tsrm_get_ls_cache
+                        16BB zend_parse_parameters
+                        16F3 zend_register_long_constant
+                          E7 _php_stream_free
+                          F6 _php_stream_open_wrapper_ex
+                          AF __zend_malloc
+                         194 compiler_globals_offset
+                         1F2 executor_globals_offset
+                        175B zend_string_init_interned
+                        176A zend_throw_exception
+                         B32 php_info_print_table_end
+                        17EE zend_zval_value_name
+                         104 _php_stream_stat
+                         B34 php_info_print_table_row
+                        1674 zend_object_std_dtor
+                          BC _femalloc@@8
+                        14F6 zend_fetch_resource_ex
+                        13EA zend_argument_must_not_be_empty_error
+                         105 _php_stream_stat_path
+                        13DB zend_add_attribute
+
+    KERNEL32.dll
+             180014000 Import Address Table
+             1809F9840 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         578 SetLastError
+                         1DB GetACP
+                         509 RtlCaptureContext
+                         511 RtlLookupFunctionEntry
+                         3B0 IsDebuggerPresent
+                         39A InitializeSListHead
+                         142 DisableThreadLibraryCalls
+                         31A GetSystemTimeAsFileTime
+                         246 GetCurrentThreadId
+                         242 GetCurrentProcessId
+                         481 QueryPerformanceCounter
+                         3B8 IsProcessorFeaturePresent
+                         5D8 TerminateProcess
+                         241 GetCurrentProcess
+                         5B8 SetUnhandledExceptionFilter
+                         5FB UnhandledExceptionFilter
+                         518 RtlVirtualUnwind
+
+    VCRUNTIME140.dll
+             180014090 Import Address Table
+             1809F98D0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          3E memset
+                          3B memcmp
+                          3A memchr
+                          42 strstr
+                          40 strchr
+                          41 strrchr
+                          25 __std_type_info_destroy_list
+                           8 __C_specific_handler
+                          3C memcpy
+
+    api-ms-win-crt-stdio-l1-1-0.dll
+             1800141B0 Import Address Table
+             1809F99F0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          10 __stdio_common_vsscanf
+                          52 _read
+                          46 _lseeki64
+                           3 __stdio_common_vfprintf
+                          7F fputc
+                           0 __acrt_iob_func
+
+    api-ms-win-crt-string-l1-1-0.dll
+             1800141E8 Import Address Table
+             1809F9A28 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          6C isprint
+                          6F isupper
+                          8E strncmp
+                          A6 wcsncmp
+                          98 toupper
+                          97 tolower
+                          64 isalnum
+                          6E isspace
+                          8A strcspn
+                          65 isalpha
+                          68 isdigit
+                          6B islower
+                          86 strcmp
+
+    api-ms-win-crt-convert-l1-1-0.dll
+             1800140E0 Import Address Table
+             1809F9920 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          5E strtod
+                          64 strtoul
+                          61 strtol
+                          27 _strtoui64
+
+    api-ms-win-crt-heap-l1-1-0.dll
+             180014118 Import Address Table
+             1809F9958 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          1A realloc
+                          18 free
+                          19 malloc
+
+    api-ms-win-crt-utility-l1-1-0.dll
+             180014278 Import Address Table
+             1809F9AB8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          19 qsort
+
+    api-ms-win-crt-runtime-l1-1-0.dll
+             180014150 Import Address Table
+             1809F9990 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          64 strerror
+                          16 _cexit
+                          36 _initterm
+                          22 _execute_onexit_table
+                          37 _initterm_e
+                          3F _seh_filter_dll
+                          18 _configure_narrow_argv
+                          21 _errno
+                          45 _set_errno
+                          34 _initialize_onexit_table
+                          33 _initialize_narrow_environment
+
+    api-ms-win-crt-environment-l1-1-0.dll
+             180014108 Import Address Table
+             1809F9948 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          10 getenv
+
+    api-ms-win-crt-time-l1-1-0.dll
+             180014258 Import Address Table
+             1809F9A98 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          33 _tzset
+                          46 strftime
+                          28 _mktime64
+
+    api-ms-win-crt-math-l1-1-0.dll
+             180014138 Import Address Table
+             1809F9978 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          14 _dpcomp
+                          22 _fdpcomp
+
+  Summary
+
+        1000 .data
+        1000 .pdata
+      9E7000 .rdata
+        1000 .reloc
+        1000 .rsrc
+       13000 .text

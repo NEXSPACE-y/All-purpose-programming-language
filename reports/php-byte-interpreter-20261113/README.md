@@ -1,5 +1,36 @@
 # Approved byte-model interpreter migration — active and incomplete
 
+## Latest terminal checkpoint: composed14
+
+Candidate SHA256 `e7ccae465117179f0a5cf55126e9b43a4f8f448b17f452650a945ab542a460d0`
+completed the unchanged 252-case CLI comparison at the original 30-second
+deadline. **218/252 matched; 34 candidate processes timed out.** The historical
+197 programs contributed 183 matches and 14 timeouts; the byte55 programs
+contributed 35 matches and 20 timeouts. Every non-timeout record matched exact
+stdout bytes, stderr bytes and process status. This does not establish what the
+timed-out programs would have produced. No retry, timeout increase, input edit
+or expectation normalization was performed. The cause remains undetermined.
+
+The terminal report and compact classification are preserved in
+`composed14-regression252/report.json` and
+`composed14-regression252/terminal-summary.json`; all pinned inputs and all252
+saved source hashes remained unchanged. The run exited1. Earlier selected40/40
+array/quiet comparisons are a separate run and do not replace these34 failures.
+The previously saved progress snapshot is historical, not the terminal result.
+
+The same byte14 candidate subsequently passed the unchanged default965
+validator: **965/965 in the original order, actual PS5.1 exit0, stderr empty,
+and all19 integrity checks true**. Both C# helpers compiled and their actual
+types loaded. Source219 files, bundle219 files, original34 tracked inputs,
+canonical byte runtime and recorded driver inputs remained unchanged.
+`default-regression-preparation01/composed14-default965-run01/summary.json`
+and its raw files preserve this new run, independently of historical v3.20.
+The prepared package copies original940 plus namespace25 definitions and
+changes only the adapter and its manifest entry. These historical API
+assertions do not resolve the separate34 CLI timeouts. Strict-types and
+live-reference-foreach work remain separate isolated candidates; syntax/helper
+checks do not count as PHP-source compatibility evidence.
+
 This work follows the owner's explicit option-1 approval recorded in
 `docs/decisions/PHP_BYTE_MODEL_APPROVAL_20261113.md`. It is isolated from the
 installed ALL and the package v3.20 checkpoint. The package source remains

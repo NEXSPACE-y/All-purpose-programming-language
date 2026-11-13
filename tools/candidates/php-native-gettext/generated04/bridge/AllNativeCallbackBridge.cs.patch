@@ -1,0 +1,46 @@
+--- C:/Users/rinpa/ALL-php-compat-20261112/tools/candidates/php-native-info-v2/generated02/bridge/AllNativeCallbackBridge.cs
++++ C:/Users/rinpa/ALL-php-compat-20261112/tools/candidates/php-native-gettext/generated04/bridge/AllNativeCallbackBridge.cs
+@@ -10,7 +10,7 @@
+ using System.IO;
+ using System.Runtime.ExceptionServices;
+ 
+-namespace AllPhp85AbiCallbackInfoV2Byte {
++namespace AllPhp85AbiCallbackGettextByte {
+     [StructLayout(LayoutKind.Sequential)]
+     public struct NativeValue {
+         public UInt32 Type, Flags;
+@@ -86,6 +86,9 @@
+         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int OutputCallback(IntPtr bytes,UIntPtr length,IntPtr user);
+         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int SetCallbacksDelegate(DiagnosticCallback diagnostic,OutputCallback output,IntPtr user);
+         private IntPtr module;
++        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CwdSetDelegate(IntPtr path,UIntPtr length);
++        private CwdSetDelegate cwdSet;
++        private SizedStringDelegate cwdGet;
+         private LoadDelegate load;
+         private SimpleDelegate start,end,shutdown,info;
+         private StringDelegate errorClass,errorMessage,stats,corePath,memoryProbe,catalog,diagnosticJson;
+@@ -134,6 +137,7 @@
+             }
+             module=LoadLibraryEx(full,IntPtr.Zero,0x00000100|0x00000800);
+             if(module==IntPtr.Zero) throw new InvalidOperationException("ALL ABI core load failed, Win32="+Marshal.GetLastWin32Error());
++            cwdSet=Bind<CwdSetDelegate>("all_php_virtual_cwd_set");cwdGet=Bind<SizedStringDelegate>("all_php_virtual_cwd_get");
+             load=Bind<LoadDelegate>("all_php_load_extension");start=Bind<SimpleDelegate>("all_php_request_start");end=Bind<SimpleDelegate>("all_php_request_end");shutdown=Bind<SimpleDelegate>("all_php_shutdown");info=Bind<SimpleDelegate>("all_php_module_info");
+             errorClass=Bind<StringDelegate>("all_php_error_class");errorMessage=Bind<StringDelegate>("all_php_error_message");errorMessageBytes=Bind<SizedStringDelegate>("all_php_error_message_bytes");stats=Bind<StringDelegate>("all_php_stats_json");corePath=Bind<StringDelegate>("all_php_core_path");
+             memoryProbe=Bind<StringDelegate>("all_php_memory_probe");
+@@ -186,7 +190,15 @@
+             get {var list=new List<string>();foreach(ProcessModule m in Process.GetCurrentProcess().Modules)if(m.ModuleName.StartsWith("php",StringComparison.OrdinalIgnoreCase))list.Add(m.FileName);return list.ToArray();}
+         }
+         private void Check(int status){if(status!=0)throw new InvalidOperationException(Ansi(errorClass())+": "+Ansi(errorMessage()));}
+-        public void LoadExtension(string full){string path=System.IO.Path.GetFullPath(full);string hash;using(SHA256 sha=SHA256.Create())using(FileStream input=File.OpenRead(path))hash=BitConverter.ToString(sha.ComputeHash(input)).Replace("-","").ToLowerInvariant();if(hash!="532b9f0944d482a704eb81ac1cb9af3b59aa0f54c753c53a5709c17f57d4e938")throw new NotSupportedException("Callback prototype accepts only the pinned tested C dl_test binary");Check(load(path));}
++        public void LoadExtension(string full){string path=System.IO.Path.GetFullPath(full);string hash;using(SHA256 sha=SHA256.Create())using(FileStream input=File.OpenRead(path))hash=BitConverter.ToString(sha.ComputeHash(input)).Replace("-","").ToLowerInvariant();if(hash!="ed395f80018920ba1b4551cdc33dd89871eb8b8ef362b1515ae93c0e7f1de3ad")throw new NotSupportedException("Gettext candidate accepts only the exact reviewed PHP 8.5.12 gettext binary");Check(load(path));}
++        public void SetVirtualDirectory(PhpBytes path){
++            EnsureCallbackOwner();if(path==null)throw new ArgumentNullException("path");
++            if(path.Length>Int32.MaxValue)throw new NotSupportedException("Path exceeds bounded native path API");
++            byte[] data=path.ToArray();for(int i=0;i<data.Length;++i)if(data[i]==0)throw new ArgumentException("Path contains NUL","path");
++            IntPtr pointer=Marshal.AllocHGlobal(checked(data.Length+1));
++            try{if(data.Length>0)Marshal.Copy(data,0,pointer,data.Length);Marshal.WriteByte(pointer,data.Length,0);Check(cwdSet(pointer,new UIntPtr((uint)data.Length)));}finally{Marshal.FreeHGlobal(pointer);}
++        }
++        public PhpBytes VirtualDirectory {get{EnsureCallbackOwner();return CaptureBytes(cwdGet);}}
+         public void Start(){EnsureCallbackOwner();Check(start());}
+         public void End(){EnsureCallbackOwner();ClearDiagnosticHandler();Check(end());}
+         public void Shutdown(){EnsureCallbackOwner();Check(shutdown());}

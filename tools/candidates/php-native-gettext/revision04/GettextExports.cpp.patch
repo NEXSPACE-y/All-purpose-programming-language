@@ -1,0 +1,15 @@
+--- C:/Users/rinpa/ALL-php-compat-20261112/tools/candidates/php-native-gettext/GettextExports.cpp
++++ C:/Users/rinpa/ALL-php-compat-20261112/tools/candidates/php-native-gettext/revision04/GettextExports.cpp
+@@ -28,7 +28,11 @@
+     std::wstring canonical;std::string bytes;
+     if(!cwd_resolve(reinterpret_cast<const char*>(path),length,canonical,bytes)){error("Error","Virtual directory resolution failed, errno "+std::to_string(errno));return -1;}
+     DWORD attributes=GetFileAttributesW(canonical.c_str());
+-    if(attributes==INVALID_FILE_ATTRIBUTES||!(attributes&FILE_ATTRIBUTE_DIRECTORY)){errno=ENOTDIR;error("Error","Virtual directory is not a directory");return -1;}
++    if(attributes==INVALID_FILE_ATTRIBUTES){
++        const DWORD failure=GetLastError();errno=cwd_win32_errno(failure);
++        error("Error","Virtual directory attribute query failed, errno "+std::to_string(errno));return -1;
++    }
++    if(!(attributes&FILE_ATTRIBUTE_DIRECTORY)){errno=ENOTDIR;error("Error","Virtual directory is not a directory");return -1;}
+     tls.cwd_wide=std::move(canonical);tls.cwd_bytes=std::move(bytes);
+     if(tls.cwd_wide.size()>1&&tls.cwd_wide[1]==L':'){wchar_t drive=tls.cwd_wide[0];if(drive>=L'a'&&drive<=L'z')drive-=32;tls.drive_cwds[drive]=tls.cwd_wide;}
+     return 0;

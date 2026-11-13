@@ -1,0 +1,1 @@
+$a=["\xFF"=>"\x80",3=>"\0","x"=>"\xFE"];var_dump(array_reverse($a),array_slice($a,1,2,true),array_merge($a,$a));

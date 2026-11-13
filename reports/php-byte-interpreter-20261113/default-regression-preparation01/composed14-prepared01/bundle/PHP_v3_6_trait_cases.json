@@ -1,0 +1,67 @@
+[
+  {
+    "name": "trait method",
+    "code": "<?php trait A {public function hello(){return \"hi\";}} class C {use A;} echo (new C())->hello();",
+    "expected": "hi"
+  },
+  {
+    "name": "trait method override by class",
+    "code": "<?php trait A {public function hello(){return \"trait\";}} class C {use A; public function hello(){return \"class\";}} echo (new C())->hello();",
+    "expected": "class"
+  },
+  {
+    "name": "trait method overrides parent",
+    "code": "<?php class P {public function hello(){return \"parent\";}} trait A {public function hello(){return \"trait\";}} class C extends P {use A;} echo (new C())->hello();",
+    "expected": "trait"
+  },
+  {
+    "name": "trait property",
+    "code": "<?php trait A {public $x=5;} class C {use A;} echo (new C())->x;",
+    "expected": "5"
+  },
+  {
+    "name": "trait property update",
+    "code": "<?php trait A {public $x=5;} class C {use A;} $o=new C();$o->x=8;echo $o->x;",
+    "expected": "8"
+  },
+  {
+    "name": "trait protected method",
+    "code": "<?php trait A {protected function f(){return 6;}} class C {use A;public function test(){return $this->f();}} echo (new C())->test();",
+    "expected": "6"
+  },
+  {
+    "name": "trait private method",
+    "code": "<?php trait A {private function f(){return 6;}} class C {use A;public function test(){return $this->f();}} echo (new C())->test();",
+    "expected": "6"
+  },
+  {
+    "name": "trait method calls property",
+    "code": "<?php trait A {public function inc(){ $this->x+=2; }} class C {use A;public $x=2;} $o=new C();$o->inc();echo $o->x;",
+    "expected": "4"
+  },
+  {
+    "name": "trait static method",
+    "code": "<?php trait A {public static function f(){return 5;}} class C {use A;} echo C::f();",
+    "expected": "5"
+  },
+  {
+    "name": "trait static property",
+    "code": "<?php trait A {public static $x=5;} class C {use A;} echo C::$x;",
+    "expected": "5"
+  },
+  {
+    "name": "trait implements interface",
+    "code": "<?php interface I{public function f();} trait A{public function f(){return 3;}} class C implements I{use A;} echo (new C())->f();",
+    "expected": "3"
+  },
+  {
+    "name": "trait parent method",
+    "code": "<?php class P{public function f(){return 2;}}trait A{public function f(){return parent::f()+3;}}class C extends P{use A;}echo (new C())->f();",
+    "expected": "5"
+  },
+  {
+    "name": "trait multiple distinct",
+    "code": "<?php trait A {public function a(){return 1;}} trait B {public function b(){return 2;}} class C {use A,B;} echo (new C())->a()+(new C())->b();",
+    "expected": "3"
+  }
+]

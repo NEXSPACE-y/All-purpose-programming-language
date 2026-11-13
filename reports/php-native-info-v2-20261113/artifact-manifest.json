@@ -1,0 +1,3100 @@
+{
+  "status": "FROZEN_INFO_V2_EVIDENCE_NOT_FULL_PHP",
+  "files": [
+    {
+      "path": "tools/candidates/php-native-info-v2/.gitignore",
+      "bytes": 12,
+      "sha256": "eb79b79cc6fd04d51dad19df69fbe61ccaf1fda94e9aff3975bb76cfe7436729"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/AllNativeByteProbe.cs",
+      "bytes": 9991,
+      "sha256": "a4555efca1f0fa328de9b9784c18e9ba9bf80294f56604490ade74e66b4d0bc6"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/Build-Core.ps1",
+      "bytes": 4711,
+      "sha256": "3baf75f8aa69376a8c1c13c29c1d15a0378ea7e5f0f70fbeb694ca79bee18672"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/Build-GetterCore.ps1",
+      "bytes": 4783,
+      "sha256": "15dbd01aed593e124cee3f04c3ff2b6d102616f05c3ff9f0e4382a77798bd106"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/Build-GetterHost.ps1",
+      "bytes": 2753,
+      "sha256": "01216ab8bf6476cd86fc32eded29cce13ede6e6bfe464dfe03f7144c0e53deaf"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/Build-Managed.ps1",
+      "bytes": 3730,
+      "sha256": "8a0aff07c8411b4da8cf8de8837414f84069c9f26b3fc39444cfeebe4e46aedc"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/Compare-InfoV2.py",
+      "bytes": 2280,
+      "sha256": "db1658d75539f9ac2faf4db357fbe94d66ad8dbddfa56220b7a3e9e3a4208f27"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/Extract-PinnedHeaders.py",
+      "bytes": 1611,
+      "sha256": "e1b7cb6e63664df027cd6cc8747253cc2169492767a65940e9273bb4b25678aa"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/Generate-InfoV2.py",
+      "bytes": 9598,
+      "sha256": "7c976cf1504b9e2eb9112a4e954b3c652358b68068b6df9e6be07f7c444b9873"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated01/bridge/AllNativeCallbackBridge.cs",
+      "bytes": 34565,
+      "sha256": "234536085e15eab5e78dc8998562fbb9a4cac76cfa6492374bddcce3c286d5ed"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated01/bridge/AllNativeCallbackBridge.cs.patch",
+      "bytes": 51274,
+      "sha256": "9dbaa13a110ae65e792c1387cd531517f824fa746483408a30deb13d4b3cd853"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated01/bridge/AllNativeLegacyBridge.cs",
+      "bytes": 25114,
+      "sha256": "6a7799d9ba7e79526ea8a9a0e8bced88323cd76335846f1fb9a3998a964d087a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated01/bridge/AllNativeLegacyBridge.cs.patch",
+      "bytes": 34717,
+      "sha256": "13102a5b26e6c3d91797b67fd620599f5cc9781abe897f34a3af34829c4b7997"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated01/callback/include/all_php_bridge.h",
+      "bytes": 3097,
+      "sha256": "c67750780f5c0a5eddd5d4a379d1e70165bf8e8c0a077f31348847851e4d7f6f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated01/callback/include/all_php_bridge.h.patch",
+      "bytes": 723,
+      "sha256": "4cb3f0e686fc3fb9d5d9d0f7be20a15ab6aa3eb4bc07a3df114f547e260750be"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated01/callback/src/Runtime.cpp",
+      "bytes": 48299,
+      "sha256": "c0c35e44e8d8213142b27bb963756bae2970747b05cec5e0ecd3483e62469c05"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated01/callback/src/Runtime.cpp.patch",
+      "bytes": 16490,
+      "sha256": "bb247dd2d66f522e623ec6c2fbcd0d6d68b62daf2b76a0a5680ea5163a95e8f3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated01/legacy/include/all_php_bridge.h",
+      "bytes": 2424,
+      "sha256": "e5394970d6f54e232f6ba5162892144797785275d9325c7d3fdff470845eb2e7"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated01/legacy/include/all_php_bridge.h.patch",
+      "bytes": 712,
+      "sha256": "a7ddbc4874296ab4d0a185cd105266d72971f9ff568176e24a07557eb4c4104e"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated01/legacy/src/Runtime.cpp",
+      "bytes": 42483,
+      "sha256": "56555bc8671f7ad63d7543fc24af98402c8fc00a48529e5aeae895518c6e467a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated01/legacy/src/Runtime.cpp.patch",
+      "bytes": 16241,
+      "sha256": "59ada3db187865e5201cab96749dc9d731dbe86efc1c01f47f2edeb3a60b2be3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated01/provenance.json",
+      "bytes": 4153,
+      "sha256": "6add2519b79478728155725bbe509e9c9074e92cb119f1355df958a189e7ab99"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated02/bridge/AllNativeCallbackBridge.cs",
+      "bytes": 34565,
+      "sha256": "234536085e15eab5e78dc8998562fbb9a4cac76cfa6492374bddcce3c286d5ed"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated02/bridge/AllNativeCallbackBridge.cs.patch",
+      "bytes": 51274,
+      "sha256": "62e5004b78e103f663860a734108e4b861619c76a009f08f8546821032679c68"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated02/bridge/AllNativeLegacyBridge.cs",
+      "bytes": 25114,
+      "sha256": "6a7799d9ba7e79526ea8a9a0e8bced88323cd76335846f1fb9a3998a964d087a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated02/bridge/AllNativeLegacyBridge.cs.patch",
+      "bytes": 34717,
+      "sha256": "6bbbef5a0f72b844aa8cb3bc38cacb066ee8c0ddbcbdfe38b750e719725a44eb"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated02/callback/include/all_php_bridge.h",
+      "bytes": 3097,
+      "sha256": "c67750780f5c0a5eddd5d4a379d1e70165bf8e8c0a077f31348847851e4d7f6f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated02/callback/include/all_php_bridge.h.patch",
+      "bytes": 723,
+      "sha256": "ca50603c09a0a4bd71175b5a30759d3996f813aad4bfa9de443b8749a06f68bb"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated02/callback/src/Runtime.cpp",
+      "bytes": 48299,
+      "sha256": "c0c35e44e8d8213142b27bb963756bae2970747b05cec5e0ecd3483e62469c05"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated02/callback/src/Runtime.cpp.patch",
+      "bytes": 16490,
+      "sha256": "e34b4fe52af386b2314228698b546256de2a3c6b1ac9efdf2a4cf17b324b4d80"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated02/legacy/include/all_php_bridge.h",
+      "bytes": 2424,
+      "sha256": "e5394970d6f54e232f6ba5162892144797785275d9325c7d3fdff470845eb2e7"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated02/legacy/include/all_php_bridge.h.patch",
+      "bytes": 712,
+      "sha256": "a6933fd264f2b651a313c2fe230dc55f6f4aea62944715f1d3b87fbb4d1a6ffa"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated02/legacy/src/Runtime.cpp",
+      "bytes": 42483,
+      "sha256": "56555bc8671f7ad63d7543fc24af98402c8fc00a48529e5aeae895518c6e467a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated02/legacy/src/Runtime.cpp.patch",
+      "bytes": 16241,
+      "sha256": "20ea6e73f27d20c4414cb5acf34648532383b4c1c74f9e1f10814b59e7e8129a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/generated02/provenance.json",
+      "bytes": 4153,
+      "sha256": "31bee6bb4cd3e90541f418a2fde991955d10a1cf9ce66108869a36c33df2b097"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/GetterContractCore.cpp",
+      "bytes": 460,
+      "sha256": "8fe1920bdf4fe51263b61991180c53b6db73dc1cd406f2d58030ae8f02d199b0"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/GetterContractHost.cs",
+      "bytes": 5832,
+      "sha256": "1e8e43f6968d0279c7904047b5047770ccc7989bcacd5c36382d28986a0fefc8"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/host-source-provenance.json",
+      "bytes": 632,
+      "sha256": "ee76e0191e8cb51741dfa518e803fc993c6d497916c89f679ec2e28f2eb3975f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/callback01/all_php85abi_info_v2.exp",
+      "bytes": 9613,
+      "sha256": "74e9805524dca83505b3b3588b26323562ec02ba44c0593d5b7061698d1c1d18"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/callback01/all_php85abi_info_v2.lib",
+      "bytes": 16064,
+      "sha256": "0c09e3e6a1a21c10026cc43ddb9bcfef82489e8c24501e26cb3c5ccfd875d9fe"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/callback01/php8ts.dll",
+      "bytes": 176640,
+      "sha256": "204f885944390be8e0b1e84a4ae3aafc5d85fd674fc35e9077b63fa5baa77f26"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/callback01/Runtime.obj",
+      "bytes": 2227374,
+      "sha256": "b6f4b76514073b16b8cf7dffc60860c19b15e0db24d3cec14d8f0f017b455713"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/getter-core01/all_php85abi_info_v2.exp",
+      "bytes": 9782,
+      "sha256": "64d35ad019fb7b1817a085532a959793f9d394f42b7d01d857c56adeae6771ba"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/getter-core01/all_php85abi_info_v2.lib",
+      "bytes": 16338,
+      "sha256": "c1696a0086ec4ed2cc92115c6717aadf5f389b4b5d50f59ecb83b9c36e4d3026"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/getter-core01/php8ts.dll",
+      "bytes": 177152,
+      "sha256": "d7a25cc6dd90f4dca7893829e8508eeab8b4d85d4c33a0b7599b4bf372a3b514"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/getter-core01/Runtime.obj",
+      "bytes": 2229013,
+      "sha256": "15af3622b8404f0c4e251cc7aaf86f2535937d9993901a1c9ea687795e4ce579"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/getter-host01/AllPhp.ByteValues.Runtime.dll",
+      "bytes": 16384,
+      "sha256": "18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/getter-host01/AllPhp.NativeBytes.Bridges.dll",
+      "bytes": 41984,
+      "sha256": "961afcfa6b80f4347bf54522c2066a224f570ac6412da50f284e9639d053b430"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/getter-host01/build.json",
+      "bytes": 2642,
+      "sha256": "d3b97fdde665178625bdfe02593c670708bd45b88321bd39a61e17007d0b8bbb"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/getter-host01/getter-contract.exe",
+      "bytes": 12800,
+      "sha256": "7c7c2a4c51c2a8a231e3b35190eba3d53ed87db3cfbda286ca6eec1cc71f6138"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/legacy01/all_php85abi_info_v2.exp",
+      "bytes": 8705,
+      "sha256": "8808de8133773098b8cb51b9f65911e21522009d30b0a3ae9d71d7fad3daa18f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/legacy01/all_php85abi_info_v2.lib",
+      "bytes": 14576,
+      "sha256": "3ab1f1f21e29f68fb27ca6139eaf6497452190e68cb86759cc585cda73fcce88"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/legacy01/php8ts.dll",
+      "bytes": 166912,
+      "sha256": "277cd49fce1536369acde5979c4bfa140b22d26ec689eff6768f7366d1c724b5"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/legacy01/Runtime.obj",
+      "bytes": 2189042,
+      "sha256": "919c5e27094162f140d2af6f8bbde30d8de93c43d5a6681bdbe4d1951fb11f02"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/managed01/all-native-byte-probe.exe",
+      "bytes": 12800,
+      "sha256": "c077d6da98e143b02ef64be07dd867194fce417b5647c6b8fdf7f1eee90c6131"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/managed01/AllPhp.ByteValues.Runtime.dll",
+      "bytes": 16384,
+      "sha256": "18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/managed01/AllPhp.NativeBytes.Bridges.dll",
+      "bytes": 41984,
+      "sha256": "961afcfa6b80f4347bf54522c2066a224f570ac6412da50f284e9639d053b430"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/out/managed01/build.json",
+      "bytes": 3182,
+      "sha256": "b413b54a038c9b7a4a9454f65055862f2f6b206c1792d2dc515a8c323a78b457"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/Run-GetterContract.py",
+      "bytes": 2748,
+      "sha256": "79e8c91396496c924ae2ebc8827bc61beb200ea10138a487f649caf8a4736b5b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/curl/php_curl.h",
+      "bytes": 1872,
+      "sha256": "679b4e0bd48da98db595d6683f9467ca0c83cae983211f6de684277924efed34"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/date/lib/timelib.h",
+      "bytes": 38622,
+      "sha256": "3544a382812857e269827337479485cfd75eeaf3374d255370bab6f1d7af3c81"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/date/lib/timelib_config.h",
+      "bytes": 286,
+      "sha256": "4851e9b846d1af42859d4abb3b63c59824751730233beeff0e33be07a6ccca2d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/date/php_date.h",
+      "bytes": 6102,
+      "sha256": "74213753b6dde3784c5a685119d220cb270af092f2e2c4ca14137b8fda7a1ee3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/dom/dom_ce.h",
+      "bytes": 4749,
+      "sha256": "9ff5c27e08d3b68ed82e3fc355c9add4a78e847743980b6016ad6a5965f142a1"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/dom/lexbor/selectors-adapted/selectors.h",
+      "bytes": 7423,
+      "sha256": "5e6e64e24952e12f61d56e064a8b124a92eea3e72e5b84d4a2bd347aa3840601"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/dom/namespace_compat.h",
+      "bytes": 4228,
+      "sha256": "34777c729ad299310647ba5268fa07b1c7f9cc4b8600befc54c2e5cfeaf323df"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/dom/xml_common.h",
+      "bytes": 4398,
+      "sha256": "320977e51a12695a174e206921df273f05a58c791a79bbb9c609257bafac2fef"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/dom/xpath_callbacks.h",
+      "bytes": 4088,
+      "sha256": "566a1fc58489cd96a733f673d5e8060a3fe5e9b6f4959f3f2485adfcdaa55c3f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/filter/php_filter.h",
+      "bytes": 3220,
+      "sha256": "c6bcf4192db0c73e0e8390394815b5ba0143829e0fe1a4994273601afff44f9e"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/gd/libgd/bmp.h",
+      "bytes": 2450,
+      "sha256": "28c4bc1d1b4b3c23d47b2ef932f9a2af23ee6ab0481daae94cd503872d8eb4a3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/gd/libgd/gd.h",
+      "bytes": 32777,
+      "sha256": "8ac302808dc2416d489c86d6578a79733b572595b785cfa7135125e461f0fd70"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/gd/libgd/gd_errors.h",
+      "bytes": 673,
+      "sha256": "28919accc54059181e33123261ebc8ef91e1a6d20859591449e1498bb5f23130"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/gd/libgd/gd_intern.h",
+      "bytes": 597,
+      "sha256": "e1db8493495e88f0c85c794d32000270414bdf68988cbe55b44b86553014d384"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/gd/libgd/gd_io.h",
+      "bytes": 1072,
+      "sha256": "1fccd00f1921fddfb46ff23a3fc4808a5aa4b899395c01103cd5110b4f609adc"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/gd/libgd/gd_tga.h",
+      "bytes": 1704,
+      "sha256": "1438d5eb8e3a988a00415067ffc0e39cfbfe13d0b9e27fe3f63d966521637a62"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/gd/libgd/gdcache.h",
+      "bytes": 2667,
+      "sha256": "da67219c1a7b9bb1c9eba2679675bdfcb85aa945bb4869ad75e75b5fb894c98b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/gd/libgd/gdfontg.h",
+      "bytes": 529,
+      "sha256": "bc0b1e6f290cf95713411af86bd2601ff271308685fa08290142b0c13a1bf164"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/gd/libgd/gdfontl.h",
+      "bytes": 527,
+      "sha256": "95c7b5a916ba6cc53aba7d9ee8b4439e21ddb04414b08d3e16da336fd9fb7862"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/gd/libgd/gdfontmb.h",
+      "bytes": 495,
+      "sha256": "52f10091aa4323ee8ce94e12b797e877f84e088c57db071e6c1b4bf10d3826ab"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/gd/libgd/gdfonts.h",
+      "bytes": 491,
+      "sha256": "f184feb61541d7a757a1f70bf78e15e64f844ce0913062e1c32e1108d258cd71"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/gd/libgd/gdfontt.h",
+      "bytes": 522,
+      "sha256": "d65b5a6c96c10ff869eaaa2f7b430c5d8edd47a900511a8f3e4b28c8e3e11b1d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/gd/libgd/gdhelpers.h",
+      "bytes": 1723,
+      "sha256": "858741c8b720b83bf349ef880197d2cc03a42875b709e024dbddb81c7e252abf"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/gd/libgd/jisx0208.h",
+      "bytes": 71350,
+      "sha256": "9ba6e7cbf55d7ba63cd7ee878ae49ed034eed19525b495ed77b98d88240b7809"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/gd/libgd/wbmp.h",
+      "bytes": 1283,
+      "sha256": "440b2222b8cfc00064dca7cdef062eb273d244acbaff72dc7b0e22b2925dda22"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/gd/php_gd.h",
+      "bytes": 4065,
+      "sha256": "200933b62a91aa18f52ff64d042ed02320439b80d855fc5b31b9d7d3fbbd98c8"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/gmp/php_gmp_int.h",
+      "bytes": 899,
+      "sha256": "a1281e954ff60619f990d8903c6eedfa8ba04991160ca95f121bc1d0613f7c21"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/hash/php_hash.h",
+      "bytes": 7468,
+      "sha256": "2bf20c6602795131ed86a20ef76a1814a8e8130f1d8a6853cedf21b8eb9e8861"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/hash/php_hash_adler32.h",
+      "bytes": 1567,
+      "sha256": "2753dc65067362cae64436de64295f25e22ab6c0aa1929d3c8a1244421e58b65"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/hash/php_hash_crc32.h",
+      "bytes": 1871,
+      "sha256": "263e8034eb3db50bca31f2e8235fbe51dcd5c70d0537c3bfb16765b2abc11eca"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/hash/php_hash_fnv.h",
+      "bytes": 2733,
+      "sha256": "c6b83698455d91b3f9b51b710ba41c7aee1ec94f83ac1ad98d583efa6e530fe5"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/hash/php_hash_gost.h",
+      "bytes": 1501,
+      "sha256": "53938b1274eb7e3cc0fe58b0e6125c83df6e758509bc81bea022a484ad1d5a6a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/hash/php_hash_haval.h",
+      "bytes": 2097,
+      "sha256": "9eb1e2bac9157a30080fd03320a961c5099d80881423bbee02ed0240cd993706"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/hash/php_hash_joaat.h",
+      "bytes": 1471,
+      "sha256": "9749dcaf712dbac5678f92887402df77cb16dcea093d6c7f7278955493d2ae8c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/hash/php_hash_md.h",
+      "bytes": 2072,
+      "sha256": "0e06946486e51dc017fbdc00867f7ce963f08246d18a17b98ed1632220c62ad5"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/hash/php_hash_murmur.h",
+      "bytes": 2641,
+      "sha256": "040b3928a1d037faf08a38e8be5670a1185555c2c91dc6245bc9b5f2c4397680"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/hash/php_hash_ripemd.h",
+      "bytes": 3075,
+      "sha256": "9defbc68a16faa1ff61c6c6c188f785fa9c5ee82b34b2d6aba616446e4bbac10"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/hash/php_hash_sha.h",
+      "bytes": 4771,
+      "sha256": "78328202952ca177f3bec72291e372709faa779f33c1b0e0a7be36d0ab516fb7"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/hash/php_hash_sha3.h",
+      "bytes": 2473,
+      "sha256": "c2149f1f7a35bbd980234f14db53cd4d801067ed3fb2a3ce9302cc4c0363d38d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/hash/php_hash_snefru.h",
+      "bytes": 1578,
+      "sha256": "f9a42113c8ed5a5e5392c854ea9ffe089571e4a333cb1bfcf27548baf43de313"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/hash/php_hash_tiger.h",
+      "bytes": 1803,
+      "sha256": "339a5c06264e17a944c8990b3cf0a50536f92deed91dfc3f46d9d4cb14b519f4"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/hash/php_hash_whirlpool.h",
+      "bytes": 1548,
+      "sha256": "a6333f1ea497eb8ddfa37b450825dedfb09c81c948028a73912c3922f0fbb34f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/hash/php_hash_xxhash.h",
+      "bytes": 3528,
+      "sha256": "2e636b6082a5fbfb65ebf1c77165139dd3d6bde01ccd0d236a46a44e1bc2d2df"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/hash/xxhash/xxhash.h",
+      "bytes": 210729,
+      "sha256": "ebd79b3908fae3c5b80dafc25fbfcccd90b80377f4f5a373dd89604da9a39351"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/iconv/php_iconv.h",
+      "bytes": 2954,
+      "sha256": "1a97cee10de1674f56893ab0f50e2d41d3ed66d3ea2f79c9e81b178a4b8dc8a3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/json/php_json.h",
+      "bytes": 4127,
+      "sha256": "4ef2b0395b9f3e3c5aead7235b4cb4fa4c88edfc3d6e6e0728d56b6c50b2b7fb"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/json/php_json_parser.h",
+      "bytes": 3173,
+      "sha256": "d6d114c5488eb9d80a1bc34363d3ccb2a410c46e3825ea5aef34e68ba8c3c835"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/json/php_json_scanner.h",
+      "bytes": 2271,
+      "sha256": "b5bd80546e29972012207c8b6c8a49179e4004893319ee4e9168e64d85ec73b9"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/lexbor/php_lexbor.h",
+      "bytes": 1342,
+      "sha256": "f5bb8ccaa53c3e8850cc0de5d959a84d4281ad3676bc78421220dd5e554beae4"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/libxml/php_libxml.h",
+      "bytes": 11680,
+      "sha256": "6e637eed049f70c210945ae9c19a42b2117a3f686746c70e57493592a8c2657a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mbstring/libmbfl/config.h",
+      "bytes": 23,
+      "sha256": "5554a29351d0aca23bde2bf26790ee7b4ff43578e6101ee5fefc1c1134287535"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mbstring/libmbfl/mbfl/eaw_table.h",
+      "bytes": 3491,
+      "sha256": "8bca349222c87e0d8ec052ef6ab4d63e9929c4a7c60d919deb8aa22a2e7422d8"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mbstring/libmbfl/mbfl/mbfilter.h",
+      "bytes": 5592,
+      "sha256": "c8f2d1b5543d6c1c764ff5d0bb8a7b8849785188a1ece6ac845c3396b8f09130"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mbstring/libmbfl/mbfl/mbfilter_8bit.h",
+      "bytes": 1288,
+      "sha256": "c3f424b794fb0ed23af83e8f2b8746dffe76f39f3255780e4630b446b0847de5"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mbstring/libmbfl/mbfl/mbfilter_pass.h",
+      "bytes": 1368,
+      "sha256": "a70a232624ddbe65a25d770055549edf7812f2b0e495a47bb4e2a98107fffe89"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mbstring/libmbfl/mbfl/mbfilter_wchar.h",
+      "bytes": 1292,
+      "sha256": "39197828873bb5664bc94b468ef33444d58dde9cf328ccd898f35eebe6d21113"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mbstring/libmbfl/mbfl/mbfl_consts.h",
+      "bytes": 1975,
+      "sha256": "e50390f5f13f7865115b66aae637bedbfcbd9c85ebc4202a8b73ead7a421baee"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mbstring/libmbfl/mbfl/mbfl_convert.h",
+      "bytes": 3861,
+      "sha256": "be80db5bc5860419d5afce350a9e1efc7033e4a89bbe2a011a4b5ebfe12e60ba"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mbstring/libmbfl/mbfl/mbfl_defs.h",
+      "bytes": 1498,
+      "sha256": "aec451574b08c2cdaa4108c9d36a648fa37d1e4e173f30acecc074ee922c411a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mbstring/libmbfl/mbfl/mbfl_encoding.h",
+      "bytes": 9462,
+      "sha256": "0d3e0d43a39d663a1dbd3dc62e38ada461686b7850488074fbd100f12e6bf3e2"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mbstring/libmbfl/mbfl/mbfl_filter_output.h",
+      "bytes": 1313,
+      "sha256": "a39ff1760f2fb5405459a0d4eeb4afef438dc52b6f078ad1e30d8f85a0cf1b21"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mbstring/libmbfl/mbfl/mbfl_language.h",
+      "bytes": 2868,
+      "sha256": "3f15fad880219b555f998732913612818afab65b6bba4722144733f87925cd41"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mbstring/libmbfl/mbfl/mbfl_memory_device.h",
+      "bytes": 2652,
+      "sha256": "696cb9d18c82aa390ba53df186666c12edf7a0d83c2045ece6181f6b3f24abab"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mbstring/libmbfl/mbfl/mbfl_string.h",
+      "bytes": 1613,
+      "sha256": "02033f6c1a697683e4147da9f21a121611d7d102fed12e5357faf0d14e430b14"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mbstring/mbstring.h",
+      "bytes": 4874,
+      "sha256": "71476e0b713fc0c90d0ba20c9d7be6aa7135dd25449e6ff27074c775a7eef1f9"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mbstring/php_mbregex.h",
+      "bytes": 1778,
+      "sha256": "47ab62eb6777267c03cf69ec120b232d288a7855adb330364bc54766261daaef"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mbstring/php_onig_compat.h",
+      "bytes": 426,
+      "sha256": "9c50a0f9cc629533b6bb4d6446590535b3cb967d650f14027e14d7e602cdba97"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqli/mysqli_mysqlnd.h",
+      "bytes": 2439,
+      "sha256": "148eca03970cb0037b25f7cd42237c2edde2b6441b81cafbfa341f0026586de4"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqli/php_mysqli_structs.h",
+      "bytes": 7688,
+      "sha256": "53b73c3dac5c00aaee11720af2857c0b7d9b56243b873fd786c545b74e1b853c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/config-win.h",
+      "bytes": 2743,
+      "sha256": "45ce31622beba2906ad9ff67a9a6d21d52cee8e12fd85da7bf8d37d6b785c04d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysql_float_to_double.h",
+      "bytes": 1880,
+      "sha256": "753e02692774f6e06b6fb1e33a5ea8ad0361dc54eae031b8e5465f6631d2eaa9"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd.h",
+      "bytes": 17986,
+      "sha256": "ccd542f3ea696ec4110ae12ee7c48c43310bcb89739c68d33684e1d39c3f7426"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_alloc.h",
+      "bytes": 4349,
+      "sha256": "8521456d85ffff6c406d1835a3d359f95efe11a1aa7474823e69e8a3b9627ae9"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_auth.h",
+      "bytes": 3999,
+      "sha256": "59f374d13fc3e9f72ac20cd1f2df60846d1f98719419a4ffa0e1e49cfc9e846c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_block_alloc.h",
+      "bytes": 1445,
+      "sha256": "b23b48a8e5535bf6d709eed012ae35422f0a50a207c4d4695a3e41d648474abc"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_charset.h",
+      "bytes": 2235,
+      "sha256": "55aa126b2b1f94d265a0bc5912e71ab2cab86542701c1e41d79bc8b295fd01b9"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_commands.h",
+      "bytes": 1201,
+      "sha256": "68582e2a10ed4fb4fcd0c5509dc4244aa3676d18288221a8b95c7165fdc7286d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_connection.h",
+      "bytes": 2678,
+      "sha256": "b47e70ade18da2ab1609e393153836a4d6567adda3fee411fac87d0bcb019454"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_debug.h",
+      "bytes": 9942,
+      "sha256": "701b5fd3f46c332ddd3c806a2b440aacbda7c3f075a4dbedf8329d4d0a591e7f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_enum_n_def.h",
+      "bytes": 20820,
+      "sha256": "27689dc30fdd4ffa3af386fd24ea83a5c63f677f2f1e1f4f5e8d12875c636585"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_ext_plugin.h",
+      "bytes": 7972,
+      "sha256": "1b99296887d234075c765aa0413dc8dc29bf75eafd1402bea5a222b3aea6942a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_libmysql_compat.h",
+      "bytes": 7420,
+      "sha256": "4d74e00a0168667f9f462e02458dd88790c605920fc111c48d13e62ae6baebf5"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_plugin.h",
+      "bytes": 1329,
+      "sha256": "3bc4bfa98dadaee1dfca3ba0414b7a0d51ea0d17f43911bc4a42208d932e555e"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_portability.h",
+      "bytes": 14243,
+      "sha256": "f8e49461e84a42bc48d8bcb27b1d4d8143e9cf427ae5f8b66fea8cfabf4eb25d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_priv.h",
+      "bytes": 2186,
+      "sha256": "95542b3557ff3315edec0d08a5022276186bb0ed6e8c2afc3449e126a72ef5f2"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_protocol_frame_codec.h",
+      "bytes": 1478,
+      "sha256": "f145760e9fde577de21ee9c23075d822fe392dcae6dc8a3021761388761d6907"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_ps.h",
+      "bytes": 1937,
+      "sha256": "0d690f6954f7674773f1b419e110e2cac0931b0f902abef28bec45c5f78f1cc1"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_read_buffer.h",
+      "bytes": 1231,
+      "sha256": "9b8e20f39df99cc88a4fe4d14c57f100b9c12ed53cdc05e564e91082e9b16d66"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_result.h",
+      "bytes": 1598,
+      "sha256": "c7876cc82529fd16c2687296801789b41bf73b03c351ae6b0059f7acd1ca2267"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_result_meta.h",
+      "bytes": 1544,
+      "sha256": "d28f78710cc745cb5b73dd28615aa7e7f8b25d9590f59049f434f95c259d094f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_reverse_api.h",
+      "bytes": 1725,
+      "sha256": "f75eb542d10defbf480e3e2dfc1a811b185e053923563198e3d0aa0a5675006a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_statistics.h",
+      "bytes": 3974,
+      "sha256": "c6dbfb783c9c1971cf01f5f11ed70067f64111c2abf0940696eb7240817684b1"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_structs.h",
+      "bytes": 61897,
+      "sha256": "9c4e5a5ef36dbc34d482a51f3fb47f5acdcf449fdaaac236a327dd0cedd564b5"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_vio.h",
+      "bytes": 1421,
+      "sha256": "df1ff979325ffded8b5505baefc6fa9bd19b861f00afa4e422ea2d157d9a7fe4"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/mysqlnd_wireprotocol.h",
+      "bytes": 10162,
+      "sha256": "cafa86ef55cbbe73e897e411f681fd0918dfef7f12feebc34599367cbd3c539d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/mysqlnd/php_mysqlnd.h",
+      "bytes": 1226,
+      "sha256": "4e209e39e4ece246355858641eeacd388da2f6c2c2385a28c47194efd3cc48a6"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/opcache/zend_accelerator_api.h",
+      "bytes": 1242,
+      "sha256": "f18fcf74bcfd3eea3f2d0475c616bd111f489bdb71f85d2770d70fb9eb5236b0"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/pcre/pcre2lib/config.h",
+      "bytes": 3919,
+      "sha256": "62185fce19784195d65a44082bc1715695c43e0ae37e7f5d07b439913ed353ef"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/pcre/pcre2lib/pcre2.h",
+      "bytes": 48423,
+      "sha256": "0d08db88a6fae9b398faccebaaf3c6b400de8264258d58c94c1eddee020a04bf"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/pcre/pcre2lib/pcre2_internal.h",
+      "bytes": 95472,
+      "sha256": "b0e120d120486a12ef0b0a0e1a5551ac9d79f909f1cd208b533124133be0d541"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/pcre/pcre2lib/pcre2_intmodedep.h",
+      "bytes": 38078,
+      "sha256": "8069a59a45b1c4d0a724ab8fa03904223476123cb6bc7edbeb5f817adc78e1cb"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/pcre/pcre2lib/pcre2_jit_neon_inc.h",
+      "bytes": 8663,
+      "sha256": "4276bb12453600454803acdbcbb9e719944ee0749ebb594ea76658974ceb3925"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/pcre/pcre2lib/pcre2_jit_simd_inc.h",
+      "bytes": 73972,
+      "sha256": "f5deff81e3ffe6e8cb1abec3ee3c9763a1f31ec9bc765e1f85fe035f648ae754"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/pcre/pcre2lib/pcre2_ucp.h",
+      "bytes": 10244,
+      "sha256": "66223050c96729c5f51eb779cf5326ebae049c19b8a8de0fe7e8c5446dc93232"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/pcre/php_pcre.h",
+      "bytes": 3786,
+      "sha256": "5fb5e23a4e1041df2c3caf01f99793bf6535781d7ef96e56e151e97cf627ec5c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/pdo/pdo_sql_parser.h",
+      "bytes": 1509,
+      "sha256": "69ce0fcbb4c426caefab0fb9cb4c651c6ed8b41f16a35f151ce75bee16a2ff29"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/pdo/php_pdo.h",
+      "bytes": 4007,
+      "sha256": "f5f5ca693e17a7e22d2ce5cfd46ba360d1cd91a22e03c6d7faee8a24e92a641f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/pdo/php_pdo_driver.h",
+      "bytes": 26530,
+      "sha256": "b0a6e39dcd52502950fe4de16196922a0c9b5c31bd5a9edb7a6debfae9526a6e"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/pdo/php_pdo_error.h",
+      "bytes": 1979,
+      "sha256": "cbdc03fdc3460d377bbe2ae8d5603a4e3885b8da081ad68a06a2e042b9bd8e4e"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/random/php_random.h",
+      "bytes": 9150,
+      "sha256": "a332c684303954d48b4d5497d28b4279e886542e8b3b73e60f1851cbf03911df"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/random/php_random_csprng.h",
+      "bytes": 2229,
+      "sha256": "5401d79fa30523709a384b832071f9e37a46147abd72feb3ced83495a7a46e0c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/random/php_random_uint128.h",
+      "bytes": 3705,
+      "sha256": "70e192ded6830d4ee77f4678660f50fd36f547644424a1f05d64c3c41bdfda66"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/session/mod_files.h",
+      "bytes": 1152,
+      "sha256": "acb291cc43341e2db8d7c47bd01c2b706ec6432cf8aa8e8c1838dd1f22a70ecd"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/session/mod_mm.h",
+      "bytes": 1228,
+      "sha256": "70ea9504de95edab7416d7706fb4246babb73d8493dff5b6635808194a295db3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/session/mod_user.h",
+      "bytes": 1146,
+      "sha256": "eefe385fbd2abf0c1f2c6c92c18f36b0206a391b2c68392388a129b3931fab1a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/session/php_session.h",
+      "bytes": 11792,
+      "sha256": "6a39b579470a6326ade0e9ec634217af91113b05aa6f6df00f134615176b393d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/simplexml/php_simplexml.h",
+      "bytes": 2553,
+      "sha256": "27c0da51229290a2acc425fc9d1b2dcf21e9a672a2b039027c560f9196cacd5c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/simplexml/php_simplexml_exports.h",
+      "bytes": 2089,
+      "sha256": "adf66a9d621ebe40ae2af5d6a02251147b68c31bb397291351f63e7112c71ba9"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/sockets/php_sockets.h",
+      "bytes": 9574,
+      "sha256": "1048c04c01b0b4acbba8235900da79316953d08a70e3cef1ffd46ee0a403422c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/sockets/windows_common.h",
+      "bytes": 3879,
+      "sha256": "fd48219a78a1616c7ad805eeb11cc831e0b6d4e008cbcaa2cfe53bf237b389c9"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/sodium/php_libsodium.h",
+      "bytes": 2669,
+      "sha256": "957eb94257267657cb3680a2145c652ada7bedb94a8e9ac718b40429d08bb119"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/spl/php_spl.h",
+      "bytes": 1390,
+      "sha256": "4caf17e97dc992e7f13f7acefc85d807b71a272d609944b4e3119eeee0dbe14d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/spl/spl_array.h",
+      "bytes": 1763,
+      "sha256": "016e02af9f9633f4c07e22ebc01a02c53705db98d82808e15cee6e83b7afcf97"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/spl/spl_directory.h",
+      "bytes": 5116,
+      "sha256": "1b7eb8a17f62eafb80d5830651a1be100dc17eeeb79258d48f05494d904d7d0a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/spl/spl_dllist.h",
+      "bytes": 1830,
+      "sha256": "1a363b1c8eebd88824468e557582e284119e0b76674d8f6d3e685f553f4bc56b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/spl/spl_exceptions.h",
+      "bytes": 1909,
+      "sha256": "ae3c4eb204d38580dbc5de07aebdbcda0b1710dbaa3afde5bff90ab1da2f8240"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/spl/spl_fixedarray.h",
+      "bytes": 1230,
+      "sha256": "9ae588f2be7a6dd38ce52464f5fc6a924f04148e0e9849a0a221e84631947a56"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/spl/spl_functions.h",
+      "bytes": 1799,
+      "sha256": "c2079db52a150d98f42ca78c4c4063cfa84742ec0441e173b4e7d9b2c06f536c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/spl/spl_heap.h",
+      "bytes": 1494,
+      "sha256": "8051e0f6cfd9c8732897766c0e651b37cc0d8e3438f1fbf784c7ba1668b6e418"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/spl/spl_iterators.h",
+      "bytes": 4012,
+      "sha256": "17956b906bf36b31aca883317c01fb6a72bd97b000af5787515978a2944b60ba"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/spl/spl_observer.h",
+      "bytes": 1474,
+      "sha256": "1107f14fc87b05e7ad21e619e7240ab19f7f60344c85e9bd6231f5cbaa41494d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/base64.h",
+      "bytes": 4013,
+      "sha256": "dc7a1d60a61cecbe5f0679eddf13f91615993c7d316daa1729858c60d3ab19fa"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/basic_functions.h",
+      "bytes": 4627,
+      "sha256": "ce2315985b06aa9fab64b3f2b44f4407bf7aca2d529169a9d8768f1711e79ad8"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/basic_functions_arginfo.h",
+      "bytes": 174099,
+      "sha256": "6213ea625e2eae6167610d62f4842a828a51e9ab922a7c585352e97d5b70e851"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/crc32.h",
+      "bytes": 4916,
+      "sha256": "1aca39f98b746a4cd7174fd9b39dd3cc54d56917cf61097586ae2c7db9cb028d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/crc32_x86.h",
+      "bytes": 1882,
+      "sha256": "4ac3065b076cf285213bb9603d6ca5cebb21246b0372e33137e6c8837c95d8ff"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/credits.h",
+      "bytes": 1562,
+      "sha256": "f1be5c07035fe14e128d907a349c86e6f875c47fccb6de171104792fc80776df"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/credits_ext.h",
+      "bytes": 5224,
+      "sha256": "dd0d84f5d4a3b82e6aa9a6872490a8c183644245e4c18b54756a6607e3790844"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/credits_sapi.h",
+      "bytes": 831,
+      "sha256": "65ff55b485e512eb03e07746cd7d0d43f29b66b33ea28fcc3503b795a05834e2"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/crypt_blowfish.h",
+      "bytes": 790,
+      "sha256": "163fe850d1bcdc5b6199d26f4ee96a39339ad47e969699d864f9a5b4bd241490"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/crypt_freesec.h",
+      "bytes": 584,
+      "sha256": "a8c367c9ac04bfd9e59b8854409003e8abc6796272530f320cbdf56416b2892c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/css.h",
+      "bytes": 1070,
+      "sha256": "e5b478db543ea73f0c4698b969b4e849b4c23d5dcaca139cdbb2110ea0c057cf"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/dir_arginfo.h",
+      "bytes": 3398,
+      "sha256": "2672b0a36f6738dfc4d7c5495c330f3127e20f1ac86516bb2213ad68a2a8e308"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/dl.h",
+      "bytes": 1497,
+      "sha256": "3eb516e520de0f31bee6bdc7fbcf6a1b9c8c5a3839437b44b453c3ac03b21ba7"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/dl_arginfo.h",
+      "bytes": 270,
+      "sha256": "f5788c034abc5f61677bc1bbc729e149644ad1219f3ba8614d0285ba6750d038"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/exec.h",
+      "bytes": 1338,
+      "sha256": "bc8104f61965bfd192451e64fd1978d26f99d308eb18ea3cfe73663fd884744d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/file.h",
+      "bytes": 4117,
+      "sha256": "55ac55a2e599e7dec48e1d64cd5eef358a08479e7df4294acdb25f84c984562c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/file_arginfo.h",
+      "bytes": 9876,
+      "sha256": "9a86298ab6163455b54c39860db50e47845ed9eed3834d82ed48fe82e540ba88"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/flock_compat.h",
+      "bytes": 1903,
+      "sha256": "575290f74066183eb52614cecd4dd1d8ec17ea2037d03e9d624086d0997aaba5"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/fsock.h",
+      "bytes": 1247,
+      "sha256": "ed81b2d36786e91033bd9bca59d216b6aac2082aa9d5fd9816c0bc4772ca2554"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/head.h",
+      "bytes": 1634,
+      "sha256": "e129dafada10ce82e7a50bc9a73b1a55b6cadaf9ae17a961c1e0865d303f2fd8"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/html.h",
+      "bytes": 2419,
+      "sha256": "0e310e9200130540e69a7264cb67135bbcba0ad4162d2c705e00e064c9963069"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/html_tables.h",
+      "bytes": 483597,
+      "sha256": "945b1968e6956702bec4e3f43e6b9a7858fb443dd2ad349cd1ff0f16fae7935a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/info.h",
+      "bytes": 23434,
+      "sha256": "1a3a16d79ae63f2c37fce869bd828ff1a87176c7bded7e9a82f65042391b5680"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/md5.h",
+      "bytes": 2025,
+      "sha256": "f139ff71d27b9816dfc46864a53ab816dfffd402283770a2f128402aa8915fbc"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/pageinfo.h",
+      "bytes": 1180,
+      "sha256": "81a546e746bc8fc77e29e7b02ac59d417a7694e54ef5fe77fdba6f347f1601a1"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/password_arginfo.h",
+      "bytes": 1031,
+      "sha256": "e5d91a36713e1413ffde76b010699721d39e9fb8854cc51a946f75001dd61bda"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_array.h",
+      "bytes": 2928,
+      "sha256": "edd9c3f3bf347f16a55c431de888bee65f89d54b071b667c695c36ca3202cdd9"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_assert.h",
+      "bytes": 1382,
+      "sha256": "e090760236989cf5baed606f92d322388c2705b283a1ae9d7b20a4284a860f64"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_browscap.h",
+      "bytes": 1135,
+      "sha256": "26f0a2a383391e7bce7c96cb1d9e9efdc75caa2b77f696be09672805d2d33b97"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_crypt.h",
+      "bytes": 1493,
+      "sha256": "d9bd8857dba477ef56ac68d927fffa85fb37c8c28e9c48e651d7820de3ce1c64"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_crypt_r.h",
+      "bytes": 1679,
+      "sha256": "2c7ada8c55be5e4d3dc3e3e727a8cbc9418125412d72046a0ef350d5af3aa42c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_dir.h",
+      "bytes": 1241,
+      "sha256": "47d8548dc5163afbd48011b91a2026324ab9156f50c221db0029de3665648ab7"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_dir_int.h",
+      "bytes": 1057,
+      "sha256": "6e0ec96f544ef8c48d0a99876f03de750021dbef3754288a8d9c0176c97f68d8"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_dns.h",
+      "bytes": 3653,
+      "sha256": "87d428ea1f1c062cd7828118f0fbdd22eb9d9060c5b9e73e32b0e5202dc79efb"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_ext_syslog.h",
+      "bytes": 1193,
+      "sha256": "9fb72ca63ec9a3274570ec4c00c804ad2555c023d278ad5c04fcca9db07e28c5"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_filestat.h",
+      "bytes": 2155,
+      "sha256": "80880c06d6a9c3364431573d8d8f193ad098da5f4c7471ebb7b1857dd221ddd6"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_fopen_wrappers.h",
+      "bytes": 1837,
+      "sha256": "54725ebb05fddbe500b946bb37018b500fe0020bad42374a042b8afd8acb8ac2"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_http.h",
+      "bytes": 1349,
+      "sha256": "7ce8320b8f4a1be2777fb17732b77a9eb66b907d29584f266b178735fa8a6a1b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_image.h",
+      "bytes": 3093,
+      "sha256": "ba4038d544fde165c7342497fce04a861e2f091ba16ff9d45555dd43c13a53f6"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_incomplete_class.h",
+      "bytes": 2511,
+      "sha256": "57c9e6fa712f5a345234cf68ac923ad5343ecfb59a7d11e31aaef1a603576b5d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_mail.h",
+      "bytes": 1281,
+      "sha256": "130d08a16b23a09e3cac9290fe82a062bc867d3c53d45a21c7b90f9a8658d673"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_math.h",
+      "bytes": 3385,
+      "sha256": "62637108cd49bd9386920c16cbf6065917179ad06f3aadfa9a714f1ff99e9a72"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_math_round_mode.h",
+      "bytes": 1976,
+      "sha256": "68fedd7a639fbe59a579e8f5409655cfe34e24df6a610f46bce198a9457c88a0"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_net.h",
+      "bytes": 1163,
+      "sha256": "717fa8616a13c20e5abf803e95b7a9fb885d00965a1fb028c322a8ed797faa2e"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_password.h",
+      "bytes": 2878,
+      "sha256": "22bbf90bb47c32393b4e3dfa8b812cc4900c6bec689670ec558e15551cea4c7f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_standard.h",
+      "bytes": 1852,
+      "sha256": "681db736f60b24e4bc21ef121464e2a628a5408eee606215b1247be3d0447a1a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_string.h",
+      "bytes": 3941,
+      "sha256": "f466654bdf5bff80ccac419e9624b809ce46f12429df0edc4b067aca695e5084"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_uuencode.h",
+      "bytes": 1205,
+      "sha256": "198606a1bdba00b326cae32e52f643f3dba1479dbf9ebf7d36497692ae034ef0"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_var.h",
+      "bytes": 3727,
+      "sha256": "acba666ff10e92607b8d6b298132b0044bbd1b172a51a4461e950b76b17549e3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/php_versioning.h",
+      "bytes": 1211,
+      "sha256": "be013a31501fbce73fc5545089c4dd6c95bf98427cbb1b1bfdef2e2e4dda4862"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/proc_open.h",
+      "bytes": 1942,
+      "sha256": "58d4f5af41f42f3c78df016d94c83d381a06b7d23d3e57142dbf32bc4b5f602f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/quot_print.h",
+      "bytes": 1255,
+      "sha256": "111999530b31fc54327122ab51a59b3868397714edd93d37bae5338ec3c15f3b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/scanf.h",
+      "bytes": 1997,
+      "sha256": "5828bb7bb671c3e3cd5dc588ee68811d714ebbfc4faa55391768a7bb48ba6c0b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/sha1.h",
+      "bytes": 1620,
+      "sha256": "f3b200b5a0934c0797e9c553696e9d89ac1adeab659ae1754b85521c28f581e4"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/streamsfuncs.h",
+      "bytes": 1137,
+      "sha256": "beada7ec87857e1ad199232797fb559e9404b0cd4cf871a79fbd02ef850a764c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/url.h",
+      "bytes": 2324,
+      "sha256": "46ca0962be46f7d847983281a69509a4166d1371f12a0514d5b1acf53f6639de"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/url_scanner_ex.h",
+      "bytes": 2464,
+      "sha256": "ee89b728537a312ae0c3456112eced36563eb93dd3719e698fe3ac5dd44af898"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/user_filters_arginfo.h",
+      "bytes": 4900,
+      "sha256": "35e4bbf3f22be7109a5d306591cf993902641e7cdf2da0553f75209aa7885db2"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/standard/winver.h",
+      "bytes": 6377,
+      "sha256": "c17c34e38d503b22d38adee6968da20ea06311aa03147816461a16e67f8c01ad"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/uri/php_uri.h",
+      "bytes": 11982,
+      "sha256": "62a76696e2c2e75d813f1946c8ea4d6df7cdfb44324a8f7c314a7b9508068fa7"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/uri/php_uri_common.h",
+      "bytes": 8037,
+      "sha256": "e9e76b6c7f2fb6c56b52f8599e7c4869a016757441fe9edac7e88ae312d4a6ac"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/uri/uri_parser_php_parse_url.h",
+      "bytes": 1255,
+      "sha256": "8eb5f5c3a4c7f1f986628196b684938f6ff49fce113b5c69ad704c5b9d1f16c6"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/uri/uri_parser_rfc3986.h",
+      "bytes": 1609,
+      "sha256": "761885fdef4bd3ab1c1f017823710b14afcaeee3065b2c5a4503b5619c43991b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/uri/uri_parser_whatwg.h",
+      "bytes": 1426,
+      "sha256": "bfd6c4d822d49769bebe9ceaf43a4f3d07507b622771c277d1c96e6eeaa51c53"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/uri/uriparser/src/UriCommon.h",
+      "bytes": 4954,
+      "sha256": "7da6166b813871f06cc73ce223248799180e4e61d8daf9b19e695152e65f967c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/uri/uriparser/src/UriConfig.h",
+      "bytes": 1976,
+      "sha256": "61379f36a29c5a2650bf646b29e134755246d6ad71936232738fec588af93b01"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/uri/uriparser/src/UriCopy.h",
+      "bytes": 3191,
+      "sha256": "ab6b34344acf9b5dede61c2cfab4b74bece42ab24e9bda776217db24eb95de86"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/uri/uriparser/src/UriIp4Base.h",
+      "bytes": 2226,
+      "sha256": "ae8d1a2e0f53970528bde0238453e7e7de8c2093a9fe64052bf6a94da5de92f4"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/uri/uriparser/src/UriMemory.h",
+      "bytes": 2555,
+      "sha256": "b9e2f4fe784a35d64e05429419faa60fcf8efaaf970ecb754e9a2d45d8435281"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/uri/uriparser/src/UriNormalize.h",
+      "bytes": 3150,
+      "sha256": "2311638921f2ea755cc0bf44cc81fc5dd3339d8789e42458e99b12c7b16d3c67"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/uri/uriparser/src/UriNormalizeBase.h",
+      "bytes": 2011,
+      "sha256": "42998ea2b3104a0483c685c81cd520d256c0ead4f5c6d6e418076de5a212d30b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/uri/uriparser/src/UriParseBase.h",
+      "bytes": 2176,
+      "sha256": "8b93b6dca3113e2523beb143fb347065beaf894e30f42217d8aa64224e3e6619"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/uri/uriparser/src/UriSetHostBase.h",
+      "bytes": 2027,
+      "sha256": "0d85d8a874202eb1060b43b510026894712c67e8223a2094ccec360eaa15698b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/uri/uriparser/src/UriSetHostCommon.h",
+      "bytes": 3163,
+      "sha256": "6d5622f5d4de30ba30663c4e4d5c2edbc24786c10160c9c19ce6dc86c5f9e844"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/uri/uriparser/src/UriSets.h",
+      "bytes": 4563,
+      "sha256": "a516447a7f217e3ade3466b0998e8ab692bf8edff2a3c792b2183679f72db204"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/xml/expat_compat.h",
+      "bytes": 6303,
+      "sha256": "b8968870db26deb176f938a177d53ea50945272f766ee0cccc1c6123a233c74f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/ext/xml/php_xml.h",
+      "bytes": 1859,
+      "sha256": "b1855d409a5a6d69420132e6cf6f68f6799963a4336d3b6cea8a8eb337e951a7"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/charclass.h",
+      "bytes": 653,
+      "sha256": "a4f33c4d17e3ca4ce3e2467445d23a7f78a8d98f0526537f58fe242c65fad60d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/config.w32.h",
+      "bytes": 12311,
+      "sha256": "ae1b058ea55718d9a3e59f44d89599a0ed991cda8bcde8028c8c3f61732553f8"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/fastcgi.h",
+      "bytes": 4892,
+      "sha256": "c7dca59c80b6069dd9b954448733a6916e6910142c8e40cf0a36e5d6c65d50b6"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/fopen_wrappers.h",
+      "bytes": 2193,
+      "sha256": "d88f74dae03b3f9dc2a578e37c3392de0a1445619a872e1d764bdb95ac21fb18"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/http_status_codes.h",
+      "bytes": 2898,
+      "sha256": "e13e7c1bff39e384c27709491d8c265a446a59dd5737a3afd065867e82fe91a1"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/main_arginfo.h",
+      "bytes": 6792,
+      "sha256": "f9645c741ebea311502a80964efd13fe8e89f1811682e0c01ebbf862854c68c2"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php.h",
+      "bytes": 11828,
+      "sha256": "1bd30980a442f3324c23d94950b26f66d83964b57c7b994e78203c3ffead1321"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_compat.h",
+      "bytes": 20083,
+      "sha256": "399313c98919842a662a36b7df2111914046d82c787cf4fbdaf7ec50e9a08a3a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_content_types.h",
+      "bytes": 1338,
+      "sha256": "327ffaf2b2f011ac0651cf1a34f025d3070ccba13a6b42136638c3179244a993"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_getopt.h",
+      "bytes": 1671,
+      "sha256": "33b020526c2ab17584015f8e5d8381eb207452ad6c6e55ac40e89775df2f12bb"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_glob.h",
+      "bytes": 6042,
+      "sha256": "35270ad314e8ef047c9a5baee92a34e318df9a7f516ff7314aae91baf735264b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_globals.h",
+      "bytes": 4029,
+      "sha256": "e05e1c9f85d558a6d60009fb7eac66f2a68d28950b75f7d271560d1e227ba5b0"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_ini.h",
+      "bytes": 3655,
+      "sha256": "23355996bcfc90216dacfed29f9bd9eb24b610b387c167ecbcd2d219347a54c9"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_ini_builder.h",
+      "bytes": 2798,
+      "sha256": "6e334ed86c138ec1f7d1bd0b896e21f5e6d3c2a0e15a42bef84227b4f1708a17"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_main.h",
+      "bytes": 3656,
+      "sha256": "6529331e81c1d10906ffbcb1a5acf5e6d8b2c9bf3fdd8916c5bb2ba6c4bc2302"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_memory_streams.h",
+      "bytes": 3310,
+      "sha256": "6a31858da619ecac5b5295f59e7b9f3a5d95cf540dfb0be1c50119441bb324fc"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_network.h",
+      "bytes": 10928,
+      "sha256": "00b589353c9c9de72419be731c1801dad0df6710fed610746f3b9ae9542b0530"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_odbc_utils.h",
+      "bytes": 1298,
+      "sha256": "c3c4dcc4d9cdf74bd30ec35c370ff75f226cdd9695b1cc3dc743369de5cf81ee"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_open_temporary_file.h",
+      "bytes": 1960,
+      "sha256": "5e2558b1567a9aefe17fbcbb2e43567028b7f2b381331c65418888fb5ba068a1"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_output.h",
+      "bytes": 9232,
+      "sha256": "e314bfee9fb720b5ec99fd8ec246b45c91fa1cb14b7b85a504d056f8862e9729"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_reentrancy.h",
+      "bytes": 3231,
+      "sha256": "b643e45dc618e53c3f3fbbe5fe74d9dd8c0fee9ff763ca3a0662ac313810abf2"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_scandir.h",
+      "bytes": 1715,
+      "sha256": "25e482467075e1bb5478f31fb860852d1ba8474ea57cb5b24be45d90f5fe4cf7"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_streams.h",
+      "bytes": 32399,
+      "sha256": "b91f213fd6b48fd574e5708078cbf8f3c031eb23f7de5d711f0c6744175e2519"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_syslog.h",
+      "bytes": 1576,
+      "sha256": "cc31e2de9eabbf4de17c17ca39c648c90c10c0464ea0c15732d60894b2ef2eca"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_ticks.h",
+      "bytes": 1378,
+      "sha256": "cde90cef5fb1e1c3bb77010ce59d35086e17ff3af7bd1afeaebe846ef0ffbaa6"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_variables.h",
+      "bytes": 2105,
+      "sha256": "2dc5d052ff9f8469aec02c7d74f58a7759cc3d65786648764f3039dd179f8ea9"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/php_version.h",
+      "bytes": 266,
+      "sha256": "48cf925946272667030bc3274afcfcf8850d3fca6766546e7e82d43e2e7de230"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/rfc1867.h",
+      "bytes": 3739,
+      "sha256": "bf266d9698bfdf5839267fa337f8933ad89bdceae280a6cefc0633cc33c4b841"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/SAPI.h",
+      "bytes": 11270,
+      "sha256": "f57e9cae13c623d3114dcb8f9e4686015f68ddafab1c9a79143b4852c8a3a64f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/snprintf.h",
+      "bytes": 5676,
+      "sha256": "8c864bdf1b053f4d4b24818d7b5e77895d859b766cd6a262625eb60caaea1eb1"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/spprintf.h",
+      "bytes": 1501,
+      "sha256": "8d17777d8fc0c9905c96a96ca84bd4a90e097189f37cabf25a6232c9cf7a7ec2"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/streams/php_stream_context.h",
+      "bytes": 6338,
+      "sha256": "81021a2e4f7e3edf9a88210a35227f7bb72d62ab9b5bb80baff13c065f9092ba"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/streams/php_stream_filter_api.h",
+      "bytes": 6751,
+      "sha256": "0f5706a149945cdf1869aa683355787d5e3fe0d888424a18f3185ab9a85cecc3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/streams/php_stream_glob_wrapper.h",
+      "bytes": 1733,
+      "sha256": "e6b64cc9ec089b2ece256518ea829ad0cf55871250a4ef588b86992bfce153d3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/streams/php_stream_mmap.h",
+      "bytes": 3189,
+      "sha256": "fed9d07148f8f754fdf206294e8048445eaf1bd7ff5ad784b8f64d86cfcc3f70"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/streams/php_stream_plain_wrapper.h",
+      "bytes": 3543,
+      "sha256": "5bf4253b8a3f4defcf198a7e4df53d6a0d5017b6cdebaad7ee771709ed864a5b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/streams/php_stream_transport.h",
+      "bytes": 7617,
+      "sha256": "83548effadb24efe3cb8bed69d162bb69cd8c501bba065307d54933e93b554a3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/streams/php_stream_userspace.h",
+      "bytes": 1275,
+      "sha256": "cba24b0648b5d97b011576601a59824f8a431dd0459cf915e44298a1058f36dc"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/streams/php_streams_int.h",
+      "bytes": 2956,
+      "sha256": "2d7b26368080418b96402bc0a9092538e7cbd25476d017333da92f0788c1c329"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/main/streams/userspace_arginfo.h",
+      "bytes": 2266,
+      "sha256": "170d816d18387108128aad013c14802c6adf76fa6e01ba81ac3c08a18f9f6f8b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/sapi/cli/cli.h",
+      "bytes": 2176,
+      "sha256": "b6234c104d44d1b1a8b54b6a5c50b5334a19f0beb2b6189d4538391938d047d4"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/sapi/embed/php_embed.h",
+      "bytes": 1796,
+      "sha256": "b1e948c485c230afb855c0c7ac900332db8ab08cfd692ebf3cb35b33de2f8845"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/TSRM/TSRM.h",
+      "bytes": 6829,
+      "sha256": "f5eaac861d68fa3e8b8b465a77412e78c05e12c6ec69619b06c0ce5f598cb588"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/TSRM/tsrm_win32.h",
+      "bytes": 3084,
+      "sha256": "6958102d6df1d47e417fd36326fae3fbb4b16034a45436987dbd1406124c444d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/codepage.h",
+      "bytes": 6519,
+      "sha256": "db777f09bd5e225ffd92547251453f1c2306e17a8cb626d56ea5ab6560d64476"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/console.h",
+      "bytes": 2345,
+      "sha256": "a7bbe88f14f371a3afe288d26f9785d5255716c4891466b548b1a4c11fa21b14"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/fnmatch.h",
+      "bytes": 2494,
+      "sha256": "7a84561475d244d40c7dddb0d32133cc1790dfa28233045e5adac43b88b947d8"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/getrusage.h",
+      "bytes": 2618,
+      "sha256": "97af919108c6e633b57159cacf673dd9ae7dc52186fd47c1feed2c62a9fa1f58"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/ioutil.h",
+      "bytes": 23145,
+      "sha256": "766e198eabec4b8ca8eb5529328dc5c5467de3d1839fca6b1bbd7ae8e921f6dd"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/ipc.h",
+      "bytes": 1285,
+      "sha256": "8601fc21c1df87c2a93a8765d480f38051bff161690328dff38cd22232eba716"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/nice.h",
+      "bytes": 1074,
+      "sha256": "30b7b9cce01e68befbaad0e1eab8ff69010e90b7b9e8e4c46f61a7648c48be7d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/param.h",
+      "bytes": 990,
+      "sha256": "d53f9ba37e8b95cdeac25ec0ef8b52e817a11b1e5f6a9b12a5e4dfa786305cd3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/php_registry.h",
+      "bytes": 1145,
+      "sha256": "0b5807b5d1db4e91e257ead06da5e216117ac5759afa7895615a846f2ef83cf7"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/php_win32_globals.h",
+      "bytes": 1927,
+      "sha256": "586067e31778998a6ca84e471b03849e3e1a026fc3ad801e59583ebd0da8f4be"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/readdir.h",
+      "bytes": 1217,
+      "sha256": "774fe6513dc36ca2609658d71b6b9efd7b1f8daefb2ce4afc54bef1f8eaab9c9"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/select.h",
+      "bytes": 1177,
+      "sha256": "6cbc96d006958cf3d96d72a47d382a0d6ce4983f10438933572ee53b48b5b495"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/sendmail.h",
+      "bytes": 1409,
+      "sha256": "082848dbbbf8fdca67ca60df2c8b3135abd35d394374d42f3f1ac583558d8fb5"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/signal.h",
+      "bytes": 459,
+      "sha256": "6f99c1f7e0137c70f3859afd8e068da3bd35817d3b8e4218f925cf9b22bc762d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/sockets.h",
+      "bytes": 1501,
+      "sha256": "a3f0ba9284c6b6d24a55dc3788023a43759c5d95abafcc55af627dfc8db9ee43"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/syslog.h",
+      "bytes": 2548,
+      "sha256": "5e663be3027dd6436a1ee58bf62a467d1ac7b7ce7258e23d1621eb618fd31f6a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/time.h",
+      "bytes": 1770,
+      "sha256": "9fc6ed899363ba1ba14d0d8f8e529cbc1358ec4187b15f9124ffbb42cc24cdd0"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/unistd.h",
+      "bytes": 105,
+      "sha256": "199543bb9d1d735475ed1a6fd4b0c6168281b5789fbb6ba992ea27072458c555"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/winutil.h",
+      "bytes": 2252,
+      "sha256": "cfd4631d5c8755db592a2df7f60578bb27b44b4c59c828c0a942d17d3818e17d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/win32/wsyslog.h",
+      "bytes": 1367,
+      "sha256": "b81232d17f5543f18cc60d22706637f2c33dbf201cc2bb4f100d54d51b2e2658"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/Optimizer/zend_call_graph.h",
+      "bytes": 3331,
+      "sha256": "6b5b03955cd80000a64fe57c222ca06702a7820f246815d1ab8fc0951e21b744"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/Optimizer/zend_cfg.h",
+      "bytes": 5646,
+      "sha256": "234408eba961bf225fd13cded1a022ca2dba07be9ec758474f7eebb417d96080"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/Optimizer/zend_dfg.h",
+      "bytes": 2047,
+      "sha256": "d50f34db369aa0adaca94aaf9c0b463ba6a0e5fbdbf05907ee211b13efeb68fb"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/Optimizer/zend_dump.h",
+      "bytes": 2788,
+      "sha256": "d497d3ef13447877f213b14085cb96b57428b8db83b211e25a66a3137a3ee26e"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/Optimizer/zend_func_info.h",
+      "bytes": 3117,
+      "sha256": "9ac7bf6db1400aefb4aa50f73104d9a54250dba5812d43f1dd53be24953a75e3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/Optimizer/zend_inference.h",
+      "bytes": 10527,
+      "sha256": "332ebabda019a40825cfb59709c35e9a127728266bec03e2183f014d340d2e8f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/Optimizer/zend_optimizer.h",
+      "bytes": 5120,
+      "sha256": "a1c604903ad0b05a1ee1f7fa63a8e72ddb891cd7f4bae2cf3717bfdd33b715b0"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/Optimizer/zend_ssa.h",
+      "bytes": 12020,
+      "sha256": "8e301f5b433bd805fd8e090f7cddca24f8f917704624382c924e59f1187477d0"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/Optimizer/zend_worklist.h",
+      "bytes": 3911,
+      "sha256": "b334f789480674d9cfd2c54e329976b5ded90ecc9b375ebd7731a234ffdb9ebf"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend.h",
+      "bytes": 17849,
+      "sha256": "662fd2b34d4a33d4e9923fccab48b9484e9c7994728bea079f7fe3f4ed91cdcc"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_alloc.h",
+      "bytes": 25024,
+      "sha256": "8638c5b8f53631211674261183faf5311c8172ef51fc23a62ad398e3f2ca6b97"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_alloc_sizes.h",
+      "bytes": 2629,
+      "sha256": "7ca6e7cbce2ed1d11a9ed79d298b3ca7754d4f9c6a6164d8a1dab069f3323728"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_API.h",
+      "bytes": 111234,
+      "sha256": "ed9d8f2d31f64f25548a2c16dbb9ef12d591e9d8e324e3364d878c641df80470"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_arena.h",
+      "bytes": 6081,
+      "sha256": "e8cda0f5b98ae377b870926c0eb9b481c262614db722c7d51653bb3ff9bdc855"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_ast.h",
+      "bytes": 14848,
+      "sha256": "e5739d70a49328d30f6ff905e44a9a30642ff4d6229b470cc5c2aaa669f49d4c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_atomic.h",
+      "bytes": 13849,
+      "sha256": "0cb89796f577a33e47d8580b6670918633af2f576f73faeca20e80a0571cd9ac"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_attributes.h",
+      "bytes": 6663,
+      "sha256": "640fcc37271cf15d57bf35a1c31f5124e038c3e996de0666b557130c1cc97ce3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_attributes_arginfo.h",
+      "bytes": 15873,
+      "sha256": "ef87b52f9b8b42ccbb24f79d71156c187a74c39ff2601b9c1aae35dff2887826"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_bitset.h",
+      "bytes": 8029,
+      "sha256": "7ceca865bf196a285fa4693afecfbf36f487cd18d4d10ecabd73a9ba335ce948"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_build.h",
+      "bytes": 1626,
+      "sha256": "d7b356fe04dc28c0a2cbb680f9fd58789c14a8b52551bf69d2540d9c4ce68a24"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_builtin_functions.h",
+      "bytes": 1573,
+      "sha256": "6a4353dfc6e957c83db009d8994ef810af343f5524039bd5589cf6cb06189d45"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_builtin_functions_arginfo.h",
+      "bytes": 15865,
+      "sha256": "57eca8ce703edade046f277f7d017dca90ebe500c705923784803f11d17c8d0e"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_call_stack.h",
+      "bytes": 3142,
+      "sha256": "d3157d86f8fa4c48571f5c1208f34791dbacc76ce6fa152c3f3513233a3ad19a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_closures.h",
+      "bytes": 2315,
+      "sha256": "5f7f4047770f9a648fcbdc59498ec61bb209f54f4c9346a79cfe6e30975a43a3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_closures_arginfo.h",
+      "bytes": 2307,
+      "sha256": "72d4ef96a85cc0e6894aa81bac9be044464f528787eb1a644f8eab65ceea5096"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_compile.h",
+      "bytes": 54482,
+      "sha256": "9f6b0fc3cb3398810c5ba17eb8b993e7d856b304f5dff43901d80dcbec1c7f61"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_config.w32.h",
+      "bytes": 1916,
+      "sha256": "f1600b247b563bb6961e5a1f6ddf6ce30df902a76529a5484fd7afda13133911"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_constants.h",
+      "bytes": 7315,
+      "sha256": "cec5dd20d674ed8f2ce55f45bcead56b1b5979bfb852d5aa29f77f61225d1ba7"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_constants_arginfo.h",
+      "bytes": 2710,
+      "sha256": "e107e986d62e0eb5a1eed288af4293f8dea74b6c444cd74450e85f120e8baa5c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_cpuinfo.h",
+      "bytes": 9513,
+      "sha256": "b13b15c4ac43f09ef20be10e416486d0849ae35ef561273b89899476643c5288"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_dtrace.h",
+      "bytes": 2051,
+      "sha256": "b7a6266a775dd89cdb0c65bbeca6606e2b0e3d13823ed85f69126f955653713b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_enum.h",
+      "bytes": 2928,
+      "sha256": "0fe2bc76d545fdf9353356a0548febd6e5749f282b6529f25352a67d19eec379"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_enum_arginfo.h",
+      "bytes": 1691,
+      "sha256": "eafda3a23bf7728ba615ba5add3ad8add511d425b1a67754626cc597873b89a5"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_errors.h",
+      "bytes": 2416,
+      "sha256": "d16a8bace1c070c996668089b00842803045af072eff05b44eeb6861e5d1e879"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_exceptions.h",
+      "bytes": 4579,
+      "sha256": "7d355b596e7a1f68633edb63898817b1543e70f39ff1f657a8ed136c919bdb6a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_exceptions_arginfo.h",
+      "bytes": 15797,
+      "sha256": "99ae7ccf40b42bd6134de3a1b4b22b0f4a2f7fbb8b7ae8f4c61b4719b095d673"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_execute.h",
+      "bytes": 27234,
+      "sha256": "7f9703c44405a98a6f1fabde592c109ccc2e5bcffb497901a9ab2db7e739a86b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_extensions.h",
+      "bytes": 6588,
+      "sha256": "cc0be28e290fc1fc3f9bacd828dfad425827f3078f4faac8b6721f6be9450513"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_fibers.h",
+      "bytes": 5412,
+      "sha256": "bbb59432efe483d740085f8417ece5a83eb0c2e5f6ce1340ad332f7217ab5474"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_fibers_arginfo.h",
+      "bytes": 3530,
+      "sha256": "9fbd3d5eb122f18d7de61d5e6f1d6be14c06ff99a4e92ac15201fffc3c8fdc7f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_float.h",
+      "bytes": 15468,
+      "sha256": "5dcd235d540a78f4a3f579e7b392e1571f4b8308976574826deaec74a4e8611e"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_frameless_function.h",
+      "bytes": 5518,
+      "sha256": "43dc2a5640a9ee3a70f7df114c94a64eb7c316539da696929970683ff0674d86"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_gc.h",
+      "bytes": 5026,
+      "sha256": "e4706c3e46f6fe0326aca09cbcc89b49db26e1e6a27e3ed634de4c55d2af9eb0"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_gdb.h",
+      "bytes": 1420,
+      "sha256": "51e0dbd600278194e02a9c887a36a84b3a5f49c5e0e826ad8d117bad3d4deb52"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_generators.h",
+      "bytes": 7664,
+      "sha256": "96e94839d553bd83954481c263619687ea27b0669c4edae7a8e1d7ebca386988"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_generators_arginfo.h",
+      "bytes": 2889,
+      "sha256": "bd1dfe842ec716f6febe475cc5c0d49871591206732821353d5f14cb604ffd0c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_globals.h",
+      "bytes": 10237,
+      "sha256": "7da2357af65c85fdd991e11c26c58745c361fdf765b034e1bb335c7ebe91bd4c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_globals_macros.h",
+      "bytes": 2841,
+      "sha256": "916ca8c921a84ab5e3faca8a9078fbfb05c4c8d2f931e4ee5e69e54d44fb645c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_hash.h",
+      "bytes": 54757,
+      "sha256": "a8962639aa3246c44d02fcf0cec0f1f3c38e6ca43d39c97dfff65a9ea17d57c6"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_highlight.h",
+      "bytes": 2321,
+      "sha256": "b183db9edde1d21baf1b6b48c1316458544abe5cc9da0521fa8c64b30c779c5e"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_hrtime.h",
+      "bytes": 4247,
+      "sha256": "332c30fc82f742534671818d1e35f5d4e660970b9abadba2eb98d9be59223061"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_inheritance.h",
+      "bytes": 3204,
+      "sha256": "bcdc41a25f0d541a42e155f79363d020a06f98cb37e5a6163c41184d8fda8050"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_ini.h",
+      "bytes": 12195,
+      "sha256": "d8b6c20cf3250e7946d6c3ccc999309d3ea0ade863d0644d3f81c53b9a554a6f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_ini_parser.h",
+      "bytes": 3565,
+      "sha256": "f5d38842420f462d3e413d3ec0c94743b1ec25e94e4f98a2cba04d68c70b210a"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_ini_scanner.h",
+      "bytes": 1978,
+      "sha256": "92ed9f31a9b080fab21fc8469135d3bc55a4025415e4dce11f6c3c2922be09e6"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_ini_scanner_defs.h",
+      "bytes": 246,
+      "sha256": "593eef45bc71e25c676f5d2075cacf069d7a00712b0cc8a54018cb7a1eb89b0f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_interfaces.h",
+      "bytes": 4118,
+      "sha256": "d888f072e7ac38359ec41f20dcab64e64ed0b6d02a1b43c18e86df753b9ced52"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_interfaces_arginfo.h",
+      "bytes": 7839,
+      "sha256": "3b88e3833046d1227aebb7e5b972f66ecdebbc6c635ca74d23b0dcf8f90276ad"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_iterators.h",
+      "bytes": 3901,
+      "sha256": "a2bc01e2d2c02a13304303652eb409dde9a4f20cbb53933db229c24820c0f7b5"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_language_parser.h",
+      "bytes": 11143,
+      "sha256": "e0e35a584a96eb3780e8204b7b93f7ea1401cae78888499a44b64e84ca3a2767"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_language_scanner.h",
+      "bytes": 3071,
+      "sha256": "3f0c2905f4b87cc7204c10772876516165301eb41fd89584ff97489d85a5f4f3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_language_scanner_defs.h",
+      "bytes": 310,
+      "sha256": "51ffecd4785dfed35ea7ef73d3c3e5bd971c5b4ebcfac39283ab5d4e5f3e360e"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_lazy_objects.h",
+      "bytes": 4773,
+      "sha256": "be881ff97bb8de33c5025f9b3e02aa105dbe37f2debb5132fb136c5e3b3ab506"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_list.h",
+      "bytes": 3483,
+      "sha256": "4a8219e7a0d3b45853b333f394235fb5e3b30440a8d2c7f24a03ec6ec16a7c86"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_llist.h",
+      "bytes": 4032,
+      "sha256": "bd580e82f1ffcf2ba8d32d29748f5ae3879967944d4013e2b30168e95e7be6f3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_long.h",
+      "bytes": 4227,
+      "sha256": "bafd25dbcf843a674d76310122c437956d5dd5ff435b9f121043d0019ac170a0"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_map_ptr.h",
+      "bytes": 3571,
+      "sha256": "24de63b377e6158842ec578651dd74c833c67992eb657996c7b5b6199beb2da3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_max_execution_timer.h",
+      "bytes": 1516,
+      "sha256": "6fb2daf76410f927ed81fbe59cdc613a241614f154d26a0c3f127256f7501fd2"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_mmap.h",
+      "bytes": 1512,
+      "sha256": "d0f1b953a736ff0fd62205809b0062165789e6a12a7aa26313055890e9ee7eef"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_modules.h",
+      "bytes": 4826,
+      "sha256": "5268421096a85685dd8750457d5dd616ea04584dcf5bf826d02b0827397eb05b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_multibyte.h",
+      "bytes": 4946,
+      "sha256": "dd4e1fd92e74b89e08c276fa683f3f954f9eeec5006f635c4e274f5fc03e79ad"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_multiply.h",
+      "bytes": 10331,
+      "sha256": "76ae7f92231b6e3830acca6aed031cdfe428d60d1dae0f3b41176bbd37ce8865"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_object_handlers.h",
+      "bytes": 18495,
+      "sha256": "f26a51b0e293d313a75da7691aebf528dbeadf10acdf6f5cb1f0c3b6ea7ad618"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_objects.h",
+      "bytes": 2150,
+      "sha256": "c542c4e2f24a457ddc79804a42a7561fb8880bc9f5faec5ce6aa0606979561ac"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_objects_API.h",
+      "bytes": 5980,
+      "sha256": "308cbab661d44ce61b5ef530998d042a809db26b888de4419881d3722321204e"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_observer.h",
+      "bytes": 9036,
+      "sha256": "3da2d89437162d9d906119111be7d6883c01a7522d1dd3536f43f030dd96c59c"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_operators.h",
+      "bytes": 36982,
+      "sha256": "8a6683ac535d7797b8b877727c8915ea231b554e80d9dd125dfa18f36b9a0201"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_portability.h",
+      "bytes": 28797,
+      "sha256": "70e79e53b27e03cb4fb1dab3e873d453bfa1de78c5fc86292364e371a59c844b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_property_hooks.h",
+      "bytes": 1824,
+      "sha256": "96935df54acb52fa6bf1de09fe1171a13cc6509ddfd4d27a4fac33e712f2f7ef"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_ptr_stack.h",
+      "bytes": 4321,
+      "sha256": "295150d18144fc62f3313892edf36f63a853aad3ec302343a0e9099a5eadd3c0"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_range_check.h",
+      "bytes": 3000,
+      "sha256": "f0eb70523896067c40f679dcae172cdf9b8521773b7872b36c8ee45d5d2eacb3"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_signal.h",
+      "bytes": 4105,
+      "sha256": "500067003cbefb086085b7a223349c4bfb7b31b4819ec2d7f2c7db6fe4e2c8db"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_simd.h",
+      "bytes": 20110,
+      "sha256": "90d9fa80973ae27775e03c1a9a3aa359117957f51c92047ce7ca8962ede6afa1"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_smart_str.h",
+      "bytes": 8433,
+      "sha256": "55d0c3a510c2b563a0ecc14d49644935680f10dce0a2dc9c659c5f99d5d54ceb"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_smart_str_public.h",
+      "bytes": 1222,
+      "sha256": "cbab79dca422931d27caf54eb31a404cbb8e02149fa5d09bf1ec80d75ff2d12b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_smart_string.h",
+      "bytes": 4332,
+      "sha256": "5e5bc06c809437fd50e1d44ead81b955e14d12693fce6758fd4bf9a03a029635"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_smart_string_public.h",
+      "bytes": 1240,
+      "sha256": "a843e56008cb7eba5d36e617f0ae493dc2fa65481db6e1c28f5d76194605e1fa"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_sort.h",
+      "bytes": 1560,
+      "sha256": "72753978b8f65342948ec1304dc035522557b4dcc20523abfb04c967e782c8ca"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_stack.h",
+      "bytes": 2442,
+      "sha256": "846a26bb6362a051f99128645a3b735e2cc43affb6dd6de6b65b8dc6753ca465"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_stream.h",
+      "bytes": 3641,
+      "sha256": "2f7142a6268413c63441273116bd75ed5bf00e07159658ff52ef9181e13cf6a0"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_string.h",
+      "bytes": 25855,
+      "sha256": "1ef723f15fadc5751532995fd097e53a8cc08b203f8d5fac47d183fa70c26c02"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_strtod.h",
+      "bytes": 2344,
+      "sha256": "68e5f43dc554db1c0adc6628c36f78d1f28a72df707a66d07dd80df11ea0edf7"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_strtod_int.h",
+      "bytes": 2874,
+      "sha256": "c370d5eb9ffa711f0e0b7de66aa8bdb2765bf105fb7c6c1f97871609c7ec144e"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_system_id.h",
+      "bytes": 1424,
+      "sha256": "dc339311716d39f1ac0cf2db5a72e0522418210d85829a6d89f05852c77bbab1"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_type_info.h",
+      "bytes": 4544,
+      "sha256": "620f75b9cd992d7d83c4121cbf0d92ecfa03df7b19c6eb81dc68f05a9712dd70"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_types.h",
+      "bytes": 53387,
+      "sha256": "c4d5049811a8e2362f95413e5421c9e780367af0c5f86c9995f6bc64f7812b3e"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_variables.h",
+      "bytes": 3138,
+      "sha256": "2f529c7c4a3eebfe25e5034c71c36585bc0024efa19406e7f0068d835bb6e092"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_verify_type_inference.h",
+      "bytes": 8348,
+      "sha256": "222ff5b7d0eb415ddb8e76970371dbf3f35a5c26dbaa25858868588d263b6905"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_virtual_cwd.h",
+      "bytes": 13217,
+      "sha256": "d6ecfad3c94d9386c2783306ecfe628ee3ad9324c4bc689f4fe5933800bd7764"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_vm.h",
+      "bytes": 2350,
+      "sha256": "67821466204a890453539eec2e5f6e87007c0f270c20311cd3e333eebb55d218"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_vm_def.h",
+      "bytes": 306853,
+      "sha256": "7de627f249c09e711951b329a2265f213b88251803ccf85c65d2e5f4fdd768ad"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_vm_execute.h",
+      "bytes": 4199928,
+      "sha256": "208cdf8d1aa36be8d667571ad7915448e789071912e35a4447c33d028052972f"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_vm_handlers.h",
+      "bytes": 93176,
+      "sha256": "a538bb39ebe00a167e1de1685f171d64bf0f0f2c2b704f3a662652786d197ab8"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_vm_opcodes.h",
+      "bytes": 15477,
+      "sha256": "dc349c8f1f38311b6453de446a41e65f57a25f9cdbcac7c83c180f6d593c4b92"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_vm_trace_handlers.h",
+      "bytes": 3216,
+      "sha256": "f93a5be68e8d54376066bfa0b53d2cb20af5cf7d35301d92f1c2326a47b6746e"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_vm_trace_lines.h",
+      "bytes": 1755,
+      "sha256": "d754ec2e73edc39e8353dd4b357c9e01cf5267a3aeb0688d4e0d411dc7de0f7d"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_vm_trace_map.h",
+      "bytes": 2665,
+      "sha256": "ffaba5b25883f6e3ceec427ab38ef0a75dac96530c845885ca93771fc30bec0b"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_weakrefs.h",
+      "bytes": 3460,
+      "sha256": "a67e93718ae0fc0fb03f0272ed10d983bcb1042b3c1fdd2cd3bb15a17cb86e21"
+    },
+    {
+      "path": "tools/candidates/php-native-info-v2/sdk/sdk01/php-8.5.12-devel-vs17-x64/include/Zend/zend_weakrefs_arginfo.h",
+      "bytes": 3440,
+      "sha256": "e04edc382c28ba2a9a5d609c915359687417607f6b6bcc9f1e7b5dbe01fbaa92"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/build-callback01/build.json",
+      "bytes": 7204,
+      "sha256": "c83fd6467d56437dc786a35885d3a9e390fdeda623f91c090c5e560ba68b2497"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/build-callback01/build.log",
+      "bytes": 1565,
+      "sha256": "cfa33c24c6ae09f5279a8976937d0d4c17666827ef7c6b3a1393fbd77aa5d788"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/build-callback01/exports.log",
+      "bytes": 3643,
+      "sha256": "06006753e5f6efb89b0c8baba081ddd32c9876153185727660f14c8e5c74a9e8"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/build-callback01/imports.log",
+      "bytes": 11791,
+      "sha256": "2c5f4db2f31f0029eadafc481ce7ff2625d66bce9fb2b9509503d0edba753a30"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/build-getter-core01/build.json",
+      "bytes": 7602,
+      "sha256": "753edea3f0ca247941f0c2ec5ac0746581360f2b833b6441c310be1fe5f9bbda"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/build-getter-core01/build.log",
+      "bytes": 1582,
+      "sha256": "6324d4df86ee358d0d4d16f9f2e6284e250c1151e18126dd0e5dfc58887998be"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/build-getter-core01/exports.log",
+      "bytes": 3704,
+      "sha256": "57159be245af60b849477d3d1955961d312a6aae37ccf37aacb7641d0def7ec7"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/build-getter-core01/imports.log",
+      "bytes": 11794,
+      "sha256": "66fabf43be30124e55ae7c640273d7576d9a108aebd2203e41d83bd5532f6b80"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/build-legacy01/build.json",
+      "bytes": 7186,
+      "sha256": "3ab3e7c7687ee5d832edc12166012d9716986d5c87c7019d7f1b1ff1bc6df0d6"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/build-legacy01/build.log",
+      "bytes": 1555,
+      "sha256": "a90adc4c6f85df72c8579892ddf21720ee4f1818a132254998e33b1b3dfa4a8c"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/build-legacy01/exports.log",
+      "bytes": 3325,
+      "sha256": "1cafb293fde386b455cda2f163c498568bc9d08af18785117987768b48aea1d2"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/build-legacy01/imports.log",
+      "bytes": 11696,
+      "sha256": "a3159f3eec35b3c2b2af5525862eb3d0aa74ab952f277d0b4bbd5daa526033d9"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/getter-contract01/contract.json",
+      "bytes": 1781,
+      "sha256": "50a298705fc38cf85b4fd7927650c0756c4b82768a3af4357e8ab2f2738bc02f"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/getter-contract01/process.json",
+      "bytes": 12133,
+      "sha256": "d6e3db97c421f21598f0f97b6e3e360fdc92fe3213a31b86e2c9c3389c6e38af"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/getter-contract01/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/getter-contract01/stdout.bin",
+      "bytes": 46,
+      "sha256": "7db794504fddd03818ea48a86ff729293fe1f3dfd6d1f6003469400def675312"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/README.md",
+      "bytes": 3478,
+      "sha256": "f0f1496a80ca3744bf90c2462ae8f3f2e4ec33a8d52da871eb251080fa57ac5d"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-000.fixture.json",
+      "bytes": 152,
+      "sha256": "24beff12410460dac90e59c66ac233a04258484de5cb64a07b9be428c5e42f8f"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-000.native.json",
+      "bytes": 3032,
+      "sha256": "a6f1ae1ac2b10cd51d3a8e4276d5677a3a868ce89e2de4544ea50e11d5efdbeb"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-000.oracle.json",
+      "bytes": 115,
+      "sha256": "95d46d737c990b9ab2cc901abe3f028b6183ffd5ad07ce4030d970d68a38390e"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-000.php",
+      "bytes": 848,
+      "sha256": "1f39b0a95f0604b78d2a2d268d978155c31c9764ccba974c763ef436d8455bab"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-001.fixture.json",
+      "bytes": 153,
+      "sha256": "1891044e568dc3d40927a960ef1cc1f6a7c244e4eac5fc84b31945929f8316e7"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-001.native.json",
+      "bytes": 3044,
+      "sha256": "d470d06cd910fe9ae7b1202f5aaf2f80cf81089118d78dc508f86e656b8ab7c9"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-001.oracle.json",
+      "bytes": 120,
+      "sha256": "c51555bf2a9d8b5dbed43ef44c2270b3aaaf68641225c851b49f1e8f5ab31f5f"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-001.php",
+      "bytes": 852,
+      "sha256": "484828949ac5a494376885ccf18a5e4ac15ced824f5d6b4d3d952a6d10dd638f"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-002.fixture.json",
+      "bytes": 154,
+      "sha256": "04846e756b1d41e883df0b421446553dd66e3ca1761df2453d777b6b8ea467fa"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-002.native.json",
+      "bytes": 3044,
+      "sha256": "41d911ddb052a648a60cdc795d229aa6a1f93eab2d384fbe01ea44c5a4f744b7"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-002.oracle.json",
+      "bytes": 119,
+      "sha256": "4aa095e26d092dce1b7461d5ab0499182f890c686fab8e0816563304cf8a0668"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-002.php",
+      "bytes": 852,
+      "sha256": "ea8d3c8ecf28ef8bbcc5f3240bcbbf0190f3e3b3a580dba7b844fc4471dda72b"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-003.fixture.json",
+      "bytes": 157,
+      "sha256": "cd228a08ea797871e89eedecd7547f38f62253ff90979858823f315ca6b691b7"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-003.native.json",
+      "bytes": 3044,
+      "sha256": "823634ecf4b5943de78ad633b6f61718ca66fa26c0163e7fb01211ada8e8fa27"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-003.oracle.json",
+      "bytes": 119,
+      "sha256": "9f4136c0cefecb86bd01ac5aff40c98368959f55a2e5528a6f1ad0dfa7223063"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-003.php",
+      "bytes": 852,
+      "sha256": "b71615c3f164e59ebbfce4426661dc8264c777bc0557806b7eb4046cb77da0f0"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-004.fixture.json",
+      "bytes": 165,
+      "sha256": "6654b25f808b6b72211e693bf93a99f3aa22b5d953d6ee119af729f4f79a831d"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-004.native.json",
+      "bytes": 3044,
+      "sha256": "930487cc497ba01bf9553a5406243044a78379265f66be77c6d64be81582b8ac"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-004.oracle.json",
+      "bytes": 119,
+      "sha256": "a945276471cfbedc28feb9d5847c488779f35b923d67f31ea738f7791bd033b0"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-004.php",
+      "bytes": 852,
+      "sha256": "2b6064500953eed4adcbf4445c18217a25ed97243114af5661528ae5ad4a364f"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-005.fixture.json",
+      "bytes": 164,
+      "sha256": "f907ba4a9ed50470959324d856d52a1b80e4efe7f4aca23fdfa5a17131795158"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-005.native.json",
+      "bytes": 3044,
+      "sha256": "ee4d262ca3973ef5fd0c16d9e7b75e108bf65d8998a06d8dde04557f671e233a"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-005.oracle.json",
+      "bytes": 119,
+      "sha256": "58d0c7647f410712a1f5c075651cbe9becafedb24f4bd91b98d4f84b3a84dfe2"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-005.php",
+      "bytes": 852,
+      "sha256": "138cb6681ac2eec4b6fddbae433f2eb446705d65f6d7c8d60e11c760bd6256e4"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-006.fixture.json",
+      "bytes": 165,
+      "sha256": "6119ccc135bab1e835c8abd29c05fe642cb3fee459d3327435e803219c051992"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-006.native.json",
+      "bytes": 3044,
+      "sha256": "50f2809299bbb0c85660ef5ebaa0fb881484991f15eb47331770f722a2b4b468"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-006.oracle.json",
+      "bytes": 119,
+      "sha256": "6a8cc25aff6ee148f98ab0cad00ea770bfc41a926c44da8ee6d7539259437041"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-006.php",
+      "bytes": 852,
+      "sha256": "36e1e51e0d2edb03b75afc7788c72e444ff21cb6a18af0679e84375a8f248ef7"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-007.fixture.json",
+      "bytes": 497,
+      "sha256": "98bf1d24829856310db98665883a14a3e3ebabc2bc7097c3a127cf54ac9417d5"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-007.native.json",
+      "bytes": 3032,
+      "sha256": "d7639b2363bb52d46ca7ab6c2958e034ac15d79e650194e14fb79099f8743dab"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-007.oracle.json",
+      "bytes": 115,
+      "sha256": "95d46d737c990b9ab2cc901abe3f028b6183ffd5ad07ce4030d970d68a38390e"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-007.php",
+      "bytes": 1192,
+      "sha256": "6134220d09d943c9a3f04366af5c99fdb75b86e23372b5adc85fd3f0f4e2d579"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-008.fixture.json",
+      "bytes": 179,
+      "sha256": "23ee967fb548fc3e2adae81788103eaa3a3362c6a2483d2b4d3cdc5cf6167678"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-008.native.json",
+      "bytes": 3092,
+      "sha256": "1c8b1cc434c8d09950e560737be0a148ff1a407d9949840fb082439557acbc3d"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-008.oracle.json",
+      "bytes": 135,
+      "sha256": "6050c38a0cd5ffadfed5c7a98fc3e391374139bbef3b37de5d55a4b33a7c5a34"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-008.php",
+      "bytes": 868,
+      "sha256": "aff9aa546fd30c0c72c0638084569f1757caa400e5e210b07a07b1f027a7403d"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-009.fixture.json",
+      "bytes": 174927,
+      "sha256": "067595cfd177231602ace77d703dca5491dfc91ccc59b680346d90f19c5aad44"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-009.native.json",
+      "bytes": 265184,
+      "sha256": "3e0e7fa645f6106ec516ba2122d990bafbaf9ddd5aefcf27b826fb632c8b3b66"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-009.oracle.json",
+      "bytes": 87500,
+      "sha256": "2c9f6ba655bc1a1e34c19f2928c69b1fde72a3f6396cf13f0621196592761e60"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-009.php",
+      "bytes": 175612,
+      "sha256": "a640a1e88c9ee785c76571be84216a6660304bf387aa42a682672417649c7ade"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-010.fixture.json",
+      "bytes": 159,
+      "sha256": "a92baa45d8df4da643e5c0f8c08d611b2bdad0649bb0ddd21e741ba3a80ee91e"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-010.native.json",
+      "bytes": 3108,
+      "sha256": "5086d70abe65c306a616c2287825437429366a05390fdcf014869869db4ab108"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-010.oracle.json",
+      "bytes": 119,
+      "sha256": "ee1e8267f3880aa5a1f8931b2fc89d3319b5305c53a7cfedba8d6889cb1905e0"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-010.php",
+      "bytes": 836,
+      "sha256": "dd8b6efa443b367c80fa1144a4e5bbd51572bab673644b25397bbb6337e2c853"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-011.fixture.json",
+      "bytes": 170,
+      "sha256": "9782c9efae6011c9079fef82ef74a6850e1ae7ae032b7f1a9c50dabf65eaecb9"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-011.native.json",
+      "bytes": 3256,
+      "sha256": "5f83b6cd5584bdd1b355eca3f4172f25d736668784072bc19cacea67f9dafde1"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-011.oracle.json",
+      "bytes": 205,
+      "sha256": "89b1b39e408d52387cae23eec22e0ad7e9fee4f846e1edf3df95ba37964083e5"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-011.php",
+      "bytes": 836,
+      "sha256": "60ef5c634919ddf40c7fb6155b5e4915a175bea0e15c163fc918900269dcf8a8"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-012.fixture.json",
+      "bytes": 176,
+      "sha256": "84b1f7dc8c2f34cfec225a278f79cf9da1aca21e8546965869dd0eccdc0dd548"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-012.native.json",
+      "bytes": 3537,
+      "sha256": "63c7a93df33f1a6fe6ba4032042cde35a00594655764fadec0bccb8d527fb400"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-012.oracle.json",
+      "bytes": 257,
+      "sha256": "869370092709fc4330308875aa30aae003453292d292565d4109f550addf3597"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-012.php",
+      "bytes": 830,
+      "sha256": "b0f194680b7309b8543cae03c36fbcac5055ef9c27f8a5b56652698ec75aa86b"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-013.fixture.json",
+      "bytes": 181,
+      "sha256": "9a1fc7b77280023c6aac937157f24beab70924d02b6572942c1dd4e326df3ece"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-013.native.json",
+      "bytes": 3005,
+      "sha256": "af8bb9d1325e60df35797ce9b037b97d4d7f1cf898767af024869a490b2a403c"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-013.oracle.json",
+      "bytes": 124,
+      "sha256": "b7ee530a59bfc7aedd65b31307a2ad722fb1f3d1aa4df0dc5c3719d253c8dbbe"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-013.php",
+      "bytes": 857,
+      "sha256": "38c41b4940ecff458000464eca0c8cf5c8347a48006e53f96f6e5993db47c98f"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-014.fixture.json",
+      "bytes": 180,
+      "sha256": "46b1973026e3e824d1a2a544867e70698bde5cf9b37b51dbe1f54da7e17c79fb"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-014.native.json",
+      "bytes": 3002,
+      "sha256": "f6b8e85ec8cc9e3ccf408dbb139a109ab5080f1aafa9f720fb4bbbea737a61c1"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-014.oracle.json",
+      "bytes": 123,
+      "sha256": "2722a4fa09c96bcea48449ab0ec973ea2777603d60cbe690bda06f9787a16ce2"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-014.php",
+      "bytes": 856,
+      "sha256": "bfbb35ca39cd28f22b265d3c4dbbc53aba7220a45377407dbd53a8561bbdbbee"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-015.fixture.json",
+      "bytes": 209,
+      "sha256": "5585c99704c93557b1aed932dd9f92a9215670ba40c7a8252f2a47a00a23e22e"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-015.native.json",
+      "bytes": 3055,
+      "sha256": "5994fa055fbed327ccdcfa449e9ba4101ac1286f50430be109bf27f7995a2886"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-015.oracle.json",
+      "bytes": 127,
+      "sha256": "5fa6c153a36eaaacadf224429b9753911602ef2d975e1aeaf2a3959febed3d13"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-015.php",
+      "bytes": 860,
+      "sha256": "b8680a5ed53a79b875e47a4ab09076d1a31be401bcd6a42ca30cc430f43f97d8"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-016.fixture.json",
+      "bytes": 219,
+      "sha256": "0f46d32e91eb04f6f2928d48fb36f0aa432d857fcc6de2befb1b1b61dad1ae49"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-016.native.json",
+      "bytes": 3367,
+      "sha256": "9844a83bc189985257891af0b018915a34d8310d01b769ff83b7a6553c2b9d14"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-016.oracle.json",
+      "bytes": 257,
+      "sha256": "869370092709fc4330308875aa30aae003453292d292565d4109f550addf3597"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-016.php",
+      "bytes": 830,
+      "sha256": "b0f194680b7309b8543cae03c36fbcac5055ef9c27f8a5b56652698ec75aa86b"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-017.fixture.json",
+      "bytes": 226,
+      "sha256": "0d98bb901093faddf01e201f77a3261c96443d83b40f24385882b3fadf37b5a6"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-017.native.json",
+      "bytes": 2857,
+      "sha256": "cf25bc2615dcdc7021166136107488ee439c39d3efae354348470f06b812ee37"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-017.php",
+      "bytes": 63,
+      "sha256": "600090decc445c69003198bcb84df9c667522f112fc6f47e0e7e8f5f18cdcfe3"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-018.fixture.json",
+      "bytes": 213,
+      "sha256": "e742f80fcd16a5fe074c6de8c022530a1960706da952c16f6c9aa158891d9375"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-018.native.json",
+      "bytes": 2857,
+      "sha256": "5b5a467c4d4d80215097c232eb4b0b2f1879509d1ca31e87737045d2172d14db"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-018.php",
+      "bytes": 63,
+      "sha256": "600090decc445c69003198bcb84df9c667522f112fc6f47e0e7e8f5f18cdcfe3"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-019.fixture.json",
+      "bytes": 539,
+      "sha256": "d9e164e6caa77c732e8e02f25b14d3dd75f85b13200dcffbdad6e8af8387cbd3"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-019.native.json",
+      "bytes": 3999,
+      "sha256": "b6b945a50e20ca1d5d2e88d9254cd97933e79ddbb1040a315cb911ca4b26359f"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-019.oracle.json",
+      "bytes": 475,
+      "sha256": "acf30dd72234da6d5f1293298ee5e6accc11119c42015d55d8c9db08fa6496a8"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/callback-019.php",
+      "bytes": 1318,
+      "sha256": "8896fc7a3ef0c3de32aa79a88602085e0f29555e34a1dd1b64d4727f498ff3f3"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/fixtures.json",
+      "bytes": 179460,
+      "sha256": "22287fb37371b690d0cc974ab35554e13818a587ceb49211c848406d344a6fd7"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-000.fixture.json",
+      "bytes": 152,
+      "sha256": "24beff12410460dac90e59c66ac233a04258484de5cb64a07b9be428c5e42f8f"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-000.native.json",
+      "bytes": 2853,
+      "sha256": "3423155f73085f8e12a4622c780cb8f7bb7ad5b880cf6a3f476d209e0a5c94a3"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-000.oracle.json",
+      "bytes": 115,
+      "sha256": "95d46d737c990b9ab2cc901abe3f028b6183ffd5ad07ce4030d970d68a38390e"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-000.php",
+      "bytes": 848,
+      "sha256": "1f39b0a95f0604b78d2a2d268d978155c31c9764ccba974c763ef436d8455bab"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-001.fixture.json",
+      "bytes": 153,
+      "sha256": "1891044e568dc3d40927a960ef1cc1f6a7c244e4eac5fc84b31945929f8316e7"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-001.native.json",
+      "bytes": 2865,
+      "sha256": "0d20f25f502bc28419c89caab54f0c9293936c84720355b1523452bea86ae53e"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-001.oracle.json",
+      "bytes": 120,
+      "sha256": "c51555bf2a9d8b5dbed43ef44c2270b3aaaf68641225c851b49f1e8f5ab31f5f"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-001.php",
+      "bytes": 852,
+      "sha256": "484828949ac5a494376885ccf18a5e4ac15ced824f5d6b4d3d952a6d10dd638f"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-002.fixture.json",
+      "bytes": 154,
+      "sha256": "04846e756b1d41e883df0b421446553dd66e3ca1761df2453d777b6b8ea467fa"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-002.native.json",
+      "bytes": 2865,
+      "sha256": "1b85054aa18cce9bbfc25f0fc59d87d05f1b1d579f4a02407db2ca0ba83996bc"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-002.oracle.json",
+      "bytes": 119,
+      "sha256": "4aa095e26d092dce1b7461d5ab0499182f890c686fab8e0816563304cf8a0668"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-002.php",
+      "bytes": 852,
+      "sha256": "ea8d3c8ecf28ef8bbcc5f3240bcbbf0190f3e3b3a580dba7b844fc4471dda72b"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-003.fixture.json",
+      "bytes": 157,
+      "sha256": "cd228a08ea797871e89eedecd7547f38f62253ff90979858823f315ca6b691b7"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-003.native.json",
+      "bytes": 2865,
+      "sha256": "813963975e6cf22eb4339b7672d5bf7da7cbbb813123d1f77d9754a493cda748"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-003.oracle.json",
+      "bytes": 119,
+      "sha256": "9f4136c0cefecb86bd01ac5aff40c98368959f55a2e5528a6f1ad0dfa7223063"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-003.php",
+      "bytes": 852,
+      "sha256": "b71615c3f164e59ebbfce4426661dc8264c777bc0557806b7eb4046cb77da0f0"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-004.fixture.json",
+      "bytes": 165,
+      "sha256": "6654b25f808b6b72211e693bf93a99f3aa22b5d953d6ee119af729f4f79a831d"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-004.native.json",
+      "bytes": 2865,
+      "sha256": "a70b899d88095a448001c8babc3a3532062d52a1823bbd62a3c868a8b006ff6a"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-004.oracle.json",
+      "bytes": 119,
+      "sha256": "a945276471cfbedc28feb9d5847c488779f35b923d67f31ea738f7791bd033b0"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-004.php",
+      "bytes": 852,
+      "sha256": "2b6064500953eed4adcbf4445c18217a25ed97243114af5661528ae5ad4a364f"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-005.fixture.json",
+      "bytes": 164,
+      "sha256": "f907ba4a9ed50470959324d856d52a1b80e4efe7f4aca23fdfa5a17131795158"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-005.native.json",
+      "bytes": 2865,
+      "sha256": "f6d5d8839390ce8920d4e26ba5b6d1f59ddfa9d85cb894f6a17d3a1a5b1095e7"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-005.oracle.json",
+      "bytes": 119,
+      "sha256": "58d0c7647f410712a1f5c075651cbe9becafedb24f4bd91b98d4f84b3a84dfe2"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-005.php",
+      "bytes": 852,
+      "sha256": "138cb6681ac2eec4b6fddbae433f2eb446705d65f6d7c8d60e11c760bd6256e4"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-006.fixture.json",
+      "bytes": 165,
+      "sha256": "6119ccc135bab1e835c8abd29c05fe642cb3fee459d3327435e803219c051992"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-006.native.json",
+      "bytes": 2865,
+      "sha256": "4d3bb1f66852e70b23059c9a09924945f9cfb54cc238dcde2d336ec82c66edae"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-006.oracle.json",
+      "bytes": 119,
+      "sha256": "6a8cc25aff6ee148f98ab0cad00ea770bfc41a926c44da8ee6d7539259437041"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-006.php",
+      "bytes": 852,
+      "sha256": "36e1e51e0d2edb03b75afc7788c72e444ff21cb6a18af0679e84375a8f248ef7"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-007.fixture.json",
+      "bytes": 497,
+      "sha256": "98bf1d24829856310db98665883a14a3e3ebabc2bc7097c3a127cf54ac9417d5"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-007.native.json",
+      "bytes": 2853,
+      "sha256": "97c961f48a4747a624438ac9460f9f237e36b6c484bd52ab0e8f9c3bc22a191b"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-007.oracle.json",
+      "bytes": 115,
+      "sha256": "95d46d737c990b9ab2cc901abe3f028b6183ffd5ad07ce4030d970d68a38390e"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-007.php",
+      "bytes": 1192,
+      "sha256": "6134220d09d943c9a3f04366af5c99fdb75b86e23372b5adc85fd3f0f4e2d579"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-008.fixture.json",
+      "bytes": 179,
+      "sha256": "23ee967fb548fc3e2adae81788103eaa3a3362c6a2483d2b4d3cdc5cf6167678"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-008.native.json",
+      "bytes": 2913,
+      "sha256": "4ac74bd02b1a933ccb6be4c0abc463a57433a4f0a8aa6ec92b2138611a28eb7a"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-008.oracle.json",
+      "bytes": 135,
+      "sha256": "6050c38a0cd5ffadfed5c7a98fc3e391374139bbef3b37de5d55a4b33a7c5a34"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-008.php",
+      "bytes": 868,
+      "sha256": "aff9aa546fd30c0c72c0638084569f1757caa400e5e210b07a07b1f027a7403d"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-009.fixture.json",
+      "bytes": 174927,
+      "sha256": "067595cfd177231602ace77d703dca5491dfc91ccc59b680346d90f19c5aad44"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-009.native.json",
+      "bytes": 265005,
+      "sha256": "0f2bc07d2a6766f944b8bff7f125e9d19cdd7b18f6465f10402b74312aa6ebfd"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-009.oracle.json",
+      "bytes": 87500,
+      "sha256": "2c9f6ba655bc1a1e34c19f2928c69b1fde72a3f6396cf13f0621196592761e60"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-009.php",
+      "bytes": 175612,
+      "sha256": "a640a1e88c9ee785c76571be84216a6660304bf387aa42a682672417649c7ade"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-010.fixture.json",
+      "bytes": 159,
+      "sha256": "a92baa45d8df4da643e5c0f8c08d611b2bdad0649bb0ddd21e741ba3a80ee91e"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-010.native.json",
+      "bytes": 2929,
+      "sha256": "c8484b4fe1ec60ba15e873834a754e155c61dae838ad488493ea085638dc3669"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-010.oracle.json",
+      "bytes": 119,
+      "sha256": "ee1e8267f3880aa5a1f8931b2fc89d3319b5305c53a7cfedba8d6889cb1905e0"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-010.php",
+      "bytes": 836,
+      "sha256": "dd8b6efa443b367c80fa1144a4e5bbd51572bab673644b25397bbb6337e2c853"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-011.fixture.json",
+      "bytes": 170,
+      "sha256": "9782c9efae6011c9079fef82ef74a6850e1ae7ae032b7f1a9c50dabf65eaecb9"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-011.native.json",
+      "bytes": 3077,
+      "sha256": "7d73a07dbc6d5c6385d89ed29a325201e3fbb88d8331a9453b65de8149be03fb"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-011.oracle.json",
+      "bytes": 205,
+      "sha256": "89b1b39e408d52387cae23eec22e0ad7e9fee4f846e1edf3df95ba37964083e5"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-011.php",
+      "bytes": 836,
+      "sha256": "60ef5c634919ddf40c7fb6155b5e4915a175bea0e15c163fc918900269dcf8a8"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-012.fixture.json",
+      "bytes": 176,
+      "sha256": "84b1f7dc8c2f34cfec225a278f79cf9da1aca21e8546965869dd0eccdc0dd548"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-012.native.json",
+      "bytes": 3187,
+      "sha256": "5ee23b7f2807945edec96efd28ad304474d6010760790d938cf56e39df28f63b"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-012.oracle.json",
+      "bytes": 257,
+      "sha256": "869370092709fc4330308875aa30aae003453292d292565d4109f550addf3597"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-012.php",
+      "bytes": 830,
+      "sha256": "b0f194680b7309b8543cae03c36fbcac5055ef9c27f8a5b56652698ec75aa86b"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-013.fixture.json",
+      "bytes": 181,
+      "sha256": "9a1fc7b77280023c6aac937157f24beab70924d02b6572942c1dd4e326df3ece"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-013.native.json",
+      "bytes": 2826,
+      "sha256": "d93e19e9af9a259333f44c2adb5a426e35f79be79300da93b65cc593918e346d"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-013.oracle.json",
+      "bytes": 124,
+      "sha256": "b7ee530a59bfc7aedd65b31307a2ad722fb1f3d1aa4df0dc5c3719d253c8dbbe"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-013.php",
+      "bytes": 857,
+      "sha256": "38c41b4940ecff458000464eca0c8cf5c8347a48006e53f96f6e5993db47c98f"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-014.fixture.json",
+      "bytes": 180,
+      "sha256": "46b1973026e3e824d1a2a544867e70698bde5cf9b37b51dbe1f54da7e17c79fb"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-014.native.json",
+      "bytes": 2823,
+      "sha256": "cb45ea11b7f10786e9b57f390edcfc41477fe321b6060e156d0fc6da80bfcfc6"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-014.oracle.json",
+      "bytes": 123,
+      "sha256": "2722a4fa09c96bcea48449ab0ec973ea2777603d60cbe690bda06f9787a16ce2"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-014.php",
+      "bytes": 856,
+      "sha256": "bfbb35ca39cd28f22b265d3c4dbbc53aba7220a45377407dbd53a8561bbdbbee"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-015.fixture.json",
+      "bytes": 209,
+      "sha256": "5585c99704c93557b1aed932dd9f92a9215670ba40c7a8252f2a47a00a23e22e"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-015.native.json",
+      "bytes": 2876,
+      "sha256": "78530dd92200abd0be49e9d5676c1886c08744cc2bd5e6708e64684040fe834e"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-015.oracle.json",
+      "bytes": 127,
+      "sha256": "5fa6c153a36eaaacadf224429b9753911602ef2d975e1aeaf2a3959febed3d13"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-015.php",
+      "bytes": 860,
+      "sha256": "b8680a5ed53a79b875e47a4ab09076d1a31be401bcd6a42ca30cc430f43f97d8"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-016.fixture.json",
+      "bytes": 219,
+      "sha256": "0f46d32e91eb04f6f2928d48fb36f0aa432d857fcc6de2befb1b1b61dad1ae49"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-016.native.json",
+      "bytes": 3174,
+      "sha256": "c080f962a07273a2201b89915cfaa9390d292545ed402692f9c18b10056d3186"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-016.oracle.json",
+      "bytes": 257,
+      "sha256": "869370092709fc4330308875aa30aae003453292d292565d4109f550addf3597"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-016.php",
+      "bytes": 830,
+      "sha256": "b0f194680b7309b8543cae03c36fbcac5055ef9c27f8a5b56652698ec75aa86b"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-017.fixture.json",
+      "bytes": 226,
+      "sha256": "0d98bb901093faddf01e201f77a3261c96443d83b40f24385882b3fadf37b5a6"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-017.native.json",
+      "bytes": 2678,
+      "sha256": "5e353b35eb51bf67e74622a7a421a1dbe2ef6188102bda19ae447c5d700cebf8"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-017.php",
+      "bytes": 63,
+      "sha256": "600090decc445c69003198bcb84df9c667522f112fc6f47e0e7e8f5f18cdcfe3"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-018.fixture.json",
+      "bytes": 213,
+      "sha256": "e742f80fcd16a5fe074c6de8c022530a1960706da952c16f6c9aa158891d9375"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-018.native.json",
+      "bytes": 2678,
+      "sha256": "45277cfe433d51596bd6227846de71abb7d7b2dcb4531d51510becd9c0345bed"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-018.php",
+      "bytes": 63,
+      "sha256": "600090decc445c69003198bcb84df9c667522f112fc6f47e0e7e8f5f18cdcfe3"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-019.fixture.json",
+      "bytes": 539,
+      "sha256": "d9e164e6caa77c732e8e02f25b14d3dd75f85b13200dcffbdad6e8af8387cbd3"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-019.native.json",
+      "bytes": 3820,
+      "sha256": "eecb7bd10f413993175c0f73ed4796d4b0c3c305e5f58075ad3416ae36843eca"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-019.oracle.json",
+      "bytes": 475,
+      "sha256": "acf30dd72234da6d5f1293298ee5e6accc11119c42015d55d8c9db08fa6496a8"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/legacy-019.php",
+      "bytes": 1318,
+      "sha256": "8896fc7a3ef0c3de32aa79a88602085e0f29555e34a1dd1b64d4727f498ff3f3"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/report.json",
+      "bytes": 993881,
+      "sha256": "686cf7ad795e987ddee069af942dd4abb6a6980de8ec1d829b05cf89a75d79dd"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/run01/report.partial.json",
+      "bytes": 979288,
+      "sha256": "8da7931b0dc5ff4cca691c48f89480001ce18288266effc837e25a42f937c4ce"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/sdk-preparation01/headers.json",
+      "bytes": 123731,
+      "sha256": "96dc7f9e0e782f2d7859b436540f597d05600341fae1edc8371d08b3fe71a7f1"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/verification.json",
+      "bytes": 1711,
+      "sha256": "d83c590945ceb31a5d5d2387287b05813685be6d28db620e6a3a9d592c9e74d8"
+    },
+    {
+      "path": "reports/php-native-info-v2-20261113/Verify-Freeze.py",
+      "bytes": 5171,
+      "sha256": "80a594b3bca5be4f0d13015cdd067f87c265ff44f29f21be6d3841dc5f172605"
+    }
+  ]
+}

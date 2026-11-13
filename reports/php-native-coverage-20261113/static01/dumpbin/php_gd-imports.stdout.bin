@@ -1,0 +1,395 @@
+
+Dump of file C:\Users\rinpa\ALL_php_oracle\php-8.5.12-ts-x64\ext\php_gd.dll
+
+File Type: DLL
+
+  Section contains the following imports:
+
+    php8ts.dll
+             1805C8580 Import Address Table
+             1809D5A48 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         CC6 php_stream_stdio_ops
+                         1B3 display_ini_entries
+                        17E6 zend_wrong_parameter_error@@40
+                         A53 object_properties_init
+                        17E9 zend_wrong_parameters_none_error@@0
+                         12D add_assoc_long_ex
+                        167C zend_objects_not_comparable
+                        1760 zend_strndup@@16
+                        17E8 zend_wrong_parameters_count_error@@16
+                          D6 _php_stream_copy_to_mem
+                         E1E std_object_handlers
+                        16AD zend_parse_arg_double_slow@@24
+                         C86 php_sig_png
+                        1798 zend_unregister_ini_entries_ex
+                        16F9 zend_register_string_constant
+                        13EB zend_argument_type_error
+                        16AA zend_parse_arg_bool_slow@@24
+                         AE3 php_error_docref
+                        1803 zval_get_long_func@@16
+                         AF2 php_file_le_pstream
+                        15B3 zend_hash_str_find@@24
+                          D9 _php_stream_eof
+                         12B add_assoc_bool_ex
+                         E66 virtual_unlink
+                        166D zend_new_pair@@16
+                         AF3 php_file_le_stream
+                        1768 zend_throw_error
+                         A99 php_check_open_basedir
+                          B5 _efree@@8
+                         100 _php_stream_seek
+                         10C _php_stream_write
+                         281 instanceof_function_slow@@16
+                          D5 _php_stream_cast
+                        1675 zend_object_std_init@@16
+                         10E _safe_emalloc@@24
+                        14F5 zend_fetch_resource2_ex
+                        13EC zend_argument_value_error
+                         C88 php_sig_riff
+                         125 _zend_new_array@@8
+                          B6 _emalloc@@8
+                         107 _php_stream_tell
+                         E31 tsrm_get_ls_cache
+                        16BB zend_parse_parameters
+                        16F3 zend_register_long_constant
+                          FC _php_stream_read
+                          E7 _php_stream_free
+                          F6 _php_stream_open_wrapper_ex
+                        17DF zend_wrong_param_count
+                          AF __zend_malloc
+                        15CA zend_ini_boolean_displayer_cb
+                         B36 php_info_print_table_start
+                         194 compiler_globals_offset
+                        160D zend_known_strings
+                        175B zend_string_init_interned
+                         15E ap_php_snprintf
+                          B8 _erealloc@@16
+                        15D1 zend_ini_long
+                         C7D php_sig_gif
+                         D68 php_write
+                         C84 php_sig_jpg
+                         C8D php_sig_webp
+                          BB _fecalloc@@16
+                         E45 uncompress
+                         195 compress
+                          B9 _estrdup@@8
+                        17D6 zend_vspprintf
+                         E38 tsrm_mutex_lock
+                          B1 __zend_strdup
+                         E36 tsrm_mutex_alloc
+                         E37 tsrm_mutex_free
+                         E5B virtual_getcwd
+                         E39 tsrm_mutex_unlock
+                         35D libiconv_close
+                         35E libiconv_open
+                        16AF zend_parse_arg_long_slow@@24
+                         35C libiconv
+                         110 _safe_femalloc@@24
+                          BA _estrndup@@16
+                         D29 php_verror
+                        17C0 zend_value_error
+                         B32 php_info_print_table_end
+                         C7B php_sig_bmp
+                         B45 php_is_image_avif
+                         1A8 deflateEnd
+                         270 inflateEnd
+                         273 inflateReset
+                         1A3 crc32
+                         1A5 deflate
+                         1AD deflateReset
+                         1A9 deflateInit2_
+                         26B inflate
+                         274 inflateReset2
+                         271 inflateInit2_
+                        17EE zend_zval_value_name
+                         B34 php_info_print_table_row
+                        1674 zend_object_std_dtor
+                          BC _femalloc@@8
+                          EF _php_stream_memory_open
+                        16E9 zend_register_ini_entries_ex
+                          B4 _ecalloc@@16
+                         E5A virtual_fopen
+                         133 add_assoc_string_ex
+                        16B4 zend_parse_arg_str_slow@@24
+                        13EA zend_argument_must_not_be_empty_error
+                         B93 php_open_temporary_file
+                         A51 object_init_ex
+                        1588 zend_hash_index_find@@16
+                        16ED zend_register_internal_class_with_flags
+                        15A8 zend_hash_real_init_packed@@8
+                         139 add_index_double
+                        1802 zval_get_double_func@@8
+                         13A add_index_long
+                        13DB zend_add_attribute
+
+    USER32.dll
+             1805C81B0 Import Address Table
+             1809D5678 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         14F GetDesktopWindow
+                         13A GetClientRect
+                         2C0 PrintWindow
+                         255 IsWindow
+                         14B GetDC
+                         1FE GetWindowRect
+                         311 ReleaseDC
+
+    GDI32.dll
+             1805C8000 Import Address Table
+             1809D54C8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         195 DeleteObject
+                         2CC GetPixel
+                          31 CreateCompatibleDC
+                         37C SelectObject
+                          30 CreateCompatibleBitmap
+                          13 BitBlt
+                         192 DeleteDC
+
+    KERNEL32.dll
+             1805C8040 Import Address Table
+             1809D5508 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         31A GetSystemTimeAsFileTime
+                         246 GetCurrentThreadId
+                         481 QueryPerformanceCounter
+                         3B8 IsProcessorFeaturePresent
+                         5D8 TerminateProcess
+                         39A InitializeSListHead
+                         5B8 SetUnhandledExceptionFilter
+                         5FB UnhandledExceptionFilter
+                         518 RtlVirtualUnwind
+                         511 RtlLookupFunctionEntry
+                         509 RtlCaptureContext
+                         242 GetCurrentProcessId
+                         142 DisableThreadLibraryCalls
+                         3B0 IsDebuggerPresent
+                          DE CreateFileA
+                         278 GetFileSizeEx
+                         4A9 ReadFile
+                          9D CloseHandle
+                         37C HeapAlloc
+                         241 GetCurrentProcess
+                         383 HeapReAlloc
+                         38F InitOnceComplete
+                         38E InitOnceBeginInitialize
+                         5CA SleepConditionVariableSRW
+                         62D WakeAllConditionVariable
+                           0 AcquireSRWLockExclusive
+                         4EA ReleaseSRWLockExclusive
+                         39B InitializeSRWLock
+                         625 WaitForSingleObject
+                         380 HeapFree
+                         2E4 GetProcessHeap
+                         412 MapViewOfFile
+                         5FE UnmapViewOfFile
+                          DF CreateFileMappingA
+                         2DD GetProcAddress
+                         3F4 LoadLibraryA
+                         157 EnterCriticalSection
+                         3F0 LeaveCriticalSection
+                         397 InitializeCriticalSectionEx
+                         12F DeleteCriticalSection
+                         392 InitializeConditionVariable
+                         62E WakeConditionVariable
+                         5C9 SleepConditionVariableCS
+                         626 WaitForSingleObjectEx
+                         5A7 SetThreadPriority
+
+    VCRUNTIME140.dll
+             1805C81F0 Import Address Table
+             1809D56B8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          3E memset
+                          39 longjmp
+                          41 strrchr
+                          25 __std_type_info_destroy_list
+                          1D __intrinsic_setjmp
+                           8 __C_specific_handler
+                          40 strchr
+                          3A memchr
+                          3D memmove
+                          42 strstr
+                          3B memcmp
+                          3C memcpy
+
+    api-ms-win-crt-stdio-l1-1-0.dll
+             1805C8418 Import Address Table
+             1809D58E0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           6 __stdio_common_vfscanf
+                           D __stdio_common_vsprintf
+                          8B getc
+                          78 fgetc
+                          91 putc
+                          89 ftell
+                          9D ungetc
+                          7A fgets
+                          49 _open
+                          17 _close
+                          8A fwrite
+                          96 rewind
+                          75 feof
+                          10 __stdio_common_vsscanf
+                          99 tmpfile
+                          53 _rmtmp
+                          7D fopen
+                           B __stdio_common_vsnprintf_s
+                          77 fflush
+                          74 fclose
+                          87 fseek
+                          83 fread
+                           0 __acrt_iob_func
+                           3 __stdio_common_vfprintf
+                          80 fputs
+
+    api-ms-win-crt-heap-l1-1-0.dll
+             1805C8298 Import Address Table
+             1809D5760 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          19 malloc
+                          17 calloc
+                          1A realloc
+                          18 free
+
+    api-ms-win-crt-runtime-l1-1-0.dll
+             1805C83B0 Import Address Table
+             1809D5878 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          55 exit
+                          54 abort
+                          21 _errno
+                          16 _cexit
+                          22 _execute_onexit_table
+                          34 _initialize_onexit_table
+                          33 _initialize_narrow_environment
+                          18 _configure_narrow_argv
+                          3F _seh_filter_dll
+                          37 _initterm_e
+                          36 _initterm
+                          14 _beginthreadex
+
+    api-ms-win-crt-math-l1-1-0.dll
+             1805C82C0 Import Address Table
+             1809D5788 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          21 _fdopen
+                          DB log10
+                          7C ceil
+                          B6 expf
+                          E6 logf
+                         117 sqrtf
+                          FE pow
+                          BE floor
+                          BF floorf
+                          DC log10f
+                          FF powf
+                          E0 log2
+                          DA log
+                          DD log1p
+                         116 sqrt
+                          B2 exp
+                         106 rint
+                         11A tanh
+                          90 cos
+                         10A roundf
+                          DE log1pf
+                          E7 lrint
+                         118 tan
+                          10 _dclass
+                          1D _fdclass
+                          55 atan2
+                          C9 fmod
+                         112 sin
+                         109 round
+
+    api-ms-win-crt-utility-l1-1-0.dll
+             1805C8560 Import Address Table
+             1809D5A28 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          19 qsort
+                          1D srand
+                          1B rand
+
+    api-ms-win-crt-time-l1-1-0.dll
+             1805C8550 Import Address Table
+             1809D5A18 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          30 _time64
+
+    api-ms-win-crt-string-l1-1-0.dll
+             1805C84E8 Import Address Table
+             1809D59B0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          6B islower
+                          8B strlen
+                          65 isalpha
+                          86 strcmp
+                          88 strcpy
+                          68 isdigit
+                          2A _stricmp
+                          6E isspace
+                          8E strncmp
+                          6C isprint
+                          6F isupper
+                          8F strncpy
+
+    api-ms-win-crt-filesystem-l1-1-0.dll
+             1805C8288 Import Address Table
+             1809D5750 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 _access
+
+    api-ms-win-crt-environment-l1-1-0.dll
+             1805C8270 Import Address Table
+             1809D5738 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          11 getenv_s
+                          10 getenv
+
+    api-ms-win-crt-convert-l1-1-0.dll
+             1805C8258 Import Address Table
+             1809D5720 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          64 strtoul
+                          61 strtol
+
+  Summary
+
+       64000 .data
+       2C000 .pdata
+      410000 .rdata
+        5000 .reloc
+        1000 .rsrc
+      5C7000 .text

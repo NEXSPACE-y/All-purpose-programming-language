@@ -1,0 +1,202 @@
+[
+  {
+    "name": "prefix increment",
+    "code": "<?php $x=4; echo (++$x).\":\".$x;",
+    "expected": "5:5"
+  },
+  {
+    "name": "postfix increment",
+    "code": "<?php $x=4; echo ($x++).\":\".$x;",
+    "expected": "4:5"
+  },
+  {
+    "name": "prefix decrement",
+    "code": "<?php $x=4; echo (--$x).\":\".$x;",
+    "expected": "3:3"
+  },
+  {
+    "name": "postfix decrement",
+    "code": "<?php $x=4; echo ($x--).\":\".$x;",
+    "expected": "4:3"
+  },
+  {
+    "name": "postfix array element",
+    "code": "<?php $a=[2]; echo ($a[0]++).\":\".$a[0];",
+    "expected": "2:3"
+  },
+  {
+    "name": "postfix expression statement",
+    "code": "<?php $a=5; $a++; echo $a;",
+    "expected": "6"
+  },
+  {
+    "name": "prefix expression statement",
+    "code": "<?php $a=5; ++$a; echo $a;",
+    "expected": "6"
+  },
+  {
+    "name": "bitwise and",
+    "code": "<?php echo (12 & 10);",
+    "expected": "8"
+  },
+  {
+    "name": "bitwise or",
+    "code": "<?php echo (8 | 3);",
+    "expected": "11"
+  },
+  {
+    "name": "bitwise xor",
+    "code": "<?php echo (10 ^ 3);",
+    "expected": "9"
+  },
+  {
+    "name": "bitwise complement",
+    "code": "<?php echo (~5);",
+    "expected": "-6"
+  },
+  {
+    "name": "bitwise left shift",
+    "code": "<?php echo (3 << 2);",
+    "expected": "12"
+  },
+  {
+    "name": "bitwise right shift",
+    "code": "<?php echo (20 >> 2);",
+    "expected": "5"
+  },
+  {
+    "name": "bitwise logical precedence",
+    "code": "<?php echo (4 | 1 && 0) ? \"bad\" : \"ok\";",
+    "expected": "ok"
+  },
+  {
+    "name": "spaceship less",
+    "code": "<?php echo 2 <=> 5;",
+    "expected": "-1"
+  },
+  {
+    "name": "spaceship equal",
+    "code": "<?php echo 5 <=> 5;",
+    "expected": "0"
+  },
+  {
+    "name": "spaceship greater",
+    "code": "<?php echo 8 <=> 5;",
+    "expected": "1"
+  },
+  {
+    "name": "array union numeric",
+    "code": "<?php $a=[0=>\"a\",2=>\"c\"]; $b=[0=>\"x\",1=>\"b\"]; $c=$a+$b; echo implode(\",\",$c);",
+    "expected": "a,c,b"
+  },
+  {
+    "name": "array union strings",
+    "code": "<?php $a=[\"x\"=>1]; $b=[\"x\"=>2,\"y\"=>4]; $c=$a+$b; echo json_encode($c);",
+    "expected": "{\"x\":1,\"y\":4}"
+  },
+  {
+    "name": "strict array equal",
+    "code": "<?php echo ([1,2] === [1,2]) ? \"yes\" : \"no\";",
+    "expected": "yes"
+  },
+  {
+    "name": "strict array order differs",
+    "code": "<?php echo ([\"a\"=>1,\"b\"=>2] === [\"b\"=>2,\"a\"=>1]) ? \"yes\" : \"no\";",
+    "expected": "no"
+  },
+  {
+    "name": "loose array order differs",
+    "code": "<?php echo ([\"a\"=>1,\"b\"=>2] == [\"b\"=>2,\"a\"=>1]) ? \"yes\" : \"no\";",
+    "expected": "yes"
+  },
+  {
+    "name": "nested strict arrays",
+    "code": "<?php $a=[\"k\"=>[1,2]]; $b=[\"k\"=>[1,2]]; echo ($a===$b)?\"yes\":\"no\";",
+    "expected": "yes"
+  },
+  {
+    "name": "strict arrays unequal values",
+    "code": "<?php echo ([1,2] !== [1,3]) ? \"yes\" : \"no\";",
+    "expected": "yes"
+  },
+  {
+    "name": "array spread numeric",
+    "code": "<?php $a=[1,2]; $b=[0,...$a,3]; echo implode(\",\",$b);",
+    "expected": "0,1,2,3"
+  },
+  {
+    "name": "array spread string",
+    "code": "<?php $a=[\"a\"=>1,\"b\"=>2]; $b=[...$a,\"b\"=>7]; echo json_encode($b);",
+    "expected": "{\"a\":1,\"b\":7}"
+  },
+  {
+    "name": "array spread numeric renumber",
+    "code": "<?php $a=[5=>\"x\",9=>\"y\"]; $b=[...$a]; echo implode(\",\",array_keys($b));",
+    "expected": "0,1"
+  },
+  {
+    "name": "array spread nested",
+    "code": "<?php $a=[1]; $b=[...$a,...[2,3]]; echo implode(\",\",$b);",
+    "expected": "1,2,3"
+  },
+  {
+    "name": "new stdClass",
+    "code": "<?php $o=new stdClass(); $o->x=7; echo $o->x;",
+    "expected": "7"
+  },
+  {
+    "name": "object strict reference",
+    "code": "<?php class X { public $v=3; } $a=new X(); $b=$a; echo ($a===$b)?\"yes\":\"no\";",
+    "expected": "yes"
+  },
+  {
+    "name": "object strict distinct",
+    "code": "<?php class X { public $v=3; } $a=new X(); $b=new X(); echo ($a===$b)?\"yes\":\"no\";",
+    "expected": "no"
+  },
+  {
+    "name": "object loose same values",
+    "code": "<?php class X { public $v=3; } $a=new X(); $b=new X(); echo ($a==$b)?\"yes\":\"no\";",
+    "expected": "yes"
+  },
+  {
+    "name": "object loose changed values",
+    "code": "<?php class X { public $v=3; } $a=new X(); $b=new X(); $b->v=4; echo ($a!=$b)?\"yes\":\"no\";",
+    "expected": "yes"
+  },
+  {
+    "name": "destructure positional",
+    "code": "<?php [$a,$b]=[3,5]; echo $a.\":\".$b;",
+    "expected": "3:5"
+  },
+  {
+    "name": "destructure associative",
+    "code": "<?php [\"x\"=>$x,\"y\"=>$y]=[\"y\"=>9,\"x\"=>7]; echo $x.\":\".$y;",
+    "expected": "7:9"
+  },
+  {
+    "name": "destructure nested",
+    "code": "<?php [[$a,$b],$c]=[[1,2],3]; echo $a+$b+$c;",
+    "expected": "6"
+  },
+  {
+    "name": "destructure reassignment",
+    "code": "<?php $a=0;[$a]=[6];echo $a;",
+    "expected": "6"
+  },
+  {
+    "name": "operator precedence concat shift",
+    "code": "<?php echo 1 << 2 . \"x\";",
+    "expected": "4x"
+  },
+  {
+    "name": "operator precedence add concat",
+    "code": "<?php echo 1 + 2 . \"x\";",
+    "expected": "3x"
+  },
+  {
+    "name": "operator precedence instanceof negation",
+    "code": "<?php class A{} $a=new A();echo (!$a instanceof A)?\"yes\":\"no\";",
+    "expected": "no"
+  }
+]

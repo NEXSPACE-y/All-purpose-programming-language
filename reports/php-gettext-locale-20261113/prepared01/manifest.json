@@ -1,0 +1,53 @@
+{
+  "status": "FROZEN_NEW_CONTROLS_NOT_EXECUTED",
+  "files": {
+    "controls.json": {
+      "sha256": "98548b774eea97fbda998a2c0c4dffdb01843c59001c487bbe7013882ce9c2b1",
+      "bytes": 6593
+    },
+    "locale.all-over-messages/oracle.php": {
+      "sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+      "bytes": 1544
+    },
+    "locale.C-encoding/oracle.php": {
+      "sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+      "bytes": 1544
+    },
+    "locale.C-exact/oracle.php": {
+      "sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+      "bytes": 1544
+    },
+    "locale.lang-only/oracle.php": {
+      "sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+      "bytes": 1544
+    },
+    "locale.language-fallback/oracle.php": {
+      "sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+      "bytes": 1544
+    },
+    "locale.language-nonC/oracle.php": {
+      "sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+      "bytes": 1544
+    },
+    "locale.messages-over-catalog-lang/oracle.php": {
+      "sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+      "bytes": 1544
+    },
+    "locale.messages-over-lang/oracle.php": {
+      "sha256": "d5c4c1f0dc4922421bac261b1febc02e9e567313cdece367dbfeba7619dc65ab",
+      "bytes": 1544
+    },
+    "owned/catalog/zz_ALL/LC_MESSAGES/all_php_gettext_20261113.mo": {
+      "sha256": "a8aa43b7c0fc2c43da96a6e6526952fe508ed42d19ef0a18698e800711643dad",
+      "bytes": 241
+    },
+    "preparation-process-environment.json": {
+      "sha256": "b3f09140db2cf063e20c61bcc49720477bb4a17b457a1b9365cf09a88b3cfc6d",
+      "bytes": 237
+    },
+    "provenance.json": {
+      "sha256": "9acb58f9d16bd11f1169f040f5830f1d1b98e71e1e568c43a5ec6770262925ef",
+      "bytes": 1080
+    }
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "status": "SYNTHETIC_GETTER_CONTRACT_NOT_PHP_COMPATIBILITY",
+  "command": [
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\getter-host01\\getter-contract.exe",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\getter-core01\\php8ts.dll",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-native-info-v2-20261113\\getter-contract01\\contract.json",
+    "d7a25cc6dd90f4dca7893829e8508eeab8b4d85d4c33a0b7599b4bf372a3b514"
+  ],
+  "state": "EXITED",
+  "actual_status": 0,
+  "elapsed_seconds": 2.3877818000000843,
+  "timeout_seconds": 30,
+  "inputs_before": {
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe": "88c8344236a27a6e727e0a8edc49aaa2690bdc7a9464b9d18cc7abe70a9f1c0d",
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\dumpbin.exe": "12a1cd87238bd66dfdb788b4fcdcb91ce4b3f81236aab12a7a29e5ae1d85af50",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-native-info-v2-20261113\\build-getter-core01\\build.json": "753edea3f0ca247941f0c2ec5ac0746581360f2b833b6441c310be1fe5f9bbda",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\Build-GetterCore.ps1": "15dbd01aed593e124cee3f04c3ff2b6d102616f05c3ff9f0e4382a77798bd106",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\Build-GetterHost.ps1": "01216ab8bf6476cd86fc32eded29cce13ede6e6bfe464dfe03f7144c0e53deaf",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\generated02\\callback\\include\\all_php_bridge.h": "c67750780f5c0a5eddd5d4a379d1e70165bf8e8c0a077f31348847851e4d7f6f",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\generated02\\callback\\src\\Runtime.cpp": "c0c35e44e8d8213142b27bb963756bae2970747b05cec5e0ecd3483e62469c05",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\GetterContractCore.cpp": "8fe1920bdf4fe51263b61991180c53b6db73dc1cd406f2d58030ae8f02d199b0",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\GetterContractHost.cs": "1e8e43f6968d0279c7904047b5047770ccc7989bcacd5c36382d28986a0fefc8",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\getter-core01\\php8ts.dll": "d7a25cc6dd90f4dca7893829e8508eeab8b4d85d4c33a0b7599b4bf372a3b514",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\getter-host01\\AllPhp.ByteValues.Runtime.dll": "18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\getter-host01\\AllPhp.NativeBytes.Bridges.dll": "961afcfa6b80f4347bf54522c2066a224f570ac6412da50f284e9639d053b430",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\getter-host01\\build.json": "d3b97fdde665178625bdfe02593c670708bd45b88321bd39a61e17007d0b8bbb",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\getter-host01\\getter-contract.exe": "7c7c2a4c51c2a8a231e3b35190eba3d53ed87db3cfbda286ca6eec1cc71f6138",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\managed01\\AllPhp.ByteValues.Runtime.dll": "18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\managed01\\AllPhp.NativeBytes.Bridges.dll": "961afcfa6b80f4347bf54522c2066a224f570ac6412da50f284e9639d053b430",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\Run-GetterContract.py": "79e8c91396496c924ae2ebc8827bc61beb200ea10138a487f649caf8a4736b5b",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\sdk\\sdk01\\php-8.5.12-devel-vs17-x64\\include\\main\\php.h": "1bd30980a442f3324c23d94950b26f66d83964b57c7b994e78203c3ffead1321",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\sdk\\sdk01\\php-8.5.12-devel-vs17-x64\\include\\Zend\\zend_ini.h": "d8b6c20cf3250e7946d6c3ccc999309d3ea0ade863d0644d3f81c53b9a554a6f",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\sdk\\sdk01\\php-8.5.12-devel-vs17-x64\\include\\Zend\\zend_modules.h": "5268421096a85685dd8750457d5dd616ea04584dcf5bf826d02b0827397eb05b",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\sdk\\sdk01\\php-8.5.12-devel-vs17-x64\\include\\Zend\\zend_object_handlers.h": "f26a51b0e293d313a75da7691aebf528dbeadf10acdf6f5cb1f0c3b6ea7ad618",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\sdk\\sdk01\\php-8.5.12-devel-vs17-x64\\include\\Zend\\zend_types.h": "c4d5049811a8e2362f95413e5421c9e780367af0c5f86c9995f6bc64f7812b3e"
+  },
+  "inputs_after": {
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe": "88c8344236a27a6e727e0a8edc49aaa2690bdc7a9464b9d18cc7abe70a9f1c0d",
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\dumpbin.exe": "12a1cd87238bd66dfdb788b4fcdcb91ce4b3f81236aab12a7a29e5ae1d85af50",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-native-info-v2-20261113\\build-getter-core01\\build.json": "753edea3f0ca247941f0c2ec5ac0746581360f2b833b6441c310be1fe5f9bbda",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\Build-GetterCore.ps1": "15dbd01aed593e124cee3f04c3ff2b6d102616f05c3ff9f0e4382a77798bd106",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\Build-GetterHost.ps1": "01216ab8bf6476cd86fc32eded29cce13ede6e6bfe464dfe03f7144c0e53deaf",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\generated02\\callback\\include\\all_php_bridge.h": "c67750780f5c0a5eddd5d4a379d1e70165bf8e8c0a077f31348847851e4d7f6f",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\generated02\\callback\\src\\Runtime.cpp": "c0c35e44e8d8213142b27bb963756bae2970747b05cec5e0ecd3483e62469c05",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\GetterContractCore.cpp": "8fe1920bdf4fe51263b61991180c53b6db73dc1cd406f2d58030ae8f02d199b0",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\GetterContractHost.cs": "1e8e43f6968d0279c7904047b5047770ccc7989bcacd5c36382d28986a0fefc8",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\getter-core01\\php8ts.dll": "d7a25cc6dd90f4dca7893829e8508eeab8b4d85d4c33a0b7599b4bf372a3b514",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\getter-host01\\AllPhp.ByteValues.Runtime.dll": "18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\getter-host01\\AllPhp.NativeBytes.Bridges.dll": "961afcfa6b80f4347bf54522c2066a224f570ac6412da50f284e9639d053b430",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\getter-host01\\build.json": "d3b97fdde665178625bdfe02593c670708bd45b88321bd39a61e17007d0b8bbb",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\getter-host01\\getter-contract.exe": "7c7c2a4c51c2a8a231e3b35190eba3d53ed87db3cfbda286ca6eec1cc71f6138",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\managed01\\AllPhp.ByteValues.Runtime.dll": "18d50efb55d8a333424149e4ab37428e102b1ac938240e50358ee3c8ab89466b",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\managed01\\AllPhp.NativeBytes.Bridges.dll": "961afcfa6b80f4347bf54522c2066a224f570ac6412da50f284e9639d053b430",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\Run-GetterContract.py": "79e8c91396496c924ae2ebc8827bc61beb200ea10138a487f649caf8a4736b5b",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\sdk\\sdk01\\php-8.5.12-devel-vs17-x64\\include\\main\\php.h": "1bd30980a442f3324c23d94950b26f66d83964b57c7b994e78203c3ffead1321",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\sdk\\sdk01\\php-8.5.12-devel-vs17-x64\\include\\Zend\\zend_ini.h": "d8b6c20cf3250e7946d6c3ccc999309d3ea0ade863d0644d3f81c53b9a554a6f",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\sdk\\sdk01\\php-8.5.12-devel-vs17-x64\\include\\Zend\\zend_modules.h": "5268421096a85685dd8750457d5dd616ea04584dcf5bf826d02b0827397eb05b",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\sdk\\sdk01\\php-8.5.12-devel-vs17-x64\\include\\Zend\\zend_object_handlers.h": "f26a51b0e293d313a75da7691aebf528dbeadf10acdf6f5cb1f0c3b6ea7ad618",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\sdk\\sdk01\\php-8.5.12-devel-vs17-x64\\include\\Zend\\zend_types.h": "c4d5049811a8e2362f95413e5421c9e780367af0c5f86c9995f6bc64f7812b3e"
+  },
+  "inputs_unchanged": true,
+  "stdout_base64": "eyJhY3R1YWxfc3RhdHVzIjowLCJwYXlsb2FkX2Nhc2VzX3Bhc3NlZCI6Nn0NCg==",
+  "stderr_base64": "",
+  "contract": {
+    "scope": "SYNTHETIC_GETTER_CONTRACT_NOT_PHP_COMPATIBILITY",
+    "extension_loaded_or_called": false,
+    "core_sha256": "d7a25cc6dd90f4dca7893829e8508eeab8b4d85d4c33a0b7599b4bf372a3b514",
+    "initial_empty_outside_request": true,
+    "null_length_pointer_safe": true,
+    "inactive_end_rejected_and_error_readable": true,
+    "invalid_synthetic_input_rejected": true,
+    "thread_local_error_state_separate": true,
+    "copy_survives_shutdown": true,
+    "stats": {
+      "minit": 0,
+      "mshutdown": 0,
+      "rinit": 0,
+      "rshutdown": 0,
+      "thread_requests_started": 0,
+      "thread_requests_ended": 0,
+      "thread_global_ctors": 0,
+      "tls_contexts_created": 0,
+      "tls_contexts_destroyed": 0,
+      "native_invocations": 0,
+      "registered_functions": 0,
+      "registered_classes": 0,
+      "request_allocations_live": 0,
+      "api_calls": {}
+    },
+    "loaded_php_modules": [
+      "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\out\\getter-core01\\php8ts.dll"
+    ],
+    "payload_cases": [
+      {
+        "index": 0,
+        "length": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "after_native_overwrite_same": true
+      },
+      {
+        "index": 1,
+        "length": 1,
+        "sha256": "a8100ae6aa1940d0b663bb31cd466142ebbdbd5187131b92d93818987832eb89",
+        "after_native_overwrite_same": true
+      },
+      {
+        "index": 2,
+        "length": 3,
+        "sha256": "76fe3925c7167317f2df68454339f5ec3650e4062178b4f2be219b105a507907",
+        "after_native_overwrite_same": true
+      },
+      {
+        "index": 3,
+        "length": 3,
+        "sha256": "91a681b998555fb475479817b126c94e57e52011fa1842c5d188795a4a05226b",
+        "after_native_overwrite_same": true
+      },
+      {
+        "index": 4,
+        "length": 256,
+        "sha256": "40aff2e9d2d8922e47afd4648e6967497158785fbd1da870e7110266bf944880",
+        "after_native_overwrite_same": true
+      },
+      {
+        "index": 5,
+        "length": 16777217,
+        "sha256": "42358ce46b8dc915fa330edbd61979b858ec7fb92d1b0a81b431d3d4e35395ee",
+        "after_native_overwrite_same": true
+      }
+    ],
+    "payload_cases_passed": 6,
+    "actual_main_status": 0,
+    "status": "CONTROLLED_GETTER_PASS_NOT_PHP_COMPATIBILITY"
+  },
+  "pass": true
+}

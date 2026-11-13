@@ -1,0 +1,8 @@
+{
+    "powerShell":  "5.1.26100.9818",
+    "clr":  "4.0.30319.42000",
+    "pointerBytes":  8,
+    "workerSyntaxErrors":  0,
+    "compileCSharp":  false,
+    "defaultFixturesExecuted":  false
+}

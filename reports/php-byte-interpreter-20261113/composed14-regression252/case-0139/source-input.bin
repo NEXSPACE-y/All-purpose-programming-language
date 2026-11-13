@@ -1,0 +1,1 @@
+<?php function side(){throw new Exception('SIDE');}$f='missing_fn';try{$f(side());}catch(Throwable $e){echo get_class($e).':'.$e->getMessage();}

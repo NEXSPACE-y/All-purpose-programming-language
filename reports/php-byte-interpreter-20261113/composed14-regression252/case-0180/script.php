@@ -1,0 +1,1 @@
+<?php class Own extends Exception {public function __toString(){return 'override';}} echo new Own('x');

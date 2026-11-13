@@ -1,0 +1,227 @@
+[
+  {
+    "name": "Smoke",
+    "code": "<?php echo \"Hello, ALL!\", \"\\n\"; $x=10+60; echo \"total=\",$x,\"\\n\"; if ($x > 50) { echo \"condition=OK\\n\"; } else { echo \"bad\\n\"; } $i=0; while($i<3){ echo \"loop=\",$i,\"\\n\"; $i+=1; }",
+    "expected": "Hello, ALL!\ntotal=70\ncondition=OK\nloop=0\nloop=1\nloop=2\n"
+  },
+  {
+    "name": "echo",
+    "code": "<?php echo \"Hello, ALL!\";",
+    "expected": "Hello, ALL!"
+  },
+  {
+    "name": "arithmetic precedence",
+    "code": "<?php echo 2 * 5 + 1;",
+    "expected": "11"
+  },
+  {
+    "name": "array literal and index",
+    "code": "<?php $a=[10,20]; echo $a[1];",
+    "expected": "20"
+  },
+  {
+    "name": "array append",
+    "code": "<?php $a=[]; $a[]=5; $a[]=6; echo $a[1];",
+    "expected": "6"
+  },
+  {
+    "name": "associative array",
+    "code": "<?php $a=[\"foo\"=>5]; echo $a[\"foo\"];",
+    "expected": "5"
+  },
+  {
+    "name": "count builtin",
+    "code": "<?php $a=[1,2,3]; echo count($a);",
+    "expected": "3"
+  },
+  {
+    "name": "foreach key/value",
+    "code": "<?php $a=[\"x\"=>7,\"y\"=>8]; foreach ($a as $k=>$v) { echo $k,\"=\",$v,\";\"; }",
+    "expected": "x=7;y=8;"
+  },
+  {
+    "name": "function return",
+    "code": "<?php function twice($n){return $n*2;} echo twice(9);",
+    "expected": "18"
+  },
+  {
+    "name": "function local scope",
+    "code": "<?php $n=10; function twice($n){return $n*2;} echo twice(9),\",\",$n;",
+    "expected": "18,10"
+  },
+  {
+    "name": "class method",
+    "code": "<?php class Box{public function get(){return 42;}} $b=new Box(); echo $b->get();",
+    "expected": "42"
+  },
+  {
+    "name": "constructor and property",
+    "code": "<?php class Box{public $value=0;public function __construct($n){$this->value=$n;}public function get(){return $this->value;}} $b=new Box(23); echo $b->get();",
+    "expected": "23"
+  },
+  {
+    "name": "numeric string arithmetic",
+    "code": "<?php echo \"12\" + 3;",
+    "expected": "15"
+  },
+  {
+    "name": "loose equality",
+    "code": "<?php echo \"12\" == 12;",
+    "expected": "1"
+  },
+  {
+    "name": "strict equality",
+    "code": "<?php echo \"12\" === 12;",
+    "expected": ""
+  },
+  {
+    "name": "concat precedence",
+    "code": "<?php echo 10+5 . \" apples\";",
+    "expected": "15 apples"
+  },
+  {
+    "name": "strlen builtin",
+    "code": "<?php echo strlen(\"abc\");",
+    "expected": "3"
+  },
+  {
+    "name": "for loop basic",
+    "code": "<?php for($i=0;$i<4;$i++){echo $i;}",
+    "expected": "0123"
+  },
+  {
+    "name": "for loop multiple updates",
+    "code": "<?php for($i=0,$j=4;$i<3;$i++,$j--){echo $i,\":\",$j,\";\";}",
+    "expected": "0:4;1:3;2:2;"
+  },
+  {
+    "name": "for loop empty condition and break",
+    "code": "<?php for($i=0;;$i++){if($i===3){break;}echo $i;}",
+    "expected": "012"
+  },
+  {
+    "name": "do while",
+    "code": "<?php $n=0;do{echo $n;$n++;}while($n<3);",
+    "expected": "012"
+  },
+  {
+    "name": "while continue",
+    "code": "<?php $i=0;while($i<4){$i++;if($i===2){continue;}echo $i;}",
+    "expected": "134"
+  },
+  {
+    "name": "for continue executes update",
+    "code": "<?php for($i=0;$i<4;$i++){if($i===2){continue;}echo $i;}",
+    "expected": "013"
+  },
+  {
+    "name": "nested for break",
+    "code": "<?php for($i=0;$i<2;$i++){for($j=0;$j<3;$j++){if($j===1){break;}echo $i,$j;}}",
+    "expected": "0010"
+  },
+  {
+    "name": "foreach continue",
+    "code": "<?php foreach([1,2,3] as $v){if($v===2){continue;}echo $v;}",
+    "expected": "13"
+  },
+  {
+    "name": "isset defined",
+    "code": "<?php $a=5;echo isset($a);",
+    "expected": "1"
+  },
+  {
+    "name": "isset undefined",
+    "code": "<?php echo isset($nothing);",
+    "expected": ""
+  },
+  {
+    "name": "isset null",
+    "code": "<?php $a=null;echo isset($a);",
+    "expected": ""
+  },
+  {
+    "name": "empty literal",
+    "code": "<?php echo empty(\"0\"),empty(\"42\");",
+    "expected": "1"
+  },
+  {
+    "name": "empty undefined",
+    "code": "<?php echo empty($none);",
+    "expected": "1"
+  },
+  {
+    "name": "isset missing array key",
+    "code": "<?php $a=[\"x\"=>1];echo isset($a[\"no\"]);",
+    "expected": ""
+  },
+  {
+    "name": "unset variable",
+    "code": "<?php $a=3;unset($a);echo isset($a);",
+    "expected": ""
+  },
+  {
+    "name": "unset array key",
+    "code": "<?php $a=[1,2];unset($a[0]);echo count($a),\":\",$a[1];",
+    "expected": "1:2"
+  },
+  {
+    "name": "array_key_exists",
+    "code": "<?php $a=[\"x\"=>null];echo array_key_exists(\"x\",$a),\":\",isset($a[\"x\"]);",
+    "expected": "1:"
+  },
+  {
+    "name": "array_sum",
+    "code": "<?php echo array_sum([4,5,6]);",
+    "expected": "15"
+  },
+  {
+    "name": "strtoupper ascii",
+    "code": "<?php echo strtoupper(\"HeLLo\");",
+    "expected": "HELLO"
+  },
+  {
+    "name": "strtolower ascii",
+    "code": "<?php echo strtolower(\"HeLLo\");",
+    "expected": "hello"
+  },
+  {
+    "name": "trim builtin",
+    "code": "<?php echo trim(\" \\t Hi \\n \");",
+    "expected": "Hi"
+  },
+  {
+    "name": "abs builtin",
+    "code": "<?php echo abs(-5);",
+    "expected": "5"
+  },
+  {
+    "name": "is_array",
+    "code": "<?php $a=[1];echo is_array($a),\":\",is_array(\"test\");",
+    "expected": "1:"
+  },
+  {
+    "name": "is_string",
+    "code": "<?php echo is_string(\"ok\"),\":\",is_string(2);",
+    "expected": "1:"
+  },
+  {
+    "name": "is_bool",
+    "code": "<?php echo is_bool(true),\":\",is_bool(1);",
+    "expected": "1:"
+  },
+  {
+    "name": "strval",
+    "code": "<?php echo \"x\",strval(13);",
+    "expected": "x13"
+  },
+  {
+    "name": "standalone postincrement",
+    "code": "<?php $i=2;$i++;echo $i;",
+    "expected": "3"
+  },
+  {
+    "name": "standalone postdecrement",
+    "code": "<?php $i=2;$i--;echo $i;",
+    "expected": "1"
+  }
+]

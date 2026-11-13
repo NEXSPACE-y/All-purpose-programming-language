@@ -1,0 +1,112 @@
+[
+  {
+    "name": "reference variable basic",
+    "code": "<?php $a=3;$b=&$a;$b=7;echo $a;",
+    "expected": "7"
+  },
+  {
+    "name": "reference variable reverse",
+    "code": "<?php $a=3;$b=&$a;$a=10;echo $b;",
+    "expected": "10"
+  },
+  {
+    "name": "reference reassignment",
+    "code": "<?php $a=1;$b=2;$c=&$a;$c=&$b;$c=5;echo $a.\":\".$b;",
+    "expected": "1:5"
+  },
+  {
+    "name": "reference unset alias",
+    "code": "<?php $a=1;$b=&$a;unset($b);$a=4;echo $a;",
+    "expected": "4"
+  },
+  {
+    "name": "reference alias chained",
+    "code": "<?php $a=3;$b=&$a;$c=&$b;$c=9;echo $a.\":\".$b;",
+    "expected": "9:9"
+  },
+  {
+    "name": "reference local by value",
+    "code": "<?php $x=2;$y=&$x;$z=$y;$z=8;echo $x;",
+    "expected": "2"
+  },
+  {
+    "name": "reference simple byref parameter",
+    "code": "<?php function inc(&$value){$value+=2;} $n=3;inc($n);echo $n;",
+    "expected": "5"
+  },
+  {
+    "name": "reference multiple byref parameters",
+    "code": "<?php function swap(&$a,&$b){$tmp=$a;$a=$b;$b=$tmp;} $a=3;$b=7;swap($a,$b);echo $a.\":\".$b;",
+    "expected": "7:3"
+  },
+  {
+    "name": "reference byval isolation",
+    "code": "<?php function inc($value){$value+=2;} $n=3;inc($n);echo $n;",
+    "expected": "3"
+  },
+  {
+    "name": "reference function mixed",
+    "code": "<?php function inc(&$a,$b){$a+=$b;} $a=3;$b=2;inc($a,$b);echo $a;",
+    "expected": "5"
+  },
+  {
+    "name": "reference function argument expression",
+    "code": "<?php function foo($x){return $x*2;} $a=3;echo foo($a);",
+    "expected": "6"
+  },
+  {
+    "name": "reference closure capture mutation",
+    "code": "<?php $n=2;$fn=function() use (&$n){$n+=4;};$fn();echo $n;",
+    "expected": "6"
+  },
+  {
+    "name": "reference closure repeated",
+    "code": "<?php $n=0;$fn=function() use (&$n){$n++;return $n;};echo $fn().$fn();",
+    "expected": "12"
+  },
+  {
+    "name": "reference closure by value contrast",
+    "code": "<?php $n=0;$fn=function() use ($n){$n++;return $n;};$fn();echo $n;",
+    "expected": "0"
+  },
+  {
+    "name": "reference function static reference",
+    "code": "<?php function test(&$value){$value+=2;} $a=3;$b=&$a;test($b);echo $a;",
+    "expected": "5"
+  },
+  {
+    "name": "reference method byref",
+    "code": "<?php class C {public function inc(&$x){$x++;}} $n=4; (new C())->inc($n);echo $n;",
+    "expected": "5"
+  },
+  {
+    "name": "reference named byref",
+    "code": "<?php function add(&$left,$value){$left+=$value;} $n=4;add(value:3,left:$n);echo $n;",
+    "expected": "7"
+  },
+  {
+    "name": "reference static method byref",
+    "code": "<?php class C {public static function inc(&$x){$x++;}} $n=4; C::inc($n); echo $n;",
+    "expected": "5"
+  },
+  {
+    "name": "reference byref closure argument",
+    "code": "<?php $f=function(&$v){$v+=2;};$n=5;$f($n);echo $n;",
+    "expected": "7"
+  },
+  {
+    "name": "reference bind undefined source",
+    "code": "<?php $x=&$missing;$x=9;echo $missing;",
+    "expected": "9"
+  },
+  {
+    "name": "reference array by value arg",
+    "code": "<?php function change($a){$a[0]=9;} $items=[1,2];change($items);echo $items[0];",
+    "expected": "1"
+  },
+  {
+    "name": "reference captured by-value aliases",
+    "code": "<?php $n=5;$alias=&$n;$f=function() use ($alias){return $alias;};$n=8;echo $f();",
+    "expected": "5"
+  }
+]

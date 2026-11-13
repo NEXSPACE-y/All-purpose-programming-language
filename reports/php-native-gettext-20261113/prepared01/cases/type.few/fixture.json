@@ -1,0 +1,12 @@
+{
+  "id": "type.few",
+  "group": "argument_diagnostics",
+  "steps": [
+    {
+      "operation": "call",
+      "function": "gettext",
+      "args": [],
+      "strict": false
+    }
+  ]
+}

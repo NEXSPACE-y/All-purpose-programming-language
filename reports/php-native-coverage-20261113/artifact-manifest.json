@@ -1,0 +1,465 @@
+{
+  "status": "FROZEN_STATIC_NATIVE_COVERAGE_NOT_FULL_PHP",
+  "files": [
+    {
+      "path": "tools/candidates/php-native-coverage/Classify-Source.py",
+      "bytes": 13235,
+      "sha256": "2f47539efb9aaba822be1dcdac31ac4e14c4d92ebae51abe3ab6ee9cd5494546"
+    },
+    {
+      "path": "tools/candidates/php-native-coverage/Collect-StaticImports.py",
+      "bytes": 7275,
+      "sha256": "d056ff442ad41dd40c8890a13fd6b74236d005c010180ca64f47e83cf10833b3"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/NEXT_BATCHES.md",
+      "bytes": 11286,
+      "sha256": "0106c3be8b08fb8825a43a6ac983072688bac3fea61eea6cc15a0b77695db71c"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/README.md",
+      "bytes": 2981,
+      "sha256": "b131425cee92dc30914b88500386788a3057f87f2f7f0fc7e0ce540f5b916292"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/source01/failure.json",
+      "bytes": 379,
+      "sha256": "abec02b3d3b024cbe51019ef1b05db26d17f8ab56b20c80e2aa8bca0263a59c2"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/source02/modules.csv",
+      "bytes": 3771,
+      "sha256": "559646286f794bd7607bbadb1f2a45f846615ddfcdbdc0a3222bb31dd50c2b9c"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/source02/source-audit.json",
+      "bytes": 667911,
+      "sha256": "04398168370746a9af5c4bf5f27cac51847091f8d475af77fa1ce466459e0cb9"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/callback-core-exports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/callback-core-exports.stdout.bin",
+      "bytes": 3526,
+      "sha256": "f29d7e717dd0bf6ec8acf975d35c6ca1a1b9c44601ffb8fa0e68c2900665bbf0"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/callback-core-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/callback-core-imports.stdout.bin",
+      "bytes": 11784,
+      "sha256": "2bb7db630a22973e8a102e5cb89c32edb534c74fe829e3df70319fef8f4a1c51"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/oracle-core-exports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/oracle-core-exports.stdout.bin",
+      "bytes": 325095,
+      "sha256": "131ef5642bf5e8878d0535324cdb6f9d9fb39f80ec4c6c40132a7a80945d7aef"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/original-core-exports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/original-core-exports.stdout.bin",
+      "bytes": 3201,
+      "sha256": "ff1d256f6045e5c582ef920f70c91bf2693a399dd5fb857e6b278c3bbdf94959"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/original-core-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/original-core-imports.stdout.bin",
+      "bytes": 11682,
+      "sha256": "1e78fb3d490b6b9fa4180a4dc00a1cc2d10efc38caa7ca3704b7ceac7b64b25e"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_bz2-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_bz2-imports.stdout.bin",
+      "bytes": 7171,
+      "sha256": "b56a151ee78d9857afb706bb5dbb6f392cc16a2119778a9fccb68c22a38b46d3"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_com_dotnet-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_com_dotnet-imports.stdout.bin",
+      "bytes": 13830,
+      "sha256": "171c0650b33fd4e1f65c92fd0143b89680a55f8291898412d0ab9273e760e327"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_curl-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_curl-imports.stdout.bin",
+      "bytes": 38850,
+      "sha256": "1ef7cc3bd306ef100f9c85a93232902081a0b00a14a0cfbe8f611d264e1e3aa7"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_dba-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_dba-imports.stdout.bin",
+      "bytes": 12465,
+      "sha256": "e69e26128f992eaf914ce65bcc8ddf08d81d1582bc0fcb7791224562708accd8"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_dl_test-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_dl_test-imports.stdout.bin",
+      "bytes": 4928,
+      "sha256": "d4ef2380f2f95b046a7eebc184d7cc690bc080169e242b8311b61bdc09cb3af4"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_enchant-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_enchant-imports.stdout.bin",
+      "bytes": 5656,
+      "sha256": "de29345957df3817a8c1754f51c8e059b6b707002640628f9c51ea7dc99ecd77"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_exif-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_exif-imports.stdout.bin",
+      "bytes": 7027,
+      "sha256": "c96389e53075724660b931e46f839ff1b73a60a75d21d0f3df11d69878dd4563"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_ffi-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_ffi-imports.stdout.bin",
+      "bytes": 8741,
+      "sha256": "32954065dd305aab34d50028890a4535570b45a7cf5e265c13116555808640b3"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_fileinfo-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_fileinfo-imports.stdout.bin",
+      "bytes": 10587,
+      "sha256": "ee489f89d65ce95444e2966fa4e4c7a2bdb5554ec2557889e090f91eb27adeb9"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_ftp-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_ftp-imports.stdout.bin",
+      "bytes": 9741,
+      "sha256": "8698af5a767fee044a417907893ec7e0f31af7b570ee1b0e9866fd0b5b20b996"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_gd-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_gd-imports.stdout.bin",
+      "bytes": 16004,
+      "sha256": "16901a5f40bb2e123f20e2bfcbffd148916f46488139d1976b4a5b00934b6fcb"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_gettext-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_gettext-imports.stdout.bin",
+      "bytes": 7858,
+      "sha256": "750bd5288f135078c419c0d183b8306be9229800e87d9eaf989907920d4f343e"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_gmp-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_gmp-imports.stdout.bin",
+      "bytes": 6788,
+      "sha256": "4e2dbd0a7ffc04aae5bb2cf23924d5ee3a1bf5188fcaa3a89628ad55814d69dd"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_intl-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_intl-imports.stdout.bin",
+      "bytes": 52618,
+      "sha256": "bd8bf2b34f741fa8ed699a7d2a4d6359a9774b4eb5797835b961f15703c163e5"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_ldap-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_ldap-imports.stdout.bin",
+      "bytes": 19570,
+      "sha256": "b5cb82e5c10313958999acdb12163aef1a38f9f214b5582e8bc4651367f2fd4d"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_mbstring-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_mbstring-imports.stdout.bin",
+      "bytes": 11344,
+      "sha256": "6afe651a5e6ccd2a55f6f07d0c2de14251b724894e89c26fd61705dd602f5658"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_mysqli-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_mysqli-imports.stdout.bin",
+      "bytes": 9294,
+      "sha256": "f15b7dffb4f07c047285836d9aa1613366e586d883ad9bcb4f984dbcde06b2cf"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_odbc-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_odbc-imports.stdout.bin",
+      "bytes": 10401,
+      "sha256": "94f19cabdfd099f97a2cc7a8e30256011c1cf32d571f50452e0c1b0981311421"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_openssl-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_openssl-imports.stdout.bin",
+      "bytes": 31888,
+      "sha256": "b2b9de6201daa2b52a1ead83b393b69456e98051963d22a0df18fe89dd80db2e"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_pdo_firebird-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_pdo_firebird-imports.stdout.bin",
+      "bytes": 9124,
+      "sha256": "a3554ee798a239e536e1a0d576d46161834cda7c226f74adc84796937956a696"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_pdo_mysql-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_pdo_mysql-imports.stdout.bin",
+      "bytes": 6232,
+      "sha256": "6be1a39bf04ddcd1e8b019dbc1f4b928796c61bdf22336fb37f774895bdbcec8"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_pdo_odbc-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_pdo_odbc-imports.stdout.bin",
+      "bytes": 7928,
+      "sha256": "a3c8290c9b68ef64046248d308116ef32b663b945b396af920e1360752b45ff2"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_pdo_pgsql-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_pdo_pgsql-imports.stdout.bin",
+      "bytes": 10832,
+      "sha256": "9e48048915ef8dff1760141c7b258e5222795c8b29cf902982d9bb9f447877aa"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_pdo_sqlite-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_pdo_sqlite-imports.stdout.bin",
+      "bytes": 10155,
+      "sha256": "6375b7a1dd98529e82a6ee98b290e273df06f7e1d72f253014916a56dff6f56e"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_pgsql-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_pgsql-imports.stdout.bin",
+      "bytes": 14215,
+      "sha256": "e40a564b80b1b7d033bdc318286ef75a59c642e7547da2fe64a790c1994173af"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_shmop-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_shmop-imports.stdout.bin",
+      "bytes": 4004,
+      "sha256": "e056e8d368bff67839e9c0e562781178d3b68dab5bf8337450555b3a2ec8e8da"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_snmp-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_snmp-imports.stdout.bin",
+      "bytes": 18209,
+      "sha256": "769e8fb78953f7d46bd9c329b282a7d1d24d3a2e5bad4c90125405d9b71904da"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_soap-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_soap-imports.stdout.bin",
+      "bytes": 17864,
+      "sha256": "6dc570067e1c778c85a8d0e27aa091ccc2163c65c0a5c129cb738203e4298417"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_sockets-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_sockets-imports.stdout.bin",
+      "bytes": 10013,
+      "sha256": "7d16fc822bb3fc9b910c9d5def3b22df96e7e6f4f5714acc24bc8ceba9b55d0f"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_sodium-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_sodium-imports.stdout.bin",
+      "bytes": 11285,
+      "sha256": "909ffcde938bd18e57ce19f76d58aa545540f4cb05b2415628da07a53f8f54c0"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_sqlite3-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_sqlite3-imports.stdout.bin",
+      "bytes": 11165,
+      "sha256": "03150b638d97df99217e069e84e80703d9a090f28b09821d21d6542eb7e77713"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_sysvshm-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_sysvshm-imports.stdout.bin",
+      "bytes": 4039,
+      "sha256": "2d7c7a966a5035febc6c92cc06656dd6c616ff1a019b1ca3c92b80ab561b6090"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_tidy-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_tidy-imports.stdout.bin",
+      "bytes": 8286,
+      "sha256": "b07631b6b83c6a4b7e653f3aa93aed91a36b82114a2d0fd5410e724defe901de"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_xsl-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_xsl-imports.stdout.bin",
+      "bytes": 20761,
+      "sha256": "f8a7159de89fa992babc2403585460d2b7d97ed69953cfcac53bcf055b100c9e"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_zend_test-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_zend_test-imports.stdout.bin",
+      "bytes": 14495,
+      "sha256": "f591ba7c4033b846d3c7b230b51aeef754ed47f218d51e05c0c131d0322defb2"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_zip-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/dumpbin/php_zip-imports.stdout.bin",
+      "bytes": 13479,
+      "sha256": "8f48e6d7ce857bbaa84eb2f2608700e5daa5601c548729b019a62ea330d90797"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/static01/inventory.json",
+      "bytes": 2519802,
+      "sha256": "fce4faa4769ac5d319ee644ffbc80e49eb73a437430aa9381ae879195a980ac7"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/verification.json",
+      "bytes": 390,
+      "sha256": "c4c22137c6a19fd03ef3bdd369f2db6a264ff7290960c353858e3e1c3d79922e"
+    },
+    {
+      "path": "reports/php-native-coverage-20261113/Verify-Freeze.py",
+      "bytes": 2982,
+      "sha256": "b742445a164ab0cec6cf1aad23c8dff9a5ee437c0504e2a2b579a23aefdf5fa4"
+    }
+  ]
+}

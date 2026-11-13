@@ -1,0 +1,82 @@
+[
+  {
+    "name": "reference return global",
+    "code": "<?php $x=3; function &take(){global $x;return $x;} $a =& take(); $a=9;echo $x;",
+    "expected": "9"
+  },
+  {
+    "name": "reference return static local",
+    "code": "<?php function &counter(){static $x=2;return $x;} $a =& counter();$a=7;$b =& counter(); echo $b;",
+    "expected": "7"
+  },
+  {
+    "name": "reference return method property",
+    "code": "<?php class Box{ public $v=1; function &get(){return $this->v;} } $b=new Box; $a =& $b->get();$a=7;echo $b->v;",
+    "expected": "7"
+  },
+  {
+    "name": "reference return static property",
+    "code": "<?php class M{public static $v=1; static function &read(){return self::$v;}} $a =& M::read();$a=4;echo M::$v;",
+    "expected": "4"
+  },
+  {
+    "name": "reference return array element",
+    "code": "<?php $xs=[2,3];function &first(){ global $xs;return $xs[0];} $a =& first();$a=8;echo $xs[0];",
+    "expected": "8"
+  },
+  {
+    "name": "reference return passthrough",
+    "code": "<?php function &id(&$a){return $a;} $x=2;$y =& id($x);$y=20;echo $x;",
+    "expected": "20"
+  },
+  {
+    "name": "reference return closure capture",
+    "code": "<?php $x=2;$f=function &() use (&$x){return $x;};$y =& $f();$y=5;echo $x;",
+    "expected": "5"
+  },
+  {
+    "name": "reference return nested function",
+    "code": "<?php $x=2;function &inner(){global $x;return $x;}function &outer(){return inner();}$y =& outer();$y=15;echo $x;",
+    "expected": "15"
+  },
+  {
+    "name": "reference return normal value call",
+    "code": "<?php $x=2;function &r(){global $x;return $x;}$y=r();$y=7;echo $x;",
+    "expected": "2"
+  },
+  {
+    "name": "reference return arrow captured value",
+    "code": "<?php $x=2;$f=fn&()=>$x;$a =& $f();$a=6;echo $x;",
+    "expected": "2"
+  },
+  {
+    "name": "reference return named byref param",
+    "code": "<?php function &id(&$a){return $a;} $x=2;$y =& id(a:$x);$y=9;echo $x;",
+    "expected": "9"
+  },
+  {
+    "name": "reference return array nested index",
+    "code": "<?php $xs=[[1]];function &deep(){global $xs;return $xs[0][0];}$y =& deep();$y=9;echo $xs[0][0];",
+    "expected": "9"
+  },
+  {
+    "name": "reference return dynamic variable callable",
+    "code": "<?php $x=3;function &give(){global $x;return $x;} $f=\"give\"; $a =& $f();$a=8;echo $x;",
+    "expected": "8"
+  },
+  {
+    "name": "reference return trait method",
+    "code": "<?php trait T { public function &get(){return $this->v;} } class C {use T;public $v=3;} $c=new C;$a =& $c->get();$a=9;echo $c->v;",
+    "expected": "9"
+  },
+  {
+    "name": "reference return interface contract",
+    "code": "<?php interface R {public function &get();} class C implements R {public $v=2;public function &get(){return $this->v;}} $c=new C;$a =& $c->get();$a=7;echo $c->v;",
+    "expected": "7"
+  },
+  {
+    "name": "reference return arrow parameter value",
+    "code": "<?php $f=fn&($a)=>$a;$x=2;$y =& $f($x);$y=9;echo $x;",
+    "expected": "2"
+  }
+]

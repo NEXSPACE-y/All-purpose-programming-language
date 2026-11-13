@@ -1,0 +1,25 @@
+{
+  "id": "type.plural-weak",
+  "group": "argument_diagnostics",
+  "steps": [
+    {
+      "operation": "call",
+      "function": "ngettext",
+      "args": [
+        {
+          "type": "bytes",
+          "base64": "b25l"
+        },
+        {
+          "type": "bytes",
+          "base64": "bWFueQ=="
+        },
+        {
+          "type": "bytes",
+          "base64": "Mg=="
+        }
+      ],
+      "strict": false
+    }
+  ]
+}

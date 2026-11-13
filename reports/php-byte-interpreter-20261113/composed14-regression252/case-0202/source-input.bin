@@ -1,0 +1,1 @@
+var_dump((string)123,(string)false,(int)"123\xFF",(float)"-0\xFF");

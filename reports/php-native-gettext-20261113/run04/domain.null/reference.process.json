@@ -1,0 +1,26 @@
+{
+  "command": [
+    "C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\php.exe",
+    "-n",
+    "-d",
+    "extension=C:\\Users\\rinpa\\ALL_php_oracle\\php-8.5.12-ts-x64\\ext\\php_gettext.dll",
+    "-d",
+    "display_errors=stderr",
+    "-d",
+    "error_reporting=-1",
+    "-d",
+    "date.timezone=UTC",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-native-gettext-20261113\\prepared01\\cases\\domain.null\\reference.php",
+    "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-native-gettext-20261113\\run04\\domain.null\\reference.metadata.json"
+  ],
+  "cwd": "C:\\Users\\rinpa\\ALL-php-compat-20261112",
+  "environment_overrides": {},
+  "pid": 18152,
+  "state": "EXITED",
+  "actual_status": 0,
+  "post_cleanup_status": 0,
+  "elapsed_seconds": 0.2655443999974523,
+  "timeout_seconds": 30,
+  "stdout_base64": "",
+  "stderr_base64": ""
+}

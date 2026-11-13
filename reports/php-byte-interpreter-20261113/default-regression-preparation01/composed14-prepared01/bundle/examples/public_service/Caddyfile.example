@@ -1,0 +1,11 @@
+# Replace example.com with your actual DNS name; Caddy will obtain HTTPS
+# certificates if DNS and ports 80/443 are correctly configured.
+example.com {
+    encode zstd gzip
+    reverse_proxy 127.0.0.1:18888 {
+        transport http {
+            dial_timeout 3s
+            response_header_timeout 15s
+        }
+    }
+}

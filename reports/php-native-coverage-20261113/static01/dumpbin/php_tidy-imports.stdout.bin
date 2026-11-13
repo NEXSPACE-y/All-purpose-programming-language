@@ -1,0 +1,199 @@
+
+Dump of file C:\Users\rinpa\ALL_php_oracle\php-8.5.12-ts-x64\ext\php_tidy.dll
+
+File Type: DLL
+
+  Section contains the following imports:
+
+    php8ts.dll
+             18002B1E8 Import Address Table
+             1800B2DC0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         E31 tsrm_get_ls_cache
+                        16F3 zend_register_long_constant
+                          E7 _php_stream_free
+                        13EC zend_argument_value_error
+                          AF __zend_malloc
+                          B8 _erealloc@@16
+                        15CA zend_ini_boolean_displayer_cb
+                        17A4 zend_update_property_null
+                         B34 php_info_print_table_row
+                           8 OnUpdateString
+                         B32 php_info_print_table_end
+                         132 add_assoc_str_ex
+                        1806 zval_ptr_dtor
+                        15D1 zend_ini_long
+                        175B zend_string_init_interned
+                        159D zend_hash_next_index_insert@@16
+                         12B add_assoc_bool_ex
+                        160D zend_known_strings
+                         B36 php_info_print_table_start
+                        1453 zend_ce_exception
+                          B6 _emalloc@@8
+                        17A3 zend_update_property_long
+                        1675 zend_object_std_init@@16
+                          B5 _efree@@8
+                        1768 zend_throw_error
+                        17A7 zend_update_property_stringl
+                        179F zend_update_property
+                         E1E std_object_handlers
+                        149E zend_declare_typed_property
+                         BB2 php_output_handler_start
+                          D6 _php_stream_copy_to_mem
+                        1701 zend_restore_error_handling
+                        17E8 zend_wrong_parameters_count_error@@16
+                         BAB php_output_handler_create_internal
+                        17E9 zend_wrong_parameters_none_error@@0
+                        17E6 zend_wrong_parameter_error@@40
+                         1B3 display_ini_entries
+                         AE3 php_error_docref
+                        1798 zend_unregister_ini_entries_ex
+                        15D2 zend_ini_parse_bool
+                         A53 object_properties_init
+                         12D add_assoc_long_ex
+                        13EB zend_argument_type_error
+                        16B8 zend_parse_method_parameters
+                        16AA zend_parse_arg_bool_slow@@24
+                        1803 zval_get_long_func@@16
+                         BB3 php_output_handler_started
+                        17A0 zend_update_property_bool
+                        17C0 zend_value_error
+                         BA6 php_output_get_status
+                         A99 php_check_open_basedir
+                         125 _zend_new_array@@8
+                        16FC zend_replace_error_handling
+                          F6 _php_stream_open_wrapper_ex
+                        1674 zend_object_std_dtor
+                        17A6 zend_update_property_string
+                        16E9 zend_register_ini_entries_ex
+                         133 add_assoc_string_ex
+                          BF _is_numeric_string_ex@@56
+                        16B4 zend_parse_arg_str_slow@@24
+                        1804 zval_get_string_func@@8
+                         A51 object_init_ex
+                        16ED zend_register_internal_class_with_flags
+                        15A8 zend_hash_real_init_packed@@8
+                        14BB zend_empty_string
+                           2 OnUpdateBool
+                         BA8 php_output_handler_alias_register
+                        180A zval_try_get_string_func@@8
+
+    KERNEL32.dll
+             18002B000 Import Address Table
+             1800B2BD8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         3B0 IsDebuggerPresent
+                         39A InitializeSListHead
+                         142 DisableThreadLibraryCalls
+                         31A GetSystemTimeAsFileTime
+                         246 GetCurrentThreadId
+                         242 GetCurrentProcessId
+                         481 QueryPerformanceCounter
+                         3B8 IsProcessorFeaturePresent
+                         5D8 TerminateProcess
+                         241 GetCurrentProcess
+                         5B8 SetUnhandledExceptionFilter
+                         5FB UnhandledExceptionFilter
+                         518 RtlVirtualUnwind
+                         511 RtlLookupFunctionEntry
+                         509 RtlCaptureContext
+
+    VCRUNTIME140.dll
+             18002B080 Import Address Table
+             1800B2C58 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          25 __std_type_info_destroy_list
+                           8 __C_specific_handler
+                          42 strstr
+                          40 strchr
+                          3C memcpy
+                          3E memset
+
+    api-ms-win-crt-heap-l1-1-0.dll
+             18002B0D8 Import Address Table
+             1800B2CB0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          18 free
+                          19 malloc
+                          1A realloc
+
+    api-ms-win-crt-stdio-l1-1-0.dll
+             18002B148 Import Address Table
+             1800B2D20 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          7D fopen
+                          10 __stdio_common_vsscanf
+                           D __stdio_common_vsprintf
+                           3 __stdio_common_vfprintf
+                          7F fputc
+                          78 fgetc
+                          75 feof
+                          74 fclose
+                           0 __acrt_iob_func
+
+    api-ms-win-crt-environment-l1-1-0.dll
+             18002B0C8 Import Address Table
+             1800B2CA0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          10 getenv
+
+    api-ms-win-crt-runtime-l1-1-0.dll
+             18002B0F8 Import Address Table
+             1800B2CD0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          34 _initialize_onexit_table
+                          33 _initialize_narrow_environment
+                          18 _configure_narrow_argv
+                          3F _seh_filter_dll
+                          37 _initterm_e
+                          36 _initterm
+                          55 exit
+                          16 _cexit
+                          22 _execute_onexit_table
+
+    api-ms-win-crt-string-l1-1-0.dll
+             18002B198 Import Address Table
+             1800B2D70 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          86 strcmp
+                          88 strcpy
+                          65 isalpha
+                          68 isdigit
+                          94 strtok
+                          6E isspace
+                          8F strncpy
+                          97 tolower
+                          8B strlen
+
+    api-ms-win-crt-convert-l1-1-0.dll
+             18002B0B8 Import Address Table
+             1800B2C90 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          50 atoi
+
+  Summary
+
+       18000 .data
+        3000 .pdata
+       89000 .rdata
+        4000 .reloc
+        1000 .rsrc
+       2A000 .text

@@ -1,0 +1,1 @@
+<?php echo "before"; echo "\u{xyz}";

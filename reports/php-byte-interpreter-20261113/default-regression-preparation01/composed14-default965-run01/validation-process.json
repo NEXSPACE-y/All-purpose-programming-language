@@ -1,0 +1,30 @@
+{
+    "pid":  20128,
+    "startedUtc":  "2026-11-13T08:19:28.0838928Z",
+    "finishedUtc":  "2026-11-13T08:31:48.2362592Z",
+    "durationSeconds":  738.972,
+    "validator":  "C:\\Users\\rinpa\\ALL-php-compat-20261112\\reports\\php-byte-interpreter-20261113\\default-regression-preparation01\\composed14-prepared01\\bundle\\ALL_PHP_v3_20_validate.ps1",
+    "arguments":  [
+                      "-CompileCSharp"
+                  ],
+    "installedMode":  false,
+    "exitCode":  0,
+    "failure":  null,
+    "bundleUnchanged":  true,
+    "helperAssemblies":  [
+                             {
+                                 "fullName":  "te5gi5wp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+                                 "location":  "",
+                                 "types":  [
+                                               "AllSqliteDriver"
+                                           ]
+                             },
+                             {
+                                 "fullName":  "j3hayzs1, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+                                 "location":  "",
+                                 "types":  [
+                                               "AllConcurrentGateway"
+                                           ]
+                             }
+                         ]
+}

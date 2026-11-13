@@ -1,0 +1,17 @@
+{
+  "status": "STATIC_INSPECTED_NOT_LOADED_OR_RUNTIME_VERIFIED",
+  "coreSha256": "d005aa1205e214ad346783546c946e7e0e22a1c3eaa9ea696950dd49e17f328f",
+  "extensionSha256": "ed395f80018920ba1b4551cdc33dd89871eb8b8ef362b1515ae93c0e7f1de3ad",
+  "missingImportNames": [],
+  "forwarders": [],
+  "stockCoreImports": [],
+  "bridgeGenerated03And04ByteIdentical": true,
+  "bridgeSha256": "bb01294252a3748fab62e027c6bd724de14fca2da5713e8e7de5a95abee461f2",
+  "reuseManaged02Host": true,
+  "compareDriverOriginalSha256": "61922173b47a6429367d33df9425e914fa816ad5d2d84d6f78e886f78b00bdf5",
+  "compareDriverCandidateSha256": "96fc31e3145512dfd94444fa03a911744aa4354506740f6c8682780b8f35108a",
+  "fixtureManifestSha256": "7233554d73698495f56f5ec27b588ed32afefc89b09ed7d89a9c5ae0916ee646",
+  "deadlineSeconds": 30,
+  "fixturesAndExpectedValuesChanged": false,
+  "nativeRuntimeExecuted": false
+}

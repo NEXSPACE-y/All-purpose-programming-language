@@ -1,0 +1,1 @@
+<?php echo b"A\x42".B'C';

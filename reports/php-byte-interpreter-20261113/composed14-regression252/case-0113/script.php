@@ -1,0 +1,1 @@
+<?php function f($x){return $x+1;}$g='\f';echo $g(2);
