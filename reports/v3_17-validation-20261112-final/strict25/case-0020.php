@@ -1,1 +1,0 @@
-<?php namespace A; function probe($n){try{return late($n);}finally{if($n==0){return 'first';}}} echo probe(0),'|'; if(true){function late($n){return 'local';}} echo probe(1);

@@ -1,1 +1,0 @@
-<?php set_error_handler(function($l,$m){dl_test_frameless('bad');return true;});try{echo dl_test_test2(null);}catch(TypeError $e){echo 'outer-caught';}echo ':after';

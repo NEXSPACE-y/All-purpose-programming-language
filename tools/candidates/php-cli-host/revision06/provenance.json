@@ -1,9 +1,0 @@
-{
-  "status": "ISOLATED_NOT_VERIFIED",
-  "base": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
-  "base_sha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
-  "candidate": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-cli-host\\revision06\\ALL_PHP_cli_host_candidate.ps1",
-  "candidate_sha256": "f8425d2a9ab2ccd2413d034dac5d9feed9509fa731351e45ecd9b1570e94286a",
-  "package_modified": false,
-  "scope": "CLI code-body mode, initial diagnostic INI profile and argv/argc; not all CLI flags/INI/server globals"
-}

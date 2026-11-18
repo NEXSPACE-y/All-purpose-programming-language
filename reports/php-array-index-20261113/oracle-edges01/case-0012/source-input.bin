@@ -1,1 +1,0 @@
-$a=[PHP_INT_MAX=>'x','s'=>'y'];unset($a[PHP_INT_MAX]);array_pop($a);$a[]='z';var_dump($a);

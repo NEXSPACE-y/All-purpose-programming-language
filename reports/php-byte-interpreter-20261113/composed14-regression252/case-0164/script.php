@@ -1,1 +1,0 @@
-<?php $x=2;$a=array(&$x);$a[0]=7;echo $x;

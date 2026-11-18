@@ -1,1 +1,0 @@
-<?php function k(){throw new Exception('key');} try {isset($a[k()]);} catch(Exception $e){echo $e->getMessage();}

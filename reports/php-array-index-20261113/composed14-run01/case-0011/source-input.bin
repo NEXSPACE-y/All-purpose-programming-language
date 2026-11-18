@@ -1,1 +1,0 @@
-$a=['s'=>'x'];array_pop($a);$a[-5]='y';$a[]='z';var_dump($a);

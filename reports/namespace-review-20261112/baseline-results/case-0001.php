@@ -1,1 +1,0 @@
-<?php namespace A; function factory($n){try{return late(...);}finally{if($n==0){return null;}}} factory(0); if(true){function late(){return 'local';}} $f=factory(1); echo $f();

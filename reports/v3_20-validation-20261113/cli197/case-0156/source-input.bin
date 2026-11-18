@@ -1,1 +1,0 @@
-<?php class C{static function f(){return 8;}}$a='C::f';$f=$a(...);echo $f();

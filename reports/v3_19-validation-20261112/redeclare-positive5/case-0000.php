@@ -1,1 +1,0 @@
-<?php if(false){function strlen($v){return 9;}} echo strlen('ALL');

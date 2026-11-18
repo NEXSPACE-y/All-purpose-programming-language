@@ -1,1 +1,0 @@
-var_dump(bin2hex(''),function_exists('bin2hex'),is_string(bin2hex('a')));

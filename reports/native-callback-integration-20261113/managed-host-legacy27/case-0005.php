@@ -1,1 +1,0 @@
-<?php namespace N; use function dl_test_test2 as greet; echo greet('ALL');

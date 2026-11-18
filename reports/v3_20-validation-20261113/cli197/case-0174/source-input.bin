@@ -1,1 +1,0 @@
-<?php $f='__all_throwable_string'; try {$f(new Exception('x'));} catch(Error $e){echo $e->getMessage();}

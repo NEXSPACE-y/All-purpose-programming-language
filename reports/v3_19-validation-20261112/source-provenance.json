@@ -1,7 +1,0 @@
-{
-  "adapterPath": "package/ALL_PHP_v3_12_adapter.ps1",
-  "adapterSha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
-  "currentHead": "1b139883898fff400bd7508ba5f054d9ae2c9a7a",
-  "original940Base": "9d8171712828a0b57555b8eb1e1ca5c475391244",
-  "scope": "PS5.1 actual full965 default API regression only; CLI/private/native/alias tests handled separately by root/read_spec"
-}

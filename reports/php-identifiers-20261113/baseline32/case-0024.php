@@ -1,1 +1,0 @@
-<?php class C{function mÉ(){return 1;}function mé(){return 2;}}$x=new C();echo $x->mÉ().$x->mé();

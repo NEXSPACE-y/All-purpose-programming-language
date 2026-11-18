@@ -1,1 +1,0 @@
-class C{static function m($x){return $x+1;}}$f=["C","m"];$g=$f(...);echo $g(4);

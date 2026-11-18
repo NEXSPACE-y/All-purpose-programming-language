@@ -1,1 +1,0 @@
-<?php set_error_handler(function($l,$m){echo '[';echo dl_test_test2('inner');echo ']';return true;});echo dl_test_test2(null);

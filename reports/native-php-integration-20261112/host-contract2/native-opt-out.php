@@ -1,1 +1,0 @@
-<?php var_dump(function_exists('dl_test_test2')); echo 'default';

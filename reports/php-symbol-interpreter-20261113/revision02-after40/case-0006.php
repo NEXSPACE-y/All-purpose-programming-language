@@ -1,1 +1,0 @@
-<?php class 猫{}echo get_class(new 猫());

@@ -1,1 +1,0 @@
-<?php class CaT{}echo get_class(new cAt());

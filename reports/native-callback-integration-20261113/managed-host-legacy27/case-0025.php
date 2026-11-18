@@ -1,1 +1,0 @@
-<?php dl_test_test2([1,2]);

@@ -1,8 +1,0 @@
-{
-  "status": "NEW_HOST_SOURCE_PREPARED_NOT_RUNTIME_VERIFIED",
-  "origin": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-native\\revision02\\AllNativeByteProbe.cs",
-  "origin_sha256": "3c9a6e4f42b721181c4a478a3fdc92cb5896ac0a3bdc46b6623e5b4e6c31b3db",
-  "candidate": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-native-info-v2\\AllNativeByteProbe.cs",
-  "candidate_sha256": "a4555efca1f0fa328de9b9784c18e9ba9bf80294f56604490ade74e66b4d0bc6",
-  "changes": "Only host class/profile marker and new copied bridge namespaces; argument parser and native execution logic retained"
-}

@@ -1,1 +1,0 @@
-<?php class C{}$f=new C();try{$f();}catch(Error $e){echo $e->getMessage();}

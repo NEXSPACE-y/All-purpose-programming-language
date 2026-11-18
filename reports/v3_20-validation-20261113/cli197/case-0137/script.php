@@ -1,1 +1,0 @@
-<?php $f=[3,'m'];try{$f();}catch(Error $e){echo $e->getMessage();}

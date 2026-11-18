@@ -1,9 +1,0 @@
-{
-  "status": "INCOMPLETE_OBSERVATION",
-  "final_report_present": false,
-  "last_observation_handle": 63982,
-  "handle_missing_observed": true,
-  "process_exit_code_verified": false,
-  "counts_inferred_from_source_files": false,
-  "included_in_success_counts": false
-}

@@ -1,1 +1,0 @@
-<?php namespace A; if (false) { function strlen($s){return 9;} } $f=strlen(...); echo $f('abc');

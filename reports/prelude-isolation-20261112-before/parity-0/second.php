@@ -1,1 +1,0 @@
-<?php $e=new Exception('x'); $s=$e->__toString(); echo 'clean';

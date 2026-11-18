@@ -1,1 +1,0 @@
-<?php #[Attribute] class A {} #[A] class B {} echo count((new ReflectionClass(B::class))->getAttributes());

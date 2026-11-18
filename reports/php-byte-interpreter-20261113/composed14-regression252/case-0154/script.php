@@ -1,1 +1,0 @@
-<?php try{call_user_func([]);}catch(TypeError $e){echo $e->getMessage();}

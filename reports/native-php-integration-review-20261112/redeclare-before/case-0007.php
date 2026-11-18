@@ -1,1 +1,0 @@
-<?php echo 'before:'; try {if(true){function dl_test_test2($v){return 'user';}}}catch(Throwable $e){echo 'caught';}finally{echo 'finally';} echo 'after';

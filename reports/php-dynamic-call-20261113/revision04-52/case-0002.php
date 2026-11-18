@@ -1,1 +1,0 @@
-<?php $f='\strlen';echo $f('abc');

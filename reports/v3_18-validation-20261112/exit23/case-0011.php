@@ -1,1 +1,0 @@
-<?php function f(){try {exit(4);} finally {echo 'bad';}} try {f();} catch(Throwable $e){echo 'caught';} echo 'after';

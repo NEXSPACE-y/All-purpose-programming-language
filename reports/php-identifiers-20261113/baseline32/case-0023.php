@@ -1,1 +1,0 @@
-<?php function MiXeD(){return 1;}var_dump(function_exists('mixed'),function_exists('MIXED'));

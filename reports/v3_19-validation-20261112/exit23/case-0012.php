@@ -1,1 +1,0 @@
-<?php try {throw new Exception('x');} finally {exit(8);}

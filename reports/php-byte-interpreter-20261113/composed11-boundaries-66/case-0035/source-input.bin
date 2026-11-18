@@ -1,1 +1,0 @@
-ini_set("zend.exception_string_param_max_len","3");try{match("A\xFF\nB"){};}catch(UnhandledMatchError $e){echo $e->getMessage();}

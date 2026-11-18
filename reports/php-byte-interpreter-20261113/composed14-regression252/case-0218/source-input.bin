@@ -1,1 +1,0 @@
-$a=["\xFF"=>"\x80",3=>"\0"];var_dump(array_shift($a),$a,array_pop($a),$a);

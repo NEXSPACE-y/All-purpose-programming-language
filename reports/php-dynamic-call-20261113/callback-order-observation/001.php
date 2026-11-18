@@ -1,1 +1,0 @@
-<?php try{function s(){echo 'SIDE';return [];}call_user_func_array('missing',s());}catch(Throwable $e){echo get_class($e).":".$e->getMessage();}

@@ -1,1 +1,0 @@
-<?php function DL_TEST_TEST2($v){return 'user';} echo DL_TEST_TEST2('ALL');

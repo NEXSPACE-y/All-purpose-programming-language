@@ -1,1 +1,0 @@
-<?php echo call_user_func('dl_test_test2','ALL');

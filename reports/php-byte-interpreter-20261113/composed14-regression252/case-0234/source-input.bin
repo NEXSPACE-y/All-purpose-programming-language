@@ -1,1 +1,0 @@
-set_error_handler(function($n,$m){echo "W",$n,":",$m,"\n";return true;});$s="A\xFF\0B";try{$s[1]="";var_dump($s);}catch(Throwable $e){echo get_class($e),":",$e->getMessage();}

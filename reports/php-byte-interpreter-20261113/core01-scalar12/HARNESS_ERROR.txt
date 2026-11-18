@@ -1,1 +1,0 @@
-Before any PHP/candidate process launch: fixture schema used source, driver requires code (KeyError: code). Fixed schema only; all 12 PHP programs unchanged. Retained this aborted run separately.

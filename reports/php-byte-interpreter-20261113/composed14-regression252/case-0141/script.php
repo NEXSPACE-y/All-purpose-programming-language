@@ -1,1 +1,0 @@
-<?php function s(){echo 'SIDE';return [];}try{call_user_func_array('missing',s());}catch(TypeError $e){echo $e->getMessage();}

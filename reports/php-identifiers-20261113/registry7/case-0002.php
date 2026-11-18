@@ -1,1 +1,0 @@
-<?php namespace MiXeD;const VaL=1;echo constant('mixed\VaL');

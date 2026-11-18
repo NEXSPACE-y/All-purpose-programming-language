@@ -1,1 +1,0 @@
-<?php function install(){function dl_test_test2($v){return 'user';}} echo dl_test_test2('ALL');

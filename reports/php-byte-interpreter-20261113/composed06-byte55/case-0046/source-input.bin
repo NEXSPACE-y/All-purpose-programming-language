@@ -1,1 +1,0 @@
-var_dump(json_encode("\u{D800}"),json_last_error(),json_last_error_msg());

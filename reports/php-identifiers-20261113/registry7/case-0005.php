@@ -1,1 +1,0 @@
-<?php const VaL=1;var_dump(defined('VaL'),defined('val'));

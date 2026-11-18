@@ -1,1 +1,0 @@
-ini_set("zend.exception_string_param_max_len","1");function f($x){throw new Exception("boom");}try{f("猫");}catch(Throwable $e){echo $e->getTraceAsString();}

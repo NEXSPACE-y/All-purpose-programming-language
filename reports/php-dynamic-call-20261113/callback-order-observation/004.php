@@ -1,1 +1,0 @@
-<?php try{function s(){echo 'SIDE';return 1;}call_user_func(null,s());}catch(Throwable $e){echo get_class($e).":".$e->getMessage();}

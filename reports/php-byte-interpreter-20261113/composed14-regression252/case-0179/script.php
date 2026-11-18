@@ -1,1 +1,0 @@
-<?php $e=new Exception('cast'); echo $e;

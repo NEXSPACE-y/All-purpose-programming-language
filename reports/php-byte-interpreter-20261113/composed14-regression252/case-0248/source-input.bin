@@ -1,1 +1,0 @@
-$a=[];$a['self']=&$a;var_dump(json_encode($a),json_last_error(),json_last_error_msg());

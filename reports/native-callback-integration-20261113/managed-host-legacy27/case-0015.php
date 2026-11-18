@@ -1,1 +1,0 @@
-<?php echo dl_test_test2('日本語');

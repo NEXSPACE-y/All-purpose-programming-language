@@ -1,1 +1,0 @@
-<?php namespace A; function arg(){echo 'arg|';return 1;} try {missing(arg());} catch(\Error $e){echo 'caught|';} finally {echo 'finally';}

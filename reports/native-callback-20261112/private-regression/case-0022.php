@@ -1,1 +1,0 @@
-<?php var_dump(@dl_test_frameless(null));

@@ -1,1 +1,0 @@
-<?php class C{private function f(){}}try{call_user_func([new C(),'f']);}catch(TypeError $e){echo $e->getMessage();}

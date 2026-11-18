@@ -1,1 +1,0 @@
-json_encode("\xFF");var_dump(json_encode(12),json_last_error(),json_last_error_msg());

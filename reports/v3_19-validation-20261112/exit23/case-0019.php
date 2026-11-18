@@ -1,1 +1,0 @@
-<?php while(true){exit(3);} echo 'bad';

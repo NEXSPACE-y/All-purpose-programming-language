@@ -1,1 +1,0 @@
-<?php class C{function a($x){return 'A';}function b($x){return 'B';}} function s(&$f){$f=[new C(),'b'];return 1;}$f=[new C(),'a'];echo $f(s($f));

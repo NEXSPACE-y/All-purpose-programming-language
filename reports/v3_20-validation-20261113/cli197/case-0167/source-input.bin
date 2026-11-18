@@ -1,1 +1,0 @@
-<?php function f(&$x){$x=8;return $x;}$x=1;echo call_user_func_array('f',['x'=>&$x]).':'.$x;

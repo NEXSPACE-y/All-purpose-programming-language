@@ -1,1 +1,0 @@
-<?php namespace É{function f(){return 1;}}namespace é{function f(){return 2;}}namespace{echo \É\f().\é\f();}

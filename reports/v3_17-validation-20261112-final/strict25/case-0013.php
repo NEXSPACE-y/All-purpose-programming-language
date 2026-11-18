@@ -1,1 +1,0 @@
-<?php namespace { $v=1; function &read(){global $v; return $v;} } namespace A { if (false) { function read(){} } $ref =& read(); $ref=8; echo $v; }

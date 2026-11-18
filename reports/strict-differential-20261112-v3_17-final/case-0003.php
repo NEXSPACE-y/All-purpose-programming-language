@@ -1,1 +1,0 @@
-<?php namespace A; function f(){return 3;} echo f();

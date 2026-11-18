@@ -1,1 +1,0 @@
-<?php function f(&$x){$x=4;return $x;}$f='f';$x=1;echo $f($x).':'.$x;

@@ -1,8 +1,0 @@
-{
-  "status": "BUILT_NOT_RUNTIME_VERIFIED",
-  "base": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-byte-interpreter\\offsets04\\ALL_PHP_byte_candidate.ps1",
-  "base_sha256": "257f9b94869f84dfc533eb77db695a08a0a9d86b2168d23f9a3798f8d8da8143",
-  "module_sha256": "e67f7c1cd642bb54b8c6a292b6d9b7f01f49fbe24186507534103589e8c85c35",
-  "candidate_sha256": "49a3a23413464d177fe82a0e0929043f295809b48e53fde367abae3c0d389e22",
-  "native_or_bytes_runtime_changed": false
-}

@@ -1,3 +1,0 @@
-表示行("Hello World!!")
-let greeting = "Hello"
-表示行(concat(greeting," from ALL v0.5"))

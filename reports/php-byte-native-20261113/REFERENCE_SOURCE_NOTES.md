@@ -1,7 +1,0 @@
-# Reference scope notes
-
-The pinned PHP 8.5.12 executable and unchanged `php_dl_test.dll` remain the execution oracle. No PHP executable or existing PHP DLL is used to implement the own native bridge.
-
-For the added diagnostic comparison of module-info output, the official PHP 8.5 branch shows that `ReflectionExtension::info()` calls `php_info_print_module()`, which emits a module heading before calling the module's information function. The frozen own `all_php_module_info()` directly calls the information function. A difference in those complete outputs must remain visible; removing a heading would change the comparison. The branch source is explanatory context, not a substitute for the pinned 8.5.12 execution result. See [official reflection source](https://raw.githubusercontent.com/php/php-src/PHP-8.5/ext/reflection/php_reflection.c) and [official module-info source](https://raw.githubusercontent.com/php/php-src/PHP-8.5/ext/standard/info.c).
-
-The unchanged `dl_test_test2` function uses printf-style NUL termination when constructing its result, as also recorded in the frozen scalar contract. Its result for a value containing NUL cannot establish preservation of input bytes after that NUL. The new component records those actual native/PHP semantics, while a separate synthetic argument-copy check verifies transport of every byte and its explicit length. Synthetic diagnostic/output thunk checks are likewise separated from real extension behavior and PHP compatibility counts.

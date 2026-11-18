@@ -1,1 +1,0 @@
-<?php try { exit('before'); } finally { echo 'finally'; }

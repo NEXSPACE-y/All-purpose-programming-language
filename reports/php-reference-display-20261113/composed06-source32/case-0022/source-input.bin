@@ -1,1 +1,0 @@
-function &f(){static $v="\xFF\0";return $v;}$v=&f();$a=[&$v];unset($v);var_dump($a);

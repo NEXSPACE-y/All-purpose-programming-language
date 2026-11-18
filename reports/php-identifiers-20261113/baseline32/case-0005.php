@@ -1,1 +1,0 @@
-<?php function 関数(){return 7;}echo 関数();

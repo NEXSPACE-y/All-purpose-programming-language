@@ -1,1 +1,0 @@
-<?php namespace MiXeD{const VaL=1;}namespace Other{use const mixed\VaL as Alias;echo Alias;}

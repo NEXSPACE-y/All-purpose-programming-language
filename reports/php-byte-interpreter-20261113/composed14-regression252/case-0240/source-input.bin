@@ -1,1 +1,0 @@
-var_dump(json_encode("a\0\x7F/\u{E9}\u{1F600}"),json_last_error(),json_last_error_msg());

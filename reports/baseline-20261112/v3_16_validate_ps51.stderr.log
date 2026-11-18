@@ -1,9 +1,0 @@
-ForEach-Object : 用語 'Get-FileHash' は、コマンドレット、関数、スクリプト ファイル、または操作可能なプログラムの名前と
-して認識されません。名前が正しく記述されていることを確認し、パスが含まれている場合はそのパスが正しいことを確認してから
-、再試行してください。
-発生場所 C:\Users\rinpa\ALL-php-compat-20261112\reports\baseline-20261112\capture-validation.ps1:11 文字:87
-+ ... $packageRoot -File -Recurse | Sort-Object FullName | ForEach-Object {
-+                                                          ~~~~~~~~~~~~~~~~
-    + CategoryInfo          : ObjectNotFound: (Get-FileHash:String) [ForEach-Object], CommandNotFoundException
-    + FullyQualifiedErrorId : CommandNotFoundException,Microsoft.PowerShell.Commands.ForEachObjectCommand
- 

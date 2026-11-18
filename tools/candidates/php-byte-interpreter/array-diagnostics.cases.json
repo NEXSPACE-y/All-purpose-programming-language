@@ -1,6 +1,0 @@
-[
-  {"id":"byte.key-warning.ff","mode":"body","code":"$a=[];var_dump($a[\"\\xFF\"]);"},
-  {"id":"byte.key-warning.nul","mode":"body","code":"$a=[];var_dump($a[\"a\\0b\\xFF\"]);"},
-  {"id":"byte.key-warning.handler","mode":"body","code":"set_error_handler(function($n,$m){echo $n,':',$m,\"\\n\";return true;});$a=[];var_dump($a[\"\\x80\\xFF\"],$a[\"a\\0b\"],$a[-3]);"},
-  {"id":"byte.key-warning.quiet","mode":"body","code":"$a=[];var_dump(isset($a[\"\\xFF\"]),empty($a[\"\\xFF\"]),$a[\"\\xFF\"]??'fallback');"}
-]

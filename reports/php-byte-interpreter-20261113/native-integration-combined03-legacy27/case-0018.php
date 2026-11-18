@@ -1,1 +1,0 @@
-<?php try {dl_test_frameless('not numeric');} catch(TypeError $e){echo get_class($e).':'.$e->getMessage();}

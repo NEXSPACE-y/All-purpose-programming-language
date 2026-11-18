@@ -1,1 +1,0 @@
-var_dump(json_encode(NAN),json_last_error(),json_last_error_msg(),json_encode(INF),json_last_error());

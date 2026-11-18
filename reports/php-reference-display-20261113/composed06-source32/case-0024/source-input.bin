@@ -1,1 +1,0 @@
-$v="\xFF\0";$a=[&$v];$f=function()use(&$v){return $v;};unset($v,$f);var_dump($a);

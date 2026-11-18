@@ -1,1 +1,0 @@
-$a=["\xFF"=>"\x80\0","\x80"=>"\xFF"];var_dump($a);echo $a["\xFF"];

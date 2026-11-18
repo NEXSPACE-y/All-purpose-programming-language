@@ -1,1 +1,0 @@
-<?php $v=dl_test_test2("A\0B");var_dump($v);echo "A\0B";

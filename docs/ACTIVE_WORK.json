@@ -171,26 +171,58 @@
     {
       "component": "PHP strict_types isolated implementation",
       "path": "tools/candidates/php-strict-types/",
-      "state": "gen02 fb52e1... normalC#CLI unchanged. Original79 tool session30212 endedexit1 after35 journalrecords:14PASS21FAIL including1TIMEOUT; no finalreport. case035 dir empty, prior attemptunknown; later43 not reached. Source/CLI/driver/oracle hashes unchanged, no ownPython/allPHP child remained on actualCIM check. Stopcause undetermined. Originalpartial retained. Newfile-backed outerwrapper to runcontrols24 then originalindices35-78 in separate44segment; neither substitutes for nor claims one complete uninterrupted79run.",
+      "state": "Frozenstrict02 fb52... controls24 normalCLI completed10PASS/14FAIL:7TIMEOUT plus2nullable void/never compile,4variadic diagnostics,1implicit-null-default differences. Original79 records across preserved35prefix+44continuation:34match45FAIL(3TIMEOUT),37 require-entry failures; not one uninterrupted79run. Allrecorded inputs unchanged. Compiledefault postmodule in development, originalgen02 unchanged.",
       "report": "reports/php-strict-types-20261113/generated02-normal-cli-original79-run01/",
-      "live_process_note": "No own30212 child at last authoritative agentCIM inspection. No replacement was started solely on an observation timeout. New capture/segment plan is preparing."
+      "live_process_note": {
+        "controls24": "TERMINAL tool64334 exit1 due measuredfailures; no driverfatal; all24 recorded",
+        "remaining44": "TERMINAL tool53231 exit1 due measuredfailures; no driverfatal; all44recorded",
+        "original35Prefix": "INCOMPLETE driverreportabsent, stopcauseundetermined; preserved",
+        "global35": "priorattemptUNKNOWN, additionalattemptrecorded",
+        "report": "reports/php-strict-types-20261113/generated02-segmented79-assessment01.json"
+      }
     },
     {
       "component": "Live reference foreach isolated implementation",
       "path": "tools/candidates/php-foreach-iterator/",
-      "state": "implementation03 55fb... fixed no-match COW separation;PS5 parse0errors andmetadata15/15, unchanged inputs. Official extra16observations separate. Same bounded14+copy6+edge8+reset2 CLI30 fixtures pinned, source VM execution0; heavy window queued."
+      "state": "Isolated03 source55fb... actual normalCLI bounded30 completed30/30match, all candidate/referenceEXITED, noTIMEOUT, parentexit0/stderr0, allsources/pins unchanged. Same30 programs includeoldbounded14+copy6+edge8+reset2. Originalunbounded oracleTIMEOUT preserved. Object/generator/native traversal/fullcombinedregression not proven.",
+      "report": "reports/php-foreach-iterator-20261113/implementation-cli30-assessment.json"
     },
     {
       "component": "Unchanged gettext extension native implementation",
       "path": "tools/candidates/php-native-gettext/",
-      "state": "Owncore05 96df49fe... generated source304d6e... same51 terminal49PASS/0FAIL/2catalog unobserved, all51eachprocessEXITED0, allinputs unchanged. No stock core imported/forwarded; actualmodule identity/lifecycle/rawchannels checked. Catalog env oracle8 additionalonly, no overwrite of old51. Newbool8/catalog8 prepared, runtime queued.",
+      "state": "Owncore05 96df... old51 terminal49PASS0FAIL2catalogunobserved retained. Additionalvalue8 now8/8PASS; catalog8 now8/8PASS, requiredrealtranslation observed5/negativeidentity3. Allsource/pins unchanged, rawchannels/metadata/lifecycle/moduleidentity retained. Allthesecomponentruns distinct, generalABI incomplete.",
       "report": "reports/php-native-gettext-20261113/ASSESSMENT_05.md"
     },
     {
       "component": "Reentrant PHP source compilation and source loader",
       "path": "tools/candidates/php-source-loader/",
-      "state": "Separateextracted02 fa3b... compiledescriptor retainsunit artifacts; root3renderbodies anduncaughttail guardedbyte-identical. PSparse0, syntheticframe contracts26/26 exit0 includingemptysource/artifactlifetime, input unchanged. Actualsource-loader VM runtime0; include/evalsyntax andIO not connected. Priorprimitiveinterruption andextracted01 preserved.",
-      "report": "reports/php-source-loader-20261113/SOURCE_LOADER_DESIGN.md"
+      "state": "Loaded04 source5d7... ownlocal-file/eval pipeline implemented on extracted02;PSparse0/guards/sources unchanged, noVM proofyet. No separateadapter/PHPdelegation. Dynamicagent preparingnormalCLI old6+separatefocused8, Root startauthorized afterforeach30terminal. Runtime/source/name/path/static/othercoreAPI gaps remain explicit.",
+      "report": "reports/php-source-loader-20261113/SOURCE_LOADER_DESIGN.md",
+      "live_run": {
+        "owner": "dynamic_call_v320",
+        "sessionId": 7022,
+        "state": "TERMINAL",
+        "actualToolExitCode": 1,
+        "recorded": 6,
+        "matched": 0,
+        "failed": 6,
+        "timeouts": 0,
+        "inputPinsUnchanged": true,
+        "reason": "All6 rejected by existing normalCLI log_errors=0 gate before PHP language execution. Original argv retained.",
+        "next": "New isolatedfrontend accepts disabledlogging setting and preservesInitialIni; same6 exactargv/source repeat on newcode, earlier0/6 kept."
+      }
+    },
+    {
+      "component": "Typed variadic and intrinsic type declaration corrections",
+      "path": "tools/candidates/php-variadic-boundary/",
+      "state": "Combined1eb615... actualsameoriginal24 completed19PASS5FAIL0TIMEOUT, allinputs unchanged:nullableVoid/Never2 andvararg4 differences matched. Remainingclosure1+implicitNULL4 actual mismatches; separateclosurec013... and parameterDefault02683d... source-only corrections prepared, nextcombined source generation in progress. Prior10/24 with7TIMEOUT remains unchanged; no causeclaim.",
+      "latest_candidate": "tools/candidates/php-variadic-boundary/composed-type01/ALL_PHP_typed_boundaries_candidate.ps1",
+      "latest_actual_report": "reports/php-variadic-boundary-20261113/composed-type01-controls24-assessment.json",
+      "source_only_followups": {
+        "closure": "c01389adc9e11ef8077731b9f5130c733d460070087f8d59be9fa594530b733b",
+        "parameterDefaults02": "683d29f0870b74f4d069ffc512c9293907dc02a2ea367143b64f4b7b33ad892d",
+        "combinedRevision": "combined0464fbcff36a86b451e118ddc44485a4e07a2257d0f94425c15635a52a18bbbc, PSparse0/sourcepinsunchanged. NormalCLIbuild authorized only, noVMresult yet."
+      }
     }
   ],
   "pending_owner_input": [
@@ -205,5 +237,6 @@
   },
   "latest_package_checkpoint_commit": "542f304",
   "active_goal": "PHP完全互換が完了するまで動いてね",
-  "goal_status": "active"
+  "goal_status": "active",
+  "latest_source_and_evidence_checkpoint_commit": "9a1acd1"
 }

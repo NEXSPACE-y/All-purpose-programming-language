@@ -1,1 +1,0 @@
-set_error_handler(function($level,$message){echo $level,":",bin2hex($message),"\n";return true;});class S{function __toString(){return "\xFF";}}trigger_error(new S(),E_USER_WARNING);

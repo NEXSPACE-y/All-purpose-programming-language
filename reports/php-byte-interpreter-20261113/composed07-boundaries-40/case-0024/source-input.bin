@@ -1,1 +1,0 @@
-enum E:string{case A="\xFF";case B="\0";}echo E::from("\xFF")->name,":",bin2hex(E::from("\0")->value);

@@ -5,6 +5,7 @@
         $ErrorActionPreference = 'Stop'
         $culture = [System.Globalization.CultureInfo]::InvariantCulture
 
+        $allAdapterDir = $PSScriptRoot
         if ($null -eq $Code) { throw 'ALL: Source is null' }
         if ($Code.Length -gt 100000) { throw 'ALL: Source is too long (limit: 100000 characters)' }
         # Natural Japanese surface grammar v0.6 (bounded, deterministic).
@@ -154,11 +155,16 @@
             if ($path.IndexOfAny([char[]]@(0,10,13)) -ge 0) { throw 'ALL Module Error: Invalid module path' }
             $normalized = $path.Replace('\',[System.IO.Path]::DirectorySeparatorChar).Replace('/',[System.IO.Path]::DirectorySeparatorChar)
             if ([System.IO.Path]::IsPathRooted($normalized)) { throw 'ALL Module Error: Absolute module path forbidden' }
-            if ([System.IO.Path]::GetExtension($normalized) -cne '.all') { throw 'ALL Module Error: Expected .all module' }
             $full = [System.IO.Path]::GetFullPath((Join-Path $fromDirectory $normalized))
             $prefix = $moduleRoot.TrimEnd([char[]]@('\','/')) + [System.IO.Path]::DirectorySeparatorChar
             if (-not $full.StartsWith($prefix,[System.StringComparison]::OrdinalIgnoreCase)) {
                 throw 'ALL Module Error: Module escapes project root'
+            }
+            if ([System.IO.Path]::GetExtension($normalized) -cne '.all') {
+                if ([System.IO.Path]::GetExtension($normalized) -ieq '.php' -and [System.IO.File]::Exists($full)) {
+                    return $full
+                }
+                throw 'ALL Module Error: Expected .all module'
             }
             if (-not [System.IO.File]::Exists($full)) { throw "ALL Module Error: Module not found: $path" }
             return $full
@@ -183,6 +189,12 @@
                     if ($loadedAllModules.Contains($full)) { continue }
                     if ($loadedAllModules.Count -ge 32) { throw 'ALL Module Error: Module count limit exceeded (32)' }
                     [void]$loadedAllModules.Add($full)
+                    if ([System.IO.Path]::GetExtension($full) -ieq '.php') {
+                        $b64Path = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($full))
+                        [void]$chunks.Add(('__php_import_file("' + $b64Path + '")'))
+                        [void]$sourceOrigins.Add([pscustomobject]@{ File=$sourceFile; Line=$originalLine })
+                        continue
+                    }
                     [void]$activeAllModules.Add($full)
                     try {
                         $body = [System.IO.File]::ReadAllText($full,[System.Text.UTF8Encoding]::new($false,$true))
@@ -207,6 +219,17 @@
         }
         $Code = Expand-AllModuleImports $Code $moduleRoot 0 $rootSourceFile
         if ($Code.Length -gt 100000) { throw 'ALL Module Error: Expanded source too long (100000 characters)' }
+        if ($Code.IndexOf('<?php', [System.StringComparison]::OrdinalIgnoreCase) -ge 0) {
+            $Code = [regex]::Replace($Code, '<\?php(?:\s|\b)([\s\S]*?)(?:\?>|$)', {
+                param($m)
+                $rawBlock = $m.Value
+                $nlCount = [regex]::Matches($rawBlock, '\r\n|\n|\r').Count
+                $b64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($rawBlock))
+                $rep = '__php_inline_exec("' + $b64 + '")'
+                for ($i = 0; $i -lt $nlCount; $i++) { $rep += "`n# php-inline-pad" }
+                return $rep
+            }, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+        }
         $Code = Convert-AllNaturalJapanese $Code
         # Pre-index line starts once. Original per-statement prefix scans were
         # quadratic in the number of lines and expensive for large ALL programs.
@@ -289,7 +312,7 @@
             $jpKeywords['SQL一括処理'] = 'sql_transaction'
             $jpKeywords['SQL移行'] = 'sql_migrate'
             $pattern = @'
-(?:[ \t]+|\r\n|\n|\r|\#[^\r\n]*|//[^\r\n]*|"(?:\\.|[^"\\\r\n])*"|'(?:\\.|[^'\\\r\n])*'|(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+\-]?\d+)?|[\p{L}_][\p{L}\p{M}\p{Nd}_]*(?:::[\p{L}_][\p{L}\p{M}\p{Nd}_]*)*|<=|>=|==|!=|&&|\|\||[+\-*/%^(),;=<>!\[\]{}:])
+(?:[ \t]+|\r\n|\n|\r|\#[^\r\n]*|//[^\r\n]*|"(?:\\.|[^"\\\r\n])*"|'(?:\\.|[^'\\\r\n])*'|(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+\-]?\d+)?|[\p{L}_][\p{L}\p{M}\p{Nd}_]*(?:::[\p{L}_][\p{L}\p{M}\p{Nd}_]*)*|<=|>=|==|!=|&&|\|\||->|[+\-*/%^(),;=<>!\[\]{}:.])
 '@
             $regex = [regex]::new($pattern.Trim())
             $depth = 0
@@ -444,6 +467,12 @@
                 if ($tok -ceq 'false') { return [pscustomobject]@{ Kind='literal'; Value=$false } }
                 return [pscustomobject]@{ Kind='literal'; Value=$null }
             }
+            if ($tok -ceq 'new') {
+                [void](Next-All)
+                $clsName = Next-All
+                $ctorArgs = if ((Peek-All) -ceq '(') { Read-AllArguments } else { @() }
+                return [pscustomobject]@{ Kind='php-new'; Class=$clsName; Args=@($ctorArgs) }
+            }
             if ($tok -cmatch '^[\p{L}_][\p{L}\p{M}\p{Nd}_]*(?:::[\p{L}_][\p{L}\p{M}\p{Nd}_]*)*$') {
                 [void](Next-All)
                 if ((Peek-All) -ceq '(') {
@@ -456,11 +485,21 @@
         }
         function Read-AllPostfix {
             $node = Read-AllPrimary
-            while ((Peek-All) -ceq '[') {
-                [void](Next-All)
-                $index = Read-AllExpr 1
-                Expect-All ']'
-                $node = [pscustomobject]@{ Kind='index'; Base=$node; Index=$index }
+            while ((Peek-All) -cin @('[', '.', '->')) {
+                $op = Next-All
+                if ($op -ceq '[') {
+                    $index = Read-AllExpr 1
+                    Expect-All ']'
+                    $node = [pscustomobject]@{ Kind='index'; Base=$node; Index=$index }
+                } else {
+                    $member = Next-All
+                    if ((Peek-All) -ceq '(') {
+                        $mArgs = Read-AllArguments
+                        $node = [pscustomobject]@{ Kind='php-method'; Base=$node; Method=$member; Args=@($mArgs) }
+                    } else {
+                        $node = [pscustomobject]@{ Kind='index'; Base=$node; Index=[pscustomobject]@{ Kind='literal'; Value=$member } }
+                    }
+                }
             }
             return $node
         }
@@ -564,10 +603,15 @@
         function Read-AllAssignment([bool]$declaration) {
             if ($declaration) { Expect-All 'let' }
             $id = Read-AllIdentifier 'assignment'
-            if ((Peek-All) -ceq '[' -and -not $declaration) {
-                [void](Next-All)
-                $index = Read-AllExpr 1
-                Expect-All ']'
+            if ((Peek-All) -cin @('[', '.', '->') -and -not $declaration) {
+                $op = Next-All
+                if ($op -ceq '[') {
+                    $index = Read-AllExpr 1
+                    Expect-All ']'
+                } else {
+                    $member = Next-All
+                    $index = [pscustomobject]@{ Kind='literal'; Value=$member }
+                }
                 Expect-All '='
                 $value = Read-AllExpr 1
                 return [pscustomobject]@{ Kind='set-index'; Name=$id; Index=$index; Expr=$value }
@@ -698,9 +742,15 @@
                 # Assignment may be followed by indexed writes. Calls in statement
                 # position are allowed only for previously defined user functions or push().
                 $nextToken = if (($state.Pos+1) -lt $state.Tokens.Count) { $state.Tokens[$state.Pos+1] } else { '(EOF)' }
-                if ($nextToken -ceq '=' -or $nextToken -ceq '[') { return (Read-AllAssignment $false) }
+                if ($nextToken -cin @('=', '[')) { return (Read-AllAssignment $false) }
+                if ($nextToken -cin @('.', '->')) {
+                    $thirdToken = if (($state.Pos+3) -lt $state.Tokens.Count) { $state.Tokens[$state.Pos+3] } else { '(EOF)' }
+                    if ($thirdToken -ceq '=') { return (Read-AllAssignment $false) }
+                    $node = Read-AllExpr 1
+                    return [pscustomobject]@{ Kind='call-statement'; Expr=$node; Name='__php_method_stmt' }
+                }
                 if ($nextToken -ceq '(') {
-                    if ($token -cnotin @('push','pop','remove_key','write_text','append_text','write_json','input','http_serve','http_serve_batch','http_serve_live','kv_put','kv_delete','parallel_all','stderr_text','set_exit_code','sql_query','sql_exec','sql_transaction','sql_migrate') -and -not $state.KnownFunctions.Contains($token)) {
+                    if ($token -cnotin @('push','pop','remove_key','write_text','append_text','write_json','input','http_serve','http_serve_batch','http_serve_live','kv_put','kv_delete','parallel_all','stderr_text','set_exit_code','sql_query','sql_exec','sql_transaction','sql_migrate','__php_import_file','__php_inline_exec','php_eval','php_call') -and -not $state.KnownFunctions.Contains($token) -and -not ($state.KnownFunctions.Contains('__has_php_bridge'))) {
                         throw "ALL Syntax Error: Unknown statement '$token'"
                     }
                     $node = Read-AllExpr 1
@@ -730,6 +780,9 @@
                 }
             }
             return $node
+        }
+        if ($Code.Contains('__php_import_file') -or $Code.Contains('__php_inline_exec') -or $Code.Contains('php_eval') -or $Code.Contains('php_call') -or ($null -ne $global:AllPolyglotContext -and $global:AllPolyglotContext.PhpFunctions.Count -gt 0)) {
+            [void]$state.KnownFunctions.Add('__has_php_bridge')
         }
         $state.Tokens = Tokenize-All $Code
         $statements = [System.Collections.Generic.List[object]]::new()
@@ -1006,6 +1059,157 @@
             if ($nums.Length -eq 0) { throw "ALL Math Error: $name() requires data" }
             return ,([double[]]$nums)
         }
+        # ---- Phase 3: Universal Polyglot Runtime Bridge (ALL <-> PHP) ----
+        function Ensure-AllSidePolyglotContext {
+            if ($null -eq $global:AllPolyglotContext) {
+                $global:AllPolyglotContext = @{
+                    SharedVars = [System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::Ordinal)
+                    AllFunctions = [System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::Ordinal)
+                    PhpFunctions = [System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::OrdinalIgnoreCase)
+                    PhpClasses = [System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::OrdinalIgnoreCase)
+                    PhpInterfaces = [System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::OrdinalIgnoreCase)
+                    PhpTraits = [System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::OrdinalIgnoreCase)
+                    PhpConstants = [System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::Ordinal)
+                    AllAdapter = $null
+                    PhpAdapter = $null
+                    PendingAllCall = $null
+                    PendingAllResult = $null
+                }
+            }
+            return $global:AllPolyglotContext
+        }
+        function Get-PhpLanguageAdapterFromAll {
+            $ctx = Ensure-AllSidePolyglotContext
+            if ($null -ne $ctx.PhpAdapter) { return $ctx.PhpAdapter }
+            $candidates = @(
+                $(if (-not [string]::IsNullOrEmpty($allAdapterDir)) { Join-Path $allAdapterDir 'ALL_PHP_v3_12_adapter.ps1' } else { $null }),
+                $(if (-not [string]::IsNullOrEmpty($allAdapterDir)) { Join-Path $allAdapterDir 'php.ps1' } else { $null }),
+                'D:\ALL\package\ALL_PHP_v3_12_adapter.ps1',
+                'D:\ALL\languages\php.ps1',
+                'C:\Users\rinpa\ALL\languages\php.ps1'
+            )
+            foreach ($c in $candidates) {
+                if (-not [string]::IsNullOrEmpty($c) -and [System.IO.File]::Exists($c)) {
+                    $ctx.PhpAdapter = (& $c)
+                    return $ctx.PhpAdapter
+                }
+            }
+            throw 'ALL Polyglot Error: PHP adapter (ALL_PHP_v3_12_adapter.ps1) not found'
+        }
+        function Sync-AllStateToPolyglot {
+            $ctx = Ensure-AllSidePolyglotContext
+            foreach ($k in @($state.Vars.Keys)) {
+                $ctx.SharedVars[$k] = $state.Vars[$k]
+            }
+            foreach ($fnName in @($state.Functions.Keys)) {
+                $ctx.AllFunctions[$fnName] = $state.Functions[$fnName]
+                if ($fnName.Contains('::')) {
+                    $short = $fnName.Substring($fnName.LastIndexOf('::') + 2)
+                    if (-not $ctx.AllFunctions.ContainsKey($short)) {
+                        $ctx.AllFunctions[$short] = $state.Functions[$fnName]
+                    }
+                }
+            }
+        }
+        function Sync-PolyglotToAllState {
+            if ($null -eq $global:AllPolyglotContext) { return }
+            $ctx = $global:AllPolyglotContext
+            if ($ctx.ContainsKey('AllFunctions')) {
+                foreach ($fnName in @($ctx.AllFunctions.Keys)) {
+                    if (-not $state.Functions.ContainsKey($fnName)) {
+                        $state.Functions[$fnName] = $ctx.AllFunctions[$fnName]
+                    }
+                }
+            }
+            foreach ($k in @($ctx.SharedVars.Keys)) {
+                $state.Vars[$k] = $ctx.SharedVars[$k]
+            }
+            if ($ctx.ContainsKey('PhpConstants')) {
+                foreach ($ck in @($ctx.PhpConstants.Keys)) {
+                    if (-not $constants.ContainsKey($ck)) {
+                        $constants[$ck] = $ctx.PhpConstants[$ck]
+                    }
+                }
+            }
+        }
+        function Invoke-AllSidePhpCode([string]$phpCode, [string]$filePath = '') {
+            Sync-AllStateToPolyglot
+            $phpAdapter = Get-PhpLanguageAdapterFromAll
+            $trimmed = $phpCode.Trim()
+            if (-not $trimmed.StartsWith('<?php', [System.StringComparison]::OrdinalIgnoreCase)) {
+                $phpCode = "<?php`n" + $phpCode
+            }
+            $cliCtx = $null
+            if (-not [string]::IsNullOrEmpty($filePath)) {
+                $cliCtx = @{
+                    SourceMode = 'file'
+                    SourcePath = $filePath
+                }
+            }
+            [void](& $phpAdapter.Run $phpCode -CliContext $cliCtx)
+            Sync-PolyglotToAllState
+            return $null
+        }
+        function Invoke-AllSidePhpAction([string]$action, [string]$target, $argsList, $instanceObj) {
+            Sync-AllStateToPolyglot
+            $phpAdapter = Get-PhpLanguageAdapterFromAll
+            $cliCtx = @{
+                SourceMode = 'body'
+                PolyglotAction = $action
+                PolyglotTarget = $target
+                PolyglotArgs = @($argsList)
+                PolyglotInstance = $instanceObj
+                PolyglotResult = $null
+            }
+            [void](& $phpAdapter.Run '' -CliContext $cliCtx)
+            Sync-PolyglotToAllState
+            return $cliCtx['PolyglotResult']
+        }
+        function Test-AllCanCallPhp([string]$name) {
+            if ($name -in @('__php_import_file','__php_inline_exec','php_eval','php_call')) { return $true }
+            $phpStdCheck = @(
+                'strlen','strtoupper','strtolower','trim','ltrim','rtrim','substr','str_replace','str_ireplace',
+                'str_contains','str_starts_with','str_ends_with','strpos','stripos','strrpos','str_repeat','str_pad',
+                'str_split','strrev','ucfirst','lcfirst','ucwords','nl2br','sprintf','printf','vsprintf','number_format',
+                'md5','sha1','crc32','hash','levenshtein','base64_encode','base64_decode','bin2hex','hex2bin',
+                'urlencode','urldecode','rawurlencode','rawurldecode','htmlspecialchars','htmlspecialchars_decode',
+                'explode','implode','count','sizeof','array_sum','array_product','array_merge','array_slice','array_splice',
+                'array_keys','array_values','array_reverse','array_unique','array_search','array_combine','array_chunk',
+                'array_column','array_fill','array_fill_keys','array_flip','array_diff','array_intersect','array_pad',
+                'array_replace','array_is_list','array_find','array_find_key','array_any','array_all','array_map',
+                'array_filter','array_reduce','range','in_array','array_key_exists','array_key_first','array_key_last',
+                'array_first','array_last','preg_match','preg_match_all','preg_replace','preg_split','preg_quote',
+                'serialize','unserialize','var_export','gettype','get_debug_type'
+            )
+            if ($phpStdCheck -contains $name.ToLowerInvariant()) { return $true }
+            if ($null -eq $global:AllPolyglotContext) { return $false }
+            $ctx = $global:AllPolyglotContext
+            $phpName = $name.Replace('::', '\')
+            if ($ctx.PhpFunctions.ContainsKey($phpName) -or $ctx.PhpFunctions.ContainsKey($name)) { return $true }
+            return $false
+        }
+        function Invoke-AllToPhpCall([string]$name, $evalValues) {
+            if ($name -ceq '__php_import_file') {
+                $path = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String([string]$evalValues[0]))
+                $phpText = [System.IO.File]::ReadAllText($path, [System.Text.UTF8Encoding]::new($false, $true))
+                $phpText = $phpText.TrimStart([char]0xFEFF)
+                return (Invoke-AllSidePhpCode $phpText $path)
+            }
+            if ($name -ceq '__php_inline_exec') {
+                $phpText = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String([string]$evalValues[0]))
+                return (Invoke-AllSidePhpCode $phpText '')
+            }
+            if ($name -ceq 'php_eval') {
+                return (Invoke-AllSidePhpCode ([string]$evalValues[0]) '')
+            }
+            if ($name -ceq 'php_call') {
+                $targetFn = ([string]$evalValues[0]).Replace('::', '\')
+                $rest = if ($evalValues.Count -gt 1) { @($evalValues[1..($evalValues.Count - 1)]) } else { @() }
+                return (Invoke-AllSidePhpAction 'call' $targetFn $rest $null)
+            }
+            $phpName = $name.Replace('::', '\')
+            return (Invoke-AllSidePhpAction 'call' $phpName $evalValues $null)
+        }
         function Eval-AllExpression($node) {
             $state.Count++
             if ($state.Count -gt 100000) { throw 'ALL Math Error: Evaluation step limit exceeded' }
@@ -1060,6 +1264,18 @@
                     $right = Eval-AllExpression $node.Right
                     return (Apply-AllBinary $left $right $node.Op)
                 }
+                'php-new' {
+                    $ctorVals = [System.Collections.Generic.List[object]]::new()
+                    foreach ($cArg in $node.Args) { [void]$ctorVals.Add((Eval-AllExpression $cArg)) }
+                    $clsName = $node.Class.Replace('::', '\')
+                    return (Invoke-AllSidePhpAction 'new' $clsName ($ctorVals.ToArray()) $null)
+                }
+                'php-method' {
+                    $baseObj = Eval-AllExpression $node.Base
+                    $mVals = [System.Collections.Generic.List[object]]::new()
+                    foreach ($mArg in $node.Args) { [void]$mVals.Add((Eval-AllExpression $mArg)) }
+                    return (Invoke-AllSidePhpAction 'method' $node.Method ($mVals.ToArray()) $baseObj)
+                }
                 'call' {
                     $values = [System.Collections.Generic.List[object]]::new()
                     foreach ($child in $node.Args) {
@@ -1073,6 +1289,9 @@
                         'read_json','write_json','input','http_get','http_post','http_post_json','http_serve',
                         'kv_put','kv_get','kv_delete','kv_keys','parallel_all','cli_args','http_serve_batch','http_serve_live','stdin_text','stderr_text','set_exit_code','sql_query','sql_exec','sql_transaction','sql_migrate')) {
                         return (Invoke-AllListBuiltin $node.Name ($values.ToArray()))
+                    }
+                    if (Test-AllCanCallPhp $node.Name) {
+                        return (Invoke-AllToPhpCall $node.Name ($values.ToArray()))
                     }
                     return (Invoke-AllMath $node.Name ($values.ToArray()))
                 }
@@ -1791,6 +2010,7 @@
                 $platform = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)
                 $sourceFile = if ($platform) { 'ALL_sqlite_driver.cs' } else { 'ALL_sqlite_driver_linux.cs' }
                 $driverFile = Join-Path (Join-Path $HOME 'ALL/languages') $sourceFile
+                if (-not [System.IO.File]::Exists($driverFile) -and -not [string]::IsNullOrEmpty($allAdapterDir)) { $driverFile = Join-Path $allAdapterDir $sourceFile }
                 if (-not [System.IO.File]::Exists($driverFile)) {
                     throw ('ALL SQL Error: driver source missing: ' + $sourceFile)
                 }
@@ -2157,7 +2377,9 @@
             switch ($statement.Kind) {
                 'declare' {
                     if ($state.Vars.ContainsKey($statement.Name)) {
-                        throw "ALL Name Error: Variable '$($statement.Name)' already declared"
+                        if ($null -eq $global:AllPolyglotContext -or -not $global:AllPolyglotContext.SharedVars.ContainsKey($statement.Name)) {
+                            throw "ALL Name Error: Variable '$($statement.Name)' already declared"
+                        }
                     }
                     $state.Vars[$statement.Name] = Eval-AllExpression $statement.Expr
                     return $null
@@ -2176,7 +2398,11 @@
                     $list = $state.Vars[$statement.Name]
                     if (Is-AllMap $list) {
                         $key = Get-AllKey (Eval-AllExpression $statement.Index)
-                        $list.Items[$key] = Eval-AllExpression $statement.Expr
+                        $newVal = Eval-AllExpression $statement.Expr
+                        $list.Items[$key] = $newVal
+                        if ($list.PSObject.Properties['PhpObject'] -and $null -ne $list.PhpObject) {
+                            $list.PhpObject.Props[$key] = $newVal
+                        }
                         return $null
                     }
                     $idx = To-AllInteger (Eval-AllExpression $statement.Index) 'list index' 0 2147483647
@@ -2284,7 +2510,7 @@
                 'continue' { return [pscustomobject]@{ Flow='continue' } }
                 'call-statement' {
                     # Keep v0.2.1 behavior: unknown(1) is an unknown statement.
-                    if (-not $state.Functions.ContainsKey($statement.Name) -and $statement.Name -cnotin @('push','pop','remove_key','write_text','append_text','write_json','input','http_serve','http_serve_batch','http_serve_live','kv_put','kv_delete','parallel_all','cli_args','stderr_text','set_exit_code','sql_query','sql_exec','sql_transaction','sql_migrate')) {
+                    if ($statement.Name -cne '__php_method_stmt' -and -not $state.Functions.ContainsKey($statement.Name) -and -not (Test-AllCanCallPhp $statement.Name) -and $statement.Name -cnotin @('push','pop','remove_key','write_text','append_text','write_json','input','http_serve','http_serve_batch','http_serve_live','kv_put','kv_delete','parallel_all','cli_args','stderr_text','set_exit_code','sql_query','sql_exec','sql_transaction','sql_migrate')) {
                         throw "ALL Syntax Error: Unknown statement '$($statement.Name)'"
                     }
                     [void](Eval-AllExpression $statement.Expr)
@@ -2295,6 +2521,27 @@
         }
 
         try {
+            if ($null -ne $global:AllPolyglotContext) {
+                Sync-PolyglotToAllState
+                if ($null -ne $global:AllPolyglotContext.PendingAllCall) {
+                    $req = $global:AllPolyglotContext.PendingAllCall
+                    $global:AllPolyglotContext.PendingAllCall = $null
+                    $tName = [string]$req.Name
+                    $tArgs = @($req.Args)
+                    if ($state.Functions.ContainsKey($tName)) {
+                        $global:AllPolyglotContext.PendingAllResult = (Invoke-AllFunction $tName $tArgs)
+                    } elseif ($tName -cin @('len','push','pop','concat','keys','values','has_key','remove_key',
+                        'read_text','write_text','append_text','file_exists','json_encode','json_decode',
+                        'read_json','write_json','input','http_get','http_post','http_post_json','http_serve',
+                        'kv_put','kv_get','kv_delete','kv_keys','parallel_all','cli_args','http_serve_batch','http_serve_live','stdin_text','stderr_text','set_exit_code','sql_query','sql_exec','sql_transaction','sql_migrate')) {
+                        $global:AllPolyglotContext.PendingAllResult = (Invoke-AllListBuiltin $tName $tArgs)
+                    } else {
+                        $global:AllPolyglotContext.PendingAllResult = (Invoke-AllMath $tName $tArgs)
+                    }
+                    Sync-AllStateToPolyglot
+                    return
+                }
+            }
             [void](Invoke-AllBlock $statements.ToArray())
         } catch {
             Write-AllTrace 'error' $null $_.Exception.Message
@@ -2304,6 +2551,9 @@
             }
             throw
         } finally {
+            if ($null -ne $global:AllPolyglotContext) {
+                try { Sync-AllStateToPolyglot } catch {}
+            }
             if($null -ne $state.TraceWriter){$state.TraceWriter.Dispose()}
         }
     }

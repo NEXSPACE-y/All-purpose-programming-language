@@ -1,1 +1,0 @@
-<?php $f=['C'];try{$f();}catch(Error $e){echo $e->getMessage();}

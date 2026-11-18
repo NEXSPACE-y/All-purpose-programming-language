@@ -1,1 +1,0 @@
-<?php function side(){echo 'SIDE';return 1;}try{call_user_func('missing_fn',side());}catch(TypeError $e){echo $e->getMessage();}

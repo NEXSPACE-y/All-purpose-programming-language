@@ -1,1 +1,0 @@
-$v="\u{E9}";$a=[&$v];var_dump(json_encode($a),json_last_error());

@@ -1,1 +1,0 @@
-<?php class S{function __toString(){return 'str';}} exit(new S());

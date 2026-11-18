@@ -1,1 +1,0 @@
-<?php set_error_handler(function(){exit(6);}); echo $missing; echo 'after';

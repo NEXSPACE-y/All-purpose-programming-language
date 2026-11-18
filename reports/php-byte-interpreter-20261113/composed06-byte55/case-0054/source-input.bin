@@ -1,1 +1,0 @@
-var_dump(json_encode([0=>'a',1=>'b']),json_encode([1=>'a',0=>'b']),json_encode(['0'=>'x','01'=>'y']));

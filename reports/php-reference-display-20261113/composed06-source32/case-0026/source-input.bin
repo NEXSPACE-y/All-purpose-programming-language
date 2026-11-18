@@ -1,1 +1,0 @@
-$v="\xFF\0";$o=new stdClass();$o->x=&$v;unset($v);var_dump($o);

@@ -1,1 +1,0 @@
-<?php namespace MiXeD;const VaL=7;echo \mixed\VaL;

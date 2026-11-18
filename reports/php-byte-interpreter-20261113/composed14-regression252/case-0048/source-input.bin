@@ -1,1 +1,0 @@
-var_dump(ini_get("short_open_tag"));

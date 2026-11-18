@@ -1,1 +1,0 @@
-$a=['s'=>'x'];array_unshift($a);$a[-5]='z';$a[]='a';var_dump($a);

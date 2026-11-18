@@ -1,1 +1,0 @@
-<?php namespace A; use B\C as D; use E\F as D; echo 'unreachable';

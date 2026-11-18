@@ -1,1 +1,0 @@
-<?php set_error_handler(function($l,$m){echo 'H';exit(7);});echo dl_test_test2(null);echo 'unreached';

@@ -1,1 +1,0 @@
-<?php $f=['NoSuchClass','f'];try{$f();}catch(Error $e){echo $e->getMessage();}

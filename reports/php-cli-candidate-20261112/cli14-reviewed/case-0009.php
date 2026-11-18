@@ -1,1 +1,0 @@
-<?php try { exit(9); } catch(Throwable $e) { echo 'caught'; } echo 'after';

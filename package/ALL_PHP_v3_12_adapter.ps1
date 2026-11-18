@@ -13,7 +13,1384 @@
             [void]$CliContext.Remove('CompileError')
         }
         $ErrorActionPreference = 'Stop'
+        if (-not ('AllPhp.ValidTextSymbols.Comparers' -as [type])) {
+            Add-Type -TypeDefinition @'
+using System;
+namespace AllPhp.ValidTextSymbols
+{
+    // Equality bridge for already validated UTF-8 text metadata. No Unicode
+    // normalization or invariant/current-culture comparisons are permitted.
+    // Hashes are internal and are not byte-symbol hashes or Zend ABI hashes.
+    public static class Comparers
+    {
+        public const string Contract = "allphp-valid-utf8-symbols-01";
+        public static readonly StringComparer Ascii = new SymbolComparer(false);
+        public static readonly StringComparer Constant = new SymbolComparer(true);
+        public static string LowerAscii(string value)
+        {
+            if (value == null) throw new ArgumentNullException("value");
+            char[] result = null;
+            for (int i = 0; i < value.Length; i++)
+                if (value[i] >= 'A' && value[i] <= 'Z')
+                {
+                    if (result == null) result = value.ToCharArray();
+                    result[i] = (char)(value[i] + 32);
+                }
+            return result == null ? value : new String(result);
+        }
+        private sealed class SymbolComparer : StringComparer
+        {
+            private readonly bool constant;
+            public SymbolComparer(bool constant) { this.constant = constant; }
+            private char At(string value, int offset, int boundary)
+            {
+                char c = value[offset];
+                return offset < boundary && c >= 'A' && c <= 'Z' ? (char)(c + 32) : c;
+            }
+            public override int Compare(string left, string right)
+            {
+                if (Object.ReferenceEquals(left, right)) return 0;
+                if (left == null) return -1;
+                if (right == null) return 1;
+                int lb = constant ? left.LastIndexOf((char)92) : left.Length;
+                int rb = constant ? right.LastIndexOf((char)92) : right.Length;
+                int length = Math.Min(left.Length, right.Length);
+                for (int i = 0; i < length; i++)
+                {
+                    char a = At(left, i, lb), b = At(right, i, rb);
+                    if (a != b) return a < b ? -1 : 1;
+                }
+                return left.Length == right.Length ? 0 : left.Length < right.Length ? -1 : 1;
+            }
+            public override bool Equals(string left, string right) { return Compare(left, right) == 0; }
+            public override int GetHashCode(string value)
+            {
+                if (value == null) throw new ArgumentNullException("value");
+                int boundary = constant ? value.LastIndexOf((char)92) : value.Length;
+                unchecked
+                {
+                    uint hash = 2166136261;
+                    for (int i = 0; i < value.Length; i++) hash = (hash ^ At(value, i, boundary)) * 16777619;
+                    return (int)hash;
+                }
+            }
+        }
+    }
+}
+'@
+        }
+        if ([AllPhp.ValidTextSymbols.Comparers]::Contract -cne 'allphp-valid-utf8-symbols-01') {
+            throw 'ALL PHP valid-text symbol comparer contract mismatch'
+        }
+        function ConvertTo-PhpAsciiLower([string]$name) { return [AllPhp.ValidTextSymbols.Comparers]::LowerAscii($name) }
+        function Test-PhpNameEqual([string]$left,[string]$right) { return [AllPhp.ValidTextSymbols.Comparers]::Ascii.Equals($left,$right) }
+        function Test-PhpRawNameEqual([string]$left,[string]$right) { return [StringComparer]::Ordinal.Equals($left,$right) }
+        function Test-PhpNameIn([string]$name,$names) {
+            foreach($other in $names) { if (Test-PhpNameEqual $name $other) { return $true } }
+            return $false
+        }
+        $phpAdapterDir = $PSScriptRoot
+        if (-not ('AllPhp.ByteValues.PhpBytes' -as [type]) -or -not ('AllPhp.ByteCodecs.PhpBase64' -as [type]) -or -not ('AllPhp.NativeEngine.RustBridge' -as [type])) {
+            Add-Type -TypeDefinition @'
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Text;
+using System.Threading;
 
+namespace AllPhp.ByteValues
+{
+    // PHP data bytes. Host metadata/text require an explicit encoding boundary.
+    // Storage nodes and published data are immutable. CopyTo uses an iterative
+    // work stack so composed views do not consume the CLR call stack.
+    public sealed class PhpBytes : IEquatable<PhpBytes>
+    {
+        public const int ChunkSize = 65536;
+        public const int ContractVersion = 1;
+        private abstract class Store
+        {
+            internal readonly long Length; internal readonly int Height;
+            protected Store(long length, int height) { if (length < 0) throw new ArgumentOutOfRangeException("length"); Length = length; Height = height; }
+        }
+        private sealed class ArrayStore : Store
+        {
+            internal readonly byte[] Bytes;
+            internal ArrayStore(byte[] bytes) : base(bytes.LongLength, bytes.Length == 0 ? 0 : 1) { Bytes = bytes; }
+        }
+        private sealed class Branch : Store
+        {
+            internal readonly Store Left, Right;
+            internal Branch(Store left, Store right) : base(checked(left.Length + right.Length), Math.Max(left.Height, right.Height) + 1) { Left = left; Right = right; }
+        }
+        private sealed class SliceStore : Store
+        {
+            internal readonly Store Parent; internal readonly long Offset;
+            internal SliceStore(Store parent, long offset, long length) : base(length, 1) { Parent = parent; Offset = offset; }
+        }
+        private sealed class FillStore : Store
+        {
+            internal readonly byte Byte;
+            internal FillStore(byte value, long length) : base(length, length == 0 ? 0 : 1) { Byte = value; }
+        }
+        private sealed class PatternStore : Store
+        {
+            internal readonly byte[] Pattern;
+            internal PatternStore(byte[] pattern, long length) : base(length, length == 0 ? 0 : 1)
+            { if (pattern.Length == 0 && length != 0) throw new ArgumentException("Empty repeat pattern"); Pattern = pattern; }
+        }
+        private sealed class RepeatStore : Store
+        {
+            internal readonly Store Unit;
+            internal RepeatStore(Store unit, long length) : base(length, 1) { if (unit.Length == 0) throw new ArgumentException("Empty repeat unit"); Unit = unit; }
+        }
+        private sealed class MapStore : Store
+        {
+            internal readonly Store Parent; internal readonly byte[] Map;
+            internal MapStore(Store parent, byte[] map) : base(parent.Length, 1) { Parent = parent; Map = map; }
+        }
+        private sealed class BinaryStore : Store
+        {
+            internal readonly Store Left, Right; internal readonly char Operation;
+            internal BinaryStore(Store left, Store right, char operation) : base(operation == '|' ? Math.Max(left.Length, right.Length) : Math.Min(left.Length, right.Length), 1)
+            { Left = left; Right = right; Operation = operation; }
+        }
+        private sealed class Work
+        {
+            internal Store Source; internal long Position; internal byte[] Buffer, Other, Map;
+            internal int Offset, Count, Action; internal char Operation;
+            internal static Work Read(Store source, long position, byte[] buffer, int offset, int count)
+            { return new Work { Source = source, Position = position, Buffer = buffer, Offset = offset, Count = count }; }
+        }
+
+        private static readonly Store EmptyStore = new ArrayStore(new byte[0]);
+        public static readonly PhpBytes Empty = new PhpBytes(EmptyStore);
+        private static readonly byte[] LowerMap = MakeMap(0), UpperMap = MakeMap(1), NotMap = MakeMap(2);
+        private readonly Store store;
+        private int cachedHash, hashReady;
+        private PhpBytes(Store value) { store = value; }
+        public long Length { get { return store.Length; } }
+        public long LongLength { get { return store.Length; } }
+        public int StorageHeight { get { return store.Height; } }
+        public bool Truthy { get { return Length != 0 && !(Length == 1 && GetByte(0) == 48); } }
+
+        private static Store Balance(Store left, Store right)
+        {
+            if (left.Length == 0) return right; if (right.Length == 0) return left;
+            if (left.Height > right.Height + 1)
+            {
+                Branch l = (Branch)left;
+                if (l.Left.Height >= l.Right.Height) return new Branch(l.Left, new Branch(l.Right, right));
+                Branch middle = (Branch)l.Right;
+                return new Branch(new Branch(l.Left, middle.Left), new Branch(middle.Right, right));
+            }
+            if (right.Height > left.Height + 1)
+            {
+                Branch r = (Branch)right;
+                if (r.Right.Height >= r.Left.Height) return new Branch(new Branch(left, r.Left), r.Right);
+                Branch middle = (Branch)r.Left;
+                return new Branch(new Branch(left, middle.Left), new Branch(middle.Right, r.Right));
+            }
+            return new Branch(left, right);
+        }
+        private static Store Join(Store left, Store right)
+        {
+            if (left.Length == 0) return right; if (right.Length == 0) return left;
+            if (left.Height > right.Height + 1)
+            { Branch l = (Branch)left; return Balance(l.Left, Join(l.Right, right)); }
+            if (right.Height > left.Height + 1)
+            { Branch r = (Branch)right; return Balance(Join(left, r.Left), r.Right); }
+            return new Branch(left, right);
+        }
+        private static byte[] MakeMap(int operation)
+        {
+            byte[] map = new byte[256];
+            for (int i = 0; i < 256; ++i) map[i] = operation == 0 && i >= 65 && i <= 90 ? (byte)(i + 32) : operation == 1 && i >= 97 && i <= 122 ? (byte)(i - 32) : operation == 2 ? (byte)~i : (byte)i;
+            return map;
+        }
+        private static void FillBuffer(byte[] buffer, int offset, int count, byte value)
+        {
+            if (count == 0) return; buffer[offset] = value; int filled = 1;
+            while (filled < count) { int size = Math.Min(filled, count - filled); Buffer.BlockCopy(buffer, offset, buffer, offset + filled, size); filled += size; }
+        }
+        private static void CopyPattern(PatternStore pattern, long position, byte[] destination, int offset, int count)
+        {
+            int phase = (int)(position % pattern.Pattern.Length), seed = Math.Min(count, pattern.Pattern.Length);
+            int first = Math.Min(seed, pattern.Pattern.Length - phase);
+            Buffer.BlockCopy(pattern.Pattern, phase, destination, offset, first);
+            if (seed > first) Buffer.BlockCopy(pattern.Pattern, 0, destination, offset + first, seed - first);
+            int filled = seed;
+            while (filled < count) { int size = Math.Min(filled, count - filled); Buffer.BlockCopy(destination, offset, destination, offset + filled, size); filled += size; }
+        }
+        private static void ReadChunk(Store source, long position, byte[] destination, int offset, int count)
+        {
+            if (count == 0) return;
+            Stack<Work> pending = new Stack<Work>(); pending.Push(Work.Read(source, position, destination, offset, count));
+            while (pending.Count != 0)
+            {
+                Work work = pending.Pop();
+                if (work.Action == 1)
+                { for (int i = 0; i < work.Count; ++i) work.Buffer[work.Offset + i] = work.Map[work.Buffer[work.Offset + i]]; continue; }
+                if (work.Action == 2)
+                {
+                    for (int i = 0; i < work.Count; ++i)
+                    {
+                        byte a = work.Buffer[work.Offset + i], b = work.Other[i];
+                        work.Buffer[work.Offset + i] = work.Operation == '&' ? (byte)(a & b) : work.Operation == '^' ? (byte)(a ^ b) : (byte)(a | b);
+                    }
+                    continue;
+                }
+                ArrayStore array = work.Source as ArrayStore;
+                if (array != null) { Buffer.BlockCopy(array.Bytes, checked((int)work.Position), work.Buffer, work.Offset, work.Count); continue; }
+                FillStore fill = work.Source as FillStore;
+                if (fill != null) { FillBuffer(work.Buffer, work.Offset, work.Count, fill.Byte); continue; }
+                PatternStore pattern = work.Source as PatternStore;
+                if (pattern != null) { CopyPattern(pattern, work.Position, work.Buffer, work.Offset, work.Count); continue; }
+                SliceStore slice = work.Source as SliceStore;
+                if (slice != null) { pending.Push(Work.Read(slice.Parent, checked(slice.Offset + work.Position), work.Buffer, work.Offset, work.Count)); continue; }
+                Branch branch = work.Source as Branch;
+                if (branch != null)
+                {
+                    if (work.Position >= branch.Left.Length) pending.Push(Work.Read(branch.Right, work.Position - branch.Left.Length, work.Buffer, work.Offset, work.Count));
+                    else
+                    {
+                        int leftCount = (int)Math.Min((long)work.Count, branch.Left.Length - work.Position);
+                        if (leftCount < work.Count) pending.Push(Work.Read(branch.Right, 0, work.Buffer, work.Offset + leftCount, work.Count - leftCount));
+                        pending.Push(Work.Read(branch.Left, work.Position, work.Buffer, work.Offset, leftCount));
+                    }
+                    continue;
+                }
+                RepeatStore repeat = work.Source as RepeatStore;
+                if (repeat != null)
+                {
+                    List<Work> pieces = new List<Work>(); int copied = 0; long phase = work.Position % repeat.Unit.Length;
+                    while (copied < work.Count)
+                    { int amount = (int)Math.Min((long)(work.Count - copied), repeat.Unit.Length - phase); pieces.Add(Work.Read(repeat.Unit, phase, work.Buffer, work.Offset + copied, amount)); copied += amount; phase = 0; }
+                    for (int i = pieces.Count - 1; i >= 0; --i) pending.Push(pieces[i]);
+                    continue;
+                }
+                MapStore map = work.Source as MapStore;
+                if (map != null)
+                {
+                    pending.Push(new Work { Action = 1, Buffer = work.Buffer, Offset = work.Offset, Count = work.Count, Map = map.Map });
+                    pending.Push(Work.Read(map.Parent, work.Position, work.Buffer, work.Offset, work.Count)); continue;
+                }
+                BinaryStore binary = work.Source as BinaryStore;
+                if (binary != null)
+                {
+                    Array.Clear(work.Buffer, work.Offset, work.Count); byte[] other = new byte[work.Count];
+                    int leftCount = work.Position < binary.Left.Length ? (int)Math.Min((long)work.Count, binary.Left.Length - work.Position) : 0;
+                    int rightCount = work.Position < binary.Right.Length ? (int)Math.Min((long)work.Count, binary.Right.Length - work.Position) : 0;
+                    pending.Push(new Work { Action = 2, Buffer = work.Buffer, Offset = work.Offset, Count = work.Count, Other = other, Operation = binary.Operation });
+                    if (rightCount != 0) pending.Push(Work.Read(binary.Right, work.Position, other, 0, rightCount));
+                    if (leftCount != 0) pending.Push(Work.Read(binary.Left, work.Position, work.Buffer, work.Offset, leftCount));
+                    continue;
+                }
+                throw new InvalidOperationException("Unknown immutable byte storage node");
+            }
+        }
+        private static PhpBytes FromOwned(byte[] bytes)
+        {
+            if (bytes.Length == 0) return Empty;
+            Store result = EmptyStore;
+            for (int position = 0; position < bytes.Length;)
+            {
+                int count = Math.Min(ChunkSize, bytes.Length - position);
+                byte[] part;
+                if (position == 0 && count == bytes.Length) part = bytes;
+                else { part = new byte[count]; Buffer.BlockCopy(bytes, position, part, 0, count); }
+                result = Join(result, new ArrayStore(part)); position += count;
+            }
+            return new PhpBytes(result);
+        }
+        public static PhpBytes FromBytes(byte[] bytes)
+        { if (bytes == null) throw new ArgumentNullException("bytes"); return FromOwned((byte[])bytes.Clone()); }
+        public static PhpBytes FromBase64(string value) { return FromOwned(Convert.FromBase64String(value)); }
+        public static PhpBytes FromUtf8(string value) { return FromOwned(new UTF8Encoding(false, true).GetBytes(value)); }
+        public static PhpBytes FromStream(Stream source)
+        {
+            if (source == null) throw new ArgumentNullException("source"); if (!source.CanRead) throw new ArgumentException("Stream is not readable", "source");
+            Store result = EmptyStore;
+            while (true)
+            {
+                byte[] part = new byte[ChunkSize]; int used = 0;
+                while (used < part.Length) { int read = source.Read(part, used, part.Length - used); if (read == 0) break; used += read; }
+                if (used == 0) break;
+                if (used != part.Length) { byte[] shortPart = new byte[used]; Buffer.BlockCopy(part, 0, shortPart, 0, used); part = shortPart; }
+                result = Join(result, new ArrayStore(part)); if (used < ChunkSize) break;
+            }
+            return result.Length == 0 ? Empty : new PhpBytes(result);
+        }
+        public static PhpBytes Fill(byte value, long length)
+        { if (length < 0) throw new ArgumentOutOfRangeException("length"); return length == 0 ? Empty : new PhpBytes(new FillStore(value, length)); }
+        public PhpBytes Repeat(long count)
+        {
+            if (count < 0) throw new ArgumentOutOfRangeException("count"); if (count == 0 || Length == 0) return Empty; if (count == 1) return this;
+            long length = checked(Length * count);
+            FillStore fill = store as FillStore; if (fill != null) return Fill(fill.Byte, length);
+            PatternStore oldPattern = store as PatternStore; if (oldPattern != null) return new PhpBytes(new PatternStore(oldPattern.Pattern, length));
+            RepeatStore oldRepeat = store as RepeatStore; if (oldRepeat != null) return new PhpBytes(new RepeatStore(oldRepeat.Unit, length));
+            if (Length == 1) return Fill(GetByte(0), length);
+            if (Length <= ChunkSize) return new PhpBytes(new PatternStore(ToArray(), length));
+            return new PhpBytes(new RepeatStore(store, length));
+        }
+        public void CopyTo(long sourceOffset, byte[] destination, int destinationOffset, int count)
+        {
+            if (destination == null) throw new ArgumentNullException("destination");
+            if (sourceOffset < 0 || sourceOffset > Length || count < 0 || (long)count > Length - sourceOffset) throw new ArgumentOutOfRangeException("sourceOffset");
+            if (destinationOffset < 0 || destinationOffset > destination.Length || count > destination.Length - destinationOffset) throw new ArgumentOutOfRangeException("destinationOffset");
+            while (count > 0) { int part = Math.Min(count, ChunkSize); ReadChunk(store, sourceOffset, destination, destinationOffset, part); sourceOffset += part; destinationOffset += part; count -= part; }
+        }
+        public byte GetByte(long offset)
+        { if (offset < 0 || offset >= Length) throw new ArgumentOutOfRangeException("offset"); byte[] b = new byte[1]; ReadChunk(store, offset, b, 0, 1); return b[0]; }
+        public byte[] ToArray()
+        {
+            if (Length > Int32.MaxValue) throw new NotSupportedException("ToArray is a bounded interop API; use CopyTo or WriteTo for long PHP bytes");
+            byte[] result = new byte[(int)Length]; CopyTo(0, result, 0, result.Length); return result;
+        }
+        public string ToBase64() { return Convert.ToBase64String(ToArray()); }
+        public void WriteTo(Stream destination) { WriteTo(destination, 0, Length); }
+        public void WriteTo(Stream destination, long offset, long count)
+        {
+            if (destination == null) throw new ArgumentNullException("destination"); if (!destination.CanWrite) throw new ArgumentException("Stream is not writable", "destination");
+            if (offset < 0 || offset > Length || count < 0 || count > Length - offset) throw new ArgumentOutOfRangeException("offset");
+            byte[] buffer = new byte[ChunkSize];
+            while (count > 0) { int part = (int)Math.Min(count, buffer.Length); CopyTo(offset, buffer, 0, part); destination.Write(buffer, 0, part); offset += part; count -= part; }
+        }
+        public bool TryDecodeUtf8(out string text)
+        {
+            if (Length > Int32.MaxValue) throw new NotSupportedException("Decoded host text is bounded; preserve long PHP data as bytes");
+            try { text = new UTF8Encoding(false, true).GetString(ToArray()); return true; }
+            catch (DecoderFallbackException) { text = null; return false; }
+        }
+        public override string ToString() { throw new InvalidOperationException("PhpBytes requires an explicit raw-byte or strict decoded-text boundary"); }
+        public PhpBytes Concat(PhpBytes right)
+        { if ((object)right == null) throw new ArgumentNullException("right"); return new PhpBytes(Join(store, right.store)); }
+        public PhpBytes Slice(long offset, long? count)
+        {
+            long start = offset < 0 ? Math.Max(Length + offset, 0) : Math.Min(offset, Length), end = Length;
+            if (count.HasValue) end = count.Value < 0 ? Math.Max(start, Length + count.Value) : start + Math.Min(count.Value, Length - start);
+            long length = Math.Max(0, end - start); if (length == 0) return Empty; if (start == 0 && length == Length) return this;
+            SliceStore old = store as SliceStore; return new PhpBytes(old == null ? new SliceStore(store, start, length) : new SliceStore(old.Parent, checked(old.Offset + start), length));
+        }
+        public OffsetResult ReadOffset(long offset)
+        {
+            long position = offset < 0 ? Length + offset : offset;
+            if (position < 0 || position >= Length) return new OffsetResult(Empty, "", 2, "Uninitialized string offset " + offset.ToString(CultureInfo.InvariantCulture));
+            return new OffsetResult(FromOwned(new byte[] { GetByte(position) }), "", 0, "");
+        }
+        public OffsetResult WithOffset(long offset, PhpBytes replacement)
+        {
+            if ((object)replacement == null) throw new ArgumentNullException("replacement");
+            long position = offset < 0 ? Length + offset : offset;
+            if (position < 0) return new OffsetResult(this, "", 2, "Illegal string offset " + offset.ToString(CultureInfo.InvariantCulture));
+            if (replacement.Length == 0) return new OffsetResult(this, "Error", 0, "Cannot assign an empty string to a string offset");
+            long required = checked(position + 1); PhpBytes first = FromOwned(new byte[] { replacement.GetByte(0) });
+            PhpBytes result = position < Length ? Slice(0, position).Concat(first).Concat(Slice(required, null)) : Concat(Fill(32, position - Length)).Concat(first);
+            return new OffsetResult(result, "", replacement.Length > 1 ? 2 : 0, replacement.Length > 1 ? "Only the first byte will be assigned to the string offset" : "");
+        }
+        public int CompareBinary(PhpBytes right)
+        {
+            if ((object)right == null) throw new ArgumentNullException("right"); if (Object.ReferenceEquals(store, right.store)) return 0;
+            long common = Math.Min(Length, right.Length), position = 0; byte[] a = new byte[ChunkSize], b = new byte[ChunkSize];
+            while (position < common)
+            {
+                int count = (int)Math.Min(common - position, ChunkSize); CopyTo(position, a, 0, count); right.CopyTo(position, b, 0, count);
+                for (int i = 0; i < count; ++i) if (a[i] != b[i]) return a[i] < b[i] ? -1 : 1;
+                position += count;
+            }
+            return Length == right.Length ? 0 : Length < right.Length ? -1 : 1;
+        }
+        public bool Equals(PhpBytes right)
+        { return Object.ReferenceEquals(this, right) || ((object)right != null && Length == right.Length && CompareBinary(right) == 0); }
+        public override bool Equals(object other) { return Equals(other as PhpBytes); }
+        public override int GetHashCode()
+        {
+            if (Thread.VolatileRead(ref hashReady) != 0) return cachedHash;
+            uint hash = 2166136261; byte[] buffer = new byte[ChunkSize]; long position = 0;
+            unchecked { while (position < Length) { int count = (int)Math.Min(Length - position, ChunkSize); CopyTo(position, buffer, 0, count); for (int i = 0; i < count; ++i) hash = (hash ^ buffer[i]) * 16777619; position += count; } }
+            cachedHash = (int)hash; Thread.VolatileWrite(ref hashReady, 1); return cachedHash;
+        }
+        private PhpBytes Map(byte[] table)
+        {
+            if (Length == 0) return this;
+            FillStore fill = store as FillStore; if (fill != null) return Fill(table[fill.Byte], Length);
+            PatternStore pattern = store as PatternStore;
+            if (pattern != null) { byte[] mapped = new byte[pattern.Pattern.Length]; for (int i = 0; i < mapped.Length; ++i) mapped[i] = table[pattern.Pattern[i]]; return new PhpBytes(new PatternStore(mapped, Length)); }
+            MapStore old = store as MapStore;
+            if (old != null) { byte[] combined = new byte[256]; bool identity = true; for (int i = 0; i < 256; ++i) { combined[i] = table[old.Map[i]]; identity &= combined[i] == i; } return identity ? new PhpBytes(old.Parent) : new PhpBytes(new MapStore(old.Parent, combined)); }
+            return new PhpBytes(new MapStore(store, table));
+        }
+        public PhpBytes LowerAscii() { return Map(LowerMap); }
+        public PhpBytes UpperAscii() { return Map(UpperMap); }
+        public PhpBytes BitwiseNot() { return Map(NotMap); }
+        public PhpBytes Bitwise(PhpBytes right, char operation)
+        {
+            if ((object)right == null) throw new ArgumentNullException("right"); if (operation != '&' && operation != '^' && operation != '|') throw new ArgumentOutOfRangeException("operation");
+            if (Object.ReferenceEquals(store, right.store)) return operation == '^' ? Fill(0, Length) : this;
+            long length = operation == '|' ? Math.Max(Length, right.Length) : Math.Min(Length, right.Length);
+            if (length == 0) return Empty; if (operation == '|' && Length == 0) return right; if (operation == '|' && right.Length == 0) return this;
+            return new PhpBytes(new BinaryStore(store, right.store, operation));
+        }
+        public bool TryArrayInteger(out long value)
+        {
+            value = 0; if (Length == 0 || Length > 20) return false; byte[] data = ToArray();
+            bool negative = data[0] == 45; int start = negative ? 1 : 0;
+            if (start == data.Length) return false; if (data[start] == 48) { if (negative || data.Length != 1) return false; return true; }
+            if (data[start] < 49 || data[start] > 57) return false;
+            ulong limit = negative ? 9223372036854775808UL : 9223372036854775807UL, magnitude = 0;
+            for (int i = start; i < data.Length; ++i) { if (data[i] < 48 || data[i] > 57) return false; uint digit = (uint)(data[i] - 48); if (magnitude > (limit - digit) / 10) return false; magnitude = magnitude * 10 + digit; }
+            value = negative ? magnitude == 9223372036854775808UL ? Int64.MinValue : -(long)magnitude : (long)magnitude; return true;
+        }
+    }
+    public sealed class OffsetResult
+    {
+        public readonly PhpBytes Value; public readonly string ErrorClass, Message; public readonly int WarningLevel;
+        internal OffsetResult(PhpBytes value, string errorClass, int warningLevel, string message) { Value = value; ErrorClass = errorClass; WarningLevel = warningLevel; Message = message; }
+    }
+    public sealed class PhpKey : IEquatable<PhpKey>
+    {
+        private readonly bool integer; private readonly long number; private readonly PhpBytes bytes;
+        private PhpKey(long value) { integer = true; number = value; }
+        private PhpKey(PhpBytes value) { if ((object)value == null) throw new ArgumentNullException("value"); integer = false; bytes = value; }
+        public bool IsInteger { get { return integer; } }
+        public long IntegerValue { get { if (!integer) throw new InvalidOperationException("Key is a PHP byte string"); return number; } }
+        public PhpBytes BytesValue { get { if (integer) throw new InvalidOperationException("Key is a PHP integer"); return bytes; } }
+        public static PhpKey FromInteger(long value) { return new PhpKey(value); }
+        public static PhpKey FromString(PhpBytes value) { long number; return value.TryArrayInteger(out number) ? new PhpKey(number) : new PhpKey(value); }
+        public string Protocol { get { return integer ? "i:" + number.ToString(CultureInfo.InvariantCulture) : "s:" + bytes.ToBase64(); } }
+        public override string ToString() { throw new InvalidOperationException("Use typed PHP key properties or explicit diagnostic Protocol"); }
+        public bool Equals(PhpKey other) { return (object)other != null && integer == other.integer && (integer ? number == other.number : bytes.Equals(other.bytes)); }
+        public override bool Equals(object other) { return Equals(other as PhpKey); }
+        public override int GetHashCode() { return integer ? number.GetHashCode() ^ 0x15a36 : bytes.GetHashCode() ^ 0x2c6d9; }
+    }
+    public sealed class ByteEntry
+    {
+        public readonly PhpKey Key; public readonly PhpBytes Value;
+        internal ByteEntry(PhpKey key, PhpBytes value) { Key = key; Value = value; }
+    }
+    // Byte-valued specialization only. Generic PHP arrays may keep their
+    // existing object/refcell values in OrderedDictionary using PhpKey keys.
+    public sealed class OrderedByteMap
+    {
+        private readonly List<ByteEntry> entries = new List<ByteEntry>(); private readonly Dictionary<PhpKey, int> index = new Dictionary<PhpKey, int>();
+        public void Set(PhpKey key, PhpBytes value) { int position; if (index.TryGetValue(key, out position)) entries[position] = new ByteEntry(entries[position].Key, value); else { index.Add(key, entries.Count); entries.Add(new ByteEntry(key, value)); } }
+        public ByteEntry[] Snapshot() { return entries.ToArray(); }
+    }
+    public sealed class PhpByteBuilder
+    {
+        private PhpBytes value = PhpBytes.Empty;
+        public long Length { get { return value.Length; } }
+        public void Append(PhpBytes bytes) { if ((object)bytes == null) throw new ArgumentNullException("bytes"); value = value.Concat(bytes); }
+        public void AppendBytes(byte[] bytes) { Append(PhpBytes.FromBytes(bytes)); }
+        public void AppendUtf8(string text) { Append(PhpBytes.FromUtf8(text)); }
+        public void AppendAscii(string text) { if (text == null) throw new ArgumentNullException("text"); foreach (char c in text) if (c > 127) throw new ArgumentException("Host text is not ASCII", "text"); Append(PhpBytes.FromUtf8(text)); }
+        public PhpBytes ToPhpBytes() { return value; }
+        public void Clear() { value = PhpBytes.Empty; }
+    }
+}
+
+namespace AllPhp.ByteCodecs
+{
+    using AllPhp.ByteValues;
+    // ALL-owned scalar codec. PHP data is never decoded as host text.
+    public static class PhpBase64
+    {
+        public const int ContractVersion = 1;
+        private const int ChunkSize = 65536;
+        private const string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+        public static long GetEncodedLength(long length)
+        {
+            if (length < 0) throw new ArgumentOutOfRangeException("length");
+            long groups = length / 3;
+            if (length % 3 != 0) ++groups;
+            return checked(groups * 4);
+        }
+
+        private static void AppendChunk(PhpByteBuilder builder, byte[] bytes, int count)
+        {
+            if (count == 0) return;
+            if (count == bytes.Length) builder.AppendBytes(bytes);
+            else
+            {
+                byte[] tail = new byte[count];
+                Buffer.BlockCopy(bytes, 0, tail, 0, count);
+                builder.AppendBytes(tail);
+            }
+        }
+
+        private static void EmitQuartet(byte[] output, ref int count, Action<byte[], int> sink,
+            byte first, byte second, byte third, byte fourth)
+        {
+            if (count > output.Length - 4) { sink(output, count); count = 0; }
+            output[count++] = first; output[count++] = second;
+            output[count++] = third; output[count++] = fourth;
+        }
+
+        private static long EncodeCore(PhpBytes data, Action<byte[], int> sink)
+        {
+            if ((object)data == null) throw new ArgumentNullException("data");
+            if (sink == null) throw new ArgumentNullException("sink");
+            long expected = GetEncodedLength(data.Length);
+            if (expected == 0) return 0;
+            byte[] input = new byte[ChunkSize], output = new byte[ChunkSize];
+            long position = 0, written = 0;
+            int outputCount = 0, pending = 0;
+            uint carry = 0;
+            Action<byte[], int> write = delegate(byte[] bytes, int count)
+            { sink(bytes, count); written = checked(written + count); };
+            while (position < data.Length)
+            {
+                int count = (int)Math.Min((long)ChunkSize, data.Length - position);
+                data.CopyTo(position, input, 0, count);
+                for (int index = 0; index < count; ++index)
+                {
+                    carry = (carry << 8) | input[index]; ++pending;
+                    if (pending == 3)
+                    {
+                        EmitQuartet(output, ref outputCount, write,
+                            (byte)Alphabet[(int)((carry >> 18) & 63)],
+                            (byte)Alphabet[(int)((carry >> 12) & 63)],
+                            (byte)Alphabet[(int)((carry >> 6) & 63)],
+                            (byte)Alphabet[(int)(carry & 63)]);
+                        carry = 0; pending = 0;
+                    }
+                }
+                position += count;
+            }
+            if (pending == 1)
+            {
+                EmitQuartet(output, ref outputCount, write,
+                    (byte)Alphabet[(int)(carry >> 2)],
+                    (byte)Alphabet[(int)((carry & 3) << 4)], 61, 61);
+            }
+            else if (pending == 2)
+            {
+                EmitQuartet(output, ref outputCount, write,
+                    (byte)Alphabet[(int)(carry >> 10)],
+                    (byte)Alphabet[(int)((carry >> 4) & 63)],
+                    (byte)Alphabet[(int)((carry & 15) << 2)], 61);
+            }
+            if (outputCount != 0) write(output, outputCount);
+            if (written != expected) throw new InvalidOperationException("Base64 encoded length invariant failed");
+            return written;
+        }
+
+        public static PhpBytes Encode(PhpBytes data)
+        {
+            var builder = new PhpByteBuilder();
+            EncodeCore(data, delegate(byte[] bytes, int count) { AppendChunk(builder, bytes, count); });
+            return builder.ToPhpBytes();
+        }
+
+        // Host component/stream boundary. Write consumes each borrowed buffer
+        // synchronously. PHP base64_encode uses Encode and publishes one value.
+        public static long EncodeTo(PhpBytes data, Stream destination)
+        {
+            if (destination == null) throw new ArgumentNullException("destination");
+            return EncodeCore(data, delegate(byte[] bytes, int count) { destination.Write(bytes, 0, count); });
+        }
+
+        private static int Sextet(byte value)
+        {
+            if (value >= 65 && value <= 90) return value - 65;
+            if (value >= 97 && value <= 122) return value - 97 + 26;
+            if (value >= 48 && value <= 57) return value - 48 + 52;
+            if (value == 43) return 62;
+            if (value == 47) return 63;
+            if (value == 9 || value == 10 || value == 13 || value == 32) return -1;
+            return -2;
+        }
+
+        public static bool TryDecode(PhpBytes data, bool strict, out PhpBytes decoded)
+        {
+            if ((object)data == null) throw new ArgumentNullException("data");
+            decoded = null;
+            if (data.Length == 0) { decoded = PhpBytes.Empty; return true; }
+            var builder = new PhpByteBuilder();
+            byte[] input = new byte[ChunkSize], output = new byte[ChunkSize];
+            long position = 0;
+            int padding = 0, phase = 0, carryBits = 0, outputCount = 0;
+            uint carry = 0;
+            while (position < data.Length)
+            {
+                int count = (int)Math.Min((long)ChunkSize, data.Length - position);
+                data.CopyTo(position, input, 0, count);
+                for (int index = 0; index < count; ++index)
+                {
+                    byte raw = input[index];
+                    if (raw == 61)
+                    {
+                        // Only zero/one/two/excess is observable in the validity
+                        // rule. Saturation preserves it without a wide counter.
+                        if (padding < 3) ++padding;
+                        continue;
+                    }
+                    int value = Sextet(raw);
+                    if (value < 0)
+                    {
+                        if (!strict || value == -1) continue;
+                        builder.Clear(); return false;
+                    }
+                    if (strict && padding != 0) { builder.Clear(); return false; }
+                    carry = (carry << 6) | (uint)value; carryBits += 6;
+                    phase = (phase + 1) & 3;
+                    if (carryBits >= 8)
+                    {
+                        carryBits -= 8;
+                        if (outputCount == output.Length)
+                        { AppendChunk(builder, output, outputCount); outputCount = 0; }
+                        output[outputCount++] = (byte)((carry >> carryBits) & 255);
+                        carry &= carryBits == 0 ? 0u : (1u << carryBits) - 1;
+                    }
+                }
+                position += count;
+            }
+            if (strict && (phase == 1 || (padding != 0 && (padding > 2 || ((phase + padding) & 3) != 0))))
+            { builder.Clear(); return false; }
+            // The remaining low bits are intentionally discarded, including
+            // nonzero pad bits. No extra canonical-bit restriction is added.
+            AppendChunk(builder, output, outputCount);
+            decoded = builder.ToPhpBytes(); return true;
+        }
+    }
+}
+
+namespace AllPhp.NativeEngine
+{
+    using System;
+    using System.IO;
+    using System.Runtime.InteropServices;
+    using System.Text;
+
+    public static class RustBridge
+    {
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern IntPtr LoadLibraryW(string lpFileName);
+
+        [DllImport("all_engine.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int all_engine_version();
+
+        [DllImport("all_engine.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int all_stdlib_md5(byte[] input, int inputLen, int rawOutput, byte[] outBuf);
+
+        [DllImport("all_engine.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int all_stdlib_sha1(byte[] input, int inputLen, int rawOutput, byte[] outBuf);
+
+        [DllImport("all_engine.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int all_stdlib_sha256(byte[] input, int inputLen, int rawOutput, byte[] outBuf);
+
+        [DllImport("all_engine.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern long all_stdlib_crc32(byte[] input, int inputLen);
+
+        [DllImport("all_engine.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern long all_stdlib_levenshtein(byte[] s1, int s1Len, byte[] s2, int s2Len);
+
+        [DllImport("all_engine.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int all_polyglot_set_json(byte[] nameUtf8, byte[] jsonUtf8);
+
+        [DllImport("all_engine.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int all_polyglot_get_json(byte[] nameUtf8, byte[] outBuf, int bufCap);
+
+        [DllImport("all_engine.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void all_polyglot_clear();
+
+        private static bool _loaded = false;
+        private static readonly object _lock = new object();
+
+        public static bool EnsureLoaded(string hintDirectory)
+        {
+            if (_loaded) return true;
+            lock (_lock)
+            {
+                if (_loaded) return true;
+                string[] candidates = new string[]
+                {
+                    string.IsNullOrEmpty(hintDirectory) ? null : Path.Combine(hintDirectory, "all_engine.dll"),
+                    string.IsNullOrEmpty(hintDirectory) ? null : Path.Combine(hintDirectory, "..", "all_engine.dll"),
+                    @"D:\ALL\all_engine.dll",
+                    @"D:\ALL\package\all_engine.dll",
+                    @"C:\Users\rinpa\ALL\all_engine.dll"
+                };
+                foreach (string c in candidates)
+                {
+                    if (!string.IsNullOrEmpty(c) && File.Exists(c))
+                    {
+                        IntPtr handle = LoadLibraryW(Path.GetFullPath(c));
+                        if (handle != IntPtr.Zero)
+                        {
+                            _loaded = true;
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+
+        public static byte[] Md5(byte[] input, bool raw, string hintDir)
+        {
+            if (input == null) input = new byte[0];
+            if (EnsureLoaded(hintDir))
+            {
+                byte[] buf = new byte[raw ? 16 : 32];
+                int len = all_stdlib_md5(input, input.Length, raw ? 1 : 0, buf);
+                if (len == buf.Length) return buf;
+            }
+            using (var md5 = System.Security.Cryptography.MD5.Create())
+            {
+                byte[] hash = md5.ComputeHash(input);
+                if (raw) return hash;
+                return Encoding.ASCII.GetBytes(BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant());
+            }
+        }
+
+        public static byte[] Sha1(byte[] input, bool raw, string hintDir)
+        {
+            if (input == null) input = new byte[0];
+            if (EnsureLoaded(hintDir))
+            {
+                byte[] buf = new byte[raw ? 20 : 40];
+                int len = all_stdlib_sha1(input, input.Length, raw ? 1 : 0, buf);
+                if (len == buf.Length) return buf;
+            }
+            using (var sha1 = System.Security.Cryptography.SHA1.Create())
+            {
+                byte[] hash = sha1.ComputeHash(input);
+                if (raw) return hash;
+                return Encoding.ASCII.GetBytes(BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant());
+            }
+        }
+
+        public static byte[] Sha256(byte[] input, bool raw, string hintDir)
+        {
+            if (input == null) input = new byte[0];
+            if (EnsureLoaded(hintDir))
+            {
+                byte[] buf = new byte[raw ? 32 : 64];
+                int len = all_stdlib_sha256(input, input.Length, raw ? 1 : 0, buf);
+                if (len == buf.Length) return buf;
+            }
+            using (var sha256 = System.Security.Cryptography.SHA256.Create())
+            {
+                byte[] hash = sha256.ComputeHash(input);
+                if (raw) return hash;
+                return Encoding.ASCII.GetBytes(BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant());
+            }
+        }
+
+        public static long Crc32(byte[] input, string hintDir)
+        {
+            if (input == null) input = new byte[0];
+            if (EnsureLoaded(hintDir))
+            {
+                return all_stdlib_crc32(input, input.Length);
+            }
+            uint crc = 0xFFFFFFFFu;
+            for (int i = 0; i < input.Length; i++)
+            {
+                crc ^= input[i];
+                for (int j = 0; j < 8; j++)
+                {
+                    crc = (crc & 1) != 0 ? (crc >> 1) ^ 0xEDB88320u : (crc >> 1);
+                }
+            }
+            return (long)(~crc);
+        }
+
+        public static long Levenshtein(byte[] s1, byte[] s2, string hintDir)
+        {
+            if (s1 == null) s1 = new byte[0];
+            if (s2 == null) s2 = new byte[0];
+            if (EnsureLoaded(hintDir))
+            {
+                return all_stdlib_levenshtein(s1, s1.Length, s2, s2.Length);
+            }
+            int m = s1.Length, n = s2.Length;
+            if (m == 0) return n;
+            if (n == 0) return m;
+            int[] prev = new int[n + 1];
+            int[] curr = new int[n + 1];
+            for (int j = 0; j <= n; j++) prev[j] = j;
+            for (int i = 1; i <= m; i++)
+            {
+                curr[0] = i;
+                for (int j = 1; j <= n; j++)
+                {
+                    int cost = s1[i - 1] == s2[j - 1] ? 0 : 1;
+                    curr[j] = Math.Min(Math.Min(prev[j] + 1, curr[j - 1] + 1), prev[j - 1] + cost);
+                }
+                int[] tmp = prev; prev = curr; curr = tmp;
+            }
+            return prev[n];
+        }
+
+        public static void PolyglotSet(string name, string json, string hintDir)
+        {
+            if (!EnsureLoaded(hintDir) || string.IsNullOrEmpty(name) || json == null) return;
+            byte[] nBytes = Encoding.UTF8.GetBytes(name + "\0");
+            byte[] jBytes = Encoding.UTF8.GetBytes(json + "\0");
+            all_polyglot_set_json(nBytes, jBytes);
+        }
+    }
+}
+
+'@
+        }
+        # PHP-owned strings use PhpBytes. Host names/paths remain explicit text
+        # boundaries until their separate symbol/source-byte migration is wired.
+        function Is-PhpRefCell($value) {
+            return ($null -ne $value -and $value.PSObject.Properties['PhpType'] -and
+                $value.PhpType -ceq 'refcell')
+        }
+        function Is-PhpBytes($value) {
+            if (Is-PhpRefCell $value) { $value=$value.Value }
+            return ($value -is [AllPhp.ByteValues.PhpBytes])
+        }
+        function Is-PhpStringValue($value) {
+            if (Is-PhpRefCell $value) { $value=$value.Value }
+            # Legacy text from an existing builtin is normalized on value entry.
+            # This bridge is temporary and is not a claim all text producers moved.
+            return ($value -is [AllPhp.ByteValues.PhpBytes] -or $value -is [string])
+        }
+        function ConvertTo-PhpOwnedValue($value) {
+            if ($value -is [string]) { return [AllPhp.ByteValues.PhpBytes]::FromUtf8($value) }
+            return $value
+        }
+        function Get-PhpHostText($value) {
+            if (Is-PhpRefCell $value) { $value=$value.Value }
+            if ($value -is [string]) { return $value }
+            if ($value -is [AllPhp.ByteValues.PhpBytes]) {
+                $text=$null
+                if ($value.TryDecodeUtf8([ref]$text)) { return $text }
+                throw 'ALL PHP byte migration: this host-text boundary still requires valid UTF-8'
+            }
+            throw 'ALL PHP byte migration: PHP value was used as host metadata without conversion'
+        }
+        function To-PhpBytes($value) {
+            if (Is-PhpRefCell $value) { $value=$value.Value }
+            if ($value -is [AllPhp.ByteValues.PhpBytes]) { return $value }
+            if ($null -eq $value) { return [AllPhp.ByteValues.PhpBytes]::Empty }
+            if ($value -is [string]) { return [AllPhp.ByteValues.PhpBytes]::FromUtf8($value) }
+            if ($value -is [bool]) {
+                if ($value) { return [AllPhp.ByteValues.PhpBytes]::FromUtf8('1') }
+                return [AllPhp.ByteValues.PhpBytes]::Empty
+            }
+            if ($value -is [long]) {
+                return [AllPhp.ByteValues.PhpBytes]::FromUtf8($value.ToString([Globalization.CultureInfo]::InvariantCulture))
+            }
+            if ($value -is [double]) {
+                return [AllPhp.ByteValues.PhpBytes]::FromUtf8((Format-PhpFloat $value 14))
+            }
+            if (Is-PhpArray $value) {
+                if ($isCli -or $PhpDiagnostics) {
+                    Write-PhpDiagnostic 2 'Array to string conversion'
+                    return [AllPhp.ByteValues.PhpBytes]::FromUtf8('Array')
+                }
+                throw 'ALL PHP: Array to string conversion is not supported'
+            }
+            if (Is-PhpObject $value) {
+                $magic=Find-OptionalPhpMethod $value.Class '__toString'
+                if ($null -ne $magic) {
+                    $converted=Invoke-PhpMethod $value '__toString' @()
+                    if ((Is-PhpStringValue $converted) -or (Is-PhpNum $converted) -or $converted -is [bool]) {
+                        return (To-PhpBytes $converted)
+                    }
+                    throw 'ALL PHP: __toString must return string'
+                }
+                Throw-PhpError 'Error' ('Object of class ' + $value.Class + ' could not be converted to string') 'ALL PHP: Object to string conversion is not supported'
+            }
+            throw 'ALL PHP byte migration: unsupported PHP string conversion source'
+        }
+        function Write-PhpBytesDirect([AllPhp.ByteValues.PhpBytes]$bytes, [bool]$ErrorStream=$false) {
+            $stream=$null
+            if ($isCli) {
+                $key=if($ErrorStream){'ErrorByteStream'}else{'OutputByteStream'}
+                if ($CliContext.Keys -contains $key) { $stream=$CliContext[$key] }
+            }
+            if ($null -ne $stream) {
+                if ($stream -isnot [IO.Stream] -or -not $stream.CanWrite) {
+                    throw 'ALL PHP byte migration: invalid request byte output stream'
+                }
+                $bytes.WriteTo($stream);$stream.Flush();return
+            }
+            if (-not $isCli) {
+                # Preserve the existing library's valid-text Console capture.
+                # Invalid bytes never become replacement text.
+                $text=$null
+                if ($bytes.TryDecodeUtf8([ref]$text)) {
+                    if ($ErrorStream) { [Console]::Error.Write($text) } else { [Console]::Write($text) }
+                    return
+                }
+            }
+            $raw=if($ErrorStream){[Console]::OpenStandardError()}else{[Console]::OpenStandardOutput()}
+            $bytes.WriteTo($raw);$raw.Flush()
+        }
+        function Invoke-PhpObHandler($ob, [AllPhp.ByteValues.PhpBytes]$raw, [long]$flags) {
+            if ($null -eq $ob.Callback) { return $raw }
+            $callFlags = $flags
+            if (-not $ob.Started) {
+                $callFlags = $callFlags -bor [long]1
+                $ob.Started = $true
+            }
+            $res = Invoke-PhpValueCallable $ob.Callback @($raw, $callFlags) '' (New-PhpInternalCallPolicy)
+            if ($false -ceq $res) { return $raw }
+            return (To-PhpBytes $res)
+        }
+        function Pop-PhpOutputBuffer([bool]$isFlush, [bool]$returnRaw, [string]$caller) {
+            if ($null -eq $state -or -not $state.ContainsKey('OutputBuffers') -or $state.OutputBuffers.Count -eq 0) {
+                if (-not [string]::IsNullOrEmpty($caller) -and -not $returnRaw) {
+                    $verb = if ($isFlush) { 'flush and delete buffer. No buffer to flush and delete' } else { 'delete buffer. No buffer to delete' }
+                    Write-PhpDiagnostic 8 ($caller + '(): Failed to ' + $verb)
+                }
+                return $false
+            }
+            $idx = $state.OutputBuffers.Count - 1
+            $ob = $state.OutputBuffers[$idx]
+            $state.OutputBuffers.RemoveAt($idx)
+            $raw = $ob.Builder.ToPhpBytes()
+            $flags = if ($isFlush) { [long](4 -bor 8) } else { [long](2 -bor 8) }
+            $out = Invoke-PhpObHandler $ob $raw $flags
+            if ($isFlush) { Write-PhpBytes $out }
+            if ($returnRaw) { return $raw }
+            return $true
+        }
+        function Flush-PhpOutputBuffers {
+            while ($null -ne $state -and $state.ContainsKey('OutputBuffers') -and $state.OutputBuffers.Count -gt 0) {
+                [void](Pop-PhpOutputBuffer $true $false '')
+            }
+        }
+        function Invoke-PhpShutdownFunctions {
+            if ($null -eq $state -or $state.ShutdownRan) { return }
+            $state.ShutdownRan = $true
+            while ($state.ShutdownFunctions.Count -gt 0) {
+                $sd = $state.ShutdownFunctions[0]
+                $state.ShutdownFunctions.RemoveAt(0)
+                try { [void](Invoke-PhpValueCallable $sd.Callback $sd.Args 'register_shutdown_function' (New-PhpInternalCallPolicy)) }
+                catch {
+                    if ($isCli -and (Test-PhpCliExit $_)) { break }
+                    throw
+                }
+            }
+        }
+        function Invoke-PhpAssert($condVal, [bool]$hasDesc, $descVal) {
+            if (Is-Truthy $condVal) { return $true }
+            if ($hasDesc -and $null -ne $descVal -and (Is-PhpObject $descVal) -and $state.PreludeLoaded -and (Test-PhpInstanceOf $descVal.Class 'Throwable')) {
+                Throw-PhpObject $descVal
+            }
+            $msgBytes = if ($hasDesc -and $null -ne $descVal) { To-PhpBytes $descVal } else { To-PhpBytes 'assert(false)' }
+            if ($state.Ini.ContainsKey('assert.exception') -and [string]$state.Ini['assert.exception'] -ceq '0') {
+                Write-PhpDiagnostic 2 ('assert(): ' + (To-PhpText $msgBytes) + ' failed')
+                return $false
+            }
+            [void]$state.CallStack.Add([pscustomobject]@{ Name='assert'; Line=$state.Line; SourcePath=$state.ScriptName; Args=@($condVal, $msgBytes) })
+            try { Throw-PhpError 'AssertionError' $msgBytes }
+            finally { if ($state.CallStack.Count -gt 0) { $state.CallStack.RemoveAt($state.CallStack.Count - 1) } }
+        }
+        function Move-PhpArrayPointer($arr, [string]$op, [string]$funcName) {
+            if (-not (Is-PhpArray $arr)) {
+                Throw-PhpError 'TypeError' ($funcName + '(): Argument #1 ($array) must be of type array, ' + (Get-PhpBuiltinTypeName $arr) + ' given')
+            }
+            $cnt = $arr.Items.Count
+            $ptr = if ($arr.PSObject.Properties['InternalPointer']) { [int]$arr.InternalPointer } else { 0 }
+            if ($op -ceq 'reset') { $ptr = 0 }
+            elseif ($op -ceq 'end') { $ptr = if ($cnt -gt 0) { $cnt - 1 } else { 0 } }
+            elseif ($op -ceq 'next') { if ($ptr -ge 0 -and $ptr -lt $cnt) { $ptr++ } }
+            elseif ($op -ceq 'prev') { if ($ptr -ge 0 -and $ptr -lt $cnt) { $ptr-- } }
+            if ($arr.PSObject.Properties['InternalPointer']) { $arr.InternalPointer = $ptr }
+            else { $arr | Add-Member -NotePropertyName InternalPointer -NotePropertyValue $ptr -Force }
+            if ($ptr -lt 0 -or $ptr -ge $cnt) {
+                if ($op -ceq 'key') { return $null }
+                return $false
+            }
+            $keys = @($arr.Items.Keys)
+            $k = $keys[$ptr]
+            if ($op -ceq 'key') { return (Get-PhpKeyValue $k) }
+            $v = $arr.Items[$k]
+            if (Is-PhpRefCell $v) { $v = $v.Value }
+            return $v
+        }
+        function Invoke-PhpArrayWalk($target, $cb, $userdata, [bool]$hasUserdata, [bool]$recursive, [string]$funcName) {
+            $cb = Assert-PhpValueCallable $cb
+            $def = Get-PhpValueCallableDefinition $cb
+            $passByRef = ($null -ne $def -and $def.Params.Count -gt 0 -and $def.Params[0].ByRef)
+            if (Is-PhpArray $target) {
+                if ($passByRef) { Separate-PhpReferenceBacking $target }
+                foreach ($k in @($target.Items.Keys)) {
+                    $val = $target.Items[$k]
+                    if ($recursive -and ((Is-PhpRefCell $val -and (Is-PhpArray $val.Value)) -or (Is-PhpArray $val))) {
+                        $sub = if (Is-PhpRefCell $val) { $val.Value } else { $val }
+                        Invoke-PhpArrayWalk $sub $cb $userdata $hasUserdata $true $funcName
+                        continue
+                    }
+                    $arg0 = if ($passByRef) {
+                        if (Is-PhpRefCell $val) { $val } else {
+                            $cell = [pscustomobject]@{ PhpType='refcell'; Value=(Copy-PhpValue $val) }
+                            $target.Items[$k] = $cell
+                            $target.ReferenceCellsKnownAbsent = $false
+                            Add-PhpTraversalEntry $target $k
+                            $cell
+                        }
+                    } else {
+                        if (Is-PhpRefCell $val) { $val.Value } else { $val }
+                    }
+                    $walkArgs = if ($hasUserdata) { @($arg0, (Get-PhpKeyValue $k), $userdata) } else { @($arg0, (Get-PhpKeyValue $k)) }
+                    [void](Invoke-PhpValueCallable $cb $walkArgs $funcName (New-PhpInternalCallPolicy))
+                }
+                return $true
+            }
+            if (Is-PhpObject $target) {
+                foreach ($pe in (Get-PhpObjectDumpEntries $target)) {
+                    if (-not $pe.Present) { continue }
+                    $pVal = $pe.Storage[$pe.StorageKey]
+                    $arg0 = if ($passByRef) {
+                        if (Is-PhpRefCell $pVal) { $pVal } else {
+                            $cell = [pscustomobject]@{ PhpType='refcell'; Value=(Copy-PhpValue $pVal) }
+                            $pe.Storage[$pe.StorageKey] = $cell
+                            $cell
+                        }
+                    } else {
+                        if (Is-PhpRefCell $pVal) { $pVal.Value } else { $pVal }
+                    }
+                    $walkArgs = if ($hasUserdata) { @($arg0, (To-PhpBytes $pe.Name), $userdata) } else { @($arg0, (To-PhpBytes $pe.Name)) }
+                    [void](Invoke-PhpValueCallable $cb $walkArgs $funcName (New-PhpInternalCallPolicy))
+                }
+                return $true
+            }
+            Throw-PhpError 'TypeError' ($funcName + '(): Argument #1 ($array) must be of type array|object, ' + (Get-PhpBuiltinTypeName $target) + ' given')
+        }
+        function Resolve-PhpClassConstantBySpec([string]$spec, [bool]$forDefined) {
+            $idx = $spec.IndexOf('::')
+            $rawCls = $spec.Substring(0, $idx).TrimStart('\')
+            $rawConst = $spec.Substring($idx + 2)
+            $resolvedCls = $rawCls
+            try { $resolvedCls = Resolve-PhpClass $rawCls } catch {
+                if ($forDefined) { return $false }
+                Throw-PhpError 'Error' ('Class "' + $rawCls + '" not found')
+            }
+            if (-not $state.Classes.ContainsKey($resolvedCls) -and -not $state.Interfaces.ContainsKey($resolvedCls)) {
+                if ($forDefined) { return $false }
+                Throw-PhpError 'Error' ('Class "' + $rawCls + '" not found')
+            }
+            try {
+                $v = Get-PhpClassConstant $resolvedCls $rawConst
+                if ($forDefined) { return $true }
+                return $v
+            } catch {
+                if ($forDefined) { return $false }
+                if ($_.Exception.Message -like 'ALL PHP: Undefined class constant*') {
+                    Throw-PhpError 'Error' ('Undefined constant ' + $resolvedCls + '::' + $rawConst)
+                }
+                throw
+            }
+        }
+        function Write-PhpBytes($value, [bool]$ErrorStream=$false) {
+            if ($null -ne $state -and $state.ContainsKey('GeneratorReplayMute') -and $state.GeneratorReplayMute -gt 0) { return }
+            $bytes=To-PhpBytes $value
+            if (-not $ErrorStream -and $null -ne $state -and $state.ContainsKey('OutputBuffers') -and $state.OutputBuffers.Count -gt 0) {
+                $obIdx = $state.OutputBuffers.Count - 1
+                $topOb = $state.OutputBuffers[$obIdx]
+                $topOb.Builder.Append($bytes)
+                if ($topOb.ChunkSize -gt 0 -and $topOb.Builder.ToPhpBytes().Length -ge $topOb.ChunkSize) {
+                    $chunk = $topOb.Builder.ToPhpBytes()
+                    $topOb.Builder = [AllPhp.ByteValues.PhpByteBuilder]::new()
+                    $out = Invoke-PhpObHandler $topOb $chunk ([long]0)
+                    if ($obIdx -gt 0) { $state.OutputBuffers[$obIdx - 1].Builder.Append($out) }
+                    else { Write-PhpBytesDirect $out $false }
+                }
+                return
+            }
+            Write-PhpBytesDirect $bytes $ErrorStream
+        }
+        function Get-PhpNumericView($value) {
+            if ($value -is [string]) { return $value }
+            if ($value -isnot [AllPhp.ByteValues.PhpBytes]) { throw 'Not a PHP string numeric view' }
+            # This is a grammar-classification view, never a PHP value/output.
+            # Non-ASCII bytes map to '?' which cannot match PHP ASCII numeric
+            # syntax. The original bytes remain unchanged. Large streaming
+            # numeric parsing is a separately tracked migration obligation.
+            return [Text.Encoding]::ASCII.GetString($value.ToArray())
+        }
+        function New-PhpIntegerKey([long]$value) {
+            return [AllPhp.ByteValues.PhpKey]::FromInteger($value)
+        }
+        function Get-PhpKeyValue($key) {
+            if ($key -isnot [AllPhp.ByteValues.PhpKey]) { throw 'ALL PHP byte migration: untyped array key' }
+            if ($key.IsInteger) { return [long]$key.IntegerValue }
+            return $key.BytesValue
+        }
+        function Get-PhpKeyHostText($key) {
+            if ($key.IsInteger) { return $key.IntegerValue.ToString([Globalization.CultureInfo]::InvariantCulture) }
+            return (Get-PhpHostText $key.BytesValue)
+        }
+        function Format-PhpBytesDump($value, [string]$pad, $referenceContext=$null) {
+            $builder=[AllPhp.ByteValues.PhpByteBuilder]::new()
+            $referenceMark=''
+            if (Is-PhpRefCell $value) {
+                if($pad.Length-gt0 -and $null-ne$referenceContext -and (Get-PhpReferenceOwnerCount $referenceContext $value)-gt1){$referenceMark='&'}
+                $value=$value.Value
+            }
+            if ($null -eq $value) { $builder.AppendUtf8($pad+$referenceMark+"NULL`n");return $builder.ToPhpBytes() }
+            if ($value -is [bool]) {
+                $text=if($value){'true'}else{'false'}
+                $builder.AppendUtf8($pad+$referenceMark+'bool('+$text+")`n");return $builder.ToPhpBytes()
+            }
+            if ($value -is [long]) {
+                $builder.AppendUtf8($pad+$referenceMark+'int('+$value.ToString([Globalization.CultureInfo]::InvariantCulture)+")`n")
+                return $builder.ToPhpBytes()
+            }
+            if ($value -is [double]) {
+                $builder.AppendUtf8($pad+$referenceMark+'float('+(Format-PhpFloat $value 0)+")`n");return $builder.ToPhpBytes()
+            }
+            if (Is-PhpStringValue $value) {
+                $bytes=To-PhpBytes $value
+                $builder.AppendUtf8($pad+$referenceMark+'string('+$bytes.Length+') "');$builder.Append($bytes)
+                $builder.AppendUtf8("`"`n");return $builder.ToPhpBytes()
+            }
+            if (Is-PhpArray $value) {
+                if($null-eq$referenceContext){$referenceContext=New-PhpReferenceContext @($value)}
+                foreach($backing in $referenceContext.DumpArrays){
+                    if([object]::ReferenceEquals($backing,$value.ReferenceBacking)){$builder.AppendUtf8($pad+"*RECURSION*`n");return $builder.ToPhpBytes()}
+                }
+                [void]$referenceContext.DumpArrays.Add($value.ReferenceBacking)
+                try {
+                $builder.AppendUtf8($pad+$referenceMark+'array('+$value.Items.Count+") {`n")
+                foreach($key in $value.Items.Keys) {
+                    if($key.IsInteger){$builder.AppendUtf8($pad+'  ['+$key.IntegerValue+"]=>`n")}
+                    else{$builder.AppendUtf8($pad+'  ["');$builder.Append($key.BytesValue);$builder.AppendUtf8("`"]=>`n")}
+                    $builder.Append((Format-PhpBytesDump $value.Items[$key] ($pad+'  ') $referenceContext))
+                }
+                $builder.AppendUtf8($pad+"}`n");return $builder.ToPhpBytes()
+                } finally {$referenceContext.DumpArrays.RemoveAt($referenceContext.DumpArrays.Count-1)}
+            }
+            if (Is-PhpObject $value) {
+                if ($state.Classes.ContainsKey($value.Class) -and
+                    $state.Classes[$value.Class].PSObject.Properties['Enum'] -and
+                    $state.Classes[$value.Class].Enum) {
+                    $builder.AppendUtf8($pad+$referenceMark+'enum('+$value.Class+'::')
+                    $builder.Append((To-PhpBytes $value.Props['name']))
+                    $builder.AppendUtf8(")`n");return $builder.ToPhpBytes()
+                }
+                foreach($seen in $state.DumpStack) {
+                    if([object]::ReferenceEquals($seen,$value)) {
+                        $builder.AppendUtf8($pad+"*RECURSION*`n");return $builder.ToPhpBytes()
+                    }
+                }
+                [void]$state.DumpStack.Add($value)
+                try {
+                    $debugMagic=Find-OptionalPhpMethod $value.Class '__debugInfo'
+                    if ($null -ne $debugMagic) {
+                        $debugArr=Invoke-PhpMethod $value '__debugInfo' @()
+                        if ($null -eq $debugArr) { $debugArr=New-PhpArray }
+                        elseif (-not (Is-PhpArray $debugArr)) {
+                            Throw-PhpError 'Error' '__debugInfo() must return an array' 'ALL PHP: __debugInfo() must return an array'
+                        }
+                        $id=0
+                        if($value.PSObject.Properties['Id']){$id=$value.Id}
+                        $builder.AppendUtf8($pad+$referenceMark+'object('+$value.Class+')#'+$id+' ('+$debugArr.Items.Count+") {`n")
+                        $debugRefContext=if($null-ne$referenceContext){$referenceContext}else{New-PhpReferenceContext @($debugArr)}
+                        foreach($dKey in $debugArr.Items.Keys) {
+                            if ($dKey.IsInteger) {
+                                $builder.AppendUtf8($pad+'  ['+$dKey.IntegerValue+"]=>`n")
+                            } else {
+                                $dBytes=$dKey.BytesValue.ToArray()
+                                if ($dBytes.Length -ge 3 -and $dBytes[0] -eq 0) {
+                                    $secondZero=[Array]::IndexOf($dBytes,[byte]0,1)
+                                    if ($secondZero -gt 1) {
+                                        $scopeText=[Text.Encoding]::UTF8.GetString($dBytes,1,$secondZero-1)
+                                        $propNameText=[Text.Encoding]::UTF8.GetString($dBytes,$secondZero+1,$dBytes.Length-$secondZero-1)
+                                        $visSuffix=if($scopeText -ceq '*'){':protected'}else{':"'+$scopeText+'":private'}
+                                        $builder.AppendUtf8($pad+'  ["'+$propNameText+'"'+$visSuffix+"]=>`n")
+                                    } else {
+                                        $builder.AppendUtf8($pad+'  ["');$builder.Append($dKey.BytesValue);$builder.AppendUtf8("`"]=>`n")
+                                    }
+                                } else {
+                                    $builder.AppendUtf8($pad+'  ["');$builder.Append($dKey.BytesValue);$builder.AppendUtf8("`"]=>`n")
+                                }
+                            }
+                            $builder.Append((Format-PhpBytesDump $debugArr.Items[$dKey] ($pad+'  ') $debugRefContext))
+                        }
+                        $builder.AppendUtf8($pad+"}`n");return $builder.ToPhpBytes()
+                    }
+                    $entries=Get-PhpObjectDumpEntries $value
+                    $count=0
+                    foreach($entry in $entries){if($entry.Present){$count++}}
+                    $id=0
+                    if($value.PSObject.Properties['Id']){$id=$value.Id}
+                    $builder.AppendUtf8($pad+$referenceMark+'object('+$value.Class+')#'+$id+' ('+$count+") {`n")
+                    foreach($entry in $entries) {
+                        $builder.AppendUtf8($pad+'  ["'+$entry.Name+'"'+$entry.Suffix+"]=>`n")
+                        if($entry.Present){$builder.Append((Format-PhpBytesDump $entry.Value ($pad+'  ') $referenceContext))}
+                        else{$builder.AppendUtf8($pad+'  uninitialized('+$entry.TypeName+")`n")}
+                    }
+                    $builder.AppendUtf8($pad+"}`n");return $builder.ToPhpBytes()
+                } finally {$state.DumpStack.RemoveAt($state.DumpStack.Count-1)}
+            }
+            throw 'ALL PHP: var_dump() of this value type is not implemented'
+        }
+        function Format-PhpBytesPrintR($value, [int]$indent) {
+            if (Is-PhpRefCell $value) { $value=$value.Value }
+            $pad=' '*$indent
+            $builder=[AllPhp.ByteValues.PhpByteBuilder]::new()
+            if(Is-PhpArray $value) {
+                $builder.AppendUtf8("Array`n"+$pad+"(`n")
+                foreach($key in $value.Items.Keys) {
+                    $builder.AppendUtf8($pad+'    [')
+                    $builder.Append((To-PhpBytes (Get-PhpKeyValue $key)))
+                    $builder.AppendUtf8('] => ')
+                    $builder.Append((Format-PhpBytesPrintR $value.Items[$key] ($indent+8)))
+                    $builder.AppendUtf8("`n")
+                }
+                $builder.AppendUtf8($pad+")`n");return $builder.ToPhpBytes()
+            }
+            if(Is-PhpObject $value) {
+                foreach($seen in $state.DumpStack) {
+                    if([object]::ReferenceEquals($seen,$value)){return [AllPhp.ByteValues.PhpBytes]::FromUtf8('*RECURSION*')}
+                }
+                [void]$state.DumpStack.Add($value)
+                try {
+                    $debugMagic=Find-OptionalPhpMethod $value.Class '__debugInfo'
+                    if ($null -ne $debugMagic) {
+                        $debugArr=Invoke-PhpMethod $value '__debugInfo' @()
+                        if ($null -eq $debugArr) { $debugArr=New-PhpArray }
+                        elseif (-not (Is-PhpArray $debugArr)) {
+                            Throw-PhpError 'Error' '__debugInfo() must return an array' 'ALL PHP: __debugInfo() must return an array'
+                        }
+                        $builder.AppendUtf8($value.Class+" Object`n"+$pad+"(`n")
+                        foreach($dKey in $debugArr.Items.Keys) {
+                            $builder.AppendUtf8($pad+'    [')
+                            if ($dKey.IsInteger) {
+                                $builder.AppendUtf8($dKey.IntegerValue.ToString([Globalization.CultureInfo]::InvariantCulture))
+                            } else {
+                                $dBytes=$dKey.BytesValue.ToArray()
+                                if ($dBytes.Length -ge 3 -and $dBytes[0] -eq 0) {
+                                    $secondZero=[Array]::IndexOf($dBytes,[byte]0,1)
+                                    if ($secondZero -gt 1) {
+                                        $scopeText=[Text.Encoding]::UTF8.GetString($dBytes,1,$secondZero-1)
+                                        $propNameText=[Text.Encoding]::UTF8.GetString($dBytes,$secondZero+1,$dBytes.Length-$secondZero-1)
+                                        $plainSuffix=if($scopeText -ceq '*'){':protected'}else{':'+$scopeText+':private'}
+                                        $builder.AppendUtf8($propNameText+$plainSuffix)
+                                    } else { $builder.Append($dKey.BytesValue) }
+                                } else { $builder.Append($dKey.BytesValue) }
+                            }
+                            $builder.AppendUtf8('] => ')
+                            $builder.Append((Format-PhpBytesPrintR $debugArr.Items[$dKey] ($indent+8)))
+                            $builder.AppendUtf8("`n")
+                        }
+                        $builder.AppendUtf8($pad+")`n");return $builder.ToPhpBytes()
+                    }
+                    $enum=($state.Classes.ContainsKey($value.Class)-and
+                        $state.Classes[$value.Class].PSObject.Properties['Enum']-and$state.Classes[$value.Class].Enum)
+                    $kind=if($enum){' Enum'}else{' Object'}
+                    $builder.AppendUtf8($value.Class+$kind+"`n"+$pad+"(`n")
+                    foreach($entry in (Get-PhpObjectDumpEntries $value)) {
+                        if(-not$entry.Present){continue}
+                        $builder.AppendUtf8($pad+'    ['+$entry.Name+$entry.PlainSuffix+'] => ')
+                        $builder.Append((Format-PhpBytesPrintR $entry.Value ($indent+8)))
+                        $builder.AppendUtf8("`n")
+                    }
+                    $builder.AppendUtf8($pad+")`n");return $builder.ToPhpBytes()
+                } finally {$state.DumpStack.RemoveAt($state.DumpStack.Count-1)}
+            }
+            return (To-PhpBytes $value)
+        }
+        function Evaluate-PhpBuiltinArguments($expressions, [string]$name) {
+            $referenceArgumentsRoot=$state.ReferenceTemporaryRoots.Count
+            try {
+            $result=[Collections.Generic.List[object]]::new()
+            # These are the currently implemented mutating array builtins. Their
+            # first operand retains its existing lvalue storage. All by-value
+            # array arguments must snapshot at evaluation time, before later
+            # argument expressions can mutate the source array.
+            $lowerName=(ConvertTo-PhpAsciiLower $name)
+            $firstByReference=$lowerName -cin @('array_push','array_pop','array_shift','array_unshift','sort','rsort','asort','arsort','ksort','krsort','usort','uasort','uksort','array_splice','next','prev','reset','end','array_walk','array_walk_recursive')
+            $isSettype=($lowerName -ceq 'settype')
+            $posIndex=0
+            $sawNamed=$false
+            for($i=0;$i-lt$expressions.Count;$i++) {
+                $expression=$expressions[$i]
+                if($expression.Kind-ceq'named_argument') {
+                    $sawNamed=$true
+                    if($isSettype -and $expression.Name -ceq 'var') {
+                        $exprInner=$expression.Expr
+                        if($exprInner.Kind -notin @('variable','dynamic_variable','index','property','static_property')) {
+                            throw 'ALL PHP: settype() argument 1 must be passed by reference'
+                        }
+                        $cell=Get-PhpLValueCell $exprInner
+                        [void]$result.Add([pscustomobject]@{
+                            PhpType='named_argument';Name=$expression.Name;Value=$cell
+                        })
+                        Add-PhpReferenceArgumentRoot $cell
+                        continue
+                    }
+                    $value=Invoke-PhpExpr $expression.Expr
+                    [void]$result.Add([pscustomobject]@{
+                        PhpType='named_argument';Name=$expression.Name;Value=(Copy-PhpValue $value)
+                    })
+                    Add-PhpReferenceArgumentRoot $value
+                } elseif ($expression.Kind -ceq 'spread_argument') {
+                    $spreadVal=Invoke-PhpExpr $expression.Expr
+                    foreach($item in (Expand-PhpSpreadValue $spreadVal 'argument')) {
+                        if ($item.IsInteger) {
+                            if ($sawNamed) {
+                                Throw-PhpError 'Error' 'Cannot use positional argument after named argument during unpacking' 'ALL PHP: Positional argument after named argument'
+                            }
+                            $val = if ($firstByReference -and $posIndex -eq 0 -and $null -ne $item.RawRefCell) { $item.RawRefCell }
+                                   elseif ($firstByReference -and $posIndex -eq 0) { $item.Value }
+                                   else { Copy-PhpValue $item.Value }
+                            [void]$result.Add($val)
+                            Add-PhpReferenceArgumentRoot $val
+                            $posIndex++
+                        } else {
+                            $sawNamed=$true
+                            $val=Copy-PhpValue $item.Value
+                            [void]$result.Add([pscustomobject]@{
+                                PhpType='named_argument';Name=$item.Key;Value=$val
+                            })
+                            Add-PhpReferenceArgumentRoot $val
+                        }
+                    }
+                } else {
+                    if ($sawNamed) {
+                        Throw-PhpError 'Error' 'Cannot use positional argument after named argument' 'ALL PHP: Positional argument after named argument'
+                    }
+                    if($isSettype -and $posIndex -eq 0) {
+                        if($expression.Kind -notin @('variable','dynamic_variable','index','property','static_property')) {
+                            throw 'ALL PHP: settype() argument 1 must be passed by reference'
+                        }
+                        $cell=Get-PhpLValueCell $expression
+                        [void]$result.Add($cell)
+                        Add-PhpReferenceArgumentRoot $cell
+                        $posIndex++
+                        continue
+                    }
+                    $value=Invoke-PhpExpr $expression
+                    if(-not($firstByReference-and$posIndex-eq0)){$value=Copy-PhpValue $value}
+                    [void]$result.Add($value)
+                    Add-PhpReferenceArgumentRoot $value
+                    $posIndex++
+                }
+            }
+            return ,($result.ToArray())
+            } finally {
+                Remove-PhpReferenceTemporaryRoots $referenceArgumentsRoot
+            }
+        }
+
+
+        if ($Code.IndexOf('<?all', [StringComparison]::OrdinalIgnoreCase) -ge 0) {
+            $Code = [regex]::Replace($Code, '\?>\s*<\?all(?:\s|\b)([\s\S]*?)\?>\s*<\?php(?:\s|\b)', {
+                param($m)
+                $b64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($m.Groups[1].Value))
+                return "; __all_inline_exec('$b64'); "
+            }, [Text.RegularExpressions.RegexOptions]::IgnoreCase)
+            $Code = [regex]::Replace($Code, '<\?all(?:\s|\b)([\s\S]*?)\?>', {
+                param($m)
+                $b64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($m.Groups[1].Value))
+                return "__all_inline_exec('$b64');"
+            }, [Text.RegularExpressions.RegexOptions]::IgnoreCase)
+        }
         # ALL's own PHP subset interpreter. No PHP executable, eval, or Invoke-Expression.
         if ($isCli -and ($CliContext.Keys -contains 'SourceMode') -and
             $CliContext['SourceMode'] -in @('body','file','stdin')) {
@@ -33,19 +1410,486 @@
             }
         }
 
+        # Private host metadata: never a PHP value or native zval.
+        function New-PhpSourceUnit([bool]$strict, [string]$path) {
+            $fields=[Collections.Generic.Dictionary[string,object]]::new([StringComparer]::Ordinal)
+            $fields.Add('StrictTypes',$strict);$fields.Add('SourcePath',$path)
+            return [Collections.ObjectModel.ReadOnlyDictionary[string,object]]::new($fields)
+        }
+        function Get-PhpDefinitionUnit($definition) {
+            if($definition.PSObject.Properties['StrictSourceUnit']){return $definition.StrictSourceUnit}
+            foreach($part in @('Body','Expr')) {
+                if($definition.PSObject.Properties[$part] -and $null-ne$definition.$part -and
+                   $definition.$part.PSObject.Properties['StrictSourceUnit']){return $definition.$part.StrictSourceUnit}
+            }
+            # Builtin prelude definitions are synthesized outside the PHP AST.
+            return $state.InternalSourceUnit
+        }
+        function New-PhpCallPolicy([bool]$strict, [string]$kind='Direct') {
+            $unit=$state.ActiveSourceUnit
+            if($null-eq$unit){$unit=$state.InternalSourceUnit}
+            return [pscustomobject]@{ArgumentStrict=$strict;Kind=$kind;CallerPath=$unit.SourcePath;CallerLine=[long]$state.Line}
+        }
+        function Get-PhpDirectCallPolicy {
+            $unit=$state.ActiveSourceUnit
+            if($null-eq$unit){$unit=$state.InternalSourceUnit}
+            return (New-PhpCallPolicy ([bool]$unit.StrictTypes) 'Direct')
+        }
+        function Get-PhpBuiltinCallPolicy {
+            if($null-ne$state.BuiltinCallPolicy){return $state.BuiltinCallPolicy}
+            return (Get-PhpDirectCallPolicy)
+        }
+        function New-PhpInternalCallPolicy {
+            return (New-PhpCallPolicy $false 'InternalCallback')
+        }
+        function Throw-PhpStrictCompileError([string]$message,[long]$line,[string]$legacyMessage='') {
+            $state.SourceCompileDiagnostic=[pscustomobject]@{Type='CompileError';Reason='strict_types';Message=$message;SourcePath=$state.ScriptName;Line=$line}
+            if($isCli) {
+                $CliContext['CompileError']=[pscustomobject]@{Type='CompileError';Reason='strict_types';Message=$message;SourcePath=$state.ScriptName;Line=$line}
+            }
+            if(-not$isCli -and -not$PhpDiagnostics -and -not[string]::IsNullOrEmpty($legacyMessage) -and -not$state.LoadedUnitBody) {
+                throw $legacyMessage
+            }
+            throw ('ALL PHP: '+$message)
+        }
+        function Get-PhpDirectivePrefix($tokens) {
+            $positions=[Collections.Generic.HashSet[int]]::new();$i=0
+            while($i-lt$tokens.Count) {
+                if($tokens[$i]-ceq';'){$i++;continue}
+                if(-not(Test-PhpNameEqual $tokens[$i] 'declare')-or$i+1-ge$tokens.Count-or$tokens[$i+1]-cne'('){break}
+                [void]$positions.Add($i);$i+=2;$depth=1
+                while($i-lt$tokens.Count-and$depth-gt0) {
+                    if($tokens[$i]-ceq'('){$depth++}elseif($tokens[$i]-ceq')'){$depth--}
+                    $i++
+                }
+                if($depth-ne0-or$i-ge$tokens.Count-or$tokens[$i]-cne';'){break}
+                $i++
+            }
+            return [pscustomobject]@{Positions=$positions;Length=$i;Tokens=$tokens}
+        }
+        function Test-PhpDirectiveStringLiteral([string]$text) {
+            if($state.DocStrings.ContainsKey($text)) {
+                $doc=$state.DocStrings[$text]
+                if($doc.Nowdoc){return $true}
+                $text=[string]$doc.Body
+            }
+            for($i=0;$i-lt$text.Length;$i++) {
+                if($text[$i]-ceq[char]92){$i++;continue}
+                if($text[$i]-ceq[char]36-and$i+1-lt$text.Length) {
+                    $next=[int]$text[$i+1]
+                    if($text[$i+1]-ceq'{'-or$text[$i+1]-ceq'_'-or($next-ge65-and$next-le90)-or($next-ge97-and$next-le122)-or$next-ge128){return $false}
+                }
+            }
+            return $true
+        }
+        function Read-PhpDeclareStatement {
+            $start=[int]$state.Pos;$line=[long]$state.TokenLines[$start]
+            [void](Next-Token);Expect-Token '(';$entries=[Collections.Generic.List[object]]::new()
+            while($true) {
+                $name=Next-Token
+                if($name-cnotmatch'^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*$'){throw 'ALL PHP: Expected declare directive name'}
+                Expect-Token '=';$expression=Read-Expr 1
+                [void]$entries.Add([pscustomobject]@{Name=$name;Expression=$expression})
+                if((Peek-Token)-cne','){break};[void](Next-Token)
+            }
+            Expect-Token ')';$blockMode=$false;$bodies=[Collections.Generic.List[object]]::new()
+            if((Peek-Token)-ceq';'){[void](Next-Token)}
+            elseif((Peek-Token)-ceq'{'){$blockMode=$true;[void]$bodies.Add((Read-Statement))}
+            elseif((Peek-Token)-ceq':') {
+                $blockMode=$true;[void](Next-Token)
+                while(-not(Test-PhpNameEqual (Peek-Token) 'enddeclare')) {
+                    if((Peek-Token)-ceq'(EOF)'){throw 'ALL PHP: Missing enddeclare'}
+                    [void]$bodies.Add((Read-Statement))
+                }
+                [void](Next-Token);Expect-Token ';'
+            } else {Expect-Token ';'}
+            return [pscustomobject]@{Kind='strict_declare';Line=$line;DeclarePosition=$start;Entries=$entries.ToArray();BlockMode=$blockMode;Body=$bodies.ToArray()}
+        }
+        function Test-PhpDeclareNode($node) {
+            $line=[long]$node.Line
+            foreach($entry in $node.Entries) {
+                $expression=$entry.Expression
+                $literal=($expression.Kind-ceq'literal'-and$null-ne$expression.Value-and$expression.Value-isnot[bool])
+                if($expression.Kind-ceq'double_string'){$literal=Test-PhpDirectiveStringLiteral $expression.Raw}
+                if(-not$literal){Throw-PhpStrictCompileError ('declare('+$entry.Name+') value must be a literal') $line}
+                if(Test-PhpNameEqual $entry.Name 'strict_types') {
+                    if(-not$state.StrictDirectivePrefix.Positions.Contains([int]$node.DeclarePosition)){Throw-PhpStrictCompileError 'strict_types declaration must be the very first statement in the script' $line}
+                    if($node.BlockMode){Throw-PhpStrictCompileError 'strict_types declaration must not use block mode' $line}
+                    if($expression.Kind-cne'literal'-or$expression.Value-isnot[long]-or($expression.Value-ne0-and$expression.Value-ne1)){Throw-PhpStrictCompileError 'strict_types declaration must have 0 or 1 as its value' $line}
+                    if($expression.Value-eq1){$state.CompiledStrictTypes=$true}
+                } else {
+                    # Tick/encoding execution is a separate, still explicit gap.
+                    throw ('ALL PHP: declare directive '+$entry.Name+' is not implemented')
+                }
+            }
+        }
+        function Get-PhpSyntaxNodes($roots) {
+            $pending=[Collections.Generic.Stack[object]]::new();$seen=[Collections.Generic.Dictionary[int,object]]::new();$nodes=[Collections.Generic.List[object]]::new()
+            for($i=$roots.Count-1;$i-ge0;$i--){$pending.Push($roots[$i])}
+            while($pending.Count) {
+                $node=$pending.Pop()
+                if($null-eq$node-or$node-is[string]-or$node-is[ValueType]-or$node-is[AllPhp.ByteValues.PhpBytes]){continue}
+                if($node-is[System.Collections.IList]){for($i=$node.Count-1;$i-ge0;$i--){$pending.Push($node[$i])};continue}
+                if($node-isnot[pscustomobject]){continue}
+                # Identity hash buckets retain collision checks without a
+                # quadratic scan of every previously visited syntax node.
+                $identity=[Runtime.CompilerServices.RuntimeHelpers]::GetHashCode($node)
+                $already=$false
+                if($seen.ContainsKey($identity)){foreach($previous in $seen[$identity]){if([object]::ReferenceEquals($previous,$node)){$already=$true;break}}}
+                else{$seen.Add($identity,[Collections.Generic.List[object]]::new())}
+                if($already){continue};[void]$seen[$identity].Add($node)
+                [void]$nodes.Add($node)
+                $properties=@($node.PSObject.Properties)
+                for($i=$properties.Count-1;$i-ge0;$i--){if($properties[$i].Name-cne'StrictSourceUnit'){$pending.Push($properties[$i].Value)}}
+            }
+            return ,($nodes.ToArray())
+        }
+        # Private compiler metadata; source text and PHP values are unchanged.
+        function Test-PhpParameterTypeAllowsNull([string]$typeName) {
+            if([string]::IsNullOrEmpty($typeName)-or$typeName.StartsWith('?')){return $true}
+            foreach($atom in $typeName.Split([char]'|')) {
+                $lower=ConvertTo-PhpAsciiLower $atom
+                if($lower-ceq'null'-or$lower-ceq'mixed'){return $true}
+            }
+            return $false
+        }
+        function Set-PhpCompilerMetadata($node,[string]$name,$value) {
+            $node|Add-Member -NotePropertyName $name -NotePropertyValue $value -Force
+        }
+        function Get-PhpDefaultCallableName($definition) {
+            if($definition.PSObject.Properties['Kind']-and$definition.Kind-ceq'closure') {
+                return ('{closure:'+$state.ScriptName+':'+$definition.DefinitionLine+'}')
+            }
+            return (Get-PhpTypedDisplayName $definition)
+        }
+        function Register-PhpParameterTypeCompileEvent([string]$text,[long]$line,[long]$position) {
+            [void]$state.ParameterTypeCompileEvents.Add([pscustomobject]@{Text=$text;Line=$line;Position=$position})
+        }
+        function Prepare-PhpEffectiveParameterTypes($definition) {
+            $lastRequired=-1
+            for($i=0;$i-lt$definition.Params.Count;$i++) {
+                $parameter=$definition.Params[$i]
+                if(-not$parameter.Variadic-and$null-eq$parameter.Default){$lastRequired=$i}
+            }
+            for($i=0;$i-lt$definition.Params.Count;$i++) {
+                $parameter=$definition.Params[$i];$sourceType=[string]$parameter.TypeName;$sourceDefault=$parameter.Default
+                Set-PhpCompilerMetadata $parameter 'SourceTypeName' $sourceType
+                Set-PhpCompilerMetadata $parameter 'SourceDefault' $sourceDefault
+                $implicit=$false
+                if($null-ne$sourceDefault-and$sourceDefault.Kind-ceq'literal'-and$null-eq$sourceDefault.Value-and
+                   -not[bool]$parameter.Promoted-and-not(Test-PhpParameterTypeAllowsNull $sourceType)) {
+                    $implicit=$true
+                    if($sourceType.Contains('|')-or$sourceType.Contains('&')){$parameter.TypeName=$sourceType+'|null'}
+                    else{$parameter.TypeName='?'+$sourceType}
+                }
+                Set-PhpCompilerMetadata $parameter 'EffectiveTypeName' ([string]$parameter.TypeName)
+                Set-PhpCompilerMetadata $parameter 'ImplicitNullableDefault' $implicit
+                # Zend keeps effective nullable type while converting a default
+                # before a later required parameter to a required receive.
+                $requiredDefault=($implicit-and$i-lt$lastRequired)
+                Set-PhpCompilerMetadata $parameter 'DefaultIgnoredBeforeRequired' $requiredDefault
+                if($requiredDefault){$parameter.Default=$null}
+            }
+        }
+        function Add-PhpOrderedCompileEvent($events,[long]$position,[int]$priority,[string]$kind,$value,$owner=$null) {
+            [void]$events.Add([pscustomobject]@{Position=$position;Priority=$priority;Sequence=$events.Count;Kind=$kind;Value=$value;Owner=$owner})
+        }
+        function Write-PhpParameterCompileDeprecation($definition,$parameter) {
+            $message=(Get-PhpDefaultCallableName $definition)+'(): Implicitly marking parameter $'+$parameter.Name+
+                ' as nullable is deprecated, the explicit nullable type must be used instead'
+            $savedLine=$state.Line
+            try{$state.Line=[long]$parameter.DefinitionLine;Write-PhpDiagnostic 8192 $message}
+            finally{$state.Line=$savedLine}
+        }
+        function Test-PhpOrderedParameterDefault($definition,$parameter) {
+            $sourceType=ConvertTo-PhpAsciiLower ([string]$parameter.SourceTypeName)
+            if($sourceType-ceq'void'-or$sourceType-ceq'never') {
+                Throw-PhpStrictCompileError ($sourceType+' cannot be used as a parameter type') ([long]$parameter.DefinitionLine)
+            }
+            if($parameter.ImplicitNullableDefault){Write-PhpParameterCompileDeprecation $definition $parameter}
+            if($null-eq$parameter.SourceDefault){return}
+            $category=Get-PhpStaticDefaultCategory $parameter.SourceDefault
+            # Effective nullable type is shared with call checks/signature
+            # consumers. Promoted defaults never receive implicit nullability.
+            if(-not(Test-PhpStaticCategoryFits $category ([string]$parameter.TypeName) $false)) {
+                $shown=if($category-in@('true','false')){'bool'}else{$category}
+                Throw-PhpStrictCompileError ('Cannot use '+$shown+' as default value for parameter $'+$parameter.Name+' of type '+(Get-PhpDeclaredTypeDisplay $parameter.TypeName)) ([long]$parameter.DefinitionLine)
+            }
+        }
+        function Test-PhpOrderedPropertyDefault($property) {
+            if($null-eq$property.Default){return}
+            $category=Get-PhpStaticDefaultCategory $property.Default
+            if(-not(Test-PhpStaticCategoryFits $category ([string]$property.TypeName) $false)) {
+                $shown=if($category-in@('true','false')){'bool'}else{$category}
+                Throw-PhpStrictCompileError ('Cannot use '+$shown+' as default value for property '+$property.Owner+'::$'+$property.Name+' of type '+(Get-PhpDeclaredTypeDisplay $property.TypeName)) ([long]$property.DefinitionLine) ('ALL PHP: Type mismatch at property '+$property.Name+' (expected '+$property.TypeName+')')
+            }
+        }
+        function Test-PhpOrderedDeclaredReturn($definition,$returned) {
+            $returnType=ConvertTo-PhpAsciiLower ([string]$definition.ReturnType)
+            $kind=if($definition.PSObject.Properties['Owner']-and-not[string]::IsNullOrEmpty([string]$definition.Owner)){'method'}else{'function'}
+            if($returnType-ceq'never'){Throw-PhpStrictCompileError ('A never-returning '+$kind+' must not return') ([long]$returned.Line)}
+            if($returnType-ceq'void'-and$null-ne$returned.Expr) {
+                $message='A void '+$kind+' must not return a value'
+                if($returned.Expr.Kind-ceq'literal'-and$null-eq$returned.Expr.Value){$message+=' (did you mean "return;" instead of "return null;"?)'}
+                Throw-PhpStrictCompileError $message ([long]$returned.Line) 'ALL PHP: void function cannot return a value'
+            }
+            if($returnType-cne'void'-and$null-eq$returned.Expr) {
+                $message='A '+$kind+' with return type must return a value'
+                if($returnType.StartsWith('?')-or$returnType.Split([char]'|')-contains'null'-or$returnType-ceq'mixed'){$message+=' (did you mean "return null;" instead of "return;"?)'}
+                Throw-PhpStrictCompileError $message ([long]$returned.Line)
+            }
+        }
+        function Complete-PhpSourceUnit($roots) {
+            $nodes=Get-PhpSyntaxNodes $roots;$events=[Collections.Generic.List[object]]::new()
+            $returnTypeOrder=[Collections.Generic.Dictionary[long,long]]::new()
+            foreach($node in $nodes) {
+                if($node.PSObject.Properties['ReturnTypePosition']-and$null-ne$node.ReturnTypePosition) {
+                    # zend_compile_params compiles return type before iterating
+                    # parameters, despite its later textual position.
+                    $returnTypeOrder[[long]$node.ReturnTypePosition]=[long]$node.CompilerPosition
+                }
+            }
+            foreach($annotation in $state.ParameterTypeCompileEvents) {
+                $position=[long]$annotation.Position
+                if($returnTypeOrder.ContainsKey($position)){$position=$returnTypeOrder[$position]}
+                Add-PhpOrderedCompileEvent $events $position 0 'type_annotation' $annotation
+            }
+            foreach($node in $nodes) {
+                if($node.PSObject.Properties['Kind']-and$node.Kind-ceq'strict_declare') {
+                    Add-PhpOrderedCompileEvent $events $node.DeclarePosition 0 'strict_declare' $node
+                }
+                if($node.PSObject.Properties['Params']) {
+                    Prepare-PhpEffectiveParameterTypes $node
+                    foreach($parameter in $node.Params) {
+                        Add-PhpOrderedCompileEvent $events $parameter.CompilerPosition 10 'parameter' $parameter $node
+                    }
+                }
+                if($node.PSObject.Properties['Properties']) {
+                    foreach($property in $node.Properties) {
+                        if($null-ne$property.Default){Add-PhpOrderedCompileEvent $events $property.CompilerPosition 20 'property_default' $property}
+                    }
+                }
+                if($node.PSObject.Properties['ReturnType']-and-not[string]::IsNullOrEmpty([string]$node.ReturnType)) {
+                    $returns=Get-PhpOwnReturnNodes $node.Body
+                    $returnType=ConvertTo-PhpAsciiLower ([string]$node.ReturnType)
+                    if($null-ne$node.Expr-and$returnType-cne'never') {
+                        $returns=@([pscustomobject]@{Expr=$node.Expr;Line=$node.DefinitionLine;CompilerPosition=$node.CompilerEndPosition})
+                    }
+                    foreach($returned in $returns) {Add-PhpOrderedCompileEvent $events $returned.CompilerPosition 30 'return' $returned $node}
+                }
+            }
+            $events.Sort([Comparison[object]]{
+                param($left,$right)
+                $result=([long]$left.Position).CompareTo([long]$right.Position)
+                if($result-eq0){$result=([int]$left.Priority).CompareTo([int]$right.Priority)}
+                if($result-eq0){$result=([int]$left.Sequence).CompareTo([int]$right.Sequence)}
+                return $result
+            })
+            foreach($event in $events) {
+                switch($event.Kind) {
+                    'type_annotation' {Assert-PhpTypeDeclaration $event.Value.Text $event.Value.Line;break}
+                    'strict_declare' {Test-PhpDeclareNode $event.Value;break}
+                    'parameter' {Test-PhpOrderedParameterDefault $event.Owner $event.Value;break}
+                    'property_default' {Test-PhpOrderedPropertyDefault $event.Value;break}
+                    'return' {Test-PhpOrderedDeclaredReturn $event.Owner $event.Value;break}
+                }
+            }
+            $unit=New-PhpSourceUnit ([bool]$state.CompiledStrictTypes) $state.ScriptName
+            foreach($node in $nodes){if(-not$node.PSObject.Properties['StrictSourceUnit']){$node|Add-Member -NotePropertyName StrictSourceUnit -NotePropertyValue $unit}}
+            $state.ActiveSourceUnit=$unit
+        }
+        function Get-PhpStaticDefaultCategory($expression) {
+            if($expression.Kind-ceq'literal') {
+                $value=$expression.Value
+                if($null-eq$value){return 'null'}
+                if($value-is[long]){return 'int'}
+                if($value-is[double]){return 'float'}
+                if($value-is[bool]){if($value){return 'true'};return 'false'}
+                if($value-is[string]-or$value-is[AllPhp.ByteValues.PhpBytes]){return 'string'}
+            }
+            if($expression.Kind-ceq'double_string'-and(Test-PhpDirectiveStringLiteral $expression.Raw)){return 'string'}
+            if($expression.Kind-ceq'array'){return 'array'}
+            # Constant expressions/names require the interpreter's separate
+            # constant-expression implementation, never eager execution here.
+            return ''
+        }
+        function Test-PhpStaticCategoryFits([string]$category,[string]$typeName,[bool]$parameter) {
+            if([string]::IsNullOrEmpty($typeName)-or[string]::IsNullOrEmpty($category)){return $true}
+            # PHP's deprecated implicit nullable parameter declaration remains
+            # distinct from an ordinary property with a null initializer.
+            if($parameter-and$category-ceq'null'){return $true}
+            if($typeName.StartsWith('?')){if($category-ceq'null'){return $true};$typeName=$typeName.Substring(1)}
+            foreach($variant in $typeName.Split([char]'|')) {
+                $atom=ConvertTo-PhpAsciiLower $variant
+                if($atom-ceq'mixed'-or$atom-ceq$category){return $true}
+                if($atom-ceq'float'-and$category-ceq'int'){return $true}
+                if($atom-ceq'bool'-and$category-in@('true','false')){return $true}
+                if($atom-ceq'iterable'-and$category-ceq'array'){return $true}
+            }
+            return $false
+        }
+        function Get-PhpOwnReturnNodes($root) {
+            $pending=[Collections.Generic.Stack[object]]::new();$returns=[Collections.Generic.List[object]]::new()
+            if($null-ne$root){$pending.Push($root)}
+            while($pending.Count) {
+                $node=$pending.Pop()
+                if($null-eq$node-or$node-is[string]-or$node-is[ValueType]-or$node-is[AllPhp.ByteValues.PhpBytes]){continue}
+                if($node-is[Collections.IList]){for($i=$node.Count-1;$i-ge0;$i--){$pending.Push($node[$i])};continue}
+                if($node-isnot[pscustomobject]){continue}
+                if($node.PSObject.Properties['Params']){continue}
+                if($node.PSObject.Properties['Kind']-and$node.Kind-ceq'return'){[void]$returns.Add($node);continue}
+                $properties=@($node.PSObject.Properties)
+                for($i=$properties.Count-1;$i-ge0;$i--){if($properties[$i].Name-cne'StrictSourceUnit'){$pending.Push($properties[$i].Value)}}
+            }
+            return ,($returns.ToArray())
+        }
+        function Test-PhpCompiledTypeDeclarations($node) {
+            if($node.PSObject.Properties['Params']) {
+                foreach($parameter in $node.Params) {
+                    if($null-eq$parameter.Default){continue}
+                    $category=Get-PhpStaticDefaultCategory $parameter.Default
+                    if(-not(Test-PhpStaticCategoryFits $category ([string]$parameter.TypeName) $true)) {
+                        $shown=if($category-in@('true','false')){'bool'}else{$category}
+                        Throw-PhpStrictCompileError ('Cannot use '+$shown+' as default value for parameter $'+$parameter.Name+' of type '+$parameter.TypeName) ([long]$parameter.DefinitionLine)
+                    }
+                }
+            }
+            if($node.PSObject.Properties['Properties']) {
+                foreach($property in $node.Properties) {
+                    if($null-eq$property.Default){continue}
+                    $category=Get-PhpStaticDefaultCategory $property.Default
+                    if(-not(Test-PhpStaticCategoryFits $category ([string]$property.TypeName) $false)) {
+                        $shown=if($category-in@('true','false')){'bool'}else{$category}
+                        Throw-PhpStrictCompileError ('Cannot use '+$shown+' as default value for property '+$property.Owner+'::$'+$property.Name+' of type '+$property.TypeName) ([long]$property.DefinitionLine)
+                    }
+                }
+            }
+            if($node.PSObject.Properties['ReturnType']-and-not[string]::IsNullOrEmpty([string]$node.ReturnType)) {
+                $returnType=ConvertTo-PhpAsciiLower ([string]$node.ReturnType)
+                $declarationKind=if($node.PSObject.Properties['Owner']-and-not[string]::IsNullOrEmpty([string]$node.Owner)){'method'}else{'function'}
+                $returns=Get-PhpOwnReturnNodes $node.Body
+                # zend_compile_func_decl_ex does not wrap a never arrow's
+                # expression in RETURN: a throwing/exiting expression is valid.
+                if($null-ne$node.Expr-and$returnType-cne'never'){$returns=@([pscustomobject]@{Expr=$node.Expr;Line=$node.DefinitionLine})}
+                foreach($returned in $returns) {
+                    if($returnType-ceq'never'){Throw-PhpStrictCompileError ('A never-returning '+$declarationKind+' must not return') ([long]$returned.Line)}
+                    if($returnType-ceq'void'-and$null-ne$returned.Expr) {
+                        $message='A void '+$declarationKind+' must not return a value'
+                        if($returned.Expr.Kind-ceq'literal'-and$null-eq$returned.Expr.Value){$message+=' (did you mean "return;" instead of "return null;"?)'}
+                        Throw-PhpStrictCompileError $message ([long]$returned.Line)
+                    }
+                    if($returnType-cne'void'-and$null-eq$returned.Expr) {
+                        $message='A '+$declarationKind+' with return type must return a value'
+                        if($returnType.StartsWith('?')-or$returnType.Split([char]'|')-contains'null'-or$returnType-ceq'mixed'){$message+=' (did you mean "return null;" instead of "return;"?)'}
+                        Throw-PhpStrictCompileError $message ([long]$returned.Line)
+                    }
+                }
+            }
+        }
+        function Get-PhpTypedDisplayName($definition) {
+            $name=[string]$definition.Name
+            # Read-Primary uses this reserved marker for closures and arrows.
+            if([string]::IsNullOrEmpty($name)-or$name-ceq'(closure)') {
+                $unit=Get-PhpDefinitionUnit $definition;$line=1
+                if($definition.PSObject.Properties['DefinitionLine']){$line=$definition.DefinitionLine}
+                return ('{closure:'+$unit.SourcePath+':'+$line+'}')
+            }
+            if($definition.PSObject.Properties['TypedDisplayName']){return [string]$definition.TypedDisplayName}
+            if($definition.PSObject.Properties['Owner']-and-not[string]::IsNullOrEmpty([string]$definition.Owner)){return ([string]$definition.Owner+'::'+$name)}
+            return $name
+        }
+        function New-PhpTypedContext($definition,[string]$role,[int]$number=0,[string]$parameter='',$policy=$null) {
+            return [pscustomobject]@{Display=(Get-PhpTypedDisplayName $definition);Role=$role;Number=$number;Parameter=$parameter;Policy=$policy;Definition=$definition}
+        }
+        function Get-PhpDeclaredTypeDisplay([string]$typeName) {
+            # Preserve class spelling and DNF structure while normalizing PHP's
+            # reserved builtin atoms. Union reordering/alias canonicalization
+            # belongs to the separate type descriptor compiler.
+            $builder=[Text.StringBuilder]::new();$position=0
+            foreach($match in [Text.RegularExpressions.Regex]::Matches($typeName,'[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*')) {
+                [void]$builder.Append($typeName.Substring($position,$match.Index-$position))
+                $atom=ConvertTo-PhpAsciiLower $match.Value
+                if($atom-cnotin@('int','float','string','bool','array','object','callable','iterable','mixed','null','true','false','void','never','self','parent','static')){$atom=$match.Value}
+                [void]$builder.Append($atom);$position=$match.Index+$match.Length
+            }
+            [void]$builder.Append($typeName.Substring($position));return $builder.ToString()
+        }
+        function New-PhpPropertyTypedContext($declared) {
+            return [pscustomobject]@{Display=([string]$declared.Owner+'::$'+[string]$declared.Name);Role='property';Policy=$null}
+        }
+        function Get-PhpStrictUnionActualType($value) {
+            # Zend's generated enum/exit union argument errors distinguish the
+            # singleton boolean types. User scalar declarations report bool.
+            if($value-is[bool]){if($value){return 'true'};return 'false'}
+            if($null-eq$value){return 'null'}
+            return (Get-PhpBuiltinTypeName $value)
+        }
+        function Throw-PhpBuiltinStrictTypeError($value,[string]$function,[int]$number,[string]$parameter,[string]$typeName) {
+            Throw-PhpError 'TypeError' ($function+'(): Argument #'+$number+' ($'+$parameter+') must be of type '+$typeName+', '+(Get-PhpBuiltinTypeName $value)+' given')
+        }
+        function ConvertTo-PhpBuiltinFloat($value,[string]$function,[int]$number,[string]$parameter) {
+            if(Is-PhpRefCell $value){$value=$value.Value}
+            if($value-is[double]){return $value}
+            if($value-is[long]){return [double]$value}
+            if((Get-PhpBuiltinCallPolicy).ArgumentStrict){Throw-PhpBuiltinStrictTypeError $value $function $number $parameter 'float'}
+            if($null-eq$value){Write-PhpDiagnostic 8192 ($function+'(): Passing null to parameter #'+$number+' ($'+$parameter+') of type float is deprecated');return [double]0}
+            if($value-is[bool]){if($value){return [double]1};return [double]0}
+            if(Is-PhpStringValue $value){$parsed=ConvertFrom-PhpNumericString $value $false;if($null-ne$parsed){return [double]$parsed}}
+            Throw-PhpBuiltinStrictTypeError $value $function $number $parameter 'float'
+        }
+        function ConvertTo-PhpBuiltinNumber($value,[string]$function,[int]$number,[string]$parameter) {
+            if(Is-PhpRefCell $value){$value=$value.Value}
+            if(Is-PhpNum $value){return $value}
+            if((Get-PhpBuiltinCallPolicy).ArgumentStrict){Throw-PhpBuiltinStrictTypeError $value $function $number $parameter 'int|float'}
+            if($null-eq$value){Write-PhpDiagnostic 8192 ($function+'(): Passing null to parameter #'+$number+' ($'+$parameter+') of type int|float is deprecated');return [long]0}
+            if($value-is[bool]){if($value){return [long]1};return [long]0}
+            if(Is-PhpStringValue $value){$parsed=ConvertFrom-PhpNumericString $value $false;if($null-ne$parsed){return $parsed}}
+            Throw-PhpBuiltinStrictTypeError $value $function $number $parameter 'int|float'
+        }
+        function Throw-PhpDeclaredTypeError($value,[string]$typeName,[string]$location,$context=$null) {
+            if($null-ne$context -and $context.Role-ceq'return' -and $null-ne$context.Definition -and $context.Definition.PSObject.Properties['TypedDisplayName'] -and ([string]$context.Definition.TypedDisplayName).EndsWith('::get')) {
+                $location='property '+([string]$context.Definition.Name)
+            }
+            $legacy='ALL PHP: Type mismatch at '+$location+' (expected '+$typeName+')'
+            if($null-eq$context){Throw-PhpError 'TypeError' $legacy $legacy}
+            $typeName=Get-PhpDeclaredTypeDisplay $typeName
+            $actual=Get-PhpBuiltinTypeName $value
+            if($context.Role-ceq'return'){$message=$context.Display+'(): Return value must be of type '+$typeName+', '+$actual+' returned'}
+            elseif($context.Role-ceq'property'){$message='Cannot assign '+$actual+' to property '+$context.Display+' of type '+$typeName}
+            else {
+                $parameterLabel=if([string]::IsNullOrEmpty([string]$context.Parameter)){''}else{' ($'+$context.Parameter+')'}
+                $message=$context.Display+'(): Argument #'+$context.Number+$parameterLabel+' must be of type '+$typeName+', '+$actual+' given'
+                if($null-ne$context.Policy-and$context.Policy.Kind-cne'InternalCallback'){$message+=', called in '+$context.Policy.CallerPath+' on line '+$context.Policy.CallerLine}
+            }
+            Throw-PhpError 'TypeError' $message $legacy
+        }
+
         $state = @{
+                SourceUnitArtifacts=[Collections.Generic.Dictionary[object,object]]::new()
+                SourceFilesList=[Collections.Generic.List[string]]::new()
+                SourceFilesSet=[Collections.Generic.HashSet[string]]::new($(if([IO.Path]::PathSeparator-ceq';'){[StringComparer]::OrdinalIgnoreCase}else{[StringComparer]::Ordinal}))
+                SourceCompileDiagnostic=$null
+                LoadedUnitBody=$false
+                InternalSourceUnit=(New-PhpSourceUnit $false '(internal)')
+                ActiveSourceUnit=$null
+                BuiltinCallPolicy=$null
+                CompiledStrictTypes=$false
+                StrictDirectivePrefix=$null
+                ForeachIterators=[Collections.Generic.List[object]]::new()
+                ReferenceOwnerFrames=[Collections.Generic.List[object]]::new()
+                ReferenceTemporaryRoots=[Collections.Generic.List[object]]::new()
             Tokens = [System.Collections.Generic.List[string]]::new()
             Pos = 0
             Vars = [System.Collections.Generic.Dictionary[string,object]]::new(
                 [System.StringComparer]::Ordinal)
             Functions = [System.Collections.Generic.Dictionary[string,object]]::new(
-                [System.StringComparer]::OrdinalIgnoreCase)
+                [AllPhp.ValidTextSymbols.Comparers]::Ascii)
             Classes = [System.Collections.Generic.Dictionary[string,object]]::new(
-                [System.StringComparer]::OrdinalIgnoreCase)
+                [AllPhp.ValidTextSymbols.Comparers]::Ascii)
             Interfaces = [System.Collections.Generic.Dictionary[string,object]]::new(
-                [System.StringComparer]::OrdinalIgnoreCase)
+                [AllPhp.ValidTextSymbols.Comparers]::Ascii)
             Traits = [System.Collections.Generic.Dictionary[string,object]]::new(
-                [System.StringComparer]::OrdinalIgnoreCase)
+                [AllPhp.ValidTextSymbols.Comparers]::Ascii)
             Flow = @{ Returned = $false; Value = $null; LoopControl=$null; LoopDepth=0 }
             CallDepth = 0
             Steps = 0
@@ -54,6 +1898,8 @@
             MagicGetActive = [System.Collections.Generic.HashSet[string]]::new(
                 [System.StringComparer]::Ordinal)
             MagicSetActive = [System.Collections.Generic.HashSet[string]]::new(
+                [System.StringComparer]::Ordinal)
+            MagicUnsetActive = [System.Collections.Generic.HashSet[string]]::new(
                 [System.StringComparer]::Ordinal)
             PropertyHookActive = [System.Collections.Generic.HashSet[string]]::new(
                 [System.StringComparer]::Ordinal)
@@ -67,6 +1913,12 @@
                 CurrentCallable = $null
                 ReturnByRef = $false
                 ClassContext = $null
+                TraitContext = ''
+                CurrentFunctionName = ''
+                CurrentMethodName = ''
+                OutputBuffers = [System.Collections.Generic.List[object]]::new()
+                AnonymousClassSeq = 0
+                MaxSteps = if ($isCli -and ($CliContext.Keys -contains 'MaxSteps') -and [long]$CliContext['MaxSteps'] -gt 0) { [long]$CliContext['MaxSteps'] } else { [long]100000 }
                 TokenLines = [System.Collections.Generic.List[int]]::new()
                 Line = 0
                 ScriptName = 'Command line code'
@@ -77,7 +1929,7 @@
                 ObjectSeq = 0
                 DumpStack = [System.Collections.Generic.List[object]]::new()
                 Constants = [System.Collections.Generic.Dictionary[string,object]]::new(
-                    [System.StringComparer]::Ordinal)
+                    [AllPhp.ValidTextSymbols.Comparers]::Constant)
                 QuietDepth = 0
                 SilenceDepth = 0
                 ErrorReporting = [long]-1
@@ -87,12 +1939,21 @@
                 InErrorHandler = $false
                 ExceptionHandler = $null
                 ExceptionHandlerStack = [System.Collections.Generic.List[object]]::new()
-                Ini = @{}
+                Ini = @{ 'zend.assertions' = '1'; 'assert.exception' = '1' }
+                Timezone = 'UTC'
+                Locale = 'C'
+                ShutdownFunctions = [System.Collections.Generic.List[object]]::new()
+                ShutdownRan = $false
+                Prng = $null
+                ClassAliases = [System.Collections.Generic.Dictionary[string,string]]::new([AllPhp.ValidTextSymbols.Comparers]::Ascii)
                 NamespaceFallbacks = [System.Collections.Generic.Dictionary[int,string]]::new()
                 InlineHtml = [System.Collections.Generic.Dictionary[string,string]]::new([StringComparer]::Ordinal)
                 DocStrings = [System.Collections.Generic.Dictionary[string,object]]::new([StringComparer]::Ordinal)
                 LiteralWarnings = [System.Collections.Generic.List[object]]::new()
                 ParsingInternalPrelude = $false
+                GeneratorReplayMute = 0
+                ActiveGenerator = $null
+                GeneratorYieldSeq = 0
         }
 
         $state.Globals = $state.Vars
@@ -121,6 +1982,19 @@
             $signal.Data['AllPhpCliExit'] = $cliExitToken
             throw $signal
         }
+        function Throw-PhpUserFunctionRedeclaration($declaration) {
+            $message = 'Cannot redeclare ' + $declaration.Name + '()'
+            if (-not $isCli) { throw "ALL PHP: Function already declared '$($declaration.Name)'" }
+            $line = if ($null -ne $declaration.Line) { [long]$declaration.Line } else { [long]$state.Line }
+            [Console]::Error.Write('Fatal error: ' + $message + ' in ' + $state.ScriptName +
+                ' on line ' + $line + "`nStack trace:`n" + (Format-PhpStackTrace) + "`n")
+            $CliContext['ExitCode'] = [long]255
+            $CliContext['Terminated'] = $true
+            $CliContext['TerminationReason'] = 'function_redeclaration'
+            $signal = [System.Exception]::new('ALL PHP: private function redeclaration fatal')
+            $signal.Data['AllPhpCliExit'] = $cliExitToken
+            throw $signal
+        }
 
         function Get-PhpNativeName([string]$name) {
             if ($name.StartsWith([string][char]92)) { return $name.Substring(1) }
@@ -135,46 +2009,69 @@
             $signal.Data['AllPhpNativeUnsupported'] = $true
             throw $signal
         }
+        function Throw-PhpNativeUnsupportedBytes($reason) {
+            $rawReason=To-PhpBytes $reason
+            $hostReason=$null
+            if ($rawReason.TryDecodeUtf8([ref]$hostReason)) {
+                Throw-PhpNativeUnsupported $hostReason
+            }
+            # This ASCII carrier is host metadata, not the PHP diagnostic.
+            # The complete raw message remains available without replacement.
+            $signal=[System.InvalidOperationException]::new('ALL PHP Native Unsupported: raw native message retained in exception data')
+            $signal.Data['AllPhpNativeUnsupported']=$true
+            $signal.Data['AllPhpNativeUnsupportedBytes']=$rawReason
+            throw $signal
+        }
         function Invoke-PhpNativeFunction([string]$name, $values) {
-            # Deferred events cannot reproduce synchronous user-handler callbacks.
-            # Refuse before invoking native code while any user handler is installed.
             if ($null -ne $state.ErrorHandler -and -not $NativeContext.SynchronousCallbacksEnabled) {
                 Throw-PhpNativeUnsupported 'native calls with an installed PHP error handler require synchronous callbacks'
             }
-            $nativeName = Get-PhpNativeName $name
+            $nativeName=Get-PhpNativeName $name
+            $nativeUsesBytes=($null -ne $NativeContext.PSObject.Methods['InvokeScalarBytes'])
             foreach ($item in @($values)) {
                 if ($null -ne $item -and $item.PSObject.Properties['PhpType'] -and
                     $item.PhpType -ceq 'named_argument') {
                     Throw-PhpNativeUnsupported 'named native arguments are not implemented'
                 }
             }
+            $nativeValues=[System.Collections.Generic.List[object]]::new()
             try {
-                # The frozen evaluator has no strict_types source implementation.
-                # This candidate's selected source execution is weak/positional only.
-                $nativeResult = $NativeContext.InvokeScalar($nativeName, [object[]]@($values), $false)
+                foreach ($item in @($values)) {
+                    # Convert only actual PHP strings. Arrays/objects/references
+                    # retain their explicit pre-existing native boundary guards.
+                    if (Is-PhpStringValue $item) {
+                        if ($nativeUsesBytes) { [void]$nativeValues.Add((To-PhpBytes $item)) }
+                        else { [void]$nativeValues.Add((Get-PhpHostText $item)) }
+                    } else { [void]$nativeValues.Add($item) }
+                }
+                $nativeArguments=$nativeValues.ToArray()
+                # API choice is made before native execution. No catch branch
+                # calls an alternative native/runtime implementation.
+                if ($nativeUsesBytes) {
+                    $nativeResult=$NativeContext.InvokeScalarBytes($nativeName,$nativeArguments,([bool](Get-PhpBuiltinCallPolicy).ArgumentStrict))
+                } else {
+                    $nativeResult=$NativeContext.InvokeScalar($nativeName,$nativeArguments,([bool](Get-PhpBuiltinCallPolicy).ArgumentStrict))
+                }
             } catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
-                $callbackThrowable = Get-PhpThrown $_
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
+                $callbackThrowable=Get-PhpThrown $_
                 if ($null -ne $callbackThrowable) { Throw-PhpObject $callbackThrowable }
                 Throw-PhpNativeUnsupported ('scalar boundary: ' + $_.Exception.Message)
             }
-            # The native call has happened exactly once. Even an unsupported result
-            # or encoding failure must never cause a retry through another runtime.
             if ($null -ne $nativeResult.Output -and $nativeResult.Output.Length -gt 0) {
-                $nativeStdout = [Console]::OpenStandardOutput()
-                $nativeStdout.Write($nativeResult.Output, 0, $nativeResult.Output.Length)
-                $nativeStdout.Flush()
+                if (Is-PhpBytes $nativeResult.Output) { Write-PhpBytes $nativeResult.Output }
+                else { Write-PhpBytes ([AllPhp.ByteValues.PhpBytes]::FromBytes([byte[]]$nativeResult.Output)) }
             }
             foreach ($event in $nativeResult.DiagnosticEvents) {
-                if (-not $event.Delivered) { Write-PhpDiagnostic ([long]$event.Level) ([string]$event.Message) }
+                if (-not $event.Delivered) { Write-PhpDiagnostic ([long]$event.Level) $event.Message }
             }
             if (-not $nativeResult.Ok) {
                 if ($nativeResult.Status -lt 0 -or $nativeResult.ErrorClass -ceq 'ALLNativeUnsupported') {
-                    Throw-PhpNativeUnsupported ([string]$nativeResult.ErrorMessage)
+                    Throw-PhpNativeUnsupportedBytes $nativeResult.ErrorMessage
                 }
-                Throw-PhpError ([string]$nativeResult.ErrorClass) ([string]$nativeResult.ErrorMessage)
+                Throw-PhpError ([string]$nativeResult.ErrorClass) $nativeResult.ErrorMessage
             }
-            return $nativeResult.Value
+            return (ConvertTo-PhpOwnedValue $nativeResult.Value)
         }
 
         if ($isCli -and ($CliContext.Keys -contains 'SourcePath') -and
@@ -182,6 +2079,16 @@
             $state.ScriptName = [string]$CliContext['SourcePath']
         }
         # Unforgeable within PHP: exit is a host control signal, never Throwable.
+        $generatorYieldToken = [object]::new()
+        function Test-PhpGeneratorYield($errorRecord) {
+            $ex = $errorRecord.Exception
+            while ($null -ne $ex) {
+                if ($ex.Data.Contains('AllPhpGeneratorYield') -and
+                    [object]::ReferenceEquals($ex.Data['AllPhpGeneratorYield'], $generatorYieldToken)) { return $true }
+                $ex = $ex.InnerException
+            }
+            return $false
+        }
         $cliExitToken = [object]::new()
         function Test-PhpCliExit($errorRecord) {
             $ex = $errorRecord.Exception
@@ -195,73 +2102,155 @@
 
 
         # Predefined constants. PHP_EOL is CRLF because the compatibility target is PHP on Windows.
-        $phpConstants = [System.Collections.Generic.Dictionary[string,object]]::new(
-            [System.StringComparer]::Ordinal)
-        $phpConstants['PHP_EOL'] = "`r`n"
-        $phpConstants['PHP_INT_MAX'] = [long]::MaxValue
-        $phpConstants['PHP_INT_MIN'] = [long]::MinValue
-        $phpConstants['PHP_INT_SIZE'] = [long]8
-        $phpConstants['PHP_FLOAT_EPSILON'] = [double]2.220446049250313E-16
-        $phpConstants['PHP_FLOAT_MAX'] = [double]::MaxValue
-        $phpConstants['PHP_FLOAT_MIN'] = [double]2.2250738585072014E-308
-        $phpConstants['PHP_FLOAT_DIG'] = [long]15
-        $phpConstants['INF'] = [double]::PositiveInfinity
-        $phpConstants['NAN'] = [double]::NaN
-        $phpConstants['M_PI'] = [Math]::PI
-        $phpConstants['M_E'] = [Math]::E
-        $phpConstants['E_ERROR'] = [long]1
-        $phpConstants['E_WARNING'] = [long]2
-        $phpConstants['E_PARSE'] = [long]4
-        $phpConstants['E_NOTICE'] = [long]8
-        $phpConstants['E_CORE_ERROR'] = [long]16
-        $phpConstants['E_CORE_WARNING'] = [long]32
-        $phpConstants['E_COMPILE_ERROR'] = [long]64
-        $phpConstants['E_COMPILE_WARNING'] = [long]128
-        $phpConstants['E_USER_ERROR'] = [long]256
-        $phpConstants['E_USER_WARNING'] = [long]512
-        $phpConstants['E_USER_NOTICE'] = [long]1024
-        $phpConstants['E_RECOVERABLE_ERROR'] = [long]4096
-        $phpConstants['E_DEPRECATED'] = [long]8192
-        $phpConstants['E_USER_DEPRECATED'] = [long]16384
-        $phpConstants['E_ALL'] = [long]30719
-        # The compatibility target (see docs/COMPAT_TARGET.md).
-        $phpConstants['PHP_VERSION'] = '8.5.12'
-        $phpConstants['PHP_MAJOR_VERSION'] = [long]8
-        $phpConstants['PHP_MINOR_VERSION'] = [long]5
-        $phpConstants['PHP_RELEASE_VERSION'] = [long]12
-        $phpConstants['PHP_VERSION_ID'] = [long]80512
-        $phpConstants['PHP_OS'] = 'WINNT'
-        $phpConstants['PHP_OS_FAMILY'] = 'Windows'
-        $phpConstants['DIRECTORY_SEPARATOR'] = '\'
+        if ($null -eq $script:ALLPhpConstantsCacheV4) {
+            $cachedConstants = [System.Collections.Generic.Dictionary[string,object]]::new(
+                [AllPhp.ValidTextSymbols.Comparers]::Constant)
+            $cachedConstants['PHP_EOL'] = "`r`n"
+            $cachedConstants['PHP_INT_MAX'] = [long]::MaxValue
+            $cachedConstants['PHP_INT_MIN'] = [long]::MinValue
+            $cachedConstants['PHP_INT_SIZE'] = [long]8
+            $cachedConstants['PHP_FLOAT_EPSILON'] = [double]2.220446049250313E-16
+            $cachedConstants['PHP_FLOAT_MAX'] = [double]::MaxValue
+            $cachedConstants['PHP_FLOAT_MIN'] = [double]2.2250738585072014E-308
+            $cachedConstants['PHP_FLOAT_DIG'] = [long]15
+            $cachedConstants['INF'] = [double]::PositiveInfinity
+            $cachedConstants['NAN'] = [double]::NaN
+            $cachedConstants['M_PI'] = [Math]::PI
+            $cachedConstants['M_E'] = [Math]::E
+            $cachedConstants['E_ERROR'] = [long]1
+            $cachedConstants['E_WARNING'] = [long]2
+            $cachedConstants['E_PARSE'] = [long]4
+            $cachedConstants['E_NOTICE'] = [long]8
+            $cachedConstants['E_CORE_ERROR'] = [long]16
+            $cachedConstants['E_CORE_WARNING'] = [long]32
+            $cachedConstants['E_COMPILE_ERROR'] = [long]64
+            $cachedConstants['E_COMPILE_WARNING'] = [long]128
+            $cachedConstants['E_USER_ERROR'] = [long]256
+            $cachedConstants['E_USER_WARNING'] = [long]512
+            $cachedConstants['E_USER_NOTICE'] = [long]1024
+            $cachedConstants['E_RECOVERABLE_ERROR'] = [long]4096
+            $cachedConstants['E_DEPRECATED'] = [long]8192
+            $cachedConstants['E_USER_DEPRECATED'] = [long]16384
+            $cachedConstants['E_ALL'] = [long]30719
+            # The compatibility target (see docs/COMPAT_TARGET.md).
+            $cachedConstants['PHP_VERSION'] = '8.5.12'
+            $cachedConstants['PHP_MAJOR_VERSION'] = [long]8
+            $cachedConstants['PHP_MINOR_VERSION'] = [long]5
+            $cachedConstants['PHP_RELEASE_VERSION'] = [long]12
+            $cachedConstants['PHP_VERSION_ID'] = [long]80512
+            $cachedConstants['PHP_OS'] = 'WINNT'
+            $cachedConstants['PHP_OS_FAMILY'] = 'Windows'
+            $cachedConstants['DIRECTORY_SEPARATOR'] = '\'
+            $cachedConstants['PATH_SEPARATOR'] = ';'
+            $cachedConstants['PHP_SAPI'] = 'cli'
+            $cachedConstants['STR_PAD_RIGHT'] = [long]1
+            $cachedConstants['STR_PAD_LEFT'] = [long]0
+            $cachedConstants['STR_PAD_BOTH'] = [long]2
+            $cachedConstants['ARRAY_FILTER_USE_KEY'] = [long]2
+            $cachedConstants['ARRAY_FILTER_USE_BOTH'] = [long]1
+            $cachedConstants['CASE_LOWER'] = [long]0
+            $cachedConstants['CASE_UPPER'] = [long]1
+            $cachedConstants['SORT_REGULAR'] = [long]0
+            $cachedConstants['SORT_NUMERIC'] = [long]1
+            $cachedConstants['SORT_STRING'] = [long]2
+            $cachedConstants['ENT_COMPAT'] = [long]2
+            $cachedConstants['ENT_QUOTES'] = [long]3
+            $cachedConstants['ENT_NOQUOTES'] = [long]0
+            $cachedConstants['PREG_SPLIT_NO_EMPTY'] = [long]1
+            $cachedConstants['PREG_SPLIT_DELIM_CAPTURE'] = [long]2
+            $cachedConstants['PHP_OUTPUT_HANDLER_START'] = [long]1
+            $cachedConstants['PHP_OUTPUT_HANDLER_WRITE'] = [long]0
+            $cachedConstants['PHP_OUTPUT_HANDLER_CLEAN'] = [long]2
+            $cachedConstants['PHP_OUTPUT_HANDLER_FLUSH'] = [long]4
+            $cachedConstants['PHP_OUTPUT_HANDLER_FINAL'] = [long]8
+            $cachedConstants['PHP_OUTPUT_HANDLER_CONT'] = [long]0
+            $cachedConstants['PHP_OUTPUT_HANDLER_END'] = [long]8
+            $cachedConstants['PHP_OUTPUT_HANDLER_CLEANABLE'] = [long]16
+            $cachedConstants['PHP_OUTPUT_HANDLER_FLUSHABLE'] = [long]32
+            $cachedConstants['PHP_OUTPUT_HANDLER_REMOVABLE'] = [long]64
+            $cachedConstants['PHP_OUTPUT_HANDLER_STDFLAGS'] = [long]112
+            $cachedConstants['DEBUG_BACKTRACE_PROVIDE_OBJECT'] = [long]1
+            $cachedConstants['DEBUG_BACKTRACE_IGNORE_ARGS'] = [long]2
+            $cachedConstants['LC_ALL'] = [long]0
+            $cachedConstants['LC_COLLATE'] = [long]1
+            $cachedConstants['LC_CTYPE'] = [long]2
+            $cachedConstants['LC_MONETARY'] = [long]3
+            $cachedConstants['LC_NUMERIC'] = [long]4
+            $cachedConstants['LC_TIME'] = [long]5
+            $cachedConstants['JSON_HEX_TAG'] = [long]1
+            $cachedConstants['JSON_HEX_AMP'] = [long]2
+            $cachedConstants['JSON_HEX_APOS'] = [long]4
+            $cachedConstants['JSON_HEX_QUOT'] = [long]8
+            $cachedConstants['JSON_FORCE_OBJECT'] = [long]16
+            $cachedConstants['JSON_NUMERIC_CHECK'] = [long]32
+            $cachedConstants['JSON_UNESCAPED_SLASHES'] = [long]64
+            $cachedConstants['JSON_PRETTY_PRINT'] = [long]128
+            $cachedConstants['JSON_UNESCAPED_UNICODE'] = [long]256
+            $script:ALLPhpConstantsCacheV4 = $cachedConstants
+        }
+        $phpConstants = $script:ALLPhpConstantsCacheV4
 
         # Names backed by the builtin dispatcher below. Unlike declarations collected while
         # parsing, these functions exist before execution, even if a call raises an exception.
-        $phpBuiltinNames = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
-        foreach ($builtinName in @(
-            'json_encode','json_decode','json_last_error','json_last_error_msg','count','strlen',
-            'strtoupper','strtolower','trim','abs','array_sum','array_key_exists','is_array',
-            'is_string','is_bool','array_push','array_pop','array_shift','array_unshift',
-            'array_reverse','array_merge','array_slice','array_keys','array_values',
-            'array_key_first','array_key_last','array_first','array_last','in_array',
-            'str_contains','str_starts_with','str_ends_with','strpos','substr','str_replace',
-            'explode','implode','print_r','define','defined','constant',
-            'error_reporting','ini_set','ini_get','set_error_handler','restore_error_handler',
-            'set_exception_handler','restore_exception_handler','trigger_error','user_error',
-            'str_repeat','function_exists','call_user_func','call_user_func_array','get_class',
-            'var_dump','gettype','is_int','is_integer','is_long','is_float','is_double',
-            'is_null','is_numeric','intval','floatval','doubleval','boolval','intdiv','fdiv',
-            'pow','sqrt','floor','ceil','is_nan','is_infinite','is_finite','strval'
-        )) { [void]$phpBuiltinNames.Add($builtinName) }
-        if ($isCli) {
-            [void]$phpBuiltinNames.Add('exit')
-            [void]$phpBuiltinNames.Add('die')
+        if (($isCli -and $null -eq $script:ALLPhpBuiltinNamesCliV5) -or
+            (-not $isCli -and $null -eq $script:ALLPhpBuiltinNamesNonCliV5)) {
+            $builtNames = [System.Collections.Generic.HashSet[string]]::new([AllPhp.ValidTextSymbols.Comparers]::Ascii)
+            foreach ($builtinName in @(
+                'get_included_files','get_required_files','get_include_path','set_include_path',
+                'base64_encode','base64_decode','bin2hex','json_encode','json_decode','json_last_error','json_last_error_msg','count','strlen',
+                'strtoupper','strtolower','trim','abs','array_sum','array_key_exists','is_array',
+                'is_string','is_bool','array_push','array_pop','array_shift','array_unshift',
+                'array_reverse','array_merge','array_merge_recursive','array_slice','array_keys','array_values',
+                'array_key_first','array_key_last','array_first','array_last','in_array',
+                'str_contains','str_starts_with','str_ends_with','strpos','strstr','strchr','stristr','substr','str_replace',
+                'explode','implode','print_r','define','defined','constant','assert',
+                'error_reporting','ini_set','ini_get','set_error_handler','restore_error_handler',
+                'set_exception_handler','restore_exception_handler','trigger_error','user_error',
+                'str_repeat','function_exists','call_user_func','call_user_func_array','get_class',
+                'var_dump','gettype','is_int','is_integer','is_long','is_float','is_double',
+                'is_null','is_numeric','intval','floatval','doubleval','boolval','intdiv','fdiv',
+                'pow','sqrt','floor','ceil','is_nan','is_infinite','is_finite','strval',
+                'sizeof','is_scalar','is_object','is_callable','is_iterable','is_countable','get_debug_type','settype',
+                'min','max','round','exp','log','log10','sin','cos','tan','pi','deg2rad','rad2deg','hypot',
+                'rand','mt_rand','random_int','srand','mt_srand',
+                'md5','sha1','crc32','hash','levenshtein','soundex','str_rot13',
+                'sprintf','printf','vsprintf','number_format','ord','chr','hex2bin','nl2br',
+                'urlencode','urldecode','rawurlencode','rawurldecode','htmlspecialchars','htmlspecialchars_decode',
+                'ucfirst','lcfirst','ucwords','strrev','str_pad','str_split','stripos','strrpos','strripos','str_ireplace',
+                'ltrim','rtrim','chop','substr_count','substr_replace','strcmp','strcasecmp','strncmp','strncasecmp','chunk_split','wordwrap','quotemeta','addslashes','stripslashes',
+                'array_map','array_filter','array_reduce','array_unique','array_search','array_combine','array_chunk','array_column',
+                'array_fill','array_fill_keys','array_flip','array_diff','array_diff_key','array_diff_assoc','array_intersect','array_intersect_key',
+                'array_pad','array_product','array_replace','array_splice','array_is_list','array_find','array_find_key','array_any','array_all',
+                'array_change_key_case','array_count_values','range','sort','rsort','asort','arsort','ksort','krsort','usort','uasort','uksort',
+                'current','pos','key','next','prev','reset','end','array_walk','array_walk_recursive',
+                'ob_start','ob_get_contents','ob_end_clean','ob_get_clean','ob_clean','ob_flush','ob_end_flush','ob_get_flush','ob_get_length','ob_get_level',
+                'get_declared_classes','get_declared_interfaces','get_declared_traits','get_defined_functions','get_defined_constants','get_defined_vars',
+                'zend_version','debug_backtrace','debug_print_backtrace','set_time_limit','register_shutdown_function',
+                'date_default_timezone_set','date_default_timezone_get','setlocale',
+                'compact','extract','iterator_to_array','iterator_count',
+                'preg_match','preg_match_all','preg_replace','preg_split','preg_quote',
+                'class_exists','interface_exists','trait_exists','enum_exists','class_alias','class_implements','class_parents','method_exists','property_exists',
+                'is_a','is_subclass_of','get_parent_class','get_class_methods','get_class_vars','get_object_vars','spl_object_id',
+                'var_export','serialize','unserialize','func_num_args','func_get_args','func_get_arg',
+                'all_eval','all_call','__all_inline_exec'
+            )) { [void]$builtNames.Add($builtinName) }
+            if ($isCli) {
+                [void]$builtNames.Add('exit')
+                [void]$builtNames.Add('die')
+                $script:ALLPhpBuiltinNamesCliV5 = $builtNames
+            } else {
+                $script:ALLPhpBuiltinNamesNonCliV5 = $builtNames
+            }
         }
+        $phpBuiltinNames = if ($isCli) { $script:ALLPhpBuiltinNamesCliV5 } else { $script:ALLPhpBuiltinNamesNonCliV5 }
 
         # Tokenize before parsing. Unknown characters produce an error, never disappear.
-        $pattern = '(?:\s+|//[^\r\n]*|\#[^\r\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|''(?:\\.|[^''\\])*''|\$\$[A-Za-z_][A-Za-z_0-9]*|\$[A-Za-z_][A-Za-z_0-9]*|\$(?=\{)|0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|(?:\d[\d_]*(?:\.[\d_]*)?|\.\d[\d_]*)(?:[eE][+-]?\d[\d_]*)?|\\?[A-Za-z_][A-Za-z_0-9]*(?:\\[A-Za-z_][A-Za-z_0-9]*)*\\?|<=>|::|\.\.\.|<<=|>>=|<<|>>|===|!==|==|!=|<=|>=|&&|\|\||=>|->|\*\*=|\*\*|\?\?=|\?\?|\?->|\+\+|--|\*=|/=|%=|&=|\|=|\^=|\+=|-=|\.=|[+\-*/%.=<>!?:;{},()\[\]&|^~@])'
-        $rx = [regex]::new($pattern)
+        $pattern = '(?:[ \t\r\n]+|//[^\r\n]*|\#\[|\#(?!\[)[^\r\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|''(?:\\.|[^''\\])*''|\$\$[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*|\$[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*|\$(?=\{)|0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|(?:[0-9][0-9_]*(?:\.[0-9_]*)?|\.[0-9][0-9_]*)(?:[eE][+-]?[0-9][0-9_]*)?|\\?[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*(?:\\[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*)*\\?|<=>|::|\.\.\.|<<=|>>=|<<|>>|===|!==|==|!=|<=|>=|&&|\|\||=>|->|\*\*=|\*\*|\?\?=|\?\?|\?->|\+\+|--|\*=|/=|%=|&=|\|=|\^=|\+=|-=|\.=|[+\-*/%.=<>!?:;{},()\[\]&|^~@])'
+        if ($null -eq $script:ALLPhpTokenRxV3) { $script:ALLPhpTokenRxV3 = [regex]::new($pattern) }
+        $rx = $script:ALLPhpTokenRxV3
         $phpLiteralUtf8 = [Text.UTF8Encoding]::new($false,$true)
         function Throw-PhpLiteralParseError([string]$message,[long]$line) {
+            $state.SourceCompileDiagnostic=[pscustomobject]@{Type='ParseError';Reason='string_literal';Message=$message;SourcePath=$state.ScriptName;Line=$line}
             if ($isCli) {
                 $CliContext['CompileError']=[pscustomobject]@{
                     Type='ParseError'; Reason='string_literal'; Message=$message
@@ -376,17 +2365,20 @@
             $tokenRx = $rx
             $openRx = $null
             if ($FileMode) {
-                $openPattern = '<\?(?:php(?=\s|$)|=)'
+                $openPattern = '<\?(?:php(?=[ \t\r\n]|$)|=)'
                 if ($isCli -and ($CliContext.Keys -contains 'InitialIni') -and
                     ($CliContext['InitialIni'].Keys -contains 'short_open_tag') -and
                     $CliContext['InitialIni']['short_open_tag'] -ceq '1') {
-                    $openPattern = '<\?(?:php(?=\s|$)|=)?'
+                    $openPattern = '<\?(?:php(?=[ \t\r\n]|$)|=)?'
                 }
                 $openRx = [regex]::new($openPattern, [Text.RegularExpressions.RegexOptions]::IgnoreCase)
                 # A close tag ends a line comment, but not a quoted string or
                 # block comment. Those stay whole tokens under the existing rx.
-                $filePattern = $pattern.Replace('//[^\r\n]*','//(?:(?!\?>)[^\r\n])*').Replace('\#[^\r\n]*','\#(?:(?!\?>)[^\r\n])*')
-                $tokenRx = [regex]::new($filePattern)
+                if ($null -eq $script:ALLPhpFileTokenRxV3) {
+                    $filePattern = $pattern.Replace('//[^\r\n]*','//(?:(?!\?>)[^\r\n])*').Replace('\#(?!\[)[^\r\n]*','\#(?:(?!\?>)(?!\[)[^\r\n])*')
+                    $script:ALLPhpFileTokenRxV3 = [regex]::new($filePattern)
+                }
+                $tokenRx = $script:ALLPhpFileTokenRxV3
             }
             $initialOffset = 0
             if ($FileMode -and -not $StartsInPhp -and $text.StartsWith('#!')) {
@@ -437,9 +2429,9 @@
                     throw "ALL PHP: Unknown character at offset $offset"
                 }
                 $token = $match.Value
-                if (-not [string]::IsNullOrWhiteSpace($token) -and
+                if ($token -cnotmatch '^[ \t\r\n]+$' -and
                     -not $token.StartsWith('//') -and
-                    -not $token.StartsWith('#') -and
+                    ($token -ceq '#[' -or -not $token.StartsWith('#')) -and
                     -not $token.StartsWith('/*')) {
                     [void]$tokens.Add($token)
                     [void]$lines.Add($line)
@@ -455,21 +2447,29 @@
         # Names are resolved once, on the token stream, before parsing: "namespace" and "use"
         # statements are consumed and every class, function and constant name is rewritten to its
         # fully qualified form without a leading backslash (the form PHP itself reports).
-        $phpNameRx = [regex]::new('^\\?[A-Za-z_][A-Za-z_0-9]*(?:\\[A-Za-z_][A-Za-z_0-9]*)*\\?$')
-        $phpReservedNames = [System.Collections.Generic.HashSet[string]]::new(
-            [System.StringComparer]::OrdinalIgnoreCase)
-        foreach ($word in @('abstract','and','array','as','break','callable','case','catch','class','clone','const',
-            'continue','declare','default','do','echo','else','elseif','empty','enddeclare','endfor','endforeach',
-            'endif','endswitch','endwhile','enum','exit','die','extends','final','finally','fn','for','foreach',
-            'function','global','goto','if','implements','include','include_once','instanceof','insteadof',
-            'interface','isset','list','match','namespace','new','or','print','private','protected','public',
-            'readonly','require','require_once','return','static','switch','throw','trait','try','unset','use',
-            'var','while','xor','yield','from','true','false','null','self','parent','int','float','string',
-            'bool','iterable','object','mixed','void','never')) { [void]$phpReservedNames.Add($word) }
+        if ($null -eq $script:ALLPhpNameRxV3) {
+            $script:ALLPhpNameRxV3 = [regex]::new('^\\?[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*(?:\\[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*)*\\?$')
+        }
+        $phpNameRx = $script:ALLPhpNameRxV3
+        if ($null -eq $script:ALLPhpReservedNamesV3) {
+            $rNames = [System.Collections.Generic.HashSet[string]]::new(
+                [AllPhp.ValidTextSymbols.Comparers]::Ascii)
+            foreach ($word in @('abstract','and','array','as','break','callable','case','catch','class','clone','const',
+                'continue','declare','default','do','echo','else','elseif','empty','enddeclare','endfor','endforeach',
+                'endif','endswitch','endwhile','enum','exit','die','extends','final','finally','fn','for','foreach',
+                'function','global','goto','if','implements','include','include_once','instanceof','insteadof',
+                'interface','isset','list','match','namespace','new','or','print','private','protected','public',
+                'readonly','require','require_once','return','static','switch','throw','trait','try','unset','use',
+                'var','while','xor','yield','from','true','false','null','self','parent','int','float','string',
+                'bool','iterable','object','mixed','void','never')) { [void]$rNames.Add($word) }
+            foreach($word in @('eval','__FILE__','__DIR__','__LINE__','__FUNCTION__','__CLASS__','__TRAIT__','__METHOD__')){[void]$rNames.Add($word)}
+            $script:ALLPhpReservedNamesV3 = $rNames
+        }
+        $phpReservedNames = $script:ALLPhpReservedNamesV3
         function Resolve-PhpNamespaceTokens($tokens, $lines) {
             $total = $tokens.Count
-            $declFunctions = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
-            $declConsts = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+            $declFunctions = [System.Collections.Generic.HashSet[string]]::new([AllPhp.ValidTextSymbols.Comparers]::Ascii)
+            $declConsts = [System.Collections.Generic.HashSet[string]]::new([AllPhp.ValidTextSymbols.Comparers]::Constant)
             $outTokens = [System.Collections.Generic.List[string]]::new()
             $outLines = [System.Collections.Generic.List[int]]::new()
             $outFallbacks = [System.Collections.Generic.Dictionary[int,string]]::new()
@@ -481,8 +2481,11 @@
                 $nsStack = [System.Collections.Generic.Stack[int]]::new()
                 $pendingClass = $false
                 $classList = $false
-                $useClass = [System.Collections.Generic.Dictionary[string,string]]::new([System.StringComparer]::OrdinalIgnoreCase)
-                $useFunc = [System.Collections.Generic.Dictionary[string,string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+                $attrDepth = 0
+                $attrParenDepth = 0
+                $expectAttrName = $false
+                $useClass = [System.Collections.Generic.Dictionary[string,string]]::new([AllPhp.ValidTextSymbols.Comparers]::Ascii)
+                $useFunc = [System.Collections.Generic.Dictionary[string,string]]::new([AllPhp.ValidTextSymbols.Comparers]::Ascii)
                 $useConst = [System.Collections.Generic.Dictionary[string,string]]::new([System.StringComparer]::Ordinal)
                 $prefix = { param($name) if ($ns.Length -gt 0) { return ($ns + '\' + $name) }; return $name }
                 $qualify = {
@@ -529,7 +2532,22 @@
                     $atMember = ($inClass -and $depth -eq $classStack.Peek())
                     $emit = $t
                     $fallback = $null
-                    if ($t -ceq '{') {
+                    if ($t -ceq '#[') {
+                        $attrDepth++
+                        $expectAttrName = $true
+                    } elseif ($attrDepth -gt 0 -and $t -ceq '[') {
+                        $attrDepth++
+                    } elseif ($attrDepth -gt 0 -and $t -ceq ']') {
+                        $attrDepth--
+                        if ($attrDepth -le 0) { $attrDepth = 0; $attrParenDepth = 0; $expectAttrName = $false }
+                    } elseif ($attrDepth -gt 0 -and $t -ceq '(') {
+                        $attrParenDepth++
+                        $expectAttrName = $false
+                    } elseif ($attrDepth -gt 0 -and $t -ceq ')') {
+                        if ($attrParenDepth -gt 0) { $attrParenDepth-- }
+                    } elseif ($attrDepth -gt 0 -and $attrParenDepth -eq 0 -and $t -ceq ',') {
+                        $expectAttrName = $true
+                    } elseif ($t -ceq '{') {
                         $depth++
                         if ($pendingClass) { $classStack.Push($depth); $pendingClass = $false }
                         $classList = $false
@@ -545,7 +2563,7 @@
                     } elseif ($t -ceq ';') {
                         $classList = $false
                     } elseif ($phpNameRx.IsMatch($t)) {
-                        $lower = $t.ToLowerInvariant()
+                        $lower = (ConvertTo-PhpAsciiLower $t)
                         # Reserved words are legal as constant, method and member names ("const USE",
                         # "function namespace()", "namespace as bar"); in those positions they are plain names.
                         $isMember = ($prev -ceq '->' -or $prev -ceq '?->' -or $prev -ceq '::')
@@ -557,6 +2575,7 @@
                             # namespace A\B;   namespace A\B { ... }   namespace { ... }
                             if (-not $seenNamespace -and $i -gt 0 -and $state.InlineHtml.ContainsKey($tokens[0])) {
                                 $message = 'Namespace declaration statement has to be the very first statement or after any declare call in the script'
+                                $state.SourceCompileDiagnostic=[pscustomobject]@{Type='CompileError';Reason='namespace_after_inline_html';Message=$message;SourcePath=$state.ScriptName;Line=[long]$lines[$i]}
                                 if ($isCli) {
                                     $CliContext['CompileError'] = [pscustomobject]@{
                                         Type='CompileError'; Reason='namespace_after_inline_html'; Message=$message
@@ -615,6 +2634,7 @@
                                             SourcePath=$state.ScriptName; Line=$importLine
                                         }
                                     }
+                                    if(-not$isCli){$state.SourceCompileDiagnostic=[pscustomobject]@{Type='CompileError';Reason='duplicate_import';Message=$message;SourcePath=$state.ScriptName;Line=$importLine}}
                                     throw ('ALL PHP: ' + $message)
                                 }
                                 $imports[$alias] = $target
@@ -622,7 +2642,10 @@
                             $i = $j
                             continue
                         }
-                        if ($isMember) {
+                        if ($attrDepth -gt 0 -and $attrParenDepth -eq 0 -and $expectAttrName) {
+                            $emit = & $resolveClass $t
+                            $expectAttrName = $false
+                        } elseif ($isMember) {
                             # member name: never resolved
                         } elseif ($lower -ceq '__namespace__' -and -not $plainName) {
                             $emit = "'" + $ns.Replace('\', '\\') + "'"
@@ -724,50 +2747,6 @@
             }
             return [pscustomobject]@{ Tokens=$outTokens; Lines=$outLines; Fallbacks=$outFallbacks }
         }
-        try {
-        if ($isCli -and ($CliContext.Keys -contains 'SourceMode') -and
-            $CliContext['SourceMode'] -in @('body','file','stdin')) {
-            ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines $true ($CliContext['SourceMode'] -ceq 'body')
-        } else { ConvertTo-PhpTokens $source $state.Tokens $state.TokenLines }
-        }
-        catch {
-            if (-not $isCli -or -not ($CliContext.Keys -contains 'CompileError')) { throw }
-            $literalError=$CliContext['CompileError']
-            [Console]::Error.Write('Parse error: '+$literalError.Message+' in '+$literalError.SourcePath+' on line '+$literalError.Line+"`n")
-            $CliContext['ExitCode']=[long]255;$CliContext['Terminated']=$true;$CliContext['TerminationReason']='compile_error'
-            return
-        }
-        # Only programs that actually use namespaces, imports or qualified names take this pass.
-        $needsNameResolution = $false
-        for ($scan = 0; $scan -lt $state.Tokens.Count; $scan++) {
-            $candidate = $state.Tokens[$scan]
-            if ($candidate.Length -eq 0) { continue }
-            $firstChar = $candidate[0]
-            if ($firstChar -eq [char]'"' -or $firstChar -eq [char]"'" -or $firstChar -eq [char]'$') { continue }
-            if ($candidate.Contains('\') -or $candidate -ieq 'namespace' -or $candidate -ieq '__NAMESPACE__') {
-                $needsNameResolution = $true; break
-            }
-            if ($candidate -ieq 'use' -and $scan + 1 -lt $state.Tokens.Count -and
-                $state.Tokens[$scan + 1] -cne '(') { $needsNameResolution = $true; break }
-        }
-        if ($needsNameResolution) {
-            try { $resolvedNames = Resolve-PhpNamespaceTokens $state.Tokens $state.TokenLines }
-            catch {
-                if (-not $isCli -or -not ($CliContext.Keys -contains 'CompileError')) { throw }
-                $compileError = $CliContext['CompileError']
-                [Console]::Error.Write('Fatal error: ' + $compileError.Message + ' in ' +
-                    $compileError.SourcePath + ' on line ' + $compileError.Line +
-                    "`nStack trace:`n#0 {main}`n")
-                $CliContext['ExitCode'] = [long]255
-                $CliContext['Terminated'] = $true
-                $CliContext['TerminationReason'] = 'compile_error'
-                return
-            }
-            $state.Tokens = $resolvedNames.Tokens
-            $state.NamespaceFallbacks = $resolvedNames.Fallbacks
-            $state.TokenLines = $resolvedNames.Lines
-        }
-
         function Peek-Token {
             return $state.Tokens[$state.Pos]
         }
@@ -777,7 +2756,7 @@
             return $token
         }
         function Expect-Token([string]$expected) {
-            if ((Peek-Token) -cne $expected) {
+            if ((-not (Test-PhpNameEqual (Peek-Token) $expected))) {
                 $unexpected = Peek-Token
                 if ($isCli -and $expected -ceq ';' -and $unexpected.Length -ge 2 -and
                     ($unexpected.StartsWith("'") -or $unexpected.StartsWith('"'))) {
@@ -789,6 +2768,7 @@
                         Message=$message; SourcePath=$state.ScriptName
                         Line=[long]$state.TokenLines[$state.Pos]
                     }
+                    $state.SourceCompileDiagnostic=$info
                     $CliContext['CompileError'] = $info
                     $compileSignal = [System.Exception]::new('ALL PHP: structured compilation error')
                     $compileSignal.Data['AllPhpCompileError'] = $info
@@ -836,7 +2816,60 @@
                     [void]$sb.Append($ch)
                 }
             }
-            return $sb.ToString()
+            return [AllPhp.ByteValues.PhpBytes]::FromUtf8($sb.ToString())
+        }
+        function Find-PhpClosingBrace([string]$body, [int]$openIndex) {
+            $depth = 1
+            for ($k = $openIndex + 1; $k -lt $body.Length; $k++) {
+                $c = $body[$k]
+                if ($c -ceq '''' -or $c -ceq '"') {
+                    $q = $c
+                    $k++
+                    while ($k -lt $body.Length) {
+                        if ($body[$k] -ceq '\') { $k += 2; continue }
+                        if ($body[$k] -ceq $q) { break }
+                        $k++
+                    }
+                    continue
+                }
+                if ($c -ceq '{') { $depth++ }
+                elseif ($c -ceq '}') {
+                    $depth--
+                    if ($depth -eq 0) { return $k }
+                }
+            }
+            return -1
+        }
+        function Invoke-PhpInlineExprText([string]$exprText, [long]$line) {
+            $savedTokens = $state.Tokens
+            $savedTokenLines = $state.TokenLines
+            $savedPos = $state.Pos
+            $savedFallbacks = $state.NamespaceFallbacks
+            $savedLine = $state.Line
+            try {
+                $inlineTokens = [System.Collections.Generic.List[string]]::new()
+                $inlineLines = [System.Collections.Generic.List[long]]::new()
+                ConvertTo-PhpTokens $exprText $inlineTokens $inlineLines $false $true
+                for ($ti = 0; $ti -lt $inlineLines.Count; $ti++) { $inlineLines[$ti] = $line }
+                [void]$inlineTokens.Add('(EOF)')
+                [void]$inlineLines.Add($line)
+                $state.Tokens = $inlineTokens
+                $state.TokenLines = $inlineLines
+                $state.Pos = 0
+                $state.NamespaceFallbacks = [System.Collections.Generic.Dictionary[int,string]]::new()
+                $state.Line = $line
+                $exprAst = Read-Expr 1
+                if ((Peek-Token) -cne '(EOF)') {
+                    throw ('ALL PHP: Unexpected trailing token in interpolated expression: ' + (Peek-Token))
+                }
+                return (Invoke-PhpExpr $exprAst)
+            } finally {
+                $state.Tokens = $savedTokens
+                $state.TokenLines = $savedTokenLines
+                $state.Pos = $savedPos
+                $state.NamespaceFallbacks = $savedFallbacks
+                $state.Line = $savedLine
+            }
         }
         function Expand-PhpDoubleString([string]$token,[bool]$IsBody=$false,[bool]$Heredoc=$false,[bool]$ValidateOnly=$false,[long]$LineBase=0) {
             $body=if($IsBody){$token}else{$token.Substring(1,$token.Length-2)}
@@ -873,8 +2906,10 @@
                         }
                         if($point-gt0x10ffff){Throw-PhpLiteralParseError 'Invalid UTF-8 codepoint escape sequence: Codepoint too large' $errorLine}
                         if($point-ge0xd800-and$point-le0xdfff){
-                            if($ValidateOnly){$i=$end;continue}
-                            throw 'ALL PHP: Binary string containing a non-scalar UTF-8 codepoint is not supported'
+                            [void]$output.Add([byte](0xe0-bor($point-shr12)))
+                            [void]$output.Add([byte](0x80-bor(($point-shr6)-band0x3f)))
+                            [void]$output.Add([byte](0x80-bor($point-band0x3f)))
+                            $i=$end;continue
                         }
                         Add-PhpLiteralText $output ([char]::ConvertFromUtf32([int]$point));$i=$end;continue
                     }
@@ -897,38 +2932,96 @@
                 # Compilation validates escape syntax but must not evaluate or
                 # reject valid, presently unsupported interpolation in dead code.
                 if($ValidateOnly){continue}
-                if($ch-ceq'$'-and$i+1-lt$body.Length-and$body[$i+1]-ceq'{'){throw 'ALL PHP: Legacy ${...} interpolation is not implemented'}
-                $braced=$false;$start=$i
-                if($ch-ceq'{'-and$i+1-lt$body.Length-and$body[$i+1]-ceq'$'){$braced=$true;$start++}
-                elseif($ch-cne'$') {
+                $interpLine=$LineBase+[regex]::Matches($body.Substring(0,$i),"`r`n|`r|`n").Count
+                if($ch-ceq'$'-and$i+1-lt$body.Length-and$body[$i+1]-ceq'{'){
+                    $closeIdx=Find-PhpClosingBrace $body ($i+1)
+                    if($closeIdx-lt0){throw 'ALL PHP: Unterminated ${...} string interpolation'}
+                    $inner=$body.Substring($i+2,$closeIdx-($i+2)).Trim()
+                    $interpVal=$null
+                    if($inner-cmatch'^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*$'){
+                        $interpVal=Invoke-PhpInlineExprText ('$'+$inner) $interpLine
+                    }elseif($inner-cmatch'^([A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*)(\[[\s\S]+\])$'){
+                        $arrIdent=$matches[1];$arrRest=$matches[2]
+                        if($arrRest-cmatch'^\[([A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*)\]$'){
+                            $arrRest="['"+$matches[1]+"']"
+                        }
+                        $interpVal=Invoke-PhpInlineExprText ('$'+$arrIdent+$arrRest) $interpLine
+                    }else{
+                        $vName=To-PhpText (Invoke-PhpInlineExprText $inner $interpLine)
+                        $interpVal=Get-PhpVariableValue $vName
+                    }
+                    $output.AddRange((To-PhpBytes $interpVal).ToArray())
+                    $i=$closeIdx;continue
+                }
+                if($ch-ceq'{'-and$i+1-lt$body.Length-and$body[$i+1]-ceq'$'){
+                    $closeIdx=Find-PhpClosingBrace $body $i
+                    if($closeIdx-lt0){throw 'ALL PHP: Complex braced string interpolation is not implemented'}
+                    $exprText=$body.Substring($i+1,$closeIdx-($i+1))
+                    $savedLine=$state.Line
+                    try{
+                        $state.Line=$interpLine
+                        if($exprText-cmatch'^\$([A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*)$'){
+                            $name=$matches[1]
+                            $slot=Get-PhpVariableSlot $name
+                            if($slot.Store.ContainsKey($slot.Key)-or$PhpDiagnostics-or$isCli){
+                                $output.AddRange((To-PhpBytes (Get-PhpVariableValue $name)).ToArray())
+                            }
+                        }else{
+                            $interpVal=Invoke-PhpInlineExprText $exprText $interpLine
+                            $output.AddRange((To-PhpBytes $interpVal).ToArray())
+                        }
+                    }finally{$state.Line=$savedLine}
+                    $i=$closeIdx;continue
+                }
+                if($ch-cne'$') {
                     $length=1
                     if([char]::IsHighSurrogate($ch)-and$i+1-lt$body.Length-and[char]::IsLowSurrogate($body[$i+1])){$length=2}
                     Add-PhpLiteralText $output $body.Substring($i,$length);$i+=$length-1;continue
                 }
-                if($start+1-ge$body.Length-or-not([string]$body[$start+1]-cmatch'[A-Za-z_]')) {Add-PhpLiteralText $output ([string]$ch);continue}
-                $end=$start+2
-                while($end-lt$body.Length-and[string]$body[$end]-cmatch'[A-Za-z_0-9]'){$end++}
-                if($braced){if($end-ge$body.Length-or$body[$end]-cne'}'){throw 'ALL PHP: Complex braced string interpolation is not implemented'}}
-                elseif($end-lt$body.Length-and($body[$end]-ceq'['-or($end+1-lt$body.Length-and$body.Substring($end,2)-ceq'->'))){throw 'ALL PHP: Complex string interpolation is not implemented'}
-                $name=$body.Substring($start+1,$end-$start-1)
+                if($i+1-ge$body.Length-or-not([string]$body[$i+1]-cmatch'[A-Za-z_\x80-\uffff]')) {Add-PhpLiteralText $output ([string]$ch);continue}
+                $end=$i+2
+                while($end-lt$body.Length-and[string]$body[$end]-cmatch'[A-Za-z_0-9\x80-\uffff]'){$end++}
+                $name=$body.Substring($i+1,$end-$i-1)
+                if(-not($isCli-or$PhpDiagnostics)){
+                    if($end-lt$body.Length-and($body[$end]-ceq'['-or($end+1-lt$body.Length-and$body.Substring($end,2)-ceq'->'))){throw 'ALL PHP: Complex string interpolation is not implemented'}
+                }else{
+                    if($end-lt$body.Length-and$body[$end]-ceq'['){
+                        $closeBracket=$body.IndexOf(']',$end+1)
+                        if($closeBracket-lt0){throw 'ALL PHP: Unterminated array index in string interpolation'}
+                        $rawIdx=$body.Substring($end+1,$closeBracket-($end+1))
+                        $evalIdx=if($rawIdx-cmatch'^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*$'){"'"+$rawIdx+"'"}else{$rawIdx}
+                        $interpVal=Invoke-PhpInlineExprText ('$'+$name+'['+$evalIdx+']') $interpLine
+                        $output.AddRange((To-PhpBytes $interpVal).ToArray())
+                        $i=$closeBracket;continue
+                    }
+                    $propOpLen=0
+                    if($end+2-lt$body.Length-and$body.Substring($end,2)-ceq'->'-and([string]$body[$end+2]-cmatch'[A-Za-z_\x80-\uffff]')){$propOpLen=2}
+                    elseif($end+3-lt$body.Length-and$body.Substring($end,3)-ceq'?->'-and([string]$body[$end+3]-cmatch'[A-Za-z_\x80-\uffff]')){$propOpLen=3}
+                    if($propOpLen-gt0){
+                        $pEnd=$end+$propOpLen+1
+                        while($pEnd-lt$body.Length-and[string]$body[$pEnd]-cmatch'[A-Za-z_0-9\x80-\uffff]'){$pEnd++}
+                        $interpVal=Invoke-PhpInlineExprText ($body.Substring($i,$pEnd-$i)) $interpLine
+                        $output.AddRange((To-PhpBytes $interpVal).ToArray())
+                        $i=$pEnd-1;continue
+                    }
+                }
                 if(-not$ValidateOnly) {
                     $savedLine=$state.Line
                     try{
-                        $state.Line=$LineBase+[regex]::Matches($body.Substring(0,$start),"`r`n|`r|`n").Count
+                        $state.Line=$interpLine
                         $slot=Get-PhpVariableSlot $name
                         # The existing default API intentionally omits the PHP
                         # notice/warning while CLI and PhpDiagnostics expose it.
                         if($slot.Store.ContainsKey($slot.Key)-or$PhpDiagnostics-or$isCli){
-                            Add-PhpLiteralText $output (To-PhpText (Get-PhpVariableValue $name))
+                            $output.AddRange((To-PhpBytes (Get-PhpVariableValue $name)).ToArray())
                         }
                     }
                     finally{$state.Line=$savedLine}
                 }
-                if($braced){$i=$end}else{$i=$end-1}
+                $i=$end-1
             }
             if($ValidateOnly){return ''}
-            try{return $phpLiteralUtf8.GetString($output.ToArray())}
-            catch [Text.DecoderFallbackException]{throw 'ALL PHP: Arbitrary non-UTF8 PHP byte strings are not supported'}
+            return [AllPhp.ByteValues.PhpBytes]::FromBytes($output.ToArray())
         }
         function Take-PhpFirstClassCallableArgs {
             if ((Peek-Token) -cne '(' -or $state.Pos + 2 -ge $state.Tokens.Count) {
@@ -941,13 +3034,64 @@
             Expect-Token ')'
             return $true
         }
+        function Read-PhpAttributes {
+            $attrs = [System.Collections.Generic.List[object]]::new()
+            while ((Peek-Token) -ceq '#[') {
+                [void](Next-Token)
+                while ((Peek-Token) -cne ']' -and (Peek-Token) -cne '(EOF)') {
+                    $attrName = Next-Token
+                    if ($attrName.StartsWith('\')) { $attrName = $attrName.Substring(1) }
+                    $attrArgs = @()
+                    if ((Peek-Token) -ceq '(') {
+                        $attrArgs = Read-Arguments
+                    }
+                    [void]$attrs.Add([pscustomobject]@{
+                        Name = $attrName
+                        Args = @($attrArgs)
+                    })
+                    if ((Peek-Token) -ceq ',') {
+                        [void](Next-Token)
+                        if ((Peek-Token) -ceq ']') { break }
+                    } else {
+                        break
+                    }
+                }
+                Expect-Token ']'
+            }
+            return ,($attrs.ToArray())
+        }
+        function Test-PhpContainsYield($root) {
+            if ($null -eq $root) { return $false }
+            $stack = [System.Collections.Generic.Stack[object]]::new()
+            $stack.Push($root)
+            while ($stack.Count -gt 0) {
+                $curr = $stack.Pop()
+                if ($null -eq $curr -or $curr -is [string] -or $curr -is [ValueType] -or $curr -is [AllPhp.ByteValues.PhpBytes]) { continue }
+                if ($curr -is [System.Collections.IList]) {
+                    foreach ($item in $curr) { $stack.Push($item) }
+                    continue
+                }
+                if ($curr -isnot [pscustomobject]) { continue }
+                if ($curr.PSObject.Properties['Kind']) {
+                    $k = [string]$curr.Kind
+                    if ($k -ceq 'yield' -or $k -ceq 'yield_from') { return $true }
+                    if ($k -in @('functiondef','closure','classdef','traitdef','interfacedef','enumdef')) { continue }
+                }
+                foreach ($prop in $curr.PSObject.Properties) {
+                    if ($prop.Name -in @('StrictSourceUnit','Attributes','Params')) { continue }
+                    $stack.Push($prop.Value)
+                }
+            }
+            return $false
+        }
         function Read-Arguments {
             Expect-Token '('
             $callArgs = [System.Collections.Generic.List[object]]::new()
+            $sawSpread = $false
             if ((Peek-Token) -cne ')') {
                 while ($true) {
                     $first = Peek-Token
-                    if ($first -cmatch '^[A-Za-z_][A-Za-z_0-9\\]*$' -and
+                    if ($first -cmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$' -and
                         $state.Pos + 1 -lt $state.Tokens.Count -and
                         $state.Tokens[$state.Pos + 1] -ceq ':') {
                         [void](Next-Token)
@@ -956,7 +3100,20 @@
                         [void]$callArgs.Add([pscustomobject]@{
                             Kind='named_argument'; Name=$first; Expr=$valueExpr
                         })
+                    } elseif ($first -ceq '...') {
+                        [void](Next-Token)
+                        if ((Peek-Token) -ceq ')') {
+                            throw 'ALL PHP: Unexpected first-class callable syntax'
+                        }
+                        $sawSpread = $true
+                        $spreadExpr = Read-Expr 1
+                        [void]$callArgs.Add([pscustomobject]@{
+                            Kind='spread_argument'; Expr=$spreadExpr
+                        })
                     } else {
+                        if ($sawSpread) {
+                            throw 'ALL PHP: Cannot use positional argument after argument unpacking'
+                        }
                         [void]$callArgs.Add((Read-Expr 1))
                     }
                     if ((Peek-Token) -cne ',') { break }
@@ -1009,7 +3166,7 @@
                 if ($big -le [bigint][long]::MaxValue) { return [long]$big }
                 return (ConvertTo-PhpDoubleFromBigInt $big)
             }
-            if ($text -match '^\d+$') {
+            if ($text -match '^[0-9]+$') {
                 $n = [long]0
                 if ([long]::TryParse($text, [System.Globalization.NumberStyles]::None, $inv, [ref]$n)) {
                     return $n
@@ -1018,12 +3175,20 @@
             }
             try { return [double]::Parse($text, [System.Globalization.NumberStyles]::Float, $inv) }
             catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw } return [double]::PositiveInfinity }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw } return [double]::PositiveInfinity }
         }
         function Read-Array([string]$close) {
             $entries = [System.Collections.Generic.List[object]]::new()
             if ((Peek-Token) -cne $close) {
                 while ($true) {
+                    if ((Peek-Token) -ceq ',') {
+                        [void](Next-Token)
+                        [void]$entries.Add([pscustomobject]@{
+                            Key=$null; Value=$null; Spread=$false; ByReference=$false; Skipped=$true
+                        })
+                        if ((Peek-Token) -ceq $close) { break }
+                        continue
+                    }
                     $spread = $false
                     if ((Peek-Token) -ceq '...') {
                         [void](Next-Token)
@@ -1045,7 +3210,7 @@
                         if ((Peek-Token) -ceq '&') { [void](Next-Token);$byReference=$true }
                         $value = Read-Expr 1
                     }
-                    [void]$entries.Add([pscustomobject]@{ Key=$key; Value=$value; Spread=$spread;ByReference=$byReference })
+                    [void]$entries.Add([pscustomobject]@{ Key=$key; Value=$value; Spread=$spread; ByReference=$byReference; Skipped=$false })
                     if ((Peek-Token) -cne ',') { break }
                     [void](Next-Token)
                     if ((Peek-Token) -ceq $close) { break }
@@ -1054,8 +3219,408 @@
             Expect-Token $close
             return [pscustomobject]@{ Kind='array'; Entries=$entries.ToArray() }
         }
+        function Read-PhpClassBody([string]$name, [bool]$isTrait, [bool]$isAbstract, [bool]$isReadonlyClass) {
+            Expect-Token '{'
+            $methods = [System.Collections.Generic.List[object]]::new()
+            $properties = [System.Collections.Generic.List[object]]::new()
+            $constants = [System.Collections.Generic.List[object]]::new()
+            $traits = [System.Collections.Generic.List[string]]::new()
+            $traitUses = [System.Collections.Generic.List[object]]::new()
+            while ((Peek-Token) -cne '}') {
+                if ((Peek-Token) -ceq '(EOF)') { throw 'ALL PHP: Missing class closing brace' }
+                if ((Peek-Token) -eq 'use') {
+                    [void](Next-Token)
+                    $usedNames=[System.Collections.Generic.List[string]]::new()
+                    $adaptations=[System.Collections.Generic.List[object]]::new()
+                    while ($true) {
+                        $traitName=Next-Token
+                        if ($traitName -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
+                            throw 'ALL PHP: Expected trait name'
+                        }
+                        [void]$traits.Add($traitName)
+                        [void]$usedNames.Add($traitName)
+                        if ((Peek-Token) -cne ',') { break }
+                        [void](Next-Token)
+                    }
+                    if ((Peek-Token) -eq '{') {
+                        [void](Next-Token)
+                        while ((Peek-Token) -cne '}') {
+                            if ((Peek-Token) -eq '(EOF)') {
+                                throw 'ALL PHP: Missing trait adaptation closing brace'
+                            }
+                            $sourceTrait=$null
+                            $member=Next-Token
+                            if ((Peek-Token) -ceq '::') {
+                                $sourceTrait=$member
+                                [void](Next-Token)
+                                $member=Next-Token
+                            }
+                            if ($member -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
+                                throw 'ALL PHP: Expected trait method name'
+                            }
+                            $action=Next-Token
+                            if ($action -eq 'insteadof') {
+                                if ($null -eq $sourceTrait) {
+                                    throw 'ALL PHP: insteadof requires qualified trait method'
+                                }
+                                $excluded=[System.Collections.Generic.List[string]]::new()
+                                while ($true) {
+                                    $loser=Next-Token
+                                    if ($loser -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
+                                        throw 'ALL PHP: Expected excluded trait name'
+                                    }
+                                    [void]$excluded.Add($loser)
+                                    if ((Peek-Token) -cne ',') { break }
+                                    [void](Next-Token)
+                                }
+                                Expect-Token ';'
+                                [void]$adaptations.Add([pscustomobject]@{
+                                    Kind='insteadof'; Trait=$sourceTrait
+                                    Method=$member; Excluded=$excluded.ToArray()
+                                })
+                            } elseif ($action -eq 'as') {
+                                $visibility=$null
+                                $alias=$null
+                                if ((Peek-Token) -in @('public','protected','private')) {
+                                    $visibility=Next-Token
+                                }
+                                if ((Peek-Token) -cne ';') {
+                                    $alias=Next-Token
+                                    if ($alias -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
+                                        throw 'ALL PHP: Invalid trait alias name'
+                                    }
+                                }
+                                if ($null -eq $visibility -and $null -eq $alias) {
+                                    throw 'ALL PHP: Trait alias requires a name or visibility'
+                                }
+                                Expect-Token ';'
+                                [void]$adaptations.Add([pscustomobject]@{
+                                    Kind='alias'; Trait=$sourceTrait
+                                    Method=$member; Alias=$alias; Visibility=$visibility
+                                })
+                            } else {
+                                throw 'ALL PHP: Expected as or insteadof in trait adaptation'
+                            }
+                        }
+                        Expect-Token '}'
+                    } else { Expect-Token ';' }
+                    [void]$traitUses.Add([pscustomobject]@{
+                        Names=$usedNames.ToArray(); Adaptations=$adaptations.ToArray()
+                    })
+                    continue
+                }
+                $memberAttrs = @()
+                if ((Peek-Token) -ceq '#[') { $memberAttrs = Read-PhpAttributes }
+                $visibility='public'
+                $setVisibility=''
+                $setVisibilityLine=[long]0
+                $hasExplicitGetVisibility=$false
+                $hasVar=$false
+                $isStatic=$false
+                $isAbstractMethod=$false
+                $isFinalMethod=$false
+                $isReadonlyProperty=$false
+                $modifiers=[System.Collections.Generic.HashSet[string]]::new(
+                    [System.StringComparer]::Ordinal)
+                while ((Peek-Token) -in @('public','private','protected','var','static','abstract','final','readonly')) {
+                    $modLine=[long]$state.TokenLines[$state.Pos]
+                    $modifier=Next-Token
+                    $isSetModifier=$false
+                    if ($modifier -in @('public','private','protected') -and
+                        (Peek-Token) -ceq '(' -and
+                        $state.Pos + 2 -lt $state.Tokens.Count -and
+                        $state.Tokens[$state.Pos + 1] -eq 'set' -and
+                        $state.Tokens[$state.Pos + 2] -ceq ')') {
+                        [void](Next-Token); [void](Next-Token); [void](Next-Token)
+                        $isSetModifier=$true
+                    }
+                    $modKey=if($isSetModifier){$modifier+'(set)'}else{$modifier}
+                    $addedMod = $modifiers.Add($modKey)
+                    if ($modKey -in @('public','protected','private') -and (-not $addedMod -or $hasVar -or $hasExplicitGetVisibility)) {
+                        $legacyVis = if (-not $addedMod) { 'ALL PHP: Duplicate class member modifier' } else { 'ALL PHP: Conflicting visibility modifiers' }
+                        Throw-PhpStrictCompileError 'Multiple access type modifiers are not allowed' $modLine $legacyVis
+                    }
+                    if (-not $addedMod) {
+                        Throw-PhpStrictCompileError ('Multiple ' + $modKey + ' modifiers are not allowed') $modLine 'ALL PHP: Duplicate class member modifier'
+                    }
+                    if ($isSetModifier) {
+                        if ($hasVar -or -not [string]::IsNullOrEmpty($setVisibility)) {
+                            throw 'ALL PHP: Conflicting set visibility modifiers'
+                        }
+                        $setVisibility=$modifier
+                        $setVisibilityLine=$modLine
+                    } elseif ($modifier -in @('public','private','protected')) {
+                        $visibility=$modifier
+                        $hasExplicitGetVisibility=$true
+                    } elseif ($modifier -eq 'var') {
+                        if ($hasExplicitGetVisibility -or -not [string]::IsNullOrEmpty($setVisibility)) {
+                            throw 'ALL PHP: Conflicting visibility modifiers'
+                        }
+                        $hasVar=$true
+                        $visibility='public'
+                    } elseif ($modifier -eq 'static') { $isStatic=$true }
+                    elseif ($modifier -eq 'abstract') { $isAbstractMethod=$true }
+                    elseif ($modifier -eq 'final') { $isFinalMethod=$true }
+                    elseif ($modifier -eq 'readonly') { $isReadonlyProperty=$true }
+                }
+                if ((Peek-Token) -eq 'function') {
+                    if ($hasVar) { throw 'ALL PHP: var modifier cannot be applied to method' }
+                    if ($isReadonlyProperty) { throw 'ALL PHP: readonly modifier cannot be applied to method' }
+                    if (-not [string]::IsNullOrEmpty($setVisibility)) {
+                        Throw-PhpStrictCompileError 'Methods cannot have asymmetric visibility' $setVisibilityLine
+                    }
+                    if ($isAbstractMethod -and $isFinalMethod) {
+                        $errLine = [long]$state.TokenLines[$state.Pos]
+                        Throw-PhpStrictCompileError 'Cannot use the final modifier on an abstract class member' $errLine 'ALL PHP: Method cannot be both abstract and final'
+                    }
+                    if ($isAbstractMethod -and -not $isAbstract) {
+                        throw 'ALL PHP: Abstract methods require an abstract class'
+                    }
+                    if ($isAbstractMethod -and $visibility -eq 'private') {
+                        throw 'ALL PHP: Abstract methods cannot be private'
+                    }
+                    $method = Read-Function $isAbstractMethod $true
+                    $method.Visibility=$visibility
+                    $method.Static=$isStatic
+                    $method.Owner=$name
+                    $method.Abstract=$isAbstractMethod
+                    $method.Final=$isFinalMethod
+                    $method | Add-Member -NotePropertyName Attributes -NotePropertyValue $memberAttrs -Force
+                    if ($isTrait) {
+                        $method | Add-Member -NotePropertyName TraitOwner -NotePropertyValue $name -Force
+                    }
+                    [void]$methods.Add($method)
+                    if ($method.Name -ieq '__construct') {
+                        foreach ($parameter in $method.Params) {
+                            if (-not $parameter.Promoted) { continue }
+                            $paramSetVis=if($parameter.PSObject.Properties['SetVisibility']){[string]$parameter.SetVisibility}else{''}
+                            if (-not [string]::IsNullOrEmpty($paramSetVis)) {
+                                if ([string]::IsNullOrEmpty($parameter.TypeName)) {
+                                    Throw-PhpStrictCompileError ('Property with asymmetric visibility ' + $name + '::$' + $parameter.Name + ' must have type') ([long]$parameter.DefinitionLine)
+                                }
+                                $getRank=if($parameter.Visibility-ceq'public'){3}elseif($parameter.Visibility-ceq'protected'){2}else{1}
+                                $setRank=if($paramSetVis-ceq'public'){3}elseif($paramSetVis-ceq'protected'){2}else{1}
+                                if ($setRank -gt $getRank) {
+                                    Throw-PhpStrictCompileError ('Visibility of property ' + $name + '::$' + $parameter.Name + ' must not be weaker than set visibility') ([long]$parameter.DefinitionLine)
+                                }
+                            }
+                            if ($isReadonlyClass -and [string]::IsNullOrEmpty($parameter.TypeName)) {
+                                throw 'ALL PHP: readonly class promoted property requires a type'
+                            }
+                            [void]$properties.Add([pscustomobject]@{
+                                Name=$parameter.Name; Default=$null
+                                Visibility=$parameter.Visibility; SetVisibility=$paramSetVis; Static=$false
+                                Owner=$name; TypeName=$parameter.TypeName
+                                Readonly=([bool]$parameter.Readonly -or $isReadonlyClass)
+                                Attributes=$parameter.Attributes; Promoted=$true
+                            })
+                        }
+                    }
+                } elseif ((Peek-Token) -eq 'const') {
+                    if ($hasVar -or $isStatic -or $isAbstractMethod -or $isReadonlyProperty -or -not [string]::IsNullOrEmpty($setVisibility)) {
+                        throw 'ALL PHP: Unsupported constant modifier'
+                    }
+                    [void](Next-Token)
+                    if ($state.Pos + 1 -lt $state.Tokens.Count -and $state.Tokens[$state.Pos + 1] -cne '=' -and
+                        ((Peek-Token) -ceq '?' -or (Peek-Token) -cmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$')) {
+                        [void](Read-PhpTypeAnnotation)
+                    }
+                    $constName = Next-Token
+                    if ($constName -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
+                        throw 'ALL PHP: Expected class constant name'
+                    }
+                    Expect-Token '='
+                    $constValue=Read-Expr 1
+                    Expect-Token ';'
+                    [void]$constants.Add([pscustomobject]@{
+                        Name=$constName; Value=$constValue; Visibility=$visibility; Attributes=$memberAttrs
+                    })
+                } else {
+                    $propertyType=''
+                    if ((Peek-Token) -ceq '?' -or
+                        (Peek-Token) -cmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
+                        $propertyType=Read-PhpTypeAnnotation
+                    }
+                    if ((Peek-Token) -cnotmatch '^\$[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*$') {
+                        throw "ALL PHP: Unsupported class member '$(Peek-Token)'"
+                    }
+                    if ($isAbstractMethod -or $isFinalMethod) {
+                        throw 'ALL PHP: Abstract/final modifier not valid for properties'
+                    }
+                    if ($propertyType -in @('void','never')) {
+                        throw 'ALL PHP: void/never cannot be used as property types'
+                    }
+                    $isReadOnly=($isReadonlyProperty -or $isReadonlyClass)
+                    if ($isReadOnly -and $isStatic) {
+                        throw 'ALL PHP: readonly static property is not allowed'
+                    }
+                    if ($isReadOnly -and [string]::IsNullOrEmpty($propertyType)) {
+                        throw 'ALL PHP: readonly property requires a type'
+                    }
+                    $compilerPropertyPosition=[long]$state.Pos
+                    $phpStrictPropertyLine=[long]$state.TokenLines[$state.Pos]
+                    $propName = (Next-Token).Substring(1)
+                    if (-not [string]::IsNullOrEmpty($setVisibility)) {
+                        if ($isStatic) {
+                            Throw-PhpStrictCompileError ('Static property ' + $name + '::$' + $propName + ' cannot have asymmetric visibility') $phpStrictPropertyLine
+                        }
+                        if ([string]::IsNullOrEmpty($propertyType)) {
+                            Throw-PhpStrictCompileError ('Property with asymmetric visibility ' + $name + '::$' + $propName + ' must have type') $phpStrictPropertyLine
+                        }
+                        $getRank=if($visibility-ceq'public'){3}elseif($visibility-ceq'protected'){2}else{1}
+                        $setRank=if($setVisibility-ceq'public'){3}elseif($setVisibility-ceq'protected'){2}else{1}
+                        if ($setRank -gt $getRank) {
+                            Throw-PhpStrictCompileError ('Visibility of property ' + $name + '::$' + $propName + ' must not be weaker than set visibility') $phpStrictPropertyLine
+                        }
+                    }
+                    $defaultExpr = $null
+                    if ((Peek-Token) -ceq '=') {
+                        [void](Next-Token)
+                        $defaultExpr = Read-Expr 1
+                    }
+                    if ($isReadOnly -and $null -ne $defaultExpr) {
+                        throw 'ALL PHP: readonly property cannot have a default value'
+                    }
+                    $getHook=$null
+                    $setHook=$null
+                    $seenHookNames=[System.Collections.Generic.HashSet[string]]::new(
+                        [System.StringComparer]::Ordinal)
+                    $hookBacked=($null -ne $defaultExpr)
+                    $hasHooks=((Peek-Token) -ceq '{')
+                    if ($hasHooks) {
+                        if ($isStatic) { throw 'ALL PHP: Static property hooks are not supported by PHP' }
+                        if ($isReadOnly) { throw 'ALL PHP: readonly property cannot declare hooks' }
+                        Expect-Token '{'
+                        while ((Peek-Token) -cne '}') {
+                            if ((Peek-Token) -ceq '(EOF)') {
+                                throw 'ALL PHP: Missing property hook closing brace'
+                            }
+                            while ((Peek-Token) -ceq '#[') { [void](Read-PhpAttributes) }
+                            while ((Peek-Token) -eq 'final') { [void](Next-Token) }
+                            $phpStrictHookLine=[long]$state.TokenLines[$state.Pos]
+                            $hookName=Next-Token
+                            if ($hookName -notin @('get','set')) {
+                                throw "ALL PHP: Unknown property hook '$hookName'"
+                            }
+                            if (-not $seenHookNames.Add($hookName)) {
+                                throw 'ALL PHP: Duplicate property hook'
+                            }
+                            if ($hookName -ceq 'get' -and $null -ne $getHook -or
+                                $hookName -ceq 'set' -and $null -ne $setHook) {
+                                throw 'ALL PHP: Duplicate property hook'
+                            }
+                            $hookParams=@()
+                            if ((Peek-Token) -ceq '(') {
+                                if ($hookName -ceq 'get') {
+                                    throw 'ALL PHP: Getter hook takes no arguments'
+                                }
+                                $hookParams=Read-Parameters $false
+                                if ($hookParams.Count -ne 1 -or
+                                    $hookParams[0].ByRef -or $hookParams[0].Variadic -or
+                                    $null -ne $hookParams[0].Default) {
+                                    throw 'ALL PHP: Setter hook must have one regular parameter'
+                                }
+                            }
+                            $body=$null
+                            $expr=$null
+                            $arrow=$false
+                            $hookSourceStart=$state.Pos
+                            if ((Peek-Token) -ceq '=>') {
+                                Expect-Token '=>'
+                                $expr=Read-Expr 1
+                                Expect-Token ';'
+                                $arrow=$true
+                            } elseif ((Peek-Token) -ceq '{') {
+                                $body=Read-Statement
+                            } else {
+                                throw 'ALL PHP: Expected property hook body'
+                            }
+                            if ($hookName -ceq 'set' -and $arrow) {
+                                $hookBacked=$true
+                            }
+                            for ($hi=$hookSourceStart; $hi + 2 -lt $state.Pos; $hi++) {
+                                if ($state.Tokens[$hi] -ceq '$this' -and
+                                    $state.Tokens[$hi + 1] -ceq '->' -and
+                                    (Test-PhpRawNameEqual $state.Tokens[$hi + 2] $propName)) {
+                                    $hookBacked=$true
+                                }
+                            }
+                            $hook=[pscustomobject]@{
+                                Body=$body; Expr=$expr; Arrow=$arrow; Params=$hookParams; DefinitionLine=$phpStrictHookLine
+                            }
+                            if ($hookName -ceq 'get') { $getHook=$hook }
+                            else { $setHook=$hook }
+                        }
+                        Expect-Token '}'
+                    }
+                    [void]$properties.Add([pscustomobject]@{
+                        Name=$propName; Default=$defaultExpr; DefinitionLine=$phpStrictPropertyLine; CompilerPosition=$compilerPropertyPosition
+                        Visibility=$visibility; SetVisibility=$setVisibility; Static=$isStatic; Owner=$name
+                        TypeName=$propertyType; Readonly=$isReadOnly
+                        GetHook=$getHook; SetHook=$setHook; HookBacked=$hookBacked; Attributes=$memberAttrs; Promoted=$false
+                    })
+                    if (-not $hasHooks) {
+                        while ((Peek-Token) -ceq ',') {
+                            [void](Next-Token)
+                            if ((Peek-Token) -cnotmatch '^\$[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*$') {
+                                throw "ALL PHP: Unsupported class member '$(Peek-Token)'"
+                            }
+                            $compilerPropertyPosition=[long]$state.Pos
+                            $phpStrictPropertyLine=[long]$state.TokenLines[$state.Pos]
+                            $propName = (Next-Token).Substring(1)
+                            $defaultExpr = $null
+                            if ((Peek-Token) -ceq '=') {
+                                [void](Next-Token)
+                                $defaultExpr = Read-Expr 1
+                            }
+                            if ($isReadOnly -and $null -ne $defaultExpr) {
+                                throw 'ALL PHP: readonly property cannot have a default value'
+                            }
+                            [void]$properties.Add([pscustomobject]@{
+                                Name=$propName; Default=$defaultExpr; DefinitionLine=$phpStrictPropertyLine; CompilerPosition=$compilerPropertyPosition
+                                Visibility=$visibility; SetVisibility=$setVisibility; Static=$isStatic; Owner=$name
+                                TypeName=$propertyType; Readonly=$isReadOnly
+                                GetHook=$null; SetHook=$null; HookBacked=($null -ne $defaultExpr); Attributes=$memberAttrs; Promoted=$false
+                            })
+                        }
+                        Expect-Token ';'
+                    }
+                }
+            }
+            Expect-Token '}'
+            return [pscustomobject]@{
+                Methods=$methods.ToArray(); Properties=$properties.ToArray()
+                Constants=$constants.ToArray(); Traits=$traits.ToArray()
+                TraitUses=$traitUses.ToArray()
+            }
+        }
         function Read-Primary {
+            $compilerDefinitionPosition=[long]$state.Pos
+            $phpStrictDefinitionLine=[long]$state.TokenLines[$state.Pos]
             $token = Peek-Token
+            if(Test-PhpNameIn $token @('include','include_once','require','require_once','eval')) {
+                $construct=ConvertTo-PhpAsciiLower $token
+                $sourceLine=[long]$state.TokenLines[$state.Pos]
+                [void](Next-Token)
+                if($construct-ceq'eval'){Expect-Token '(';$operand=Read-Expr 1;Expect-Token ')'}
+                else{$operand=Read-Expr 1}
+                return [pscustomobject]@{Kind='source_construct';Construct=$construct;Operand=$operand;Line=$sourceLine}
+            }
+            if(Test-PhpNameIn $token @('__FILE__','__DIR__','__LINE__')) {
+                $line=[long]$state.TokenLines[$state.Pos]
+                [void](Next-Token)
+                if(Test-PhpNameEqual $token '__LINE__'){return [pscustomobject]@{Kind='literal';Value=$line}}
+                $text=[string]$state.ScriptName
+                if(Test-PhpNameEqual $token '__DIR__'){
+                    $text=[IO.Path]::GetDirectoryName($text)
+                    if([string]::IsNullOrEmpty($text)){$text=[Environment]::CurrentDirectory}
+                }
+                return [pscustomobject]@{Kind='literal';Value=[AllPhp.ByteValues.PhpBytes]::FromUtf8($text)}
+            }
+            if(Test-PhpNameIn $token @('__FUNCTION__','__CLASS__','__TRAIT__','__METHOD__')) {
+                [void](Next-Token)
+                return [pscustomobject]@{Kind='magic_constant'; Name=($token.ToUpperInvariant())}
+            }
             $fallbackName = $null
             if ($state.NamespaceFallbacks.ContainsKey($state.Pos)) {
                 $fallbackName = $state.NamespaceFallbacks[$state.Pos]
@@ -1070,7 +3635,7 @@
                 [void](Next-Token)
                 return (Read-Array ']')
             }
-            if ($token -cmatch '^(?:\d|\.\d)') {
+            if ($token -cmatch '^(?:[0-9]|\.[0-9])') {
                 [void](Next-Token)
                 return [pscustomobject]@{
                     Kind='literal'; Value=(ConvertFrom-PhpNumberLiteral $token)
@@ -1095,7 +3660,7 @@
                     Kind='literal'; Value=(Decode-PhpString $token)
                 }
             }
-            if ($token -cmatch '^\$\$[A-Za-z_][A-Za-z_0-9]*$') {
+            if ($token -cmatch '^\$\$[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*$') {
                 [void](Next-Token)
                 return [pscustomobject]@{
                     Kind='dynamic_variable'; NameExpr=[pscustomobject]@{
@@ -1112,11 +3677,11 @@
                     Kind='dynamic_variable'; NameExpr=$nameExpression
                 }
             }
-            if ($token -cmatch '^\$[A-Za-z_][A-Za-z_0-9]*$') {
+            if ($token -cmatch '^\$[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*$') {
                 [void](Next-Token)
                 return [pscustomobject]@{ Kind='variable'; Name=$token.Substring(1) }
             }
-            if ($token -eq 'match') {
+            if ((Test-PhpNameEqual $token 'match')) {
                 [void](Next-Token)
                 Expect-Token '('
                 $subject = Read-Expr 1
@@ -1151,8 +3716,38 @@
                     Kind='match'; Subject=$subject; Arms=$arms.ToArray()
                 }
             }
-            if ($token -eq 'function' -or $token -eq 'fn') {
-                $arrow=($token -eq 'fn')
+            $primaryAttrs = @()
+            if ($token -ceq '#[') {
+                $primaryAttrs = Read-PhpAttributes
+                $token = Peek-Token
+            }
+            if ((Test-PhpNameEqual $token 'yield')) {
+                [void](Next-Token)
+                $nextTok = Peek-Token
+                if (Test-PhpNameEqual $nextTok 'from') {
+                    [void](Next-Token)
+                    return [pscustomobject]@{ Kind='yield_from'; Expr=(Read-Expr 1) }
+                }
+                if ($nextTok -in @(';', ')', ',', ']', '}', '(EOF)')) {
+                    return [pscustomobject]@{ Kind='yield'; Key=$null; Value=$null }
+                }
+                $firstExpr = Read-Expr 1
+                if ((Peek-Token) -ceq '=>') {
+                    [void](Next-Token)
+                    $secondExpr = Read-Expr 1
+                    return [pscustomobject]@{ Kind='yield'; Key=$firstExpr; Value=$secondExpr }
+                }
+                return [pscustomobject]@{ Kind='yield'; Key=$null; Value=$firstExpr }
+            }
+            $closureStatic = $false
+            if ((Test-PhpNameEqual $token 'static') -and $state.Pos + 1 -lt $state.Tokens.Count -and
+                (Test-PhpNameIn $state.Tokens[$state.Pos + 1] @('function','fn'))) {
+                [void](Next-Token)
+                $closureStatic = $true
+                $token = Peek-Token
+            }
+            if ((Test-PhpNameEqual $token 'function') -or (Test-PhpNameEqual $token 'fn')) {
+                $arrow=((Test-PhpNameEqual $token 'fn'))
                 [void](Next-Token)
                 $returnByRef=$false
                 if ((Peek-Token) -ceq '&') {
@@ -1161,12 +3756,14 @@
                 }
                 $params=Read-Parameters
                 $returnType=''
+                $compilerReturnTypePosition=$null
                 $captures=[System.Collections.Generic.List[object]]::new()
                 $body=$null
                 $expr=$null
                 if ($arrow) {
                     if ((Peek-Token) -ceq ':') {
                         [void](Next-Token)
+                        $compilerReturnTypePosition=[long]$state.Pos
                         $returnType=Read-PhpTypeAnnotation
                     }
                     Expect-Token '=>'
@@ -1182,7 +3779,7 @@
                                 $byRef=$true
                             }
                             $name=Next-Token
-                            if ($name -cnotmatch '^\$[A-Za-z_][A-Za-z_0-9]*$') {
+                            if ($name -cnotmatch '^\$[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*$') {
                                 throw 'ALL PHP: Invalid closure capture variable'
                             }
                             [void]$captures.Add([pscustomobject]@{
@@ -1195,6 +3792,7 @@
                     }
                     if ((Peek-Token) -ceq ':') {
                         [void](Next-Token)
+                        $compilerReturnTypePosition=[long]$state.Pos
                         $returnType=Read-PhpTypeAnnotation
                     }
                     if ((Peek-Token) -cne '{') { throw 'ALL PHP: Closure body must be a block' }
@@ -1203,30 +3801,99 @@
                 return [pscustomobject]@{
                     Kind='closure'; Params=@($params); Body=$body; Expr=$expr
                     Captures=$captures.ToArray(); Arrow=$arrow
-                    ReturnByRef=$returnByRef; ReturnType=$returnType
-                    Name='(closure)'
+                    ReturnByRef=$returnByRef; ReturnType=$returnType; DefinitionLine=$phpStrictDefinitionLine; CompilerPosition=$compilerDefinitionPosition; CompilerEndPosition=([long]$state.Pos-1); ReturnTypePosition=$compilerReturnTypePosition
+                    Name='(closure)'; Attributes=$primaryAttrs; Static=$closureStatic; IsGenerator=(Test-PhpContainsYield $body)
                 }
             }
-            if ($token -eq 'throw') {
+            if ((Test-PhpNameEqual $token 'throw')) {
                 [void](Next-Token)
                 return [pscustomobject]@{ Kind='throw'; Arg=(Read-Expr 1) }
             }
-            if ($token -eq 'new') {
+            if ((Test-PhpNameEqual $token 'new')) {
                 [void](Next-Token)
-                $className = Next-Token
-                if ($className -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
-                    throw "ALL PHP: Expected class name, got '$className'"
+                $anonAttrs = @()
+                if ((Peek-Token) -ceq '#[') { $anonAttrs = Read-PhpAttributes }
+                $anonReadonly = $false
+                if ((Test-PhpNameEqual (Peek-Token) 'readonly')) {
+                    [void](Next-Token)
+                    $anonReadonly = $true
+                }
+                if ((Test-PhpNameEqual (Peek-Token) 'class')) {
+                    [void](Next-Token)
+                    $callArgs = @()
+                    if ((Peek-Token) -ceq '(') { $callArgs = Read-Arguments }
+                    $parent = $null
+                    if ((Peek-Token) -eq 'extends') {
+                        [void](Next-Token)
+                        $parent = Next-Token
+                        if ($parent -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
+                            throw 'ALL PHP: Expected parent class name'
+                        }
+                    }
+                    $interfaces = [System.Collections.Generic.List[string]]::new()
+                    if ((Peek-Token) -eq 'implements') {
+                        [void](Next-Token)
+                        while ($true) {
+                            $iface = Next-Token
+                            if ($iface -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
+                                throw 'ALL PHP: Expected implemented interface name'
+                            }
+                            [void]$interfaces.Add($iface)
+                            if ((Peek-Token) -cne ',') { break }
+                            [void](Next-Token)
+                        }
+                    }
+                    $state.AnonymousClassSeq++
+                    $anonName = if ($state.AnonymousClassSeq -eq 1) { 'class@anonymous' } else { 'class@anonymous' + [string]$state.AnonymousClassSeq }
+                    $body = Read-PhpClassBody $anonName $false $false $anonReadonly
+                    $anonDef = [pscustomobject]@{
+                        Kind='classdef'; Name=$anonName; Parent=$parent
+                        Methods=$body.Methods; Properties=$body.Properties
+                        Constants=$body.Constants; Interfaces=$interfaces.ToArray()
+                        Abstract=$false; Final=$false; Readonly=$anonReadonly; Traits=$body.Traits
+                        TraitUses=$body.TraitUses; Attributes=$anonAttrs; Anonymous=$true
+                    }
+                    return [pscustomobject]@{ Kind='new'; Name=''; Args=@($callArgs); AnonymousClass=$anonDef }
+                }
+                if ($anonAttrs.Count -gt 0 -or $anonReadonly) {
+                    throw 'ALL PHP: Attributes or readonly in new require anonymous class'
+                }
+                $nextTok = Peek-Token
+                $classExpr = $null
+                if ($nextTok -cmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
+                    $className = Next-Token
+                    if ((Peek-Token) -in @('::','->','?->','[')) {
+                        $classExpr = [pscustomobject]@{ Kind='class_name'; Name=$className }
+                    } else {
+                        $callArgs = @()
+                        if ((Peek-Token) -ceq '(') { $callArgs = Read-Arguments }
+                        return [pscustomobject]@{ Kind='new'; Name=$className; Args=@($callArgs) }
+                    }
+                } elseif ((Peek-Token) -ceq '(') {
+                    [void](Next-Token)
+                    $classExpr = Read-Expr 1
+                    Expect-Token ')'
+                } else {
+                    $classExpr = Read-Primary
+                }
+                while ((Peek-Token) -in @('[','->','?->','::')) {
+                    $classExpr = Read-PhpMemberChainStep $classExpr (Peek-Token) $false
                 }
                 $callArgs = @()
                 if ((Peek-Token) -ceq '(') { $callArgs = Read-Arguments }
-                return [pscustomobject]@{ Kind='new'; Name=$className; Args=@($callArgs) }
+                return [pscustomobject]@{ Kind='new'; Name=''; ClassExpr=$classExpr; Args=@($callArgs) }
             }
-            if ($token -eq 'array') {
+            if ((Test-PhpNameEqual $token 'array')) {
                 [void](Next-Token)
                 Expect-Token '('
                 return (Read-Array ')')
             }
-            if ($isCli -and $token -in @('exit','die') -and
+            if ((Test-PhpNameEqual $token 'list')) {
+                [void](Next-Token)
+                Expect-Token '('
+                return (Read-Array ')')
+            }
+            if ($isCli -and (Test-PhpNameIn $token @('exit','die')) -and
                 $state.Tokens[$state.Pos + 1] -cne '(') {
                 [void](Next-Token)
                 return [pscustomobject]@{ Kind='cli_exit'; Args=@() }
@@ -1236,9 +3903,9 @@
                 'false' { [void](Next-Token); return [pscustomobject]@{ Kind='literal'; Value=$false } }
                 'null'  { [void](Next-Token); return [pscustomobject]@{ Kind='literal'; Value=$null } }
             }
-            if ($token -cmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
+            if ($token -cmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
                 [void](Next-Token)
-                if ($token -eq 'stdClass') {
+                if ((Test-PhpNameEqual $token 'stdClass')) {
                     return [pscustomobject]@{ Kind='class_name'; Name=$token }
                 }
                 if ((Peek-Token) -ceq '(') {
@@ -1254,11 +3921,99 @@
                         if ($callArgs.Count -ne 1) { throw 'ALL PHP: Invalid internal Throwable formatting call' }
                         return [pscustomobject]@{ Kind='internal_throwable_string'; Object=$callArgs[0] }
                     }
+                    if ($state.ParsingInternalPrelude -and $token -ceq '__all_internal_dispatch') {
+                        return [pscustomobject]@{ Kind='internal_dispatch'; Args=@($callArgs) }
+                    }
                     return [pscustomobject]@{ Kind='call'; Name=$token; Args=@($callArgs); Fallback=$fallbackName; ResolvedName=$null }
                 }
                 return [pscustomobject]@{ Kind='class_name'; Name=$token; Fallback=$fallbackName; ResolvedName=$null }
             }
             throw "ALL PHP: Unsupported expression starting with '$token'"
+        }
+        function Read-PhpMemberChainStep($expr, [string]$token, [bool]$allowCalls) {
+            if ($token -ceq '[') {
+                [void](Next-Token)
+                $key = $null
+                if ((Peek-Token) -cne ']') { $key = Read-Expr 1 }
+                Expect-Token ']'
+                return [pscustomobject]@{ Kind='index'; Base=$expr; Key=$key }
+            }
+            if ($token -ceq '::') {
+                if ($expr.Kind -notin @('class_name','variable','property','static_property','index','call','method','static_method','invoke')) {
+                    throw 'ALL PHP: Invalid static class reference'
+                }
+                [void](Next-Token)
+                $member = Peek-Token
+                if ($member -ceq '{') {
+                    [void](Next-Token)
+                    $mExpr = Read-Expr 1
+                    Expect-Token '}'
+                    if ($allowCalls -and (Peek-Token) -ceq '(') {
+                        if (Take-PhpFirstClassCallableArgs) {
+                            return [pscustomobject]@{ Kind='first_class_static'; Base=$expr; Name=''; NameExpr=$mExpr }
+                        }
+                        $callArgs = Read-Arguments
+                        return [pscustomobject]@{ Kind='static_method'; Base=$expr; Name=''; NameExpr=$mExpr; Args=@($callArgs) }
+                    }
+                    return [pscustomobject]@{ Kind='class_const'; Base=$expr; Name=''; NameExpr=$mExpr }
+                }
+                if ($member -cmatch '^\$[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*$') {
+                    [void](Next-Token)
+                    $vName = $member.Substring(1)
+                    if ($allowCalls -and (Peek-Token) -ceq '(') {
+                        $mExpr = [pscustomobject]@{ Kind='variable'; Name=$vName }
+                        if (Take-PhpFirstClassCallableArgs) {
+                            return [pscustomobject]@{ Kind='first_class_static'; Base=$expr; Name=''; NameExpr=$mExpr }
+                        }
+                        $callArgs = Read-Arguments
+                        return [pscustomobject]@{ Kind='static_method'; Base=$expr; Name=''; NameExpr=$mExpr; Args=@($callArgs) }
+                    }
+                    return [pscustomobject]@{ Kind='static_property'; Base=$expr; Name=$vName }
+                }
+                if ($member -cmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
+                    [void](Next-Token)
+                    if ($allowCalls -and (Peek-Token) -ceq '(') {
+                        if (Take-PhpFirstClassCallableArgs) {
+                            return [pscustomobject]@{ Kind='first_class_static'; Base=$expr; Name=$member }
+                        }
+                        $callArgs = Read-Arguments
+                        return [pscustomobject]@{ Kind='static_method'; Base=$expr; Name=$member; Args=@($callArgs) }
+                    }
+                    return [pscustomobject]@{ Kind='class_const'; Base=$expr; Name=$member }
+                }
+                throw 'ALL PHP: Invalid static member name'
+            }
+            if ($token -ceq '->' -or $token -ceq '?->') {
+                [void](Next-Token)
+                $nullSafe = ($token -ceq '?->')
+                $mTok = Peek-Token
+                $mName = ''
+                $mExpr = $null
+                if ($mTok -ceq '{') {
+                    [void](Next-Token)
+                    $mExpr = Read-Expr 1
+                    Expect-Token '}'
+                } elseif ($mTok -cmatch '^\$\$?[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*$') {
+                    $mExpr = Read-Primary
+                } elseif ($mTok -cmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
+                    $mName = Next-Token
+                } else {
+                    throw "ALL PHP: Expected member name, got '$mTok'"
+                }
+                if ($allowCalls -and (Peek-Token) -ceq '(') {
+                    if (Take-PhpFirstClassCallableArgs) {
+                        return [pscustomobject]@{
+                            Kind='first_class_method'; Base=$expr; Name=$mName; NameExpr=$mExpr; NullSafe=$nullSafe
+                        }
+                    }
+                    $callArgs = Read-Arguments
+                    return [pscustomobject]@{
+                        Kind='method'; Base=$expr; Name=$mName; NameExpr=$mExpr; Args=@($callArgs); NullSafe=$nullSafe
+                    }
+                }
+                return [pscustomobject]@{ Kind='property'; Base=$expr; Name=$mName; NameExpr=$mExpr; NullSafe=$nullSafe }
+            }
+            return $null
         }
         function Read-Postfix {
             $expr = Read-Primary
@@ -1277,70 +4032,8 @@
                     }
                     continue
                 }
-                if ($token -ceq '[') {
-                    [void](Next-Token)
-                    $key = $null
-                    if ((Peek-Token) -cne ']') { $key = Read-Expr 1 }
-                    Expect-Token ']'
-                    $expr = [pscustomobject]@{ Kind='index'; Base=$expr; Key=$key }
-                    continue
-                }
-                if ($token -ceq '::') {
-                    if ($expr.Kind -notin @('class_name','variable')) {
-                        throw 'ALL PHP: Invalid static class reference'
-                    }
-                    [void](Next-Token)
-                    $member = Next-Token
-                    if ($member -cmatch '^\$[A-Za-z_][A-Za-z_0-9]*$') {
-                        $expr = [pscustomobject]@{
-                            Kind='static_property'; Base=$expr; Name=$member.Substring(1)
-                        }
-                    } elseif ($member -cmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
-                        if ((Peek-Token) -ceq '(') {
-                            if (Take-PhpFirstClassCallableArgs) {
-                                $expr=[pscustomobject]@{
-                                    Kind='first_class_static'; Base=$expr; Name=$member
-                                }
-                            } else {
-                                $callArgs = Read-Arguments
-                                $expr = [pscustomobject]@{
-                                    Kind='static_method'; Base=$expr; Name=$member; Args=@($callArgs)
-                                }
-                            }
-                        } else {
-                            $expr = [pscustomobject]@{
-                                Kind='class_const'; Base=$expr; Name=$member
-                            }
-                        }
-                    } else { throw 'ALL PHP: Invalid static member name' }
-                    continue
-                }
-                if ($token -ceq '->' -or $token -ceq '?->') {
-                    [void](Next-Token)
-                    $nullSafe = ($token -ceq '?->')
-                    $member = Next-Token
-                    if ($member -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
-                        throw "ALL PHP: Expected member name, got '$member'"
-                    }
-                    if ((Peek-Token) -ceq '(') {
-                        if (Take-PhpFirstClassCallableArgs) {
-                            $expr = [pscustomobject]@{
-                                Kind='first_class_method'; Base=$expr; Name=$member
-                                NullSafe=$nullSafe
-                            }
-                        } else {
-                            $callArgs = Read-Arguments
-                            $expr = [pscustomobject]@{
-                                Kind='method'; Base=$expr; Name=$member; Args=@($callArgs)
-                                NullSafe=$nullSafe
-                            }
-                        }
-                    } else {
-                        $expr = [pscustomobject]@{
-                            Kind='property'; Base=$expr; Name=$member
-                            NullSafe=$nullSafe
-                        }
-                    }
+                if ($token -in @('[','::','->','?->')) {
+                    $expr = Read-PhpMemberChainStep $expr $token $true
                     continue
                 }
                 if ($token -in @('++','--')) {
@@ -1359,7 +4052,7 @@
         }
         function Read-Unary {
             $token = Peek-Token
-            if ($token -ceq 'clone') {
+            if ((Test-PhpNameEqual $token 'clone')) {
                 [void](Next-Token)
                 return [pscustomobject]@{ Kind='clone'; Arg=(Read-Unary) }
             }
@@ -1386,7 +4079,7 @@
                 $state.Tokens[$state.Pos + 2] -ceq ')' -and
                 $state.Tokens[$state.Pos + 1] -in @('int','integer','float','double','string','bool','boolean')) {
                 [void](Next-Token)
-                $castType = (Next-Token).ToLowerInvariant()
+                $castType = (ConvertTo-PhpAsciiLower (Next-Token))
                 [void](Next-Token)
                 return [pscustomobject]@{ Kind='cast'; Type=$castType; Arg=(Read-Unary) }
             }
@@ -1533,15 +4226,22 @@
         }
         # Every statement node records the source line it starts on.
         function Read-Statement {
+            $compilerStatementPosition=[long]$state.Pos
             $line = $state.TokenLines[$state.Pos]
             $node = Read-StatementCore
             if ($null -ne $node -and -not $node.PSObject.Properties['Line']) {
                 $node | Add-Member -NotePropertyName Line -NotePropertyValue $line
             }
+            if($null-ne$node-and-not$node.PSObject.Properties['CompilerPosition']){$node|Add-Member -NotePropertyName CompilerPosition -NotePropertyValue $compilerStatementPosition}
             return $node
         }
         function Read-StatementCore {
+            $stmtAttributes = @()
+            if ((Peek-Token) -ceq '#[') {
+                $stmtAttributes = Read-PhpAttributes
+            }
             $token = Peek-Token
+            if(Test-PhpNameEqual $token 'declare'){return (Read-PhpDeclareStatement)}
             if ($isCli -and ($CliContext.Keys -contains 'SourceMode') -and
                 $CliContext['SourceMode'] -ceq 'body' -and $state.Pos -eq 0 -and $token -ceq '<') {
                 $message = 'syntax error, unexpected token "<", expecting end of file'
@@ -1571,20 +4271,22 @@
                 [void](Next-Token)
                 return [pscustomobject]@{ Kind='block'; Body=@() }
             }
-            if ($token -eq 'function' -and
+            if ((Test-PhpNameEqual $token 'function') -and
                 $state.Pos + 1 -lt $state.Tokens.Count -and
-                ($state.Tokens[$state.Pos + 1] -cmatch '^[A-Za-z_][A-Za-z_0-9\\]*$' -or
+                ($state.Tokens[$state.Pos + 1] -cmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$' -or
                  ($state.Tokens[$state.Pos + 1] -ceq '&' -and
                   $state.Pos + 2 -lt $state.Tokens.Count -and
-                  $state.Tokens[$state.Pos + 2] -cmatch '^[A-Za-z_][A-Za-z_0-9\\]*$'))) {
-                return (Read-Function)
+                  $state.Tokens[$state.Pos + 2] -cmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$'))) {
+                $fnNode = Read-Function
+                $fnNode | Add-Member -NotePropertyName Attributes -NotePropertyValue $stmtAttributes -Force
+                return $fnNode
             }
-            if ($token -eq 'global') {
+            if ((Test-PhpNameEqual $token 'global')) {
                 [void](Next-Token)
                 $names = [System.Collections.Generic.List[string]]::new()
                 while ($true) {
                     $name = Next-Token
-                    if ($name -cnotmatch '^\$[A-Za-z_][A-Za-z_0-9]*$') {
+                    if ($name -cnotmatch '^\$[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*$') {
                         throw 'ALL PHP: Expected variable in global declaration'
                     }
                     [void]$names.Add($name.Substring(1))
@@ -1594,12 +4296,12 @@
                 Expect-Token ';'
                 return [pscustomobject]@{ Kind='globaldecl'; Names=$names.ToArray() }
             }
-            if ($token -eq 'static') {
+            if ((Test-PhpNameEqual $token 'static')) {
                 [void](Next-Token)
                 $decls = [System.Collections.Generic.List[object]]::new()
                 while ($true) {
                     $name = Next-Token
-                    if ($name -cnotmatch '^\$[A-Za-z_][A-Za-z_0-9]*$') {
+                    if ($name -cnotmatch '^\$[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*$') {
                         throw 'ALL PHP: Expected variable in static local declaration'
                     }
                     $init = $null
@@ -1614,10 +4316,10 @@
                 Expect-Token ';'
                 return [pscustomobject]@{ Kind='staticdecl'; Decls=$decls.ToArray() }
             }
-            if ($token -eq 'interface') {
+            if ((Test-PhpNameEqual $token 'interface')) {
                 [void](Next-Token)
                 $name = Next-Token
-                if ($name -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
+                if ($name -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
                     throw 'ALL PHP: Expected interface name'
                 }
                 $parents = [System.Collections.Generic.List[string]]::new()
@@ -1625,7 +4327,7 @@
                     [void](Next-Token)
                     while ($true) {
                         $parentName = Next-Token
-                        if ($parentName -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
+                        if ($parentName -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
                             throw 'ALL PHP: Expected parent interface name'
                         }
                         [void]$parents.Add($parentName)
@@ -1638,6 +4340,8 @@
                 $constants = [System.Collections.Generic.List[object]]::new()
                 while ((Peek-Token) -cne '}') {
                     if ((Peek-Token) -ceq '(EOF)') { throw 'ALL PHP: Missing interface closing brace' }
+                    $memberAttrs = @()
+                    if ((Peek-Token) -ceq '#[') { $memberAttrs = Read-PhpAttributes }
                     $methodStatic=$false
                     $modifiers=[System.Collections.Generic.HashSet[string]]::new(
                         [System.StringComparer]::Ordinal)
@@ -1654,12 +4358,13 @@
                         $method.Visibility='public'
                         $method.Abstract=$true
                         $method.Static=$methodStatic
+                        $method | Add-Member -NotePropertyName Attributes -NotePropertyValue $memberAttrs -Force
                         [void]$methods.Add($method)
                     } elseif ((Peek-Token) -eq 'const') {
                         if ($methodStatic) { throw 'ALL PHP: Interface constants cannot be static' }
                         [void](Next-Token)
                         $constName=Next-Token
-                        if ($constName -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
+                        if ($constName -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
                             throw 'ALL PHP: Expected interface constant name'
                         }
                         Expect-Token '='
@@ -1675,13 +4380,13 @@
                 Expect-Token '}'
                 return [pscustomobject]@{
                     Kind='interfacedef'; Name=$name; Parents=$parents.ToArray()
-                    Methods=$methods.ToArray(); Constants=$constants.ToArray()
+                    Methods=$methods.ToArray(); Constants=$constants.ToArray(); Attributes=$stmtAttributes
                 }
             }
-            if ($token -eq 'enum') {
+            if ((Test-PhpNameEqual $token 'enum')) {
                 [void](Next-Token)
                 $enumName=Next-Token
-                if ($enumName -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
+                if ($enumName -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
                     throw 'ALL PHP: Expected enum name'
                 }
                 $backingType=$null
@@ -1697,7 +4402,7 @@
                     [void](Next-Token)
                     while ($true) {
                         $iface=Next-Token
-                        if ($iface -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
+                        if ($iface -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
                             throw 'ALL PHP: Expected enum interface'
                         }
                         [void]$enumInterfaces.Add($iface)
@@ -1710,10 +4415,12 @@
                 $enumMethods=[System.Collections.Generic.List[object]]::new()
                 while ((Peek-Token) -cne '}') {
                     if ((Peek-Token) -ceq '(EOF)') { throw 'ALL PHP: Missing enum closing brace' }
+                    $enumMemberAttrs = @()
+                    if ((Peek-Token) -ceq '#[') { $enumMemberAttrs = Read-PhpAttributes }
                     if ((Peek-Token) -ceq 'case') {
                         [void](Next-Token)
                         $caseName=Next-Token
-                        if ($caseName -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
+                        if ($caseName -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
                             throw 'ALL PHP: Expected enum case name'
                         }
                         $caseExpr=$null
@@ -1729,7 +4436,7 @@
                         }
                         Expect-Token ';'
                         [void]$enumCases.Add([pscustomobject]@{
-                            Name=$caseName; Value=$caseExpr
+                            Name=$caseName; Value=$caseExpr; Attributes=$enumMemberAttrs
                         })
                         continue
                     }
@@ -1743,33 +4450,54 @@
                     $method.Static=$static
                     $method.Visibility='public'
                     $method.Owner=$enumName
+                    $method | Add-Member -NotePropertyName Attributes -NotePropertyValue $enumMemberAttrs -Force
                     [void]$enumMethods.Add($method)
                 }
                 Expect-Token '}'
                 return [pscustomobject]@{
                     Kind='enumdef'; Name=$enumName; BackingType=$backingType
                     Cases=$enumCases.ToArray(); Methods=$enumMethods.ToArray()
-                    Interfaces=$enumInterfaces.ToArray()
+                    Interfaces=$enumInterfaces.ToArray(); Attributes=$stmtAttributes
                 }
             }
-            if ($token -in @('abstract','final','readonly','class','trait')) {
+            if ((Test-PhpNameIn $token @('abstract','final','readonly','class','trait'))) {
                 $isAbstract=$false
                 $isFinal=$false
-                $isTrait=($token -eq 'trait')
+                $isTrait=((Test-PhpNameEqual $token 'trait'))
                 $isReadonlyClass=$false
-                if ($token -eq 'readonly') { $isReadonlyClass=$true; [void](Next-Token); Expect-Token 'class' }
-                elseif ($token -eq 'abstract') { $isAbstract=$true; [void](Next-Token); Expect-Token 'class' }
-                elseif ($token -eq 'final') { $isFinal=$true; [void](Next-Token); Expect-Token 'class' }
-                else { [void](Next-Token) }
+                if ($isTrait) {
+                    [void](Next-Token)
+                } else {
+                    $classMods = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+                    while (Test-PhpNameIn (Peek-Token) @('abstract','final','readonly')) {
+                        $cmodLine = [long]$state.TokenLines[$state.Pos]
+                        $cmod = (Next-Token).ToLowerInvariant()
+                        if (-not $classMods.Add($cmod)) {
+                            Throw-PhpStrictCompileError ('Multiple ' + $cmod + ' modifiers are not allowed') $cmodLine 'ALL PHP: Duplicate class modifier'
+                        }
+                        if ($cmod -ceq 'abstract') {
+                            if ($isFinal) {
+                                Throw-PhpStrictCompileError 'Cannot use the final modifier on an abstract class' $cmodLine 'ALL PHP: Class cannot be both abstract and final'
+                            }
+                            $isAbstract = $true
+                        } elseif ($cmod -ceq 'final') {
+                            if ($isAbstract) {
+                                Throw-PhpStrictCompileError 'Cannot use the final modifier on an abstract class' $cmodLine 'ALL PHP: Class cannot be both abstract and final'
+                            }
+                            $isFinal = $true
+                        } elseif ($cmod -ceq 'readonly') { $isReadonlyClass = $true }
+                    }
+                    Expect-Token 'class'
+                }
                 $name = Next-Token
-                if ($name -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
+                if ($name -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
                     throw 'ALL PHP: Expected class name'
                 }
                 $parent = $null
                 if ((Peek-Token) -eq 'extends') {
                     [void](Next-Token)
                     $parent = Next-Token
-                    if ($parent -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
+                    if ($parent -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
                         throw 'ALL PHP: Expected parent class name'
                     }
                 }
@@ -1778,7 +4506,7 @@
                     [void](Next-Token)
                     while ($true) {
                         $iface = Next-Token
-                        if ($iface -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
+                        if ($iface -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
                             throw 'ALL PHP: Expected implemented interface name'
                         }
                         [void]$interfaces.Add($iface)
@@ -1786,287 +4514,16 @@
                         [void](Next-Token)
                     }
                 }
-                Expect-Token '{'
-                $methods = [System.Collections.Generic.List[object]]::new()
-                $properties = [System.Collections.Generic.List[object]]::new()
-                $constants = [System.Collections.Generic.List[object]]::new()
-                $traits = [System.Collections.Generic.List[string]]::new()
-                $traitUses = [System.Collections.Generic.List[object]]::new()
-                while ((Peek-Token) -cne '}') {
-                    if ((Peek-Token) -ceq '(EOF)') { throw 'ALL PHP: Missing class closing brace' }
-                    if ((Peek-Token) -eq 'use') {
-                        [void](Next-Token)
-                        $usedNames=[System.Collections.Generic.List[string]]::new()
-                        $adaptations=[System.Collections.Generic.List[object]]::new()
-                        while ($true) {
-                            $traitName=Next-Token
-                            if ($traitName -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
-                                throw 'ALL PHP: Expected trait name'
-                            }
-                            [void]$traits.Add($traitName)
-                            [void]$usedNames.Add($traitName)
-                            if ((Peek-Token) -cne ',') { break }
-                            [void](Next-Token)
-                        }
-                        if ((Peek-Token) -eq '{') {
-                            [void](Next-Token)
-                            while ((Peek-Token) -cne '}') {
-                                if ((Peek-Token) -eq '(EOF)') {
-                                    throw 'ALL PHP: Missing trait adaptation closing brace'
-                                }
-                                $sourceTrait=$null
-                                $member=Next-Token
-                                if ((Peek-Token) -ceq '::') {
-                                    $sourceTrait=$member
-                                    [void](Next-Token)
-                                    $member=Next-Token
-                                }
-                                if ($member -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
-                                    throw 'ALL PHP: Expected trait method name'
-                                }
-                                $action=Next-Token
-                                if ($action -eq 'insteadof') {
-                                    if ($null -eq $sourceTrait) {
-                                        throw 'ALL PHP: insteadof requires qualified trait method'
-                                    }
-                                    $excluded=[System.Collections.Generic.List[string]]::new()
-                                    while ($true) {
-                                        $loser=Next-Token
-                                        if ($loser -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
-                                            throw 'ALL PHP: Expected excluded trait name'
-                                        }
-                                        [void]$excluded.Add($loser)
-                                        if ((Peek-Token) -cne ',') { break }
-                                        [void](Next-Token)
-                                    }
-                                    Expect-Token ';'
-                                    [void]$adaptations.Add([pscustomobject]@{
-                                        Kind='insteadof'; Trait=$sourceTrait
-                                        Method=$member; Excluded=$excluded.ToArray()
-                                    })
-                                } elseif ($action -eq 'as') {
-                                    $visibility=$null
-                                    $alias=$null
-                                    if ((Peek-Token) -in @('public','protected','private')) {
-                                        $visibility=Next-Token
-                                    }
-                                    if ((Peek-Token) -cne ';') {
-                                        $alias=Next-Token
-                                        if ($alias -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
-                                            throw 'ALL PHP: Invalid trait alias name'
-                                        }
-                                    }
-                                    if ($null -eq $visibility -and $null -eq $alias) {
-                                        throw 'ALL PHP: Trait alias requires a name or visibility'
-                                    }
-                                    Expect-Token ';'
-                                    [void]$adaptations.Add([pscustomobject]@{
-                                        Kind='alias'; Trait=$sourceTrait
-                                        Method=$member; Alias=$alias; Visibility=$visibility
-                                    })
-                                } else {
-                                    throw 'ALL PHP: Expected as or insteadof in trait adaptation'
-                                }
-                            }
-                            Expect-Token '}'
-                        } else { Expect-Token ';' }
-                        [void]$traitUses.Add([pscustomobject]@{
-                            Names=$usedNames.ToArray(); Adaptations=$adaptations.ToArray()
-                        })
-                        continue
-                    }
-                    $visibility='public'
-                    $isStatic=$false
-                    $isAbstractMethod=$false
-                    $isFinalMethod=$false
-                    $isReadonlyProperty=$false
-                    $modifiers=[System.Collections.Generic.HashSet[string]]::new(
-                        [System.StringComparer]::Ordinal)
-                    while ((Peek-Token) -in @('public','private','protected','static','abstract','final','readonly')) {
-                        $modifier=Next-Token
-                        if (-not $modifiers.Add($modifier)) {
-                            throw 'ALL PHP: Duplicate class member modifier'
-                        }
-                        if ($modifier -in @('public','private','protected')) {
-                            if ($modifiers.Contains('public') -and $modifier -cne 'public' -or
-                                $modifiers.Contains('protected') -and $modifier -cne 'protected' -or
-                                $modifiers.Contains('private') -and $modifier -cne 'private') {
-                                throw 'ALL PHP: Conflicting visibility modifiers'
-                            }
-                            $visibility=$modifier
-                        } elseif ($modifier -eq 'static') { $isStatic=$true }
-                        elseif ($modifier -eq 'abstract') { $isAbstractMethod=$true }
-                        elseif ($modifier -eq 'final') { $isFinalMethod=$true }
-                        elseif ($modifier -eq 'readonly') { $isReadonlyProperty=$true }
-                    }
-                    if ((Peek-Token) -eq 'function') {
-                        if ($isReadonlyProperty) { throw 'ALL PHP: readonly modifier cannot be applied to method' }
-                        if ($isAbstractMethod -and $isFinalMethod) {
-                            throw 'ALL PHP: Method cannot be both abstract and final'
-                        }
-                        if ($isAbstractMethod -and -not $isAbstract) {
-                            throw 'ALL PHP: Abstract methods require an abstract class'
-                        }
-                        if ($isAbstractMethod -and $visibility -eq 'private') {
-                            throw 'ALL PHP: Abstract methods cannot be private'
-                        }
-                        $method = Read-Function $isAbstractMethod $true
-                        $method.Visibility=$visibility
-                        $method.Static=$isStatic
-                        $method.Owner=$name
-                        $method.Abstract=$isAbstractMethod
-                        $method.Final=$isFinalMethod
-                        [void]$methods.Add($method)
-                        if ($method.Name -ieq '__construct') {
-                            foreach ($parameter in $method.Params) {
-                                if (-not $parameter.Promoted) { continue }
-                                if ($isReadonlyClass -and [string]::IsNullOrEmpty($parameter.TypeName)) {
-                                    throw 'ALL PHP: readonly class promoted property requires a type'
-                                }
-                                [void]$properties.Add([pscustomobject]@{
-                                    Name=$parameter.Name; Default=$null
-                                    Visibility=$parameter.Visibility; Static=$false
-                                    Owner=$name; TypeName=$parameter.TypeName
-                                    Readonly=([bool]$parameter.Readonly -or $isReadonlyClass)
-                                })
-                            }
-                        }
-                    } elseif ((Peek-Token) -eq 'const') {
-                        if ($isStatic -or $isAbstractMethod -or $isFinalMethod -or $isReadonlyProperty) {
-                            throw 'ALL PHP: Unsupported constant modifier'
-                        }
-                        [void](Next-Token)
-                        $constName = Next-Token
-                        if ($constName -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
-                            throw 'ALL PHP: Expected class constant name'
-                        }
-                        Expect-Token '='
-                        $constValue=Read-Expr 1
-                        Expect-Token ';'
-                        [void]$constants.Add([pscustomobject]@{
-                            Name=$constName; Value=$constValue; Visibility=$visibility
-                        })
-                    } else {
-                        $propertyType=''
-                        if ((Peek-Token) -ceq '?' -or
-                            (Peek-Token) -cmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
-                            $propertyType=Read-PhpTypeAnnotation
-                        }
-                        if ((Peek-Token) -cnotmatch '^\$[A-Za-z_][A-Za-z_0-9]*$') {
-                            throw "ALL PHP: Unsupported class member '$(Peek-Token)'"
-                        }
-                        if ($isAbstractMethod -or $isFinalMethod) {
-                            throw 'ALL PHP: Abstract/final modifier not valid for properties'
-                        }
-                        if ($propertyType -in @('void','never')) {
-                            throw 'ALL PHP: void/never cannot be used as property types'
-                        }
-                        $isReadOnly=($isReadonlyProperty -or $isReadonlyClass)
-                        if ($isReadOnly -and $isStatic) {
-                            throw 'ALL PHP: readonly static property is not allowed'
-                        }
-                        if ($isReadOnly -and [string]::IsNullOrEmpty($propertyType)) {
-                            throw 'ALL PHP: readonly property requires a type'
-                        }
-                        $propName = (Next-Token).Substring(1)
-                        $defaultExpr = $null
-                        if ((Peek-Token) -ceq '=') {
-                            [void](Next-Token)
-                            $defaultExpr = Read-Expr 1
-                        }
-                        if ($isReadOnly -and $null -ne $defaultExpr) {
-                            throw 'ALL PHP: readonly property cannot have a default value'
-                        }
-                        $getHook=$null
-                        $setHook=$null
-                        # Hook names must be unique even when their bodies are empty.
-                        # Check the declaration names independently of hook objects.
-                        $seenHookNames=[System.Collections.Generic.HashSet[string]]::new(
-                            [System.StringComparer]::Ordinal)
-                        $hookBacked=($null -ne $defaultExpr)
-                        if ((Peek-Token) -ceq '{') {
-                            if ($isStatic) { throw 'ALL PHP: Static property hooks are not supported by PHP' }
-                            if ($isReadOnly) { throw 'ALL PHP: readonly property cannot declare hooks' }
-                            Expect-Token '{'
-                            while ((Peek-Token) -cne '}') {
-                                if ((Peek-Token) -ceq '(EOF)') {
-                                    throw 'ALL PHP: Missing property hook closing brace'
-                                }
-                                $hookName=Next-Token
-                                if ($hookName -notin @('get','set')) {
-                                    throw "ALL PHP: Unknown property hook '$hookName'"
-                                }
-                                if (-not $seenHookNames.Add($hookName)) {
-                                    throw 'ALL PHP: Duplicate property hook'
-                                }
-                                if ($hookName -ceq 'get' -and $null -ne $getHook -or
-                                    $hookName -ceq 'set' -and $null -ne $setHook) {
-                                    throw 'ALL PHP: Duplicate property hook'
-                                }
-                                $hookParams=@()
-                                if ((Peek-Token) -ceq '(') {
-                                    if ($hookName -ceq 'get') {
-                                        throw 'ALL PHP: Getter hook takes no arguments'
-                                    }
-                                    $hookParams=Read-Parameters $false
-                                    if ($hookParams.Count -ne 1 -or
-                                        $hookParams[0].ByRef -or $hookParams[0].Variadic -or
-                                        $null -ne $hookParams[0].Default) {
-                                        throw 'ALL PHP: Setter hook must have one regular parameter'
-                                    }
-                                }
-                                $body=$null
-                                $expr=$null
-                                $arrow=$false
-                                $hookSourceStart=$state.Pos
-                                if ((Peek-Token) -ceq '=>') {
-                                    Expect-Token '=>'
-                                    $expr=Read-Expr 1
-                                    Expect-Token ';'
-                                    $arrow=$true
-                                } elseif ((Peek-Token) -ceq '{') {
-                                    $body=Read-Statement
-                                } else {
-                                    throw 'ALL PHP: Expected property hook body'
-                                }
-                                if ($hookName -ceq 'set' -and $arrow) {
-                                    $hookBacked=$true
-                                }
-                                for ($hi=$hookSourceStart; $hi + 2 -lt $state.Pos; $hi++) {
-                                    if ($state.Tokens[$hi] -ceq '$this' -and
-                                        $state.Tokens[$hi + 1] -ceq '->' -and
-                                        $state.Tokens[$hi + 2] -ceq $propName) {
-                                        $hookBacked=$true
-                                    }
-                                }
-                                $hook=[pscustomobject]@{
-                                    Body=$body; Expr=$expr; Arrow=$arrow; Params=$hookParams
-                                }
-                                if ($hookName -ceq 'get') { $getHook=$hook }
-                                else { $setHook=$hook }
-                            }
-                            Expect-Token '}'
-                        } else {
-                            Expect-Token ';'
-                        }
-                        [void]$properties.Add([pscustomobject]@{
-                            Name=$propName; Default=$defaultExpr
-                            Visibility=$visibility; Static=$isStatic; Owner=$name
-                            TypeName=$propertyType; Readonly=$isReadOnly
-                            GetHook=$getHook; SetHook=$setHook; HookBacked=$hookBacked
-                        })
-                    }
-                }
-                Expect-Token '}'
+                $body = Read-PhpClassBody $name $isTrait $isAbstract $isReadonlyClass
                 return [pscustomobject]@{
                     Kind=$(if ($isTrait) { 'traitdef' } else { 'classdef' }); Name=$name; Parent=$parent
-                    Methods=$methods.ToArray(); Properties=$properties.ToArray()
-                    Constants=$constants.ToArray(); Interfaces=$interfaces.ToArray()
-                    Abstract=$isAbstract; Final=$isFinal; Readonly=$isReadonlyClass; Traits=$traits.ToArray()
-                    TraitUses=$traitUses.ToArray()
+                    Methods=$body.Methods; Properties=$body.Properties
+                    Constants=$body.Constants; Interfaces=$interfaces.ToArray()
+                    Abstract=$isAbstract; Final=$isFinal; Readonly=$isReadonlyClass; Traits=$body.Traits
+                    TraitUses=$body.TraitUses; Attributes=$stmtAttributes
                 }
             }
-            if ($token -eq 'switch') {
+            if ((Test-PhpNameEqual $token 'switch')) {
                 [void](Next-Token)
                 Expect-Token '('
                 $subject = Read-Expr 1
@@ -2103,14 +4560,14 @@
                     Kind='switch'; Subject=$subject; Cases=$cases.ToArray()
                 }
             }
-            if ($token -eq 'return') {
+            if ((Test-PhpNameEqual $token 'return')) {
                 [void](Next-Token)
                 $expr = $null
                 if ((Peek-Token) -cne ';') { $expr = Read-Expr 1 }
                 Expect-Token ';'
                 return [pscustomobject]@{ Kind='return'; Expr=$expr }
             }
-            if ($token -eq 'if' -or $token -eq 'elseif') {
+            if ((Test-PhpNameEqual $token 'if') -or (Test-PhpNameEqual $token 'elseif')) {
                 [void](Next-Token)
                 Expect-Token '('
                 $condition = Read-Expr 1
@@ -2127,12 +4584,12 @@
                     Kind='if'; Test=$condition; Yes=$yes; No=$no
                 }
             }
-            if ($token -eq 'break' -or $token -eq 'continue') {
+            if ((Test-PhpNameEqual $token 'break') -or (Test-PhpNameEqual $token 'continue')) {
                 [void](Next-Token)
                 Expect-Token ';'
                 return [pscustomobject]@{ Kind='loopcontrol'; Action=$token }
             }
-            if ($token -eq 'for') {
+            if ((Test-PhpNameEqual $token 'for')) {
                 [void](Next-Token)
                 Expect-Token '('
                 $init = Read-ForMutations ';'
@@ -2145,7 +4602,7 @@
                     Kind='for'; Init=@($init); Test=$condition; Update=@($update); Body=$body
                 }
             }
-            if ($token -eq 'do') {
+            if ((Test-PhpNameEqual $token 'do')) {
                 [void](Next-Token)
                 $body = Read-Statement
                 Expect-Token 'while'
@@ -2155,7 +4612,7 @@
                 Expect-Token ';'
                 return [pscustomobject]@{ Kind='do'; Test=$condition; Body=$body }
             }
-            if ($token -eq 'while') {
+            if ((Test-PhpNameEqual $token 'while')) {
                 [void](Next-Token)
                 Expect-Token '('
                 $condition = Read-Expr 1
@@ -2165,52 +4622,65 @@
                     Kind='while'; Test=$condition; Body=$body
                 }
             }
-            if ($token -eq 'foreach') {
+            if ((Test-PhpNameEqual $token 'foreach')) {
                 [void](Next-Token)
                 Expect-Token '('
                 $iter = Read-Expr 1
                 if ((Peek-Token) -ne 'as') { throw 'ALL PHP: Expected as in foreach' }
                 [void](Next-Token)
                 $byReference = $false
+                $keyName = $null
+                $valueName = ''
+                $valueTarget = $null
                 if ((Peek-Token) -ceq '&') {
                     [void](Next-Token)
                     $byReference = $true
                 }
-                $first = Next-Token
-                if ($first -cnotmatch '^\$[A-Za-z_][A-Za-z_0-9]*$') {
-                    throw 'ALL PHP: Expected foreach variable'
-                }
-                $keyName = $null
-                $valueName = $first.Substring(1)
-                if ((Peek-Token) -ceq '=>') {
-                    if ($byReference) { throw 'ALL PHP: Foreach key cannot be a reference' }
-                    [void](Next-Token)
-                    $keyName = $valueName
-                    if ((Peek-Token) -ceq '&') {
+                if (((Peek-Token) -ceq '[') -or (Test-PhpNameEqual (Peek-Token) 'list')) {
+                    if ($byReference) { throw 'ALL PHP: Destructuring foreach value cannot be by reference' }
+                    $valueTarget = Read-Primary
+                } else {
+                    $first = Next-Token
+                    if ($first -cnotmatch '^\$[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*$') {
+                        throw 'ALL PHP: Expected foreach variable'
+                    }
+                    $valueName = $first.Substring(1)
+                    if ((Peek-Token) -ceq '=>') {
+                        if ($byReference) { throw 'ALL PHP: Foreach key cannot be a reference' }
                         [void](Next-Token)
-                        $byReference = $true
+                        $keyName = $valueName
+                        $valueName = ''
+                        if ((Peek-Token) -ceq '&') {
+                            [void](Next-Token)
+                            $byReference = $true
+                        }
+                        if (((Peek-Token) -ceq '[') -or (Test-PhpNameEqual (Peek-Token) 'list')) {
+                            if ($byReference) { throw 'ALL PHP: Destructuring foreach value cannot be by reference' }
+                            $valueTarget = Read-Primary
+                        } else {
+                            $second = Next-Token
+                            if ($second -cnotmatch '^\$[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*$') {
+                                throw 'ALL PHP: Expected foreach value variable'
+                            }
+                            $valueName = $second.Substring(1)
+                        }
                     }
-                    $second = Next-Token
-                    if ($second -cnotmatch '^\$[A-Za-z_][A-Za-z_0-9]*$') {
-                        throw 'ALL PHP: Expected foreach value variable'
-                    }
-                    $valueName = $second.Substring(1)
                 }
                 Expect-Token ')'
                 $body = Read-Statement
                 return [pscustomobject]@{
                     Kind='foreach'; Iter=$iter; KeyName=$keyName
-                    ValueName=$valueName; ByReference=$byReference; Body=$body
+                    ValueName=$valueName; ValueTarget=$valueTarget; ByReference=$byReference; Body=$body
                 }
             }
-            if ($token -eq 'const' -and $state.Pos + 2 -lt $state.Tokens.Count -and
-                $state.Tokens[$state.Pos + 1] -cmatch '^[A-Za-z_][A-Za-z_0-9\\]*$' -and
+            if ((Test-PhpNameEqual $token 'const') -and $state.Pos + 2 -lt $state.Tokens.Count -and
+                $state.Tokens[$state.Pos + 1] -cmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$' -and
                 $state.Tokens[$state.Pos + 2] -ceq '=') {
                 [void](Next-Token)
                 $decls = [System.Collections.Generic.List[object]]::new()
                 while ($true) {
                     $constName = Next-Token
-                    if ($constName -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
+                    if ($constName -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
                         throw "ALL PHP: Expected constant name, got '$constName'"
                     }
                     Expect-Token '='
@@ -2221,7 +4691,7 @@
                 Expect-Token ';'
                 return [pscustomobject]@{ Kind='constdecl'; Decls=$decls.ToArray() }
             }
-            if ($token -eq 'try') {
+            if ((Test-PhpNameEqual $token 'try')) {
                 [void](Next-Token)
                 if ((Peek-Token) -cne '{') { throw "ALL PHP: Expected '{', got '$(Peek-Token)'" }
                 $body = Read-Statement
@@ -2232,7 +4702,7 @@
                     $types = [System.Collections.Generic.List[string]]::new()
                     while ($true) {
                         $typeName = Next-Token
-                        if ($typeName -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
+                        if ($typeName -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
                             throw "ALL PHP: Expected class name in catch, got '$typeName'"
                         }
                         [void]$types.Add($typeName)
@@ -2240,7 +4710,7 @@
                         [void](Next-Token)
                     }
                     $varName = $null
-                    if ((Peek-Token) -cmatch '^\$[A-Za-z_][A-Za-z_0-9]*$') {
+                    if ((Peek-Token) -cmatch '^\$[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*$') {
                         $varName = (Next-Token).Substring(1)
                     }
                     Expect-Token ')'
@@ -2263,7 +4733,7 @@
                     Kind='try'; Body=$body; Catches=$catches.ToArray(); Finally=$finallyBody
                 }
             }
-            if ($token -eq 'echo') {
+            if ((Test-PhpNameEqual $token 'echo')) {
                 [void](Next-Token)
                 $callArgs = [System.Collections.Generic.List[object]]::new()
                 [void]$callArgs.Add((Read-Expr 1))
@@ -2274,7 +4744,7 @@
                 Expect-Token ';'
                 return [pscustomobject]@{ Kind='echo'; Args=$callArgs.ToArray() }
             }
-            if ($token -eq 'print') {
+            if ((Test-PhpNameEqual $token 'print')) {
                 [void](Next-Token)
                 $expr = Read-Expr 1
                 Expect-Token ';'
@@ -2291,7 +4761,77 @@
             return [pscustomobject]@{ Kind='exprstmt'; Expr=$expr }
 
         }
+        function Throw-PhpTypeDeclarationError([string]$message,[long]$line) {
+            $info=[pscustomobject]@{Type='CompileError';Reason='type_declaration';Message=$message;SourcePath=$state.ScriptName;Line=$line}
+            if($isCli){$CliContext['CompileError']=$info}
+            $signal=[Exception]::new('ALL PHP: '+$message)
+            $signal.Data['AllPhpCompileError']=$info
+            throw $signal
+        }
+        function Assert-PhpTypeDeclaration([string]$text,[long]$line) {
+            $nullable=$text.StartsWith('?')
+            $body=if($nullable){$text.Substring(1)}else{$text}
+            $union=$body.Contains('|');$intersection=$body.Contains('&')
+            # The existing flat annotation parser cannot represent DNF or
+            # nullable composite grammar. Reject explicitly without claiming
+            # that this host guard is the PHP parser's exact diagnostic.
+            if(($union-and$intersection)-or($nullable-and($union-or$intersection))){
+                throw 'ALL PHP: Composite nullable/DNF type grammar is not implemented'
+            }
+            $parts=@($body-split'[|&]')
+            $names=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+            $bits=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+            $hasVoid=$false;$hasNever=$false
+            foreach($part in $parts){
+                $lower=ConvertTo-PhpAsciiLower $part
+                $builtin=$lower-cin@('int','float','string','bool','true','false','null','array','object','callable','iterable','mixed','void','never','static')
+                if($intersection){
+                    if($lower-ceq'iterable'){
+                        throw 'ALL PHP: Iterable intersection diagnostic is not implemented'
+                    }
+                    if($builtin-or$lower-cin@('self','parent')){
+                        $display=if($builtin){$lower}else{$part}
+                        Throw-PhpTypeDeclarationError ('Type '+$display+' cannot be part of an intersection type') $line
+                    }
+                    if(-not$names.Add($lower)){Throw-PhpTypeDeclarationError ('Duplicate type '+$part+' is redundant') $line}
+                    continue
+                }
+                if(-not$union){
+                    if($nullable){
+                        switch -CaseSensitive ($lower){
+                            'mixed' {Throw-PhpTypeDeclarationError 'Type mixed cannot be marked as nullable since mixed already includes null' $line}
+                            'null' {Throw-PhpTypeDeclarationError 'null cannot be marked as nullable' $line}
+                            'void' {Throw-PhpTypeDeclarationError 'Void can only be used as a standalone type' $line}
+                            'never' {Throw-PhpTypeDeclarationError 'never can only be used as a standalone type' $line}
+                        }
+                    }
+                    return
+                }
+                if($lower-ceq'mixed'){Throw-PhpTypeDeclarationError 'Type mixed can only be used as a standalone type' $line}
+                if($lower-ceq'void'){$hasVoid=$true}
+                if($lower-ceq'never'){$hasNever=$true}
+                if(-not$builtin){
+                    if(-not$names.Add($lower)){Throw-PhpTypeDeclarationError ('Duplicate type '+$part+' is redundant') $line}
+                    continue
+                }
+                $newBits=if($lower-ceq'bool'){@('true','false')}elseif($lower-ceq'iterable'){@('array')}else{@($lower)}
+                $overlap=@($newBits|Where-Object{$bits.Contains($_)})
+                if($overlap.Count-gt0){
+                    $display=if($overlap.Count-eq2-and$overlap-contains'true'-and$overlap-contains'false'){'bool'}else{$overlap[0]}
+                    Throw-PhpTypeDeclarationError ('Duplicate type '+$display+' is redundant') $line
+                }
+                if(($lower-ceq'true'-and$bits.Contains('false'))-or($lower-ceq'false'-and$bits.Contains('true'))){
+                    Throw-PhpTypeDeclarationError 'Type contains both true and false, bool must be used instead' $line
+                }
+                foreach($bit in $newBits){[void]$bits.Add($bit)}
+            }
+            if($hasVoid){Throw-PhpTypeDeclarationError 'Void can only be used as a standalone type' $line}
+            if($hasNever){Throw-PhpTypeDeclarationError 'never can only be used as a standalone type' $line}
+        }
+
         function Read-PhpTypeAnnotation {
+            $compilerTypePosition=[long]$state.Pos
+            $typeLine=[long]$state.TokenLines[$state.Pos]
             $first = Peek-Token
             $prefix = ''
             if ($first -ceq '?') {
@@ -2299,7 +4839,7 @@
                 $prefix = '?'
                 $first = Peek-Token
             }
-            if ($first -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
+            if ($first -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
                 throw 'ALL PHP: Expected type name'
             }
             $typeText = $prefix + (Next-Token)
@@ -2309,24 +4849,19 @@
                     # An ampersand before a variable is a by-reference parameter,
                     # not an intersection type separator.
                     if ($state.Pos + 1 -ge $state.Tokens.Count -or
-                        $state.Tokens[$state.Pos + 1] -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
+                        $state.Tokens[$state.Pos + 1] -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
                         break
                     }
                 }
                 [void](Next-Token)
                 $part = Next-Token
-                if ($part -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
+                if ($part -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
                     throw 'ALL PHP: Expected type name after union/intersection separator'
                 }
                 $typeText += $separator + $part
             }
-            if ($typeText -cmatch '^\?mixed$' -or
-                ($typeText -match '(?i)\bmixed\b' -and $typeText.Contains('|'))) {
-                throw 'ALL PHP: mixed cannot be nullable or part of union'
-            }
-            if ($typeText -cmatch '^\?(?:void|never)$') {
-                throw 'ALL PHP: void and never cannot be nullable'
-            }
+            if($state.ParsingInternalPrelude){Assert-PhpTypeDeclaration $typeText $typeLine}
+            else{Register-PhpParameterTypeCompileEvent $typeText $typeLine $compilerTypePosition}
             return $typeText
         }
         function Read-Parameters([bool]$allowPromotion = $false) {
@@ -2336,7 +4871,11 @@
             if ((Peek-Token) -cne ')') {
                 while ($true) {
                     if ($sawVariadic) { throw 'ALL PHP: Variadic parameter must be last' }
+                    $paramAttrs = @()
+                    if ((Peek-Token) -ceq '#[') { $paramAttrs = Read-PhpAttributes }
+                    $phpStrictParameterLine=[long]$state.TokenLines[$state.Pos]
                     $visibility = ''
+                    $setVisibility = ''
                     $promotedReadonly = $false
                     if ($allowPromotion) {
                         while ((Peek-Token) -in @('public','protected','private','readonly')) {
@@ -2344,21 +4883,27 @@
                             if ($modifier -eq 'readonly') {
                                 if ($promotedReadonly) { throw 'ALL PHP: Duplicate readonly parameter modifier' }
                                 $promotedReadonly=$true
+                            } elseif ((Peek-Token) -ceq '(' -and
+                                $state.Pos + 2 -lt $state.Tokens.Count -and
+                                $state.Tokens[$state.Pos + 1] -eq 'set' -and
+                                $state.Tokens[$state.Pos + 2] -ceq ')') {
+                                [void](Next-Token); [void](Next-Token); [void](Next-Token)
+                                if (-not [string]::IsNullOrEmpty($setVisibility)) {
+                                    throw 'ALL PHP: Conflicting promoted parameter set visibility'
+                                }
+                                $setVisibility=$modifier
                             } elseif (-not [string]::IsNullOrEmpty($visibility)) {
                                 throw 'ALL PHP: Duplicate promoted parameter visibility'
                             } else { $visibility=$modifier }
                         }
-                        if ($promotedReadonly -and [string]::IsNullOrEmpty($visibility)) {
+                        if (($promotedReadonly -or -not [string]::IsNullOrEmpty($setVisibility)) -and [string]::IsNullOrEmpty($visibility)) {
                             $visibility='public'
                         }
                     }
                     $typeName = ''
                     if ((Peek-Token) -ceq '?' -or
-                        (Peek-Token) -cmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
+                        (Peek-Token) -cmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
                         $typeName=Read-PhpTypeAnnotation
-                        if ($typeName -in @('void','never')) {
-                            throw 'ALL PHP: void and never are return-only types'
-                        }
                     }
                     $byRef = $false
                     if ((Peek-Token) -ceq '&') {
@@ -2371,12 +4916,14 @@
                         $sawVariadic = $true
                         [void](Next-Token)
                     }
+                    $compilerParameterPosition=[long]$state.Pos
                     $param = Next-Token
-                    if ($param -cnotmatch '^\$[A-Za-z_][A-Za-z_0-9]*$') {
+                    if ($param -cnotmatch '^\$[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff]*$') {
                         throw "ALL PHP: Expected parameter, got '$param'"
                     }
                     if (-not [string]::IsNullOrEmpty($visibility) -and
-                        [string]::IsNullOrEmpty($typeName) -and $promotedReadonly) {
+                        [string]::IsNullOrEmpty($typeName) -and $promotedReadonly -and
+                        [string]::IsNullOrEmpty($setVisibility)) {
                         throw 'ALL PHP: Promoted readonly property must have a type'
                     }
                     if (-not [string]::IsNullOrEmpty($visibility) -and $variadic) {
@@ -2389,15 +4936,15 @@
                         $default = Read-Expr 1
                     }
                     foreach ($previous in $parameters) {
-                        if ($previous.Name -ceq $param.Substring(1)) {
+                        if ((Test-PhpRawNameEqual $previous.Name $param.Substring(1))) {
                             throw 'ALL PHP: Duplicate function parameter'
                         }
                     }
                     [void]$parameters.Add([pscustomobject]@{
-                        Name=$param.Substring(1); Default=$default; Variadic=$variadic
+                        Name=$param.Substring(1); Default=$default; Variadic=$variadic; DefinitionLine=$phpStrictParameterLine; CompilerPosition=$compilerParameterPosition
                         ByRef=$byRef; TypeName=$typeName
-                        Promoted=(-not [string]::IsNullOrEmpty($visibility))
-                        Visibility=$visibility; Readonly=$promotedReadonly
+                        Promoted=(-not [string]::IsNullOrEmpty($visibility) -or -not [string]::IsNullOrEmpty($setVisibility))
+                        Visibility=$visibility; SetVisibility=$setVisibility; Readonly=$promotedReadonly; Attributes=$paramAttrs
                     })
                     if ((Peek-Token) -cne ',') { break }
                     [void](Next-Token)
@@ -2408,6 +4955,8 @@
             return ,($parameters.ToArray())
         }
         function Read-Function([bool]$declarationOnly = $false, [bool]$allowPromotion = $false) {
+            $compilerDefinitionPosition=[long]$state.Pos
+            $phpStrictDefinitionLine=[long]$state.TokenLines[$state.Pos]
             Expect-Token 'function'
             $returnByRef=$false
             if ((Peek-Token) -ceq '&') {
@@ -2415,7 +4964,7 @@
                 $returnByRef=$true
             }
             $name = Next-Token
-            if ($name -cnotmatch '^[A-Za-z_][A-Za-z_0-9\\]*$') {
+            if ($name -cnotmatch '^[A-Za-z_\x80-\uffff][A-Za-z_0-9\x80-\uffff\\]*$') {
                 throw 'ALL PHP: Expected function name'
             }
             $parameters = Read-Parameters $allowPromotion
@@ -2425,8 +4974,10 @@
                 }
             }
             $returnType=''
+            $compilerReturnTypePosition=$null
             if ((Peek-Token) -ceq ':') {
                 [void](Next-Token)
+                $compilerReturnTypePosition=[long]$state.Pos
                 $returnType=Read-PhpTypeAnnotation
             }
             $body=$null
@@ -2440,27 +4991,453 @@
                 Kind='functiondef'; Name=$name; Params=@($parameters); Body=$body
                 Visibility='public'; Static=$false; Owner=$null
                 Abstract=$declarationOnly; Final=$false
-                ReturnByRef=$returnByRef; ReturnType=$returnType
+                ReturnByRef=$returnByRef; ReturnType=$returnType; DefinitionLine=$phpStrictDefinitionLine; CompilerPosition=$compilerDefinitionPosition; CompilerEndPosition=([long]$state.Pos-1); ReturnTypePosition=$compilerReturnTypePosition
+                Attributes=@(); IsGenerator=(Test-PhpContainsYield $body)
             }
         }
 
-        # Parse the entire program first, before emitting any output.
-        $statements = [System.Collections.Generic.List[object]]::new()
-        try {
-            while ((Peek-Token) -cne '(EOF)') {
-                [void]$statements.Add((Read-Statement))
+        # Isolated compiler-state transaction primitive. NOT wired into any interpreter.
+        # CompileAction must invoke the existing ALL parser in compile-only mode and
+        # return a compiled-unit descriptor. It must not run a fresh adapter/engine.
+        function Invoke-PhpSourceCompileTransaction {
+            param(
+                [Parameter(Mandatory=$true)][Collections.IDictionary]$State,
+                [Parameter(Mandatory=$true)][AllowEmptyString()][string]$SourceText,
+                [Parameter(Mandatory=$true)][string]$DisplayPath,
+                [Parameter(Mandatory=$true)][bool]$StartInPhpCode,
+                [Parameter(Mandatory=$true)][scriptblock]$CompileAction,
+                [Collections.IDictionary]$CliContext=$null
+            )
+            # Runtime variables, global symbols, refs, arrays, handlers and counters are
+            # deliberately absent: this primitive never creates or replaces those tables.
+            $fieldNames=@(
+                'Tokens','TokenLines','Pos','NamespaceFallbacks','InlineHtml','DocStrings',
+                'LiteralWarnings','ParsingInternalPrelude','StrictDirectivePrefix',
+                'CompiledStrictTypes','ActiveSourceUnit','BuiltinCallPolicy',
+                'ScriptName','Line','SourceCompileDescriptor','SourceCompileDiagnostic','ParameterTypeCompileEvents'
+            )
+            $saved=[Collections.Generic.Dictionary[string,object]]::new([StringComparer]::Ordinal)
+            foreach($name in $fieldNames) {
+                $exists=$State.Contains($name)
+                $savedValue=$null
+                if($exists){$savedValue=$State[$name]}
+                $saved.Add($name,[pscustomobject]@{Exists=$exists;Value=$savedValue})
             }
-        } catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+            $hadCompileError=($null-ne$CliContext-and$CliContext.Contains('CompileError'))
+            $oldCompileError=$null
+            if($hadCompileError){$oldCompileError=$CliContext['CompileError']}
+            try {
+                $State['Tokens']=[Collections.Generic.List[string]]::new()
+                $State['TokenLines']=[Collections.Generic.List[int]]::new()
+                $State['Pos']=0
+                $State['NamespaceFallbacks']=[Collections.Generic.Dictionary[int,string]]::new()
+                $State['InlineHtml']=[Collections.Generic.Dictionary[string,string]]::new([StringComparer]::Ordinal)
+                $State['DocStrings']=[Collections.Generic.Dictionary[string,object]]::new([StringComparer]::Ordinal)
+                $State['LiteralWarnings']=[Collections.Generic.List[object]]::new()
+                $State['ParsingInternalPrelude']=$false
+                $State['StrictDirectivePrefix']=$null
+                $State['CompiledStrictTypes']=$false
+                $State['SourceCompileDiagnostic']=$null
+                $State['ParameterTypeCompileEvents']=[Collections.Generic.List[object]]::new()
+                $State['ActiveSourceUnit']=$null
+                $State['BuiltinCallPolicy']=$null
+                $State['ScriptName']=$DisplayPath
+                $State['Line']=[long]0
+                $State['SourceCompileDescriptor']=[pscustomobject]@{
+                    DisplayPath=$DisplayPath;StartInPhpCode=$StartInPhpCode
+                }
+                if($null-ne$CliContext){$CliContext.Remove('CompileError')}
+                # The action receives text already decoded by an explicit source-byte
+                # boundary. Raw SourceBytes/path operands belong in its returned unit.
+                & $CompileAction $SourceText $StartInPhpCode
+            } catch {
+                if($null-ne$CliContext-and$CliContext.Contains('CompileError')) {
+                    $_.Exception.Data['PhpNestedCompileError']=$CliContext['CompileError']
+                }
+                throw
+            } finally {
+                foreach($name in $fieldNames) {
+                    if($saved[$name].Exists){$State[$name]=$saved[$name].Value}
+                    else{$State.Remove($name)}
+                }
+                if($null-ne$CliContext) {
+                    if($hadCompileError){$CliContext['CompileError']=$oldCompileError}
+                    else{$CliContext.Remove('CompileError')}
+                }
+            }
+        }
+
+# Existing evaluator only. No recursive adapter.Run, external PHP, or alternate runtime.
+        function Throw-PhpSourceUnsupported([string]$capability) {
+            $error=[Exception]::new('ALL PHP: Source loader capability not implemented: '+$capability)
+            $error.Data['AllPhpSourceUnsupported']=$capability
+            throw $error
+        }
+        function Get-PhpSourceIncludePath {
+            if($state.Ini.ContainsKey('include_path')){return (Get-PhpHostText (To-PhpBytes $state.Ini['include_path']))}
+            if([IO.Path]::PathSeparator-ceq';'){return '.;C:\php\pear'}
+            Throw-PhpSourceUnsupported 'Linux build-default include_path configuration'
+        }
+        function Add-PhpIncludedSource([string]$identity) {
+            if($state.SourceFilesSet.Add($identity)){[void]$state.SourceFilesList.Add($identity)}
+        }
+        function Get-PhpSourceDirectory([string]$displayPath) {
+            $directory=[IO.Path]::GetDirectoryName($displayPath)
+            if([string]::IsNullOrEmpty($directory)){return $null}
+            return $directory
+        }
+        function Resolve-PhpLocalSourcePath([string]$operand) {
+            if($operand.IndexOf([char]0)-ge0){Throw-PhpSourceUnsupported 'NUL filename diagnostic and native path contract'}
+            if($operand-match'^[A-Za-z][A-Za-z0-9+.-]*://'){Throw-PhpSourceUnsupported 'stream/wrapper source resolution'}
+            if($operand.Length-eq0){Throw-PhpSourceUnsupported 'empty filename error contract'}
+            $candidates=[Collections.Generic.List[string]]::new()
+            $explicit=([IO.Path]::IsPathRooted($operand)-or$operand.StartsWith('./')-or$operand.StartsWith('../')-or$operand.StartsWith('.\')-or$operand.StartsWith('..\'))
+            if($explicit){[void]$candidates.Add($operand)}
+            else {
+                foreach($entry in (Get-PhpSourceIncludePath).Split([IO.Path]::PathSeparator)) {
+                    if($entry-match'^[A-Za-z][A-Za-z0-9+.-]*://'){Throw-PhpSourceUnsupported 'stream/wrapper include_path entry'}
+                    $basePath=if($entry.Length-eq0){[Environment]::CurrentDirectory}else{$entry}
+                    [void]$candidates.Add([IO.Path]::Combine($basePath,$operand))
+                }
+                $executingDirectory=Get-PhpSourceDirectory $state.ScriptName
+                if(-not[string]::IsNullOrEmpty($executingDirectory)){[void]$candidates.Add([IO.Path]::Combine($executingDirectory,$operand))}
+            }
+            foreach($candidate in $candidates) {
+                $path=[IO.Path]::GetFullPath($candidate)
+                if([IO.Directory]::Exists($path)){Throw-PhpSourceUnsupported 'directory source stream contract'}
+                if([IO.File]::Exists($path)) {
+                    $attributes=[IO.File]::GetAttributes($path)
+                    if(($attributes-band[IO.FileAttributes]::ReparsePoint)-ne0){Throw-PhpSourceUnsupported 'symlink/reparse opened-path identity'}
+                    # Dot segments are normalized. Native realpath case, junction,
+                    # hardlink and wrapper identities remain separate requirements.
+                    return $path
+                }
+            }
+            return $null
+        }
+        function Read-PhpLoadedSource([string]$path) {
+            try {$raw=[IO.File]::ReadAllBytes($path)}
+            catch [UnauthorizedAccessException] {Throw-PhpSourceUnsupported 'permission/open error diagnostic contract'}
+            catch [IO.IOException] {Throw-PhpSourceUnsupported 'filesystem read error diagnostic contract'}
+            $bytes=[AllPhp.ByteValues.PhpBytes]::FromBytes($raw)
+            $text=$null
+            if(-not$bytes.TryDecodeUtf8([ref]$text)){Throw-PhpSourceUnsupported 'raw non-UTF8 source lexer; original source bytes were not replaced'}
+            return [pscustomobject]@{Bytes=$bytes;Text=$text;PhysicalPath=$path}
+        }
+        function Enter-PhpSourceUnitContext($unit) {
+            $saved=[pscustomobject]@{
+                ScriptName=$state.ScriptName;Line=$state.Line;ActiveSourceUnit=$state.ActiveSourceUnit
+                BuiltinCallPolicy=$state.BuiltinCallPolicy;LoadedUnitBody=$state.LoadedUnitBody
+                CompilerFields=[Collections.Generic.Dictionary[string,object]]::new([StringComparer]::Ordinal)
+            }
+            foreach($name in @('Tokens','TokenLines','Pos','NamespaceFallbacks','InlineHtml','DocStrings','LiteralWarnings','StrictDirectivePrefix','CompiledStrictTypes','ParsingInternalPrelude')) {
+                $saved.CompilerFields.Add($name,$state[$name])
+            }
+            if(-not[object]::ReferenceEquals($unit,$state.InternalSourceUnit)) {
+                $state.ScriptName=[string]$unit.SourcePath
+                if($state.SourceUnitArtifacts.ContainsKey($unit)) {
+                    $artifacts=$state.SourceUnitArtifacts[$unit]
+                    foreach($name in @('Tokens','TokenLines','NamespaceFallbacks','InlineHtml','DocStrings','LiteralWarnings','StrictDirectivePrefix','CompiledStrictTypes','ParsingInternalPrelude')){$state[$name]=$artifacts.$name}
+                    $state.Pos=$artifacts.Position
+                }
+            }
+            $state.ActiveSourceUnit=$unit;$state.BuiltinCallPolicy=$null;$state.LoadedUnitBody=$false
+            return $saved
+        }
+        function Exit-PhpSourceUnitContext($saved) {
+            foreach($name in $saved.CompilerFields.Keys){$state[$name]=$saved.CompilerFields[$name]}
+            $state.ScriptName=$saved.ScriptName;$state.Line=$saved.Line
+            $state.ActiveSourceUnit=$saved.ActiveSourceUnit;$state.BuiltinCallPolicy=$saved.BuiltinCallPolicy
+            $state.LoadedUnitBody=$saved.LoadedUnitBody
+        }
+        function Get-PhpNestedParseMessage($compilation) {
+            if($null-ne$compilation.CompileError){return [string]$compilation.CompileError.Message}
+            $tokens=$compilation.FailureTokens
+            if($compilation.FailureToken-ceq'(EOF)') {
+                $open=[Collections.Generic.Stack[string]]::new()
+                foreach($token in $tokens) {
+                    if($token-cin@('(','[','{')){$open.Push($token)}
+                    elseif($token-cin@(')',']','}')-and$open.Count){[void]$open.Pop()}
+                }
+                if($open.Count){return ("Unclosed '"+$open.Peek()+"'")}
+                return 'syntax error, unexpected end of file'
+            }
+            # Detailed expected-token lists and all parser recovery messages are
+            # still unverified. Preserve the observed unexpected token, not UTF8 replacement.
+            return ('syntax error, unexpected token "'+$compilation.FailureToken+'"')
+        }
+        function Raise-PhpLoadedCompileFailure($compilation) {
+            $info=$compilation.CompileError
+            $carrier=[string]$compilation.ErrorRecord.Exception.Message
+            if($carrier.StartsWith('ALL PHP: Unsupported',[StringComparison]::Ordinal)-or
+               $carrier.Contains(' is not implemented')-or$carrier.Contains(' are not implemented')-or$carrier.Contains('not yet supported')) {
+                Throw-PhpSourceUnsupported ('nested compiler capability: '+$carrier)
+            }
+            if($null-eq$info-and$compilation.FailureToken-cne'(EOF)') {
+                # Do not disguise an unimplemented valid grammar form as a PHP
+                # ParseError solely because the subset parser did not recognize it.
+                Throw-PhpSourceUnsupported ('nested parse diagnostic/classification: '+$carrier)
+            }
+            if($null-ne$info-and$info.Type-ceq'CompileError') {
+                # Official controls: these E_COMPILE_ERROR diagnostics are not
+                # catchable merely because a CompileError class exists.
+                if($isCli) {
+                    [Console]::Error.Write('Fatal error: '+$info.Message+' in '+$info.SourcePath+' on line '+$info.Line+"`nStack trace:`n#0 {main}`n")
+                    $CliContext['ExitCode']=[long]255;$CliContext['Terminated']=$true;$CliContext['TerminationReason']='compile_error'
+                    $signal=[Exception]::new('ALL PHP: private CLI loaded compile failure')
+                    $signal.Data['AllPhpCliExit']=$cliExitToken;throw $signal
+                }
+                throw ('ALL PHP: '+$info.Message)
+            }
+            $message=Get-PhpNestedParseMessage $compilation
+            $line=[long]$compilation.FailureLine
+            if($null-ne$info){$line=[long]$info.Line}
+            Ensure-PhpPrelude
+            $object=Invoke-PhpExpr ([pscustomobject]@{Kind='new';Name='ParseError';Args=@([pscustomobject]@{Kind='literal';Value=(To-PhpBytes $message)})})
+            $object.Props['file']=To-PhpBytes $compilation.SourcePath
+            $object.Props['line']=$line
+            Throw-PhpObject $object
+        }
+        function Invoke-PhpLoadedUnit($compiled,[bool]$isEval,[string]$construct,$sourceArgument) {
+            $oldFlow=$state.Flow;$oldReturnByRef=$state.ReturnByRef
+            $context=Enter-PhpSourceUnitContext $compiled.SourceUnit
+            $state.Flow=@{Returned=$false;ReturnedWithExpr=$false;Value=$null;RefCell=$null;LoopControl=$null;LoopDepth=0}
+            $state.ReturnByRef=$false;$state.LoadedUnitBody=$true
+            [void]$state.CallStack.Add([pscustomobject]@{Name=$construct;Line=$context.Line;SourcePath=$context.ScriptName;Args=@()})
+            try {
+                foreach($warning in $compiled.CompileArtifacts.LiteralWarnings) {
+                    $state.Line=$warning.Line;Write-PhpDiagnostic $warning.Level $warning.Message
+                }
+                foreach($token in $compiled.CompileArtifacts.Tokens){if($phpPreludeTriggers.Contains($token)){Ensure-PhpPrelude;break}}
+                foreach($declaration in $compiled.Statements) {
+                    if ($declaration.Kind -ceq 'functiondef') {
+                        if (Test-PhpRegisteredPublicFunction $declaration.Name) {
+                            Throw-PhpRegisteredFunctionRedeclaration $declaration
+                        }
+                        if ($state.Functions.ContainsKey($declaration.Name)) {
+                            Throw-PhpUserFunctionRedeclaration $declaration
+                        }
+                        $state.Functions[$declaration.Name] = $declaration
+                        $declaration | Add-Member -NotePropertyName Hoisted -NotePropertyValue $true -Force
+                    }
+                }
+                foreach($statement in $compiled.Statements) {
+                    if($state.Flow.Returned){break}
+                    Invoke-PhpStatement $statement
+                }
+                if($state.Flow.Returned){return (Copy-PhpValue $state.Flow.Value)}
+                if($isEval){return $null}
+                return [long]1
+            } finally {
+                if($state.CallStack.Count){$state.CallStack.RemoveAt($state.CallStack.Count-1)}
+                $state.Flow=$oldFlow;$state.ReturnByRef=$oldReturnByRef
+                Exit-PhpSourceUnitContext $context
+            }
+        }
+        function Invoke-PhpSourceConstruct($node) {
+            $oldLine=$state.Line
+            try {
+                $state.Line=[long]$node.Line
+                $operand=To-PhpBytes (Invoke-PhpExpr $node.Operand)
+                $isEval=($node.Construct-ceq'eval')
+                if($isEval) {
+                    $text=$null
+                    if(-not$operand.TryDecodeUtf8([ref]$text)){Throw-PhpSourceUnsupported 'raw non-UTF8 eval source lexer; original bytes were not replaced'}
+                    $display=$state.ScriptName+'('+$node.Line+") : eval()'d code"
+                    $compiled=Compile-PhpNestedSourceUnit $text $display $true
+                    if(-not$compiled.Succeeded){Raise-PhpLoadedCompileFailure $compiled}
+                    $compiled|Add-Member -NotePropertyName RawSourceBytes -NotePropertyValue $operand
+                    return (Invoke-PhpLoadedUnit $compiled $true 'eval' $operand)
+                }
+                $pathText=$null
+                if(-not$operand.TryDecodeUtf8([ref]$pathText)){Throw-PhpSourceUnsupported 'raw OS byte filename boundary'}
+                $physical=Resolve-PhpLocalSourcePath $pathText
+                if($null-eq$physical) {
+                    $pathSetting=Get-PhpSourceIncludePath
+                    Write-PhpDiagnostic 2 ($node.Construct+'('+$pathText+'): Failed to open stream: No such file or directory')
+                    if($node.Construct-cin@('require','require_once')) {Throw-PhpError 'Error' ("Failed opening required '"+$pathText+"' (include_path='"+$pathSetting+"')")}
+                    Write-PhpDiagnostic 2 ($node.Construct+"(): Failed opening '"+$pathText+"' for inclusion (include_path='"+$pathSetting+"')")
+                    return $false
+                }
+                $once=($node.Construct-cin@('include_once','require_once'))
+                if($once-and$state.SourceFilesSet.Contains($physical)){return $true}
+                if($physical.EndsWith('.all',[StringComparison]::OrdinalIgnoreCase)) {
+                    Add-PhpIncludedSource $physical
+                    $allText=[IO.File]::ReadAllText($physical,[Text.UTF8Encoding]::new($false,$true))
+                    $allText=$allText.TrimStart([char]0xFEFF)
+                    return (Invoke-PhpPolyglotAllCode $allText $physical)
+                }
+                $input=Read-PhpLoadedSource $physical
+                # Once registration precedes compilation, including ParseError.
+                Add-PhpIncludedSource $physical
+                $compiled=Compile-PhpNestedSourceUnit $input.Text $physical $false
+                if(-not$compiled.Succeeded){Raise-PhpLoadedCompileFailure $compiled}
+                $compiled|Add-Member -NotePropertyName RawSourceBytes -NotePropertyValue $input.Bytes
+                return (Invoke-PhpLoadedUnit $compiled $false $node.Construct $operand)
+            } finally {$state.Line=$oldLine}
+        }
+
+        function New-PhpSourceCompileFailure([string]$phase, $errorRecord) {
+            $compileError=$null
+            if($isCli-and($CliContext.Keys-contains'CompileError')){$compileError=$CliContext['CompileError']}
+            if($null-ne$state.SourceCompileDiagnostic){$compileError=$state.SourceCompileDiagnostic}
+            $failurePosition=[Math]::Min([int]$state.Pos,[Math]::Max(0,$state.Tokens.Count-1))
+            $failureToken=if($state.Tokens.Count){$state.Tokens[$failurePosition]}else{'(EOF)'}
+            $failureLine=if($state.TokenLines.Count){[long]$state.TokenLines[$failurePosition]}else{[long]1}
+            return [pscustomobject]@{
+                Succeeded=$false;Phase=$phase;ErrorRecord=$errorRecord;CompileError=$compileError
+                SourcePath=$state.ScriptName;RootRendered=$false
+                FailureToken=$failureToken;FailureLine=$failureLine;FailureTokens=$state.Tokens
+            }
+        }
+        function Compile-PhpSourceUnit([string]$sourceText,[string]$sourceMode='legacy') {
+            # Compile only. Root and nested callers choose their own failure boundary.
+            $state.SourceCompileDiagnostic=$null
+            try {
+                if($sourceMode-in@('body','file','stdin')) {
+                    ConvertTo-PhpTokens $sourceText $state.Tokens $state.TokenLines $true ($sourceMode-ceq'body')
+                } else {ConvertTo-PhpTokens $sourceText $state.Tokens $state.TokenLines}
+            } catch {return (New-PhpSourceCompileFailure 'tokenize' $_)}
+            try {
+        # Only programs that actually use namespaces, imports or qualified names take this pass.
+        $needsNameResolution = $false
+        for ($scan = 0; $scan -lt $state.Tokens.Count; $scan++) {
+            $candidate = $state.Tokens[$scan]
+            if ($candidate.Length -eq 0) { continue }
+            $firstChar = $candidate[0]
+            if ($firstChar -eq [char]'"' -or $firstChar -eq [char]"'" -or $firstChar -eq [char]'$') { continue }
+            if ($candidate.Contains('\') -or $candidate -ieq 'namespace' -or $candidate -ieq '__NAMESPACE__') {
+                $needsNameResolution = $true; break
+            }
+            if ($candidate -ieq 'use' -and $scan + 1 -lt $state.Tokens.Count -and
+                $state.Tokens[$scan + 1] -cne '(') { $needsNameResolution = $true; break }
+        }
+        $state.StrictDirectivePrefix=Get-PhpDirectivePrefix $state.Tokens
+            } catch {return (New-PhpSourceCompileFailure 'prefix-scan' $_)}
+            if ($needsNameResolution) {
+                try {$resolvedNames=Resolve-PhpNamespaceTokens $state.Tokens $state.TokenLines}
+                catch {return (New-PhpSourceCompileFailure 'namespace' $_)}
+                $state.Tokens=$resolvedNames.Tokens
+                $state.NamespaceFallbacks=$resolvedNames.Fallbacks
+                $state.TokenLines=$resolvedNames.Lines
+            }
+            try {
+        for($strictPrefixIndex=0;$strictPrefixIndex-lt$state.StrictDirectivePrefix.Length;$strictPrefixIndex++) {
+            if(-not[StringComparer]::Ordinal.Equals($state.Tokens[$strictPrefixIndex],$state.StrictDirectivePrefix.Tokens[$strictPrefixIndex])){throw 'ALL PHP: strict directive prefix changed during namespace resolution'}
+        }
+            } catch {return (New-PhpSourceCompileFailure 'prefix-guard' $_)}
+            $state.ParameterTypeCompileEvents=[Collections.Generic.List[object]]::new()
+            $statements=[Collections.Generic.List[object]]::new()
+            try {
+                while((Peek-Token)-cne'(EOF)'){[void]$statements.Add((Read-Statement))}
+                Complete-PhpSourceUnit ($statements.ToArray())
+            } catch {return (New-PhpSourceCompileFailure 'parse' $_)}
+            $artifacts=[pscustomobject]@{
+                Tokens=$state.Tokens;TokenLines=$state.TokenLines;Position=$state.Pos
+                NamespaceFallbacks=$state.NamespaceFallbacks;InlineHtml=$state.InlineHtml
+                DocStrings=$state.DocStrings;LiteralWarnings=$state.LiteralWarnings
+                StrictDirectivePrefix=$state.StrictDirectivePrefix
+                CompiledStrictTypes=$state.CompiledStrictTypes
+                ParsingInternalPrelude=$state.ParsingInternalPrelude
+            }
+            $state.SourceUnitArtifacts[$state.ActiveSourceUnit]=$artifacts
+            return [pscustomobject]@{
+                Succeeded=$true;Phase='complete';Statements=$statements
+                SourceUnit=$state.ActiveSourceUnit;SourcePath=$state.ScriptName;SourceMode=$sourceMode
+                SourceRepresentation='existing Code string; no decoding added'
+                CompileArtifacts=$artifacts
+            }
+        }
+        function Compile-PhpNestedSourceUnit([string]$sourceText,[string]$displayPath,[bool]$startInPhpCode) {
+            # No root renderer, process exit, fresh adapter or new global table.
+            # This returns structured compile failure. Mapping it to a PHP nested
+            # ParseError/CompileError is a later source-loader boundary, not enabled here.
+            $compileAction={
+                param($nestedText,$nestedStartsInCode)
+                $mode=if($nestedStartsInCode){'body'}else{'file'}
+                Compile-PhpSourceUnit $nestedText $mode
+            }
+            return (Invoke-PhpSourceCompileTransaction $state $sourceText $displayPath $startInPhpCode $compileAction $CliContext)
+        }
+        function Write-PhpDiagnostic([long]$level, $message) {
+            $messageBytes=To-PhpBytes $message
+            if ($null -ne $state.ErrorHandler -and -not $state.InErrorHandler -and
+                (($state.ErrorHandlerMask -band $level) -ne 0)) {
+                $handlerArgs=@($level,$messageBytes,(To-PhpBytes ([string]$state.ScriptName)),[long]$state.Line)
+                # PHP supplies four actual arguments independently of the
+                # user handler's declared fixed or variadic parameter count.
+                $state.InErrorHandler=$true
+                $handled=$null
+                $savedLine=$state.Line
+                try { $handled=Invoke-PhpValueCallable $state.ErrorHandler $handlerArgs '' (New-PhpInternalCallPolicy) }
+                finally { $state.InErrorHandler=$false;$state.Line=$savedLine }
+                if (-not ($handled -is [bool] -and -not $handled)) { return }
+            }
+            if (-not $PhpDiagnostics -and -not $isCli) { return }
+            if ($state.SilenceDepth -gt 0) { return }
+            if (($state.ErrorReporting -band $level) -eq 0) { return }
+            $label='Warning'
+            if ($level -eq 8 -or $level -eq 1024) { $label='Notice' }
+            elseif ($level -eq 8192 -or $level -eq 16384) { $label='Deprecated' }
+            elseif ($level -eq 256) { $label='Fatal error' }
+            $builder=[AllPhp.ByteValues.PhpByteBuilder]::new()
+            if (-not $isCli) { $builder.AppendUtf8("`n") }
+            $builder.AppendUtf8($label+': ');$builder.Append($messageBytes)
+            $builder.AppendUtf8(' in '+$state.ScriptName+' on line '+$state.Line+"`n")
+            Write-PhpBytes ($builder.ToPhpBytes()) $isCli
+        }
+        if ($isCli -and ($CliContext.Keys -contains 'InitialIni')) {
+            foreach ($setting in $CliContext['InitialIni'].Keys) {
+                $state.Ini[[string]$setting] = [string]$CliContext['InitialIni'][$setting]
+            }
+            if ($state.Ini.ContainsKey('error_reporting')) {
+                $state.ErrorReporting = [long]$state.Ini['error_reporting']
+            }
+        }
+        $state | Add-Member -NotePropertyName InitialZendAssertions -NotePropertyValue $(if ($state.Ini.ContainsKey('zend.assertions')) { [string]$state.Ini['zend.assertions'] } else { '1' }) -Force
+        # Root compilation uses the same compile-only entry as future nested units.
+        $rootSourceMode='legacy'
+        if($isCli-and($CliContext.Keys-contains'SourceMode')-and$CliContext['SourceMode']-in@('body','file','stdin')){$rootSourceMode=[string]$CliContext['SourceMode']}
+        $rootCompilation=Compile-PhpSourceUnit $source $rootSourceMode
+        if(-not$rootCompilation.Succeeded) {
+            if($rootCompilation.Phase-ceq'tokenize') {
+                try {throw $rootCompilation.ErrorRecord} catch {
+            if (-not $isCli -or -not ($CliContext.Keys -contains 'CompileError')) { throw }
+            $literalError=$CliContext['CompileError']
+            [Console]::Error.Write('Parse error: '+$literalError.Message+' in '+$literalError.SourcePath+' on line '+$literalError.Line+"`n")
+            $CliContext['ExitCode']=[long]255;$CliContext['Terminated']=$true;$CliContext['TerminationReason']='compile_error'
+            return
+                }
+            } elseif($rootCompilation.Phase-ceq'namespace') {
+                try {throw $rootCompilation.ErrorRecord} catch {
+                if (-not $isCli -or -not ($CliContext.Keys -contains 'CompileError')) { throw }
+                $compileError = $CliContext['CompileError']
+                [Console]::Error.Write('Fatal error: ' + $compileError.Message + ' in ' +
+                    $compileError.SourcePath + ' on line ' + $compileError.Line +
+                    "`nStack trace:`n#0 {main}`n")
+                $CliContext['ExitCode'] = [long]255
+                $CliContext['Terminated'] = $true
+                $CliContext['TerminationReason'] = 'compile_error'
+                return
+                }
+            } elseif($rootCompilation.Phase-ceq'parse') {
+                try {throw $rootCompilation.ErrorRecord} catch {
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
             if (-not $isCli -or -not ($CliContext.Keys -contains 'CompileError')) { throw }
             $compileError = $CliContext['CompileError']
-            [Console]::Error.Write('Parse error: ' + $compileError.Message + ' in ' +
+            $compilePrefix=if($compileError.Type-ceq'CompileError'){'Fatal error: '}else{'Parse error: '}
+            [Console]::Error.Write($compilePrefix + $compileError.Message + ' in ' +
                 $compileError.SourcePath + ' on line ' + $compileError.Line + "`n")
+            if($compileError.Type-ceq'CompileError'){[Console]::Error.Write("Stack trace:`n#0 {main}`n")}
             $CliContext['ExitCode'] = [long]255
             $CliContext['Terminated'] = $true
             $CliContext['TerminationReason'] = 'compile_error'
             return
+                }
+            } else {throw $rootCompilation.ErrorRecord}
         }
+        $statements=$rootCompilation.Statements
+        if($isCli-and($CliContext.Keys-contains'SourceMode')-and$CliContext['SourceMode']-ceq'file'){Add-PhpIncludedSource ([IO.Path]::GetFullPath($state.ScriptName))}
 
         # ---- PHP exceptions --------------------------------------------------------------------
         # Built-in Throwable hierarchy, written in PHP and parsed by this interpreter on first use.
@@ -2502,6 +5479,8 @@ class RangeException extends RuntimeException {}
 class UnderflowException extends RuntimeException {}
 class UnexpectedValueException extends RuntimeException {}
 class JsonException extends Exception {}
+class CompileError extends Error {}
+class ParseError extends CompileError {}
 class TypeError extends Error {}
 class ArgumentCountError extends TypeError {}
 class ValueError extends Error {}
@@ -2509,21 +5488,253 @@ class ArithmeticError extends Error {}
 class DivisionByZeroError extends ArithmeticError {}
 class AssertionError extends Error {}
 class UnhandledMatchError extends Error {}
-"@
-        $phpPreludeTriggers = [System.Collections.Generic.HashSet[string]]::new(
-            [System.StringComparer]::OrdinalIgnoreCase)
-        foreach ($word in @('try','catch','throw','Throwable','Stringable','Exception','Error','ErrorException',
-            'RuntimeException','LogicException','BadFunctionCallException','BadMethodCallException',
-            'DomainException','InvalidArgumentException','LengthException','OutOfRangeException',
-            'OutOfBoundsException','OverflowException','RangeException','UnderflowException',
-            'UnexpectedValueException','JsonException','TypeError','ArgumentCountError','ValueError',
-            'ArithmeticError','DivisionByZeroError','AssertionError','UnhandledMatchError')) {
-            [void]$phpPreludeTriggers.Add($word)
+"@ + @'
+interface Traversable {}
+interface Iterator extends Traversable {
+    public function current();
+    public function key();
+    public function next();
+    public function rewind();
+    public function valid();
+}
+interface IteratorAggregate extends Traversable {
+    public function getIterator();
+}
+interface Countable {
+    public function count();
+}
+interface ArrayAccess {
+    public function offsetExists($offset);
+    public function offsetGet($offset);
+    public function offsetSet($offset, $value);
+    public function offsetUnset($offset);
+}
+#[Attribute]
+final class Attribute {
+    public const TARGET_CLASS = 1;
+    public const TARGET_FUNCTION = 2;
+    public const TARGET_METHOD = 4;
+    public const TARGET_PROPERTY = 8;
+    public const TARGET_CLASS_CONSTANT = 16;
+    public const TARGET_PARAMETER = 32;
+    public const TARGET_ALL = 63;
+    public const IS_REPEATABLE = 64;
+    public int $flags;
+    public function __construct(int $flags = 63) {
+        $this->flags = $flags;
+    }
+}
+final class Generator implements Iterator {
+    public function current() { return __all_internal_dispatch('Generator::current', $this); }
+    public function key() { return __all_internal_dispatch('Generator::key', $this); }
+    public function next() { return __all_internal_dispatch('Generator::next', $this); }
+    public function rewind() { return __all_internal_dispatch('Generator::rewind', $this); }
+    public function valid() { return __all_internal_dispatch('Generator::valid', $this); }
+    public function send($value) { return __all_internal_dispatch('Generator::send', $this, $value); }
+    public function throw($exception) { return __all_internal_dispatch('Generator::throw', $this, $exception); }
+    public function getReturn() { return __all_internal_dispatch('Generator::getReturn', $this); }
+}
+class ReflectionException extends Exception {}
+class ReflectionType {
+    public function allowsNull() { return __all_internal_dispatch('ReflectionNamedType::allowsNull', $this); }
+    public function __toString() { return __all_internal_dispatch('ReflectionNamedType::__toString', $this); }
+}
+class ReflectionNamedType extends ReflectionType {
+    public function getName() { return __all_internal_dispatch('ReflectionNamedType::getName', $this); }
+    public function isBuiltin() { return __all_internal_dispatch('ReflectionNamedType::isBuiltin', $this); }
+}
+class ReflectionAttribute {
+    public const IS_INSTANCEOF = 2;
+    public function getName() { return __all_internal_dispatch('ReflectionAttribute::getName', $this); }
+    public function getArguments() { return __all_internal_dispatch('ReflectionAttribute::getArguments', $this); }
+    public function newInstance() { return __all_internal_dispatch('ReflectionAttribute::newInstance', $this); }
+}
+class ReflectionParameter {
+    public string $name = '';
+    public function __construct($function, $param) { __all_internal_dispatch('ReflectionParameter::__construct', $this, $function, $param); }
+    public function getName() { return __all_internal_dispatch('ReflectionParameter::getName', $this); }
+    public function getPosition() { return __all_internal_dispatch('ReflectionParameter::getPosition', $this); }
+    public function hasType() { return __all_internal_dispatch('ReflectionParameter::hasType', $this); }
+    public function getType() { return __all_internal_dispatch('ReflectionParameter::getType', $this); }
+    public function allowsNull() { return __all_internal_dispatch('ReflectionParameter::allowsNull', $this); }
+    public function isOptional() { return __all_internal_dispatch('ReflectionParameter::isOptional', $this); }
+    public function isDefaultValueAvailable() { return __all_internal_dispatch('ReflectionParameter::isDefaultValueAvailable', $this); }
+    public function getDefaultValue() { return __all_internal_dispatch('ReflectionParameter::getDefaultValue', $this); }
+    public function isPassedByReference() { return __all_internal_dispatch('ReflectionParameter::isPassedByReference', $this); }
+    public function isVariadic() { return __all_internal_dispatch('ReflectionParameter::isVariadic', $this); }
+    public function isPromoted() { return __all_internal_dispatch('ReflectionParameter::isPromoted', $this); }
+    public function getAttributes($name = null, int $flags = 0) { return __all_internal_dispatch('ReflectionParameter::getAttributes', $this, $name, $flags); }
+}
+class ReflectionProperty {
+    public string $name = '';
+    public string $class = '';
+    public function __construct($class, string $property) { __all_internal_dispatch('ReflectionProperty::__construct', $this, $class, $property); }
+    public function getName() { return $this->name; }
+    public function getDeclaringClass() { return __all_internal_dispatch('ReflectionProperty::getDeclaringClass', $this); }
+    public function isPublic() { return __all_internal_dispatch('ReflectionProperty::isPublic', $this); }
+    public function isProtected() { return __all_internal_dispatch('ReflectionProperty::isProtected', $this); }
+    public function isPrivate() { return __all_internal_dispatch('ReflectionProperty::isPrivate', $this); }
+    public function isStatic() { return __all_internal_dispatch('ReflectionProperty::isStatic', $this); }
+    public function isReadOnly() { return __all_internal_dispatch('ReflectionProperty::isReadOnly', $this); }
+    public function isPromoted() { return __all_internal_dispatch('ReflectionProperty::isPromoted', $this); }
+    public function hasType() { return __all_internal_dispatch('ReflectionProperty::hasType', $this); }
+    public function getType() { return __all_internal_dispatch('ReflectionProperty::getType', $this); }
+    public function hasDefaultValue() { return __all_internal_dispatch('ReflectionProperty::hasDefaultValue', $this); }
+    public function getDefaultValue() { return __all_internal_dispatch('ReflectionProperty::getDefaultValue', $this); }
+    public function isInitialized($object = null) { return __all_internal_dispatch('ReflectionProperty::isInitialized', $this, $object); }
+    public function getValue($object = null) { return __all_internal_dispatch('ReflectionProperty::getValue', $this, $object); }
+    public function setValue($objectOrValue, $value = null) { return __all_internal_dispatch('ReflectionProperty::setValue', $this, $objectOrValue, $value); }
+    public function getAttributes($name = null, int $flags = 0) { return __all_internal_dispatch('ReflectionProperty::getAttributes', $this, $name, $flags); }
+}
+class ReflectionFunction {
+    public string $name = '';
+    public function __construct($function) { __all_internal_dispatch('ReflectionFunction::__construct', $this, $function); }
+    public function getName() { return $this->name; }
+    public function isClosure() { return __all_internal_dispatch('ReflectionFunction::isClosure', $this); }
+    public function isGenerator() { return __all_internal_dispatch('ReflectionFunction::isGenerator', $this); }
+    public function getNumberOfParameters() { return __all_internal_dispatch('ReflectionFunction::getNumberOfParameters', $this); }
+    public function getNumberOfRequiredParameters() { return __all_internal_dispatch('ReflectionFunction::getNumberOfRequiredParameters', $this); }
+    public function getParameters() { return __all_internal_dispatch('ReflectionFunction::getParameters', $this); }
+    public function hasReturnType() { return __all_internal_dispatch('ReflectionFunction::hasReturnType', $this); }
+    public function getReturnType() { return __all_internal_dispatch('ReflectionFunction::getReturnType', $this); }
+    public function getAttributes($name = null, int $flags = 0) { return __all_internal_dispatch('ReflectionFunction::getAttributes', $this, $name, $flags); }
+    public function invoke(...$args) { return __all_internal_dispatch('ReflectionFunction::invoke', $this, $args); }
+    public function invokeArgs(array $args) { return __all_internal_dispatch('ReflectionFunction::invoke', $this, $args); }
+}
+class ReflectionMethod {
+    public string $name = '';
+    public string $class = '';
+    public function __construct($objectOrMethod, $method = null) { __all_internal_dispatch('ReflectionMethod::__construct', $this, $objectOrMethod, $method); }
+    public function getName() { return $this->name; }
+    public function getDeclaringClass() { return __all_internal_dispatch('ReflectionMethod::getDeclaringClass', $this); }
+    public function isPublic() { return __all_internal_dispatch('ReflectionMethod::isPublic', $this); }
+    public function isProtected() { return __all_internal_dispatch('ReflectionMethod::isProtected', $this); }
+    public function isPrivate() { return __all_internal_dispatch('ReflectionMethod::isPrivate', $this); }
+    public function isStatic() { return __all_internal_dispatch('ReflectionMethod::isStatic', $this); }
+    public function isAbstract() { return __all_internal_dispatch('ReflectionMethod::isAbstract', $this); }
+    public function isFinal() { return __all_internal_dispatch('ReflectionMethod::isFinal', $this); }
+    public function isConstructor() { return __all_internal_dispatch('ReflectionMethod::isConstructor', $this); }
+    public function isGenerator() { return __all_internal_dispatch('ReflectionMethod::isGenerator', $this); }
+    public function getNumberOfParameters() { return __all_internal_dispatch('ReflectionMethod::getNumberOfParameters', $this); }
+    public function getNumberOfRequiredParameters() { return __all_internal_dispatch('ReflectionMethod::getNumberOfRequiredParameters', $this); }
+    public function getParameters() { return __all_internal_dispatch('ReflectionMethod::getParameters', $this); }
+    public function hasReturnType() { return __all_internal_dispatch('ReflectionMethod::hasReturnType', $this); }
+    public function getReturnType() { return __all_internal_dispatch('ReflectionMethod::getReturnType', $this); }
+    public function getAttributes($name = null, int $flags = 0) { return __all_internal_dispatch('ReflectionMethod::getAttributes', $this, $name, $flags); }
+    public function invoke($object, ...$args) { return __all_internal_dispatch('ReflectionMethod::invoke', $this, $object, $args); }
+    public function invokeArgs($object, array $args) { return __all_internal_dispatch('ReflectionMethod::invoke', $this, $object, $args); }
+}
+class ReflectionClass {
+    public string $name = '';
+    public function __construct($objectOrClass) { __all_internal_dispatch('ReflectionClass::__construct', $this, $objectOrClass); }
+    public function getName() { return $this->name; }
+    public function getShortName() { return __all_internal_dispatch('ReflectionClass::getShortName', $this); }
+    public function getNamespaceName() { return __all_internal_dispatch('ReflectionClass::getNamespaceName', $this); }
+    public function isAbstract() { return __all_internal_dispatch('ReflectionClass::isAbstract', $this); }
+    public function isFinal() { return __all_internal_dispatch('ReflectionClass::isFinal', $this); }
+    public function isInterface() { return __all_internal_dispatch('ReflectionClass::isInterface', $this); }
+    public function isTrait() { return __all_internal_dispatch('ReflectionClass::isTrait', $this); }
+    public function isEnum() { return __all_internal_dispatch('ReflectionClass::isEnum', $this); }
+    public function isReadOnly() { return __all_internal_dispatch('ReflectionClass::isReadOnly', $this); }
+    public function isInstantiable() { return __all_internal_dispatch('ReflectionClass::isInstantiable', $this); }
+    public function getParentClass() { return __all_internal_dispatch('ReflectionClass::getParentClass', $this); }
+    public function getInterfaceNames() { return __all_internal_dispatch('ReflectionClass::getInterfaceNames', $this); }
+    public function implementsInterface(string $interface) { return __all_internal_dispatch('ReflectionClass::implementsInterface', $this, $interface); }
+    public function hasMethod(string $name) { return __all_internal_dispatch('ReflectionClass::hasMethod', $this, $name); }
+    public function getMethod(string $name) { return __all_internal_dispatch('ReflectionClass::getMethod', $this, $name); }
+    public function getMethods() { return __all_internal_dispatch('ReflectionClass::getMethods', $this); }
+    public function hasProperty(string $name) { return __all_internal_dispatch('ReflectionClass::hasProperty', $this, $name); }
+    public function getProperty(string $name) { return __all_internal_dispatch('ReflectionClass::getProperty', $this, $name); }
+    public function getProperties() { return __all_internal_dispatch('ReflectionClass::getProperties', $this); }
+    public function hasConstant(string $name) { return __all_internal_dispatch('ReflectionClass::hasConstant', $this, $name); }
+    public function getConstant(string $name) { return __all_internal_dispatch('ReflectionClass::getConstant', $this, $name); }
+    public function getConstants() { return __all_internal_dispatch('ReflectionClass::getConstants', $this); }
+    public function getAttributes($name = null, int $flags = 0) { return __all_internal_dispatch('ReflectionClass::getAttributes', $this, $name, $flags); }
+    public function newInstance(...$args) { return __all_internal_dispatch('ReflectionClass::newInstance', $this, $args); }
+    public function newInstanceArgs(array $args = []) { return __all_internal_dispatch('ReflectionClass::newInstance', $this, $args); }
+    public function newInstanceWithoutConstructor() { return __all_internal_dispatch('ReflectionClass::newInstanceWithoutConstructor', $this); }
+}
+class ReflectionConstant {
+    public string $name = '';
+    public function __construct(string $name) { __all_internal_dispatch('ReflectionConstant::__construct', $this, $name); }
+    public function getName(): string { return $this->name; }
+    public function getValue(): mixed { return __all_internal_dispatch('ReflectionConstant::getValue', $this); }
+    public function isDeprecated(): bool { return __all_internal_dispatch('ReflectionConstant::isDeprecated', $this); }
+    public function getNamespaceName(): string { return __all_internal_dispatch('ReflectionConstant::getNamespaceName', $this); }
+    public function getShortName(): string { return __all_internal_dispatch('ReflectionConstant::getShortName', $this); }
+    public function inNamespace(): bool { return __all_internal_dispatch('ReflectionConstant::inNamespace', $this); }
+    public function getAttributes(?string $name = null, int $flags = 0): array { return __all_internal_dispatch('ReflectionConstant::getAttributes', $this, $name, $flags); }
+    public function __toString(): string { return __all_internal_dispatch('ReflectionConstant::__toString', $this); }
+}
+class ArrayIterator implements Iterator, ArrayAccess, Countable {
+    public function __construct($array = [], int $flags = 0) { __all_internal_dispatch('ArrayIterator::__construct', $this, $array, $flags); }
+    public function rewind(): void { __all_internal_dispatch('ArrayIterator::rewind', $this); }
+    public function valid(): bool { return __all_internal_dispatch('ArrayIterator::valid', $this); }
+    public function current(): mixed { return __all_internal_dispatch('ArrayIterator::current', $this); }
+    public function key(): mixed { return __all_internal_dispatch('ArrayIterator::key', $this); }
+    public function next(): void { __all_internal_dispatch('ArrayIterator::next', $this); }
+    public function offsetExists(mixed $key): bool { return __all_internal_dispatch('ArrayContainer::offsetExists', $this, $key); }
+    public function offsetGet(mixed $key): mixed { return __all_internal_dispatch('ArrayContainer::offsetGet', $this, $key); }
+    public function offsetSet(mixed $key, mixed $value): void { __all_internal_dispatch('ArrayContainer::offsetSet', $this, $key, $value); }
+    public function offsetUnset(mixed $key): void { __all_internal_dispatch('ArrayContainer::offsetUnset', $this, $key); }
+    public function count(): int { return __all_internal_dispatch('ArrayContainer::count', $this); }
+    public function getArrayCopy(): array { return __all_internal_dispatch('ArrayContainer::getArrayCopy', $this); }
+    public function append(mixed $value): void { __all_internal_dispatch('ArrayContainer::append', $this, $value); }
+    public function seek(int $offset): void { __all_internal_dispatch('ArrayIterator::seek', $this, $offset); }
+}
+class ArrayObject implements IteratorAggregate, ArrayAccess, Countable {
+    public const STD_PROP_LIST = 1;
+    public const ARRAY_AS_PROPS = 2;
+    public function __construct($array = [], int $flags = 0, string $iteratorClass = 'ArrayIterator') { __all_internal_dispatch('ArrayObject::__construct', $this, $array, $flags, $iteratorClass); }
+    public function getIterator(): Iterator { return __all_internal_dispatch('ArrayObject::getIterator', $this); }
+    public function offsetExists(mixed $key): bool { return __all_internal_dispatch('ArrayContainer::offsetExists', $this, $key); }
+    public function offsetGet(mixed $key): mixed { return __all_internal_dispatch('ArrayContainer::offsetGet', $this, $key); }
+    public function offsetSet(mixed $key, mixed $value): void { __all_internal_dispatch('ArrayContainer::offsetSet', $this, $key, $value); }
+    public function offsetUnset(mixed $key): void { __all_internal_dispatch('ArrayContainer::offsetUnset', $this, $key); }
+    public function count(): int { return __all_internal_dispatch('ArrayContainer::count', $this); }
+    public function getArrayCopy(): array { return __all_internal_dispatch('ArrayContainer::getArrayCopy', $this); }
+    public function exchangeArray(mixed $array): array { return __all_internal_dispatch('ArrayObject::exchangeArray', $this, $array); }
+    public function append(mixed $value): void { __all_internal_dispatch('ArrayContainer::append', $this, $value); }
+}
+'@
+        if ($null -eq $script:ALLPhpPreludeTriggersV4) {
+            $triggers = [System.Collections.Generic.HashSet[string]]::new(
+                [AllPhp.ValidTextSymbols.Comparers]::Ascii)
+            foreach ($word in @('try','catch','throw','Throwable','Stringable','Exception','Error','ErrorException',
+                'RuntimeException','LogicException','BadFunctionCallException','BadMethodCallException','CompileError','ParseError',
+                'DomainException','InvalidArgumentException','LengthException','OutOfRangeException',
+                'OutOfBoundsException','OverflowException','RangeException','UnderflowException',
+                'UnexpectedValueException','JsonException','TypeError','ArgumentCountError','ValueError',
+                'ArithmeticError','DivisionByZeroError','AssertionError','UnhandledMatchError','Traversable','Iterator','IteratorAggregate','Countable','ArrayAccess','Attribute','Generator','ReflectionException','ReflectionType','ReflectionNamedType','ReflectionAttribute','ReflectionParameter','ReflectionProperty','ReflectionFunction','ReflectionMethod','ReflectionClass','ReflectionConstant','ArrayIterator','ArrayObject','yield')) {
+                [void]$triggers.Add($word)
+            }
+            $script:ALLPhpPreludeTriggersV4 = $triggers
         }
+        $phpPreludeTriggers = $script:ALLPhpPreludeTriggersV4
         function Ensure-PhpPrelude {
             if ($state.PreludeLoaded) { return }
             $state.PreludeLoaded = $true
-            if ($null -eq $script:ALLPhpPreludeAstPrivateThrowableV1) {
+            if ($null -ne $script:ALLPhpPreludeClassesCacheV4 -and $null -ne $script:ALLPhpPreludeInterfacesCacheV4) {
+                foreach ($kv in $script:ALLPhpPreludeInterfacesCacheV4.GetEnumerator()) {
+                    if (-not $state.Interfaces.ContainsKey($kv.Key)) {
+                        $state.Interfaces[$kv.Key] = $kv.Value
+                    }
+                }
+                foreach ($kv in $script:ALLPhpPreludeClassesCacheV4.GetEnumerator()) {
+                    if (-not $state.Classes.ContainsKey($kv.Key)) {
+                        $cVal = $kv.Value
+                        $state.Classes[$kv.Key] = [pscustomobject]@{
+                            Name=$cVal.Name; Parent=$cVal.Parent; Methods=$cVal.Methods
+                            Properties=$cVal.Properties; Constants=$cVal.Constants
+                            StaticValues=[System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::Ordinal)
+                            Interfaces=$cVal.Interfaces; Abstract=$cVal.Abstract; Final=$cVal.Final
+                            Readonly=$cVal.Readonly; Traits=$cVal.Traits; Attributes=$cVal.Attributes
+                        }
+                    }
+                }
+                return
+            }
+            if ($null -eq $script:ALLPhpPreludeAstPrivateThrowableSourceLoaderV4) {
                 $savedTokens = $state.Tokens
                 $savedLines = $state.TokenLines
                 $savedPos = $state.Pos
@@ -2540,7 +5751,7 @@ class UnhandledMatchError extends Error {}
                     ConvertTo-PhpTokens $phpPreludeSource $state.Tokens $state.TokenLines
                     $nodes = [System.Collections.Generic.List[object]]::new()
                     while ((Peek-Token) -cne '(EOF)') { [void]$nodes.Add((Read-Statement)) }
-                    $script:ALLPhpPreludeAstPrivateThrowableV1 = $nodes.ToArray()
+                    $script:ALLPhpPreludeAstPrivateThrowableSourceLoaderV4 = $nodes.ToArray()
                 } finally {
                     $state.Tokens = $savedTokens
                     $state.TokenLines = $savedLines
@@ -2551,9 +5762,1392 @@ class UnhandledMatchError extends Error {}
             }
             $savedLine = $state.Line
             $savedSteps = $state.Steps
-            foreach ($node in $script:ALLPhpPreludeAstPrivateThrowableV1) { Invoke-PhpStatement $node }
+            $preClasses = [System.Collections.Generic.HashSet[string]]::new([AllPhp.ValidTextSymbols.Comparers]::Ascii)
+            foreach ($k in $state.Classes.Keys) { [void]$preClasses.Add($k) }
+            $preIfaces = [System.Collections.Generic.HashSet[string]]::new([AllPhp.ValidTextSymbols.Comparers]::Ascii)
+            foreach ($k in $state.Interfaces.Keys) { [void]$preIfaces.Add($k) }
+            foreach ($node in $script:ALLPhpPreludeAstPrivateThrowableSourceLoaderV4) { Invoke-PhpStatement $node }
             $state.Line = $savedLine
             $state.Steps = $savedSteps
+            $clsCache = [System.Collections.Generic.Dictionary[string,object]]::new([AllPhp.ValidTextSymbols.Comparers]::Ascii)
+            foreach ($k in $state.Classes.Keys) {
+                if (-not $preClasses.Contains($k)) { $clsCache[$k] = $state.Classes[$k] }
+            }
+            $ifaceCache = [System.Collections.Generic.Dictionary[string,object]]::new([AllPhp.ValidTextSymbols.Comparers]::Ascii)
+            foreach ($k in $state.Interfaces.Keys) {
+                if (-not $preIfaces.Contains($k)) { $ifaceCache[$k] = $state.Interfaces[$k] }
+            }
+            $script:ALLPhpPreludeClassesCacheV4 = $clsCache
+            $script:ALLPhpPreludeInterfacesCacheV4 = $ifaceCache
+        }
+        # ---- Phase 2 & 3: Generators, Attributes/Reflection, and Polyglot Runtime Bridge ----
+        function New-PhpGeneratorObject($definition, $boundVars, $object, [string]$owner, $closure, $callPolicy, $passedArgs = @(), $paramNames = @()) {
+            Ensure-PhpPrelude
+            $initialVars = [System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::Ordinal)
+            foreach ($k in $boundVars.Keys) {
+                $v = $boundVars[$k]
+                if (Is-PhpRefCell $v) { $initialVars[$k] = $v }
+                else { $initialVars[$k] = Copy-PhpValue $v }
+            }
+            $genState = [pscustomobject]@{
+                Definition = $definition
+                InitialVars = $initialVars
+                Object = $object
+                Owner = $owner
+                Closure = $closure
+                CallPolicy = $callPolicy
+                PassedArgs = @($passedArgs)
+                ParamNames = @($paramNames)
+                Started = $false
+                Finished = $false
+                Running = $false
+                TargetStep = [long]0
+                CurrentKey = $null
+                CurrentValue = $null
+                ReturnValue = $null
+                Returned = $false
+                SentValues = [System.Collections.Generic.Dictionary[long,object]]::new()
+                ThrownExceptions = [System.Collections.Generic.Dictionary[long,object]]::new()
+            }
+            $props = [System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::Ordinal)
+            return [pscustomobject]@{
+                PhpType = 'object'
+                Id = (New-PhpObjectId)
+                Class = 'Generator'
+                Props = $props
+                GeneratorState = $genState
+            }
+        }
+        function Invoke-PhpSingleYield($keyVal, $valVal, [bool]$hasExplicitKey) {
+            $gen = $state.ActiveGenerator
+            if ($null -eq $gen) { throw 'ALL PHP: yield used outside generator' }
+            $idx = $gen.YieldIndex
+            $gen.YieldIndex++
+            if ($hasExplicitKey) {
+                if ($keyVal -is [long] -and $keyVal -ge $gen.NextAutoKey) {
+                    $gen.NextAutoKey = $keyVal + 1
+                }
+                $effectiveKey = $keyVal
+            } else {
+                $effectiveKey = $gen.NextAutoKey
+                $gen.NextAutoKey++
+            }
+            if ($idx -eq $gen.State.TargetStep) {
+                $gen.State.CurrentKey = Copy-PhpValue $effectiveKey
+                $gen.State.CurrentValue = Copy-PhpValue $valVal
+                $sig = [System.Exception]::new('ALL PHP: generator yield suspension')
+                $sig.Data['AllPhpGeneratorYield'] = $generatorYieldToken
+                throw $sig
+            }
+            if ($idx + 1 -eq $gen.State.TargetStep) {
+                if ($state.GeneratorReplayMute -gt 0) { $state.GeneratorReplayMute-- }
+            }
+            if ($gen.State.ThrownExceptions.ContainsKey($idx)) {
+                $thrownObj = $gen.State.ThrownExceptions[$idx]
+                Throw-PhpObject $thrownObj
+            }
+            if ($gen.State.SentValues.ContainsKey($idx)) {
+                return (Copy-PhpValue $gen.State.SentValues[$idx])
+            }
+            return $null
+        }
+        function Step-PhpGenerator($genObject) {
+            $gs = $genObject.GeneratorState
+            if ($gs.Finished) { return }
+            $gs.Started = $true
+            $gs.Running = $true
+            $oldGen = $state.ActiveGenerator
+            $oldMute = $state.GeneratorReplayMute
+            $oldVars = $state.Vars
+            $oldFlow = $state.Flow
+            $oldGlobals = $state.GlobalBindings
+            $oldStatics = $state.StaticBindings
+            $oldCallable = $state.CurrentCallable
+            $oldContext = $state.ClassContext
+            $oldTraitContext = $state.TraitContext
+            $oldFnName = $state.CurrentFunctionName
+            $oldMethodName = $state.CurrentMethodName
+            $oldReturnByRef = $state.ReturnByRef
+            $definition = $gs.Definition
+            $definitionUnit = Get-PhpDefinitionUnit $definition
+            $oldFileContext = $null
+            $activeFrame = [pscustomobject]@{
+                State = $gs
+                YieldIndex = [long]0
+                NextAutoKey = [long]0
+            }
+            $state.ActiveGenerator = $activeFrame
+            if ($gs.TargetStep -gt 0) { $state.GeneratorReplayMute = $oldMute + 1 }
+            $varsCopy = [System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::Ordinal)
+            foreach ($k in $gs.InitialVars.Keys) {
+                $v = $gs.InitialVars[$k]
+                if (Is-PhpRefCell $v) { $varsCopy[$k] = $v }
+                else { $varsCopy[$k] = Copy-PhpValue $v }
+            }
+            $state.Vars = $varsCopy
+            $state.Flow = @{ Returned=$false; ReturnedWithExpr=$false; Value=$null; RefCell=$null; LoopControl=$null; LoopDepth=0 }
+            $state.GlobalBindings = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+            $state.StaticBindings = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+            $state.ClassContext = if ($gs.Owner.Length -gt 0) { $gs.Owner } elseif ($null -ne $gs.Closure) { $gs.Closure.ClassContext } else { $null }
+            if ($null -ne $gs.Closure) {
+                $state.TraitContext = if ($gs.Closure.PSObject.Properties['TraitContext']) { [string]$gs.Closure.TraitContext } else { '' }
+                $state.CurrentFunctionName = '{closure}'
+                $state.CurrentMethodName = '{closure}'
+            } elseif ($gs.Owner.Length -gt 0) {
+                $genTraitOwner = if ($definition.PSObject.Properties['TraitOwner'] -and -not [string]::IsNullOrEmpty([string]$definition.TraitOwner)) { [string]$definition.TraitOwner } else { '' }
+                $state.TraitContext = $genTraitOwner
+                $state.CurrentFunctionName = [string]$definition.Name
+                $state.CurrentMethodName = if ($genTraitOwner.Length -gt 0) { $genTraitOwner + '::' + $definition.Name } else { $gs.Owner + '::' + $definition.Name }
+            } else {
+                $state.TraitContext = ''
+                $state.CurrentFunctionName = [string]$definition.Name
+                $state.CurrentMethodName = [string]$definition.Name
+            }
+            $state.CurrentCallable = if ($gs.Owner.Length -gt 0) { $gs.Owner + '::' + $definition.Name } else { $definition.Name }
+            $state.CallDepth++
+            $genFrameName = if ($gs.Owner.Length -gt 0) {
+                if ($null -ne $gs.Object) { $gs.Owner + '->' + $definition.Name } else { $gs.Owner + '::' + $definition.Name }
+            } elseif ([string]::IsNullOrEmpty([string]$definition.Name) -or $definition.Name -ceq '(closure)') {
+                '{closure}'
+            } else { [string]$definition.Name }
+            $genPassed = if ($gs.PSObject.Properties['PassedArgs']) { @($gs.PassedArgs) } else { @() }
+            $genParamNames = if ($gs.PSObject.Properties['ParamNames']) { @($gs.ParamNames) } else { @() }
+            [void]$state.CallStack.Add([pscustomobject]@{
+                Name=$genFrameName; Line=$state.Line; SourcePath=$state.ScriptName; Args=$genPassed
+                IsUserFrame=$true; PassedArgs=$genPassed; ParamNames=$genParamNames
+            })
+            try {
+                $oldFileContext = Enter-PhpSourceUnitContext $definitionUnit
+                $state.ActiveSourceUnit = $definitionUnit
+                if ($null -ne $gs.Object) { $state.Vars['this'] = $gs.Object }
+                if ($null -ne $definition.Expr) {
+                    $res = Invoke-PhpExpr $definition.Expr
+                    $gs.ReturnValue = Copy-PhpValue $res
+                    $gs.Returned = $true
+                } else {
+                    Invoke-PhpStatement $definition.Body
+                    if ($state.Flow.Returned) {
+                        $gs.ReturnValue = Copy-PhpValue $state.Flow.Value
+                        $gs.Returned = $true
+                    } else {
+                        $gs.ReturnValue = $null
+                        $gs.Returned = $true
+                    }
+                }
+                $gs.Finished = $true
+                $gs.CurrentKey = $null
+                $gs.CurrentValue = $null
+            } catch {
+                if (Test-PhpGeneratorYield $_) {
+                    # Paused at TargetStep yield!
+                } else {
+                    $gs.Finished = $true
+                    $gs.CurrentKey = $null
+                    $gs.CurrentValue = $null
+                    throw
+                }
+            } finally {
+                if ($state.CallStack.Count -gt 0) { $state.CallStack.RemoveAt($state.CallStack.Count - 1) }
+                $gs.Running = $false
+                $state.CallDepth--
+                if ($null -ne $oldFileContext) { Exit-PhpSourceUnitContext $oldFileContext }
+                $state.Vars = $oldVars
+                $state.Flow = $oldFlow
+                $state.GlobalBindings = $oldGlobals
+                $state.StaticBindings = $oldStatics
+                $state.CurrentCallable = $oldCallable
+                $state.ClassContext = $oldContext
+                $state.TraitContext = $oldTraitContext
+                $state.CurrentFunctionName = $oldFnName
+                $state.CurrentMethodName = $oldMethodName
+                $state.ReturnByRef = $oldReturnByRef
+                $state.ActiveGenerator = $oldGen
+                $state.GeneratorReplayMute = $oldMute
+            }
+        }
+        function Ensure-PhpGeneratorStarted($genObject) {
+            $gs = $genObject.GeneratorState
+            if (-not $gs.Started) {
+                $gs.TargetStep = [long]0
+                Step-PhpGenerator $genObject
+            }
+        }
+        function Resolve-PhpFramePassedArgs($frame) {
+            if ($null -eq $frame) { return @() }
+            if ($null -ne $frame.PassedArgs) { return $frame.PassedArgs }
+            if (-not $frame.PSObject.Properties['RawCallArgs']) {
+                $frame.PassedArgs = @()
+                return $frame.PassedArgs
+            }
+            $rawCall = $frame.RawCallArgs
+            $extraList = $frame.ExtraArgs
+            $nvParams = $frame.ParamNames
+            $resolvedPassed = [System.Collections.Generic.List[object]]::new()
+            $passedCount = if ($null -ne $rawCall) { $rawCall.Count } else { 0 }
+            for ($pIdx = 0; $pIdx -lt $passedCount; $pIdx++) {
+                if ($pIdx -lt $nvParams.Count -and $state.Vars.ContainsKey($nvParams[$pIdx])) {
+                    [void]$resolvedPassed.Add((Copy-PhpValue (Get-PhpVariableValue $nvParams[$pIdx])))
+                } else {
+                    $extraIdx = $pIdx - $nvParams.Count
+                    $rawExtra = if ($extraIdx -ge 0 -and $null -ne $extraList -and $extraIdx -lt $extraList.Count) { $extraList[$extraIdx] } else { $rawCall[$pIdx] }
+                    if ($null -ne $rawExtra -and $rawExtra.PSObject.Properties['PhpType'] -and $rawExtra.PhpType -ceq 'named_argument') {
+                        $rawExtra = $rawExtra.Value
+                    }
+                    if ($null -ne $rawExtra -and $rawExtra.PSObject.Properties['PhpType'] -and $rawExtra.PhpType -ceq 'refargument') {
+                        $rawExtra = $rawExtra.Cell.Value
+                    }
+                    if (Is-PhpRefCell $rawExtra) { $rawExtra = $rawExtra.Value }
+                    [void]$resolvedPassed.Add((Copy-PhpValue $rawExtra))
+                }
+            }
+            $frame.PassedArgs = $resolvedPassed.ToArray()
+            return $frame.PassedArgs
+        }
+        function Get-PhpCurrentUserCallFrame([string]$fnName) {
+            for ($i = $state.CallStack.Count - 1; $i -ge 0; $i--) {
+                $frame = $state.CallStack[$i]
+                if ($frame.PSObject.Properties['IsUserFrame'] -and $frame.IsUserFrame) {
+                    if ($null -eq $frame.PassedArgs) { [void](Resolve-PhpFramePassedArgs $frame) }
+                    return $frame
+                }
+                if ($frame.Name -in @('include','require','include_once','require_once')) {
+                    break
+                }
+            }
+            $msg = if ($fnName -ceq 'func_num_args') { 'func_num_args() must be called from a function context' } else { $fnName + '() cannot be called from the global scope' }
+            Throw-PhpError 'Error' $msg ('ALL PHP: ' + $fnName + '() must be called from a function context')
+        }
+        function New-PhpReflectionNamedType([string]$rawType) {
+            if ([string]::IsNullOrEmpty($rawType)) { return $null }
+            Ensure-PhpPrelude
+            $allowsNull = $false
+            $clean = $rawType
+            if ($clean.StartsWith('?')) {
+                $allowsNull = $true
+                $clean = $clean.Substring(1)
+            }
+            $parts = @($clean -split '\|')
+            if ($parts -contains 'null' -or $clean -ieq 'mixed') { $allowsNull = $true }
+            $nonNullParts = @($parts | Where-Object { $_ -ine 'null' })
+            $displayName = if ($nonNullParts.Count -eq 1) { $nonNullParts[0] } else { $clean }
+            $builtin = ($displayName.ToLowerInvariant() -in @('int','float','string','bool','true','false','null','array','object','callable','iterable','mixed','void','never'))
+            $obj = [pscustomobject]@{
+                PhpType = 'object'
+                Id = (New-PhpObjectId)
+                Class = 'ReflectionNamedType'
+                Props = [System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::Ordinal)
+                TypeInfo = [pscustomobject]@{
+                    Name = $displayName
+                    Raw = $rawType
+                    AllowsNull = $allowsNull
+                    IsBuiltin = $builtin
+                }
+            }
+            return $obj
+        }
+        function ConvertTo-PhpContainerArray($src, [string]$caller) {
+            $arr = New-PhpArray
+            if (Is-PhpArray $src) { return (Copy-PhpValue $src) }
+            if (Is-PhpObject $src) {
+                foreach ($pe in (Get-PhpObjectDumpEntries $src)) {
+                    if ($pe.Present -and $pe.Suffix.Length -eq 0) {
+                        Set-PhpArrayItem $arr $pe.Name (Copy-PhpValue $pe.Value) $false
+                    }
+                }
+                return $arr
+            }
+            Throw-PhpError 'TypeError' ($caller + '(): Argument #1 ($array) must be of type array|object, ' + (Get-PhpBuiltinTypeName $src) + ' given')
+        }
+        function Build-PhpReflectionAttributes($attrNodes, $filterName = $null, [long]$flags = 0) {
+            Ensure-PhpPrelude
+            $out = New-PhpArray
+            if ($null -eq $attrNodes) { return $out }
+            $filterText = $null
+            if ($null -ne $filterName -and (Is-PhpStringValue $filterName)) {
+                $filterText = (Get-PhpHostText $filterName).TrimStart('\')
+            }
+            foreach ($attr in @($attrNodes)) {
+                $attrName = ([string]$attr.Name).TrimStart('\')
+                if ($null -ne $filterText) {
+                    if (($flags -band 2) -ne 0) {
+                        if (-not (Test-PhpNameEqual $attrName $filterText) -and -not (Test-PhpInstanceOf $attrName $filterText)) {
+                            continue
+                        }
+                    } else {
+                        if (-not (Test-PhpNameEqual $attrName $filterText)) { continue }
+                    }
+                }
+                $refAttr = [pscustomobject]@{
+                    PhpType = 'object'
+                    Id = (New-PhpObjectId)
+                    Class = 'ReflectionAttribute'
+                    Props = [System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::Ordinal)
+                    AttrNode = $attr
+                }
+                Set-PhpArrayItem $out $null $refAttr $true
+            }
+            return $out
+        }
+        function Invoke-PhpInternalDispatch($argExprs) {
+            $evalArgs = [System.Collections.Generic.List[object]]::new()
+            foreach ($expr in $argExprs) {
+                [void]$evalArgs.Add((Invoke-PhpExpr $expr))
+            }
+            $op = Get-PhpHostText $evalArgs[0]
+            $self = if ($evalArgs.Count -ge 2) { $evalArgs[1] } else { $null }
+            switch ($op) {
+                'Generator::current' {
+                    Ensure-PhpGeneratorStarted $self
+                    if ($self.GeneratorState.Finished) { return $null }
+                    return (Copy-PhpValue $self.GeneratorState.CurrentValue)
+                }
+                'Generator::key' {
+                    Ensure-PhpGeneratorStarted $self
+                    if ($self.GeneratorState.Finished) { return $null }
+                    return (Copy-PhpValue $self.GeneratorState.CurrentKey)
+                }
+                'Generator::valid' {
+                    Ensure-PhpGeneratorStarted $self
+                    return (-not [bool]$self.GeneratorState.Finished)
+                }
+                'Generator::rewind' {
+                    $gs = $self.GeneratorState
+                    if (-not $gs.Started) {
+                        Ensure-PhpGeneratorStarted $self
+                        return $null
+                    }
+                    if ($gs.TargetStep -gt 0 -or $gs.Finished) {
+                        Throw-PhpError 'Exception' 'Cannot rewind a generator that was already run'
+                    }
+                    return $null
+                }
+                'Generator::next' {
+                    Ensure-PhpGeneratorStarted $self
+                    $gs = $self.GeneratorState
+                    if ($gs.Finished) { return $null }
+                    $gs.TargetStep++
+                    Step-PhpGenerator $self
+                    return $null
+                }
+                'Generator::send' {
+                    Ensure-PhpGeneratorStarted $self
+                    $gs = $self.GeneratorState
+                    if ($gs.Finished) { return $null }
+                    $sentVal = if ($evalArgs.Count -ge 3) { $evalArgs[2] } else { $null }
+                    $gs.SentValues[$gs.TargetStep] = Copy-PhpValue $sentVal
+                    $gs.TargetStep++
+                    Step-PhpGenerator $self
+                    if ($gs.Finished) { return $null }
+                    return (Copy-PhpValue $gs.CurrentValue)
+                }
+                'Generator::throw' {
+                    Ensure-PhpGeneratorStarted $self
+                    $gs = $self.GeneratorState
+                    if ($gs.Finished) { Throw-PhpObject $evalArgs[2] }
+                    $gs.ThrownExceptions[$gs.TargetStep] = $evalArgs[2]
+                    $gs.TargetStep++
+                    Step-PhpGenerator $self
+                    if ($gs.Finished) { return $null }
+                    return (Copy-PhpValue $gs.CurrentValue)
+                }
+                'Generator::getReturn' {
+                    $gs = $self.GeneratorState
+                    if (-not $gs.Finished -or -not $gs.Returned) {
+                        Throw-PhpError 'Exception' 'Cannot get return value of a generator that hasn''t returned'
+                    }
+                    return (Copy-PhpValue $gs.ReturnValue)
+                }
+                'ReflectionNamedType::getName' {
+                    return (To-PhpBytes $self.TypeInfo.Name)
+                }
+                'ReflectionNamedType::allowsNull' {
+                    return [bool]$self.TypeInfo.AllowsNull
+                }
+                'ReflectionNamedType::isBuiltin' {
+                    return [bool]$self.TypeInfo.IsBuiltin
+                }
+                'ReflectionNamedType::__toString' {
+                    return (To-PhpBytes $self.TypeInfo.Raw)
+                }
+                'ReflectionAttribute::getName' {
+                    return (To-PhpBytes ([string]$self.AttrNode.Name))
+                }
+                'ReflectionAttribute::getArguments' {
+                    $arr = New-PhpArray
+                    foreach ($a in @($self.AttrNode.Args)) {
+                        if ($a.Kind -ceq 'named_argument') {
+                            Set-PhpArrayItem $arr $a.Name (Invoke-PhpExpr $a.Expr) $false
+                        } else {
+                            Set-PhpArrayItem $arr $null (Invoke-PhpExpr $a) $true
+                        }
+                    }
+                    return $arr
+                }
+                'ReflectionAttribute::newInstance' {
+                    $className = [string]$self.AttrNode.Name
+                    return (Invoke-PhpExpr ([pscustomobject]@{
+                        Kind = 'new'
+                        Name = $className
+                        Args = @($self.AttrNode.Args)
+                    }))
+                }
+                'ReflectionClass::__construct' {
+                    $target = $evalArgs[2]
+                    $className = ''
+                    if (Is-PhpObject $target) { $className = [string]$target.Class }
+                    elseif (Is-PhpStringValue $target) { $className = (Get-PhpHostText $target).TrimStart('\') }
+                    else { Throw-PhpError 'TypeError' 'ReflectionClass::__construct(): Argument #1 ($objectOrClass) must be of type object|string' }
+                    if ($phpPreludeTriggers.Contains($className)) { Ensure-PhpPrelude }
+                    $resolved = $className
+                    if ($state.Classes.ContainsKey($className)) { $resolved = [string]$state.Classes[$className].Name }
+                    elseif ($state.Interfaces.ContainsKey($className)) { $resolved = [string]$state.Interfaces[$className].Name }
+                    elseif ($state.Traits.ContainsKey($className)) { $resolved = [string]$state.Traits[$className].Name }
+                    elseif ($className -ieq 'stdClass') { $resolved = 'stdClass' }
+                    else { Throw-PhpError 'ReflectionException' ('Class "' + $className + '" does not exist') }
+                    $self.Props['name'] = To-PhpBytes $resolved
+                    $self | Add-Member -NotePropertyName TargetClass -NotePropertyValue $resolved -Force
+                    return $null
+                }
+                'ReflectionClass::getShortName' {
+                    $c = [string]$self.TargetClass
+                    $idx = $c.LastIndexOf('\')
+                    if ($idx -ge 0) { return (To-PhpBytes $c.Substring($idx + 1)) }
+                    return (To-PhpBytes $c)
+                }
+                'ReflectionClass::getNamespaceName' {
+                    $c = [string]$self.TargetClass
+                    $idx = $c.LastIndexOf('\')
+                    if ($idx -ge 0) { return (To-PhpBytes $c.Substring(0, $idx)) }
+                    return [AllPhp.ByteValues.PhpBytes]::Empty
+                }
+                'ReflectionClass::isInterface' {
+                    return [bool]$state.Interfaces.ContainsKey([string]$self.TargetClass)
+                }
+                'ReflectionClass::isTrait' {
+                    return [bool]$state.Traits.ContainsKey([string]$self.TargetClass)
+                }
+                'ReflectionClass::isEnum' {
+                    $c = [string]$self.TargetClass
+                    return [bool]($state.Classes.ContainsKey($c) -and $state.Classes[$c].PSObject.Properties['Enum'] -and $state.Classes[$c].Enum)
+                }
+                'ReflectionClass::isAbstract' {
+                    $c = [string]$self.TargetClass
+                    if ($state.Interfaces.ContainsKey($c) -or $state.Traits.ContainsKey($c)) { return $true }
+                    if ($state.Classes.ContainsKey($c)) { return [bool]$state.Classes[$c].Abstract }
+                    return $false
+                }
+                'ReflectionClass::isFinal' {
+                    $c = [string]$self.TargetClass
+                    if ($state.Classes.ContainsKey($c)) { return [bool]$state.Classes[$c].Final }
+                    return $false
+                }
+                'ReflectionClass::isReadOnly' {
+                    $c = [string]$self.TargetClass
+                    if ($state.Classes.ContainsKey($c) -and $state.Classes[$c].PSObject.Properties['Readonly']) { return [bool]$state.Classes[$c].Readonly }
+                    return $false
+                }
+                'ReflectionClass::isInstantiable' {
+                    $c = [string]$self.TargetClass
+                    if ($c -ieq 'stdClass') { return $true }
+                    if (-not $state.Classes.ContainsKey($c)) { return $false }
+                    $def = $state.Classes[$c]
+                    if ($def.Abstract -or ($def.PSObject.Properties['Enum'] -and $def.Enum)) { return $false }
+                    $ctor = Find-OptionalPhpMethod $c '__construct'
+                    if ($null -ne $ctor -and $ctor.Visibility -ne 'public') { return $false }
+                    return $true
+                }
+                'ReflectionClass::getParentClass' {
+                    $c = [string]$self.TargetClass
+                    if ($state.Classes.ContainsKey($c) -and $null -ne $state.Classes[$c].Parent) {
+                        return (Invoke-PhpExpr ([pscustomobject]@{
+                            Kind='new'; Name='ReflectionClass'
+                            Args=@([pscustomobject]@{Kind='literal'; Value=(To-PhpBytes ([string]$state.Classes[$c].Parent))})
+                        }))
+                    }
+                    return $false
+                }
+                'ReflectionClass::getInterfaceNames' {
+                    $c = [string]$self.TargetClass
+                    $out = New-PhpArray
+                    $seen = [System.Collections.Generic.HashSet[string]]::new([AllPhp.ValidTextSymbols.Comparers]::Ascii)
+                    if ($state.Classes.ContainsKey($c)) {
+                        foreach ($cls in (Get-PhpClassChain $c)) {
+                            foreach ($ifName in @($cls.Interfaces)) {
+                                foreach ($iface in (Get-PhpInterfaceChain $ifName)) {
+                                    if ($seen.Add([string]$iface.Name)) {
+                                        Set-PhpArrayItem $out $null (To-PhpBytes ([string]$iface.Name)) $true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return $out
+                }
+                'ReflectionClass::implementsInterface' {
+                    $c = [string]$self.TargetClass
+                    $iface = (Get-PhpHostText $evalArgs[2]).TrimStart('\')
+                    if ($phpPreludeTriggers.Contains($iface)) { Ensure-PhpPrelude }
+                    return (Test-PhpInstanceOf $c $iface)
+                }
+                'ReflectionClass::hasMethod' {
+                    $c = [string]$self.TargetClass
+                    $mName = Get-PhpHostText $evalArgs[2]
+                    if ($state.Interfaces.ContainsKey($c)) { return $state.Interfaces[$c].Methods.ContainsKey($mName) }
+                    if ($state.Traits.ContainsKey($c)) {
+                        foreach ($m in $state.Traits[$c].Methods) { if (Test-PhpNameEqual $m.Name $mName) { return $true } }
+                        return $false
+                    }
+                    return ($null -ne (Find-OptionalPhpMethod $c $mName))
+                }
+                'ReflectionClass::getMethod' {
+                    $c = [string]$self.TargetClass
+                    $mName = Get-PhpHostText $evalArgs[2]
+                    return (Invoke-PhpExpr ([pscustomobject]@{
+                        Kind='new'; Name='ReflectionMethod'
+                        Args=@(
+                            [pscustomobject]@{Kind='literal'; Value=(To-PhpBytes $c)},
+                            [pscustomobject]@{Kind='literal'; Value=(To-PhpBytes $mName)}
+                        )
+                    }))
+                }
+                'ReflectionClass::getMethods' {
+                    $c = [string]$self.TargetClass
+                    $out = New-PhpArray
+                    $seen = [System.Collections.Generic.HashSet[string]]::new([AllPhp.ValidTextSymbols.Comparers]::Ascii)
+                    if ($state.Classes.ContainsKey($c)) {
+                        foreach ($cls in (Get-PhpClassChain $c)) {
+                            foreach ($m in $cls.Methods.Values) {
+                                if ($seen.Add([string]$m.Name)) {
+                                    $rm = Invoke-PhpExpr ([pscustomobject]@{
+                                        Kind='new'; Name='ReflectionMethod'
+                                        Args=@(
+                                            [pscustomobject]@{Kind='literal'; Value=(To-PhpBytes $c)},
+                                            [pscustomobject]@{Kind='literal'; Value=(To-PhpBytes ([string]$m.Name))}
+                                        )
+                                    })
+                                    Set-PhpArrayItem $out $null $rm $true
+                                }
+                            }
+                        }
+                    } elseif ($state.Interfaces.ContainsKey($c)) {
+                        foreach ($m in $state.Interfaces[$c].Methods.Values) {
+                            $rm = Invoke-PhpExpr ([pscustomobject]@{
+                                Kind='new'; Name='ReflectionMethod'
+                                Args=@(
+                                    [pscustomobject]@{Kind='literal'; Value=(To-PhpBytes $c)},
+                                    [pscustomobject]@{Kind='literal'; Value=(To-PhpBytes ([string]$m.Name))}
+                                )
+                            })
+                            Set-PhpArrayItem $out $null $rm $true
+                        }
+                    }
+                    return $out
+                }
+                'ReflectionClass::hasProperty' {
+                    $c = [string]$self.TargetClass
+                    $pName = Get-PhpHostText $evalArgs[2]
+                    return ($null -ne (Find-PhpProperty $c $pName $false) -or $null -ne (Find-PhpProperty $c $pName $true))
+                }
+                'ReflectionClass::getProperty' {
+                    $c = [string]$self.TargetClass
+                    $pName = Get-PhpHostText $evalArgs[2]
+                    return (Invoke-PhpExpr ([pscustomobject]@{
+                        Kind='new'; Name='ReflectionProperty'
+                        Args=@(
+                            [pscustomobject]@{Kind='literal'; Value=(To-PhpBytes $c)},
+                            [pscustomobject]@{Kind='literal'; Value=(To-PhpBytes $pName)}
+                        )
+                    }))
+                }
+                'ReflectionClass::getProperties' {
+                    $c = [string]$self.TargetClass
+                    $out = New-PhpArray
+                    $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+                    if ($state.Classes.ContainsKey($c)) {
+                        foreach ($cls in (Get-PhpClassChain $c)) {
+                            foreach ($p in $cls.Properties) {
+                                if ($seen.Add([string]$p.Name)) {
+                                    $rp = Invoke-PhpExpr ([pscustomobject]@{
+                                        Kind='new'; Name='ReflectionProperty'
+                                        Args=@(
+                                            [pscustomobject]@{Kind='literal'; Value=(To-PhpBytes $c)},
+                                            [pscustomobject]@{Kind='literal'; Value=(To-PhpBytes ([string]$p.Name))}
+                                        )
+                                    })
+                                    Set-PhpArrayItem $out $null $rp $true
+                                }
+                            }
+                        }
+                    }
+                    return $out
+                }
+                'ReflectionClass::hasConstant' {
+                    $c = [string]$self.TargetClass
+                    $kName = Get-PhpHostText $evalArgs[2]
+                    if ($state.Classes.ContainsKey($c)) {
+                        foreach ($cls in (Get-PhpClassChain $c)) {
+                            if ($cls.Constants.ContainsKey($kName)) { return $true }
+                        }
+                    } elseif ($state.Interfaces.ContainsKey($c)) {
+                        foreach ($iface in (Get-PhpInterfaceChain $c)) {
+                            if ($iface.Constants.ContainsKey($kName)) { return $true }
+                        }
+                    }
+                    return $false
+                }
+                'ReflectionClass::getConstant' {
+                    $c = [string]$self.TargetClass
+                    $kName = Get-PhpHostText $evalArgs[2]
+                    if ($state.Classes.ContainsKey($c)) {
+                        foreach ($cls in (Get-PhpClassChain $c)) {
+                            if ($cls.Constants.ContainsKey($kName)) { return (ConvertTo-PhpOwnedValue $cls.Constants[$kName].Value) }
+                        }
+                    } elseif ($state.Interfaces.ContainsKey($c)) {
+                        foreach ($iface in (Get-PhpInterfaceChain $c)) {
+                            if ($iface.Constants.ContainsKey($kName)) { return (ConvertTo-PhpOwnedValue $iface.Constants[$kName].Value) }
+                        }
+                    }
+                    return $false
+                }
+                'ReflectionClass::getConstants' {
+                    $c = [string]$self.TargetClass
+                    $out = New-PhpArray
+                    if ($state.Classes.ContainsKey($c)) {
+                        $chain = Get-PhpClassChain $c
+                        for ($i = $chain.Count - 1; $i -ge 0; $i--) {
+                            foreach ($k in $chain[$i].Constants.Keys) {
+                                Set-PhpArrayItem $out $k (ConvertTo-PhpOwnedValue $chain[$i].Constants[$k].Value) $false
+                            }
+                        }
+                    } elseif ($state.Interfaces.ContainsKey($c)) {
+                        foreach ($iface in (Get-PhpInterfaceChain $c)) {
+                            foreach ($k in $iface.Constants.Keys) {
+                                Set-PhpArrayItem $out $k (ConvertTo-PhpOwnedValue $iface.Constants[$k].Value) $false
+                            }
+                        }
+                    }
+                    return $out
+                }
+                'ReflectionClass::getAttributes' {
+                    $c = [string]$self.TargetClass
+                    $attrs = @()
+                    if ($state.Classes.ContainsKey($c) -and $state.Classes[$c].PSObject.Properties['Attributes']) {
+                        $attrs = $state.Classes[$c].Attributes
+                    } elseif ($state.Interfaces.ContainsKey($c) -and $state.Interfaces[$c].PSObject.Properties['Attributes']) {
+                        $attrs = $state.Interfaces[$c].Attributes
+                    } elseif ($state.Traits.ContainsKey($c) -and $state.Traits[$c].PSObject.Properties['Attributes']) {
+                        $attrs = $state.Traits[$c].Attributes
+                    }
+                    $filter = if ($evalArgs.Count -ge 3) { $evalArgs[2] } else { $null }
+                    $flags = if ($evalArgs.Count -ge 4) { [long]$evalArgs[3] } else { [long]0 }
+                    return (Build-PhpReflectionAttributes $attrs $filter $flags)
+                }
+                'ReflectionClass::newInstance' {
+                    $c = [string]$self.TargetClass
+                    $passedArr = $evalArgs[2]
+                    $argNodes = [System.Collections.Generic.List[object]]::new()
+                    if (Is-PhpArray $passedArr) {
+                        foreach ($k in $passedArr.Items.Keys) {
+                            $v = $passedArr.Items[$k]
+                            if (-not $k.IsInteger) {
+                                [void]$argNodes.Add([pscustomobject]@{
+                                    Kind='named_argument'; Name=(Get-PhpHostText $k.BytesValue)
+                                    Expr=[pscustomobject]@{Kind='literal'; Value=$v}
+                                })
+                            } else {
+                                [void]$argNodes.Add([pscustomobject]@{Kind='literal'; Value=$v})
+                            }
+                        }
+                    }
+                    return (Invoke-PhpExpr ([pscustomobject]@{
+                        Kind='new'; Name=$c; Args=$argNodes.ToArray()
+                    }))
+                }
+                'ReflectionClass::newInstanceWithoutConstructor' {
+                    $c = [string]$self.TargetClass
+                    if ($c -ieq 'stdClass') { return (New-PhpStdObject) }
+                    $chain = Get-PhpClassChain $c
+                    if ($state.Classes[$c].Abstract) { Throw-PhpError 'ReflectionException' "Class $c is an abstract class" }
+                    $object = [pscustomobject]@{
+                        PhpType='object'; Id=(New-PhpObjectId); Class=$c
+                        Props=[System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::Ordinal)
+                        PrivateProps=[System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::Ordinal)
+                    }
+                    Initialize-PhpObjectProperties $object $chain $false
+                    return $object
+                }
+                'ReflectionFunction::__construct' {
+                    $target = $evalArgs[2]
+                    $def = $null
+                    $closureObj = $null
+                    if ($null -ne $target -and $target.PSObject.Properties['PhpType'] -and $target.PhpType -ceq 'closure') {
+                        $def = $target.Definition
+                        $closureObj = $target
+                        $self.Props['name'] = To-PhpBytes '{closure}'
+                    } elseif (Is-PhpStringValue $target) {
+                        $fnName = (Get-PhpHostText $target).TrimStart('\')
+                        if (-not $state.Functions.ContainsKey($fnName)) {
+                            Throw-PhpError 'ReflectionException' ('Function ' + $fnName + '() does not exist')
+                        }
+                        $def = $state.Functions[$fnName]
+                        $self.Props['name'] = To-PhpBytes ([string]$def.Name)
+                    } else {
+                        Throw-PhpError 'TypeError' 'ReflectionFunction::__construct(): Argument #1 ($function) must be of type Closure|string'
+                    }
+                    $self | Add-Member -NotePropertyName TargetDef -NotePropertyValue $def -Force
+                    $self | Add-Member -NotePropertyName TargetClosure -NotePropertyValue $closureObj -Force
+                    return $null
+                }
+                'ReflectionFunction::isClosure' {
+                    return ($null -ne $self.TargetClosure)
+                }
+                'ReflectionFunction::isGenerator' {
+                    return ([bool]$self.TargetDef.PSObject.Properties['IsGenerator'] -and [bool]$self.TargetDef.IsGenerator)
+                }
+                'ReflectionFunction::getNumberOfParameters' {
+                    return [long]@($self.TargetDef.Params).Count
+                }
+                'ReflectionFunction::getNumberOfRequiredParameters' {
+                    $req = [long]0
+                    foreach ($p in @($self.TargetDef.Params)) {
+                        if ($null -eq $p.Default -and -not $p.Variadic) { $req++ }
+                    }
+                    return $req
+                }
+                'ReflectionFunction::getParameters' {
+                    $out = New-PhpArray
+                    $pos = [long]0
+                    foreach ($p in @($self.TargetDef.Params)) {
+                        $rp = [pscustomobject]@{
+                            PhpType='object'; Id=(New-PhpObjectId); Class='ReflectionParameter'
+                            Props=[System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::Ordinal)
+                            ParamDef=$p; Position=$pos
+                        }
+                        $rp.Props['name'] = To-PhpBytes ([string]$p.Name)
+                        Set-PhpArrayItem $out $null $rp $true
+                        $pos++
+                    }
+                    return $out
+                }
+                'ReflectionFunction::hasReturnType' {
+                    return (-not [string]::IsNullOrEmpty([string]$self.TargetDef.ReturnType))
+                }
+                'ReflectionFunction::getReturnType' {
+                    return (New-PhpReflectionNamedType ([string]$self.TargetDef.ReturnType))
+                }
+                'ReflectionFunction::getAttributes' {
+                    $attrs = if ($self.TargetDef.PSObject.Properties['Attributes']) { $self.TargetDef.Attributes } else { @() }
+                    $filter = if ($evalArgs.Count -ge 3) { $evalArgs[2] } else { $null }
+                    $flags = if ($evalArgs.Count -ge 4) { [long]$evalArgs[3] } else { [long]0 }
+                    return (Build-PhpReflectionAttributes $attrs $filter $flags)
+                }
+                'ReflectionFunction::invoke' {
+                    $passedArr = $evalArgs[2]
+                    $vals = [System.Collections.Generic.List[object]]::new()
+                    if (Is-PhpArray $passedArr) {
+                        foreach ($k in $passedArr.Items.Keys) { [void]$vals.Add($passedArr.Items[$k]) }
+                    }
+                    if ($null -ne $self.TargetClosure) {
+                        return (Invoke-PhpCallable $self.TargetDef ($vals.ToArray()) $self.TargetClosure.BoundThis '' $self.TargetClosure)
+                    }
+                    return (Invoke-PhpCallable $self.TargetDef ($vals.ToArray()) $null)
+                }
+                'ReflectionMethod::__construct' {
+                    $first = $evalArgs[2]
+                    $second = if ($evalArgs.Count -ge 4) { $evalArgs[3] } else { $null }
+                    $className = ''
+                    $methodName = ''
+                    if ($null -eq $second -and (Is-PhpStringValue $first)) {
+                        $text = Get-PhpHostText $first
+                        $split = $text.IndexOf('::')
+                        if ($split -gt 0) {
+                            $className = $text.Substring(0, $split).TrimStart('\')
+                            $methodName = $text.Substring($split + 2)
+                        }
+                    } else {
+                        if (Is-PhpObject $first) { $className = [string]$first.Class }
+                        elseif (Is-PhpStringValue $first) { $className = (Get-PhpHostText $first).TrimStart('\') }
+                        if (Is-PhpStringValue $second) { $methodName = Get-PhpHostText $second }
+                    }
+                    if ($phpPreludeTriggers.Contains($className)) { Ensure-PhpPrelude }
+                    $def = $null
+                    if ($state.Interfaces.ContainsKey($className) -and $state.Interfaces[$className].Methods.ContainsKey($methodName)) {
+                        $def = $state.Interfaces[$className].Methods[$methodName]
+                    } else {
+                        $def = Find-OptionalPhpMethod $className $methodName
+                    }
+                    if ($null -eq $def) {
+                        Throw-PhpError 'ReflectionException' ('Method ' + $className + '::' + $methodName + '() does not exist')
+                    }
+                    $self.Props['name'] = To-PhpBytes ([string]$def.Name)
+                    $self.Props['class'] = To-PhpBytes ([string]$def.Owner)
+                    $self | Add-Member -NotePropertyName TargetDef -NotePropertyValue $def -Force
+                    return $null
+                }
+                'ReflectionMethod::getDeclaringClass' {
+                    return (Invoke-PhpExpr ([pscustomobject]@{
+                        Kind='new'; Name='ReflectionClass'
+                        Args=@([pscustomobject]@{Kind='literal'; Value=(To-PhpBytes ([string]$self.TargetDef.Owner))})
+                    }))
+                }
+                'ReflectionMethod::isPublic' { return ([string]$self.TargetDef.Visibility -ceq 'public') }
+                'ReflectionMethod::isProtected' { return ([string]$self.TargetDef.Visibility -ceq 'protected') }
+                'ReflectionMethod::isPrivate' { return ([string]$self.TargetDef.Visibility -ceq 'private') }
+                'ReflectionMethod::isStatic' { return [bool]$self.TargetDef.Static }
+                'ReflectionMethod::isAbstract' { return [bool]$self.TargetDef.Abstract }
+                'ReflectionMethod::isFinal' { return [bool]$self.TargetDef.Final }
+                'ReflectionMethod::isConstructor' { return (Test-PhpNameEqual ([string]$self.TargetDef.Name) '__construct') }
+                'ReflectionMethod::isGenerator' { return ([bool]$self.TargetDef.PSObject.Properties['IsGenerator'] -and [bool]$self.TargetDef.IsGenerator) }
+                'ReflectionMethod::getNumberOfParameters' { return [long]@($self.TargetDef.Params).Count }
+                'ReflectionMethod::getNumberOfRequiredParameters' {
+                    $req = [long]0
+                    foreach ($p in @($self.TargetDef.Params)) {
+                        if ($null -eq $p.Default -and -not $p.Variadic) { $req++ }
+                    }
+                    return $req
+                }
+                'ReflectionMethod::getParameters' {
+                    $out = New-PhpArray
+                    $pos = [long]0
+                    foreach ($p in @($self.TargetDef.Params)) {
+                        $rp = [pscustomobject]@{
+                            PhpType='object'; Id=(New-PhpObjectId); Class='ReflectionParameter'
+                            Props=[System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::Ordinal)
+                            ParamDef=$p; Position=$pos
+                        }
+                        $rp.Props['name'] = To-PhpBytes ([string]$p.Name)
+                        Set-PhpArrayItem $out $null $rp $true
+                        $pos++
+                    }
+                    return $out
+                }
+                'ReflectionMethod::hasReturnType' { return (-not [string]::IsNullOrEmpty([string]$self.TargetDef.ReturnType)) }
+                'ReflectionMethod::getReturnType' { return (New-PhpReflectionNamedType ([string]$self.TargetDef.ReturnType)) }
+                'ReflectionMethod::getAttributes' {
+                    $attrs = if ($self.TargetDef.PSObject.Properties['Attributes']) { $self.TargetDef.Attributes } else { @() }
+                    $filter = if ($evalArgs.Count -ge 3) { $evalArgs[2] } else { $null }
+                    $flags = if ($evalArgs.Count -ge 4) { [long]$evalArgs[3] } else { [long]0 }
+                    return (Build-PhpReflectionAttributes $attrs $filter $flags)
+                }
+                'ReflectionMethod::invoke' {
+                    $targetObj = $evalArgs[2]
+                    $passedArr = $evalArgs[3]
+                    $vals = [System.Collections.Generic.List[object]]::new()
+                    if (Is-PhpArray $passedArr) {
+                        foreach ($k in $passedArr.Items.Keys) { [void]$vals.Add($passedArr.Items[$k]) }
+                    }
+                    $def = $self.TargetDef
+                    $receiver = if ($def.Static) { $null } else { $targetObj }
+                    return (Invoke-PhpCallable $def ($vals.ToArray()) $receiver ([string]$def.Owner))
+                }
+                'ReflectionProperty::__construct' {
+                    $first = $evalArgs[2]
+                    $propName = Get-PhpHostText $evalArgs[3]
+                    $className = if (Is-PhpObject $first) { [string]$first.Class } else { (Get-PhpHostText $first).TrimStart('\') }
+                    if ($phpPreludeTriggers.Contains($className)) { Ensure-PhpPrelude }
+                    $propDef = Find-PhpProperty $className $propName $false
+                    if ($null -eq $propDef) { $propDef = Find-PhpProperty $className $propName $true }
+                    if ($null -eq $propDef) {
+                        Throw-PhpError 'ReflectionException' ('Property ' + $className + '::$' + $propName + ' does not exist')
+                    }
+                    $self.Props['name'] = To-PhpBytes ([string]$propDef.Name)
+                    $self.Props['class'] = To-PhpBytes ([string]$propDef.Owner)
+                    $self | Add-Member -NotePropertyName TargetProp -NotePropertyValue $propDef -Force
+                    return $null
+                }
+                'ReflectionProperty::getDeclaringClass' {
+                    return (Invoke-PhpExpr ([pscustomobject]@{
+                        Kind='new'; Name='ReflectionClass'
+                        Args=@([pscustomobject]@{Kind='literal'; Value=(To-PhpBytes ([string]$self.TargetProp.Owner))})
+                    }))
+                }
+                'ReflectionProperty::isPublic' { return ([string]$self.TargetProp.Visibility -ceq 'public') }
+                'ReflectionProperty::isProtected' { return ([string]$self.TargetProp.Visibility -ceq 'protected') }
+                'ReflectionProperty::isPrivate' { return ([string]$self.TargetProp.Visibility -ceq 'private') }
+                'ReflectionProperty::isStatic' { return [bool]$self.TargetProp.Static }
+                'ReflectionProperty::isReadOnly' { return [bool]$self.TargetProp.Readonly }
+                'ReflectionProperty::isPromoted' { return ([bool]$self.TargetProp.PSObject.Properties['Promoted'] -and [bool]$self.TargetProp.Promoted) }
+                'ReflectionProperty::hasType' { return (-not [string]::IsNullOrEmpty([string]$self.TargetProp.TypeName)) }
+                'ReflectionProperty::getType' { return (New-PhpReflectionNamedType ([string]$self.TargetProp.TypeName)) }
+                'ReflectionProperty::hasDefaultValue' { return ($null -ne $self.TargetProp.Default) }
+                'ReflectionProperty::getDefaultValue' {
+                    if ($null -eq $self.TargetProp.Default) { return $null }
+                    return (Invoke-PhpExpr $self.TargetProp.Default)
+                }
+                'ReflectionProperty::isInitialized' {
+                    $p = $self.TargetProp
+                    if ($p.Static) {
+                        $cls = $state.Classes[[string]$p.Owner]
+                        return $cls.StaticValues.ContainsKey([string]$p.Name)
+                    }
+                    $obj = $evalArgs[2]
+                    if (-not (Is-PhpObject $obj)) { return $false }
+                    return (Test-PhpObjectHasProp $obj ([string]$p.Name))
+                }
+                'ReflectionProperty::getValue' {
+                    $p = $self.TargetProp
+                    if ($p.Static) {
+                        $cls = $state.Classes[[string]$p.Owner]
+                        $v = $cls.StaticValues[[string]$p.Name]
+                        if (Is-PhpRefCell $v) { return $v.Value }
+                        return $v
+                    }
+                    $obj = $evalArgs[2]
+                    $v = $obj.Props[[string]$p.Name]
+                    if (Is-PhpRefCell $v) { return $v.Value }
+                    return $v
+                }
+                'ReflectionProperty::setValue' {
+                    $p = $self.TargetProp
+                    if ($p.Static) {
+                        $cls = $state.Classes[[string]$p.Owner]
+                        $val = if ($evalArgs.Count -ge 4 -and $null -ne $evalArgs[3]) { $evalArgs[3] } else { $evalArgs[2] }
+                        $cls.StaticValues[[string]$p.Name] = Copy-PhpValue $val
+                        return $null
+                    }
+                    $obj = $evalArgs[2]
+                    $val = $evalArgs[3]
+                    $obj.Props[[string]$p.Name] = Copy-PhpValue $val
+                    return $null
+                }
+                'ReflectionProperty::getAttributes' {
+                    $attrs = if ($self.TargetProp.PSObject.Properties['Attributes']) { $self.TargetProp.Attributes } else { @() }
+                    $filter = if ($evalArgs.Count -ge 3) { $evalArgs[2] } else { $null }
+                    $flags = if ($evalArgs.Count -ge 4) { [long]$evalArgs[3] } else { [long]0 }
+                    return (Build-PhpReflectionAttributes $attrs $filter $flags)
+                }
+                'ReflectionParameter::getName' { return (To-PhpBytes ([string]$self.ParamDef.Name)) }
+                'ReflectionParameter::getPosition' { return [long]$self.Position }
+                'ReflectionParameter::hasType' { return (-not [string]::IsNullOrEmpty([string]$self.ParamDef.TypeName)) }
+                'ReflectionParameter::getType' { return (New-PhpReflectionNamedType ([string]$self.ParamDef.TypeName)) }
+                'ReflectionParameter::allowsNull' { return (Test-PhpParameterTypeAllowsNull ([string]$self.ParamDef.TypeName)) }
+                'ReflectionParameter::isOptional' { return ($null -ne $self.ParamDef.Default -or [bool]$self.ParamDef.Variadic) }
+                'ReflectionParameter::isDefaultValueAvailable' { return ($null -ne $self.ParamDef.Default) }
+                'ReflectionParameter::getDefaultValue' {
+                    if ($null -eq $self.ParamDef.Default) { Throw-PhpError 'ReflectionException' 'Internal error: Failed to retrieve the default value' }
+                    return (Invoke-PhpExpr $self.ParamDef.Default)
+                }
+                'ReflectionParameter::isPassedByReference' { return [bool]$self.ParamDef.ByRef }
+                'ReflectionParameter::isVariadic' { return [bool]$self.ParamDef.Variadic }
+                'ReflectionParameter::isPromoted' { return [bool]$self.ParamDef.Promoted }
+                'ReflectionParameter::getAttributes' {
+                    $attrs = if ($self.ParamDef.PSObject.Properties['Attributes']) { $self.ParamDef.Attributes } else { @() }
+                    $filter = if ($evalArgs.Count -ge 3) { $evalArgs[2] } else { $null }
+                    $flags = if ($evalArgs.Count -ge 4) { [long]$evalArgs[3] } else { [long]0 }
+                    return (Build-PhpReflectionAttributes $attrs $filter $flags)
+                }
+                'ReflectionConstant::__construct' {
+                    $cName = (Get-PhpHostText $evalArgs[2]).TrimStart('\')
+                    $found = $false; $cVal = $null
+                    if ($state.Constants.ContainsKey($cName)) { $found = $true; $cVal = $state.Constants[$cName] }
+                    elseif ($phpConstants.ContainsKey($cName)) { $found = $true; $cVal = $phpConstants[$cName] }
+                    if (-not $found) {
+                        Throw-PhpError 'ReflectionException' ('Constant ' + $cName + ' does not exist')
+                    }
+                    $self.Props['name'] = To-PhpBytes $cName
+                    $self | Add-Member -NotePropertyName ConstName -NotePropertyValue $cName -Force
+                    $self | Add-Member -NotePropertyName ConstValue -NotePropertyValue (ConvertTo-PhpOwnedValue $cVal) -Force
+                    return $null
+                }
+                'ReflectionConstant::getValue' { return (Copy-PhpValue $self.ConstValue) }
+                'ReflectionConstant::isDeprecated' { return $false }
+                'ReflectionConstant::getNamespaceName' {
+                    $cn = [string]$self.ConstName
+                    $idx = $cn.LastIndexOf('\')
+                    if ($idx -lt 0) { return (To-PhpBytes '') }
+                    return (To-PhpBytes ($cn.Substring(0, $idx)))
+                }
+                'ReflectionConstant::getShortName' {
+                    $cn = [string]$self.ConstName
+                    $idx = $cn.LastIndexOf('\')
+                    if ($idx -lt 0) { return (To-PhpBytes $cn) }
+                    return (To-PhpBytes ($cn.Substring($idx + 1)))
+                }
+                'ReflectionConstant::inNamespace' { return ([string]$self.ConstName).Contains('\') }
+                'ReflectionConstant::getAttributes' { return (New-PhpArray) }
+                'ReflectionConstant::__toString' {
+                    $valType = Get-PhpBuiltinTypeName $self.ConstValue
+                    return (To-PhpBytes ('Constant [ ' + $valType + ' ' + $self.ConstName + " ] { " + (To-PhpText $self.ConstValue) + " }`n"))
+                }
+                'ArrayIterator::__construct' {
+                    $src = if ($evalArgs.Count -ge 3) { $evalArgs[2] } else { New-PhpArray }
+                    $arr = ConvertTo-PhpContainerArray $src 'ArrayIterator::__construct'
+                    $self | Add-Member -NotePropertyName ArrayData -NotePropertyValue $arr -Force
+                    $self | Add-Member -NotePropertyName ArrayKeys -NotePropertyValue @($arr.Items.Keys) -Force
+                    $self | Add-Member -NotePropertyName ArrayCursor -NotePropertyValue ([int]0) -Force
+                    $self | Add-Member -NotePropertyName AoFlags -NotePropertyValue $(if ($evalArgs.Count -ge 4) { [long]$evalArgs[3] } else { [long]0 }) -Force
+                    return $null
+                }
+                'ArrayIterator::rewind' {
+                    $self.ArrayKeys = @($self.ArrayData.Items.Keys)
+                    $self.ArrayCursor = [int]0
+                    return $null
+                }
+                'ArrayIterator::valid' {
+                    return ($self.ArrayCursor -ge 0 -and $self.ArrayCursor -lt $self.ArrayKeys.Length)
+                }
+                'ArrayIterator::current' {
+                    if ($self.ArrayCursor -lt 0 -or $self.ArrayCursor -ge $self.ArrayKeys.Length) { return $null }
+                    $k = $self.ArrayKeys[$self.ArrayCursor]
+                    if (-not $self.ArrayData.Items.Contains($k)) { return $null }
+                    $v = $self.ArrayData.Items[$k]
+                    if (Is-PhpRefCell $v) { return $v.Value }
+                    return $v
+                }
+                'ArrayIterator::key' {
+                    if ($self.ArrayCursor -lt 0 -or $self.ArrayCursor -ge $self.ArrayKeys.Length) { return $null }
+                    return (Get-PhpKeyValue $self.ArrayKeys[$self.ArrayCursor])
+                }
+                'ArrayIterator::next' {
+                    $self.ArrayCursor++
+                    return $null
+                }
+                'ArrayIterator::seek' {
+                    $pos = [int]$evalArgs[2]
+                    if ($pos -lt 0 -or $pos -ge $self.ArrayKeys.Length) {
+                        Throw-PhpError 'OutOfBoundsException' ('Seek position ' + $pos + ' is out of range')
+                    }
+                    $self.ArrayCursor = $pos
+                    return $null
+                }
+                'ArrayObject::__construct' {
+                    $src = if ($evalArgs.Count -ge 3) { $evalArgs[2] } else { New-PhpArray }
+                    $arr = ConvertTo-PhpContainerArray $src 'ArrayObject::__construct'
+                    $flags = if ($evalArgs.Count -ge 4) { [long]$evalArgs[3] } else { [long]0 }
+                    $iterCls = if ($evalArgs.Count -ge 5) { (Get-PhpHostText $evalArgs[4]).TrimStart('\') } else { 'ArrayIterator' }
+                    $self | Add-Member -NotePropertyName ArrayData -NotePropertyValue $arr -Force
+                    $self | Add-Member -NotePropertyName AoFlags -NotePropertyValue $flags -Force
+                    $self | Add-Member -NotePropertyName IteratorClass -NotePropertyValue $iterCls -Force
+                    return $null
+                }
+                'ArrayObject::getIterator' {
+                    $iterName = if ($self.PSObject.Properties['IteratorClass'] -and -not [string]::IsNullOrEmpty([string]$self.IteratorClass)) { [string]$self.IteratorClass } else { 'ArrayIterator' }
+                    return (Invoke-PhpExpr ([pscustomobject]@{
+                        Kind='new'; Name=$iterName
+                        Args=@([pscustomobject]@{ Kind='literal'; Value=$self.ArrayData })
+                    }))
+                }
+                'ArrayObject::exchangeArray' {
+                    $old = Copy-PhpValue $self.ArrayData
+                    $self.ArrayData = ConvertTo-PhpContainerArray $evalArgs[2] 'ArrayObject::exchangeArray'
+                    return $old
+                }
+                'ArrayContainer::offsetExists' {
+                    $k = $evalArgs[2]
+                    if ($null -eq $k) { return $false }
+                    $ek = To-PhpKey $k
+                    return [bool]$self.ArrayData.Items.Contains($ek)
+                }
+                'ArrayContainer::offsetGet' {
+                    return (Get-PhpArrayItem $self.ArrayData $evalArgs[2])
+                }
+                'ArrayContainer::offsetSet' {
+                    $k = $evalArgs[2]; $v = $evalArgs[3]
+                    if ($null -eq $k) { Set-PhpArrayItem $self.ArrayData $null $v $true }
+                    else { Set-PhpArrayItem $self.ArrayData $k $v $false }
+                    if ($self.PSObject.Properties['ArrayKeys']) { $self.ArrayKeys = @($self.ArrayData.Items.Keys) }
+                    return $null
+                }
+                'ArrayContainer::offsetUnset' {
+                    $ek = To-PhpKey $evalArgs[2]
+                    if ($self.ArrayData.Items.Contains($ek)) {
+                        Separate-PhpReferenceBacking $self.ArrayData
+                        Remove-PhpTraversalEntry $self.ArrayData $ek
+                        $self.ArrayData.Items.Remove($ek)
+                    }
+                    if ($self.PSObject.Properties['ArrayKeys']) { $self.ArrayKeys = @($self.ArrayData.Items.Keys) }
+                    return $null
+                }
+                'ArrayContainer::count' {
+                    return [long]$self.ArrayData.Items.Count
+                }
+                'ArrayContainer::getArrayCopy' {
+                    return (Copy-PhpValue $self.ArrayData)
+                }
+                'ArrayContainer::append' {
+                    Set-PhpArrayItem $self.ArrayData $null $evalArgs[2] $true
+                    if ($self.PSObject.Properties['ArrayKeys']) { $self.ArrayKeys = @($self.ArrayData.Items.Keys) }
+                    return $null
+                }
+            }
+            throw "ALL PHP: Unknown internal dispatch '$op'"
+        }
+
+        # ----Universal Polyglot Runtime Bridge (ALL <-> PHP <-> Future Languages) ----
+        function Ensure-AllPolyglotContext {
+            if ($null -eq $global:AllPolyglotContext) {
+                $global:AllPolyglotContext = @{
+                    SharedVars = [System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::Ordinal)
+                    AllFunctions = [System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::Ordinal)
+                    PhpFunctions = [System.Collections.Generic.Dictionary[string,object]]::new([AllPhp.ValidTextSymbols.Comparers]::Ascii)
+                    PhpClasses = [System.Collections.Generic.Dictionary[string,object]]::new([AllPhp.ValidTextSymbols.Comparers]::Ascii)
+                    PhpInterfaces = [System.Collections.Generic.Dictionary[string,object]]::new([AllPhp.ValidTextSymbols.Comparers]::Ascii)
+                    PhpTraits = [System.Collections.Generic.Dictionary[string,object]]::new([AllPhp.ValidTextSymbols.Comparers]::Ascii)
+                    PhpConstants = [System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::Ordinal)
+                    AllAdapter = $null
+                    PhpAdapter = $null
+                    PendingAllCall = $null
+                    PendingAllResult = $null
+                }
+            }
+            return $global:AllPolyglotContext
+        }
+        function Convert-PhpValueToAllPolyglot($val) {
+            if (Is-PhpRefCell $val) { $val = $val.Value }
+            if ($null -eq $val -or $val -is [bool]) { return $val }
+            if ($val -is [long]) { return [decimal]$val }
+            if ($val -is [double]) { return $val }
+            if (Is-PhpStringValue $val) { return (To-PhpText $val) }
+            if (Is-PhpArray $val) {
+                $isList = $true
+                $idx = [long]0
+                foreach ($k in $val.Items.Keys) {
+                    if (-not $k.IsInteger -or $k.IntegerValue -ne $idx) { $isList = $false; break }
+                    $idx++
+                }
+                if ($isList) {
+                    $items = [System.Collections.Generic.List[object]]::new()
+                    foreach ($k in $val.Items.Keys) {
+                        [void]$items.Add((Convert-PhpValueToAllPolyglot $val.Items[$k]))
+                    }
+                    return [pscustomobject]@{ AllType='list'; Items=$items }
+                } else {
+                    $dict = [System.Collections.Specialized.OrderedDictionary]::new([System.StringComparer]::Ordinal)
+                    foreach ($k in $val.Items.Keys) {
+                        $dict[(Get-PhpKeyHostText $k)] = (Convert-PhpValueToAllPolyglot $val.Items[$k])
+                    }
+                    return [pscustomobject]@{ AllType='map'; Items=$dict }
+                }
+            }
+            if (Is-PhpObject $val) {
+                $dict = [System.Collections.Specialized.OrderedDictionary]::new([System.StringComparer]::Ordinal)
+                foreach ($k in $val.Props.Keys) {
+                    $dict[[string]$k] = (Convert-PhpValueToAllPolyglot $val.Props[$k])
+                }
+                return [pscustomobject]@{ AllType='map'; Items=$dict; PhpObject=$val; PhpClass=$val.Class }
+            }
+            return $val
+        }
+        function Convert-AllPolyglotValueToPhp($val) {
+            if ($null -eq $val -or $val -is [bool]) { return $val }
+            if ($val -is [long]) { return $val }
+            if ($val -is [int]) { return [long]$val }
+            if ($val -is [decimal]) {
+                $scale = ([decimal]::GetBits($val)[3] -shr 16) -band 0xFF
+                if ($scale -eq 0 -and $val -ge $phpIntMinDec -and $val -le $phpIntMaxDec) {
+                    return [long]$val
+                }
+                return [double]$val
+            }
+            if ($val -is [double]) { return $val }
+            if ($val -is [string]) { return (To-PhpBytes $val) }
+            if ($val -is [AllPhp.ByteValues.PhpBytes]) { return $val }
+            if ($val -is [pscustomobject] -and $val.PSObject.Properties['PhpType']) { return $val }
+            if ($val -is [pscustomobject] -and $val.PSObject.Properties['AllType']) {
+                if ($val.AllType -ceq 'list') {
+                    $arr = New-PhpArray
+                    foreach ($item in $val.Items) {
+                        Set-PhpArrayItem $arr $null (Convert-AllPolyglotValueToPhp $item) $true
+                    }
+                    return $arr
+                }
+                if ($val.AllType -ceq 'map') {
+                    if ($val.PSObject.Properties['PhpObject'] -and $null -ne $val.PhpObject) {
+                        $phpObj = $val.PhpObject
+                        foreach ($k in $val.Items.Keys) {
+                            $phpObj.Props[[string]$k] = Convert-AllPolyglotValueToPhp $val.Items[$k]
+                        }
+                        return $phpObj
+                    }
+                    $arr = New-PhpArray
+                    foreach ($k in $val.Items.Keys) {
+                        Set-PhpArrayItem $arr ([string]$k) (Convert-AllPolyglotValueToPhp $val.Items[$k]) $false
+                    }
+                    return $arr
+                }
+                if ($val.AllType -ceq 'vector') {
+                    $arr = New-PhpArray
+                    foreach ($v in $val.Values) { Set-PhpArrayItem $arr $null ([double]$v) $true }
+                    return $arr
+                }
+            }
+            return $val
+        }
+        function Sync-PhpStateToPolyglot {
+            $ctx = Ensure-AllPolyglotContext
+            foreach ($varName in @($state.Globals.Keys)) {
+                if ($varName -in @('argc','argv','_SERVER','this')) { continue }
+                $allVal = Convert-PhpValueToAllPolyglot $state.Globals[$varName]
+                $ctx.SharedVars[$varName] = $allVal
+            }
+            foreach ($varName in @($state.Vars.Keys)) {
+                if ($varName -in @('argc','argv','_SERVER','this')) { continue }
+                $allVal = Convert-PhpValueToAllPolyglot $state.Vars[$varName]
+                $ctx.SharedVars[$varName] = $allVal
+            }
+            foreach ($fnName in @($state.Functions.Keys)) {
+                $ctx.PhpFunctions[$fnName] = $state.Functions[$fnName]
+            }
+            foreach ($clsName in @($state.Classes.Keys)) {
+                $ctx.PhpClasses[$clsName] = $state.Classes[$clsName]
+            }
+            foreach ($ifName in @($state.Interfaces.Keys)) {
+                $ctx.PhpInterfaces[$ifName] = $state.Interfaces[$ifName]
+            }
+            foreach ($trName in @($state.Traits.Keys)) {
+                $ctx.PhpTraits[$trName] = $state.Traits[$trName]
+            }
+            foreach ($cName in @($state.Constants.Keys)) {
+                $ctx.PhpConstants[$cName] = Convert-PhpValueToAllPolyglot $state.Constants[$cName]
+            }
+        }
+        function Sync-PolyglotToPhpState {
+            if ($null -eq $global:AllPolyglotContext) { return }
+            $ctx = $global:AllPolyglotContext
+            if ($ctx.ContainsKey('PhpFunctions')) {
+                foreach ($fnName in @($ctx.PhpFunctions.Keys)) {
+                    if (-not $state.Functions.ContainsKey($fnName)) { $state.Functions[$fnName] = $ctx.PhpFunctions[$fnName] }
+                }
+            }
+            if ($ctx.ContainsKey('PhpInterfaces')) {
+                foreach ($ifName in @($ctx.PhpInterfaces.Keys)) {
+                    if (-not $state.Interfaces.ContainsKey($ifName)) { $state.Interfaces[$ifName] = $ctx.PhpInterfaces[$ifName] }
+                }
+            }
+            if ($ctx.ContainsKey('PhpTraits')) {
+                foreach ($trName in @($ctx.PhpTraits.Keys)) {
+                    if (-not $state.Traits.ContainsKey($trName)) { $state.Traits[$trName] = $ctx.PhpTraits[$trName] }
+                }
+            }
+            if ($ctx.ContainsKey('PhpClasses')) {
+                foreach ($clsName in @($ctx.PhpClasses.Keys)) {
+                    if (-not $state.Classes.ContainsKey($clsName)) { $state.Classes[$clsName] = $ctx.PhpClasses[$clsName] }
+                }
+            }
+            if ($ctx.ContainsKey('PhpConstants')) {
+                foreach ($cName in @($ctx.PhpConstants.Keys)) {
+                    if (-not $state.Constants.ContainsKey($cName)) { $state.Constants[$cName] = Convert-AllPolyglotValueToPhp $ctx.PhpConstants[$cName] }
+                }
+            }
+            foreach ($varName in @($ctx.SharedVars.Keys)) {
+                if ($varName -in @('argc','argv','_SERVER','this')) { continue }
+                $phpVal = Convert-AllPolyglotValueToPhp $ctx.SharedVars[$varName]
+                $state.Globals[$varName] = Copy-PhpValue $phpVal
+                if (-not [object]::ReferenceEquals($state.Vars, $state.Globals)) {
+                    $state.Vars[$varName] = Copy-PhpValue $phpVal
+                }
+            }
+        }
+        function Get-AllLanguageAdapter {
+            $ctx = Ensure-AllPolyglotContext
+            if ($null -ne $ctx.AllAdapter) { return $ctx.AllAdapter }
+            $candidates = @(
+                $(if (-not [string]::IsNullOrEmpty($phpAdapterDir)) { Join-Path $phpAdapterDir 'ALL_v1_0_adapter.ps1' } else { $null }),
+                $(if (-not [string]::IsNullOrEmpty($phpAdapterDir)) { Join-Path $phpAdapterDir 'all.ps1' } else { $null }),
+                'D:\ALL\package\ALL_v1_0_adapter.ps1',
+                'D:\ALL\languages\all.ps1',
+                'C:\Users\rinpa\ALL\languages\all.ps1'
+            )
+            foreach ($c in $candidates) {
+                if (-not [string]::IsNullOrEmpty($c) -and [IO.File]::Exists($c)) {
+                    $ctx.AllAdapter = (& $c)
+                    return $ctx.AllAdapter
+                }
+            }
+            throw 'ALL PHP Polyglot Error: ALL language adapter (ALL_v1_0_adapter.ps1) not found'
+        }
+        function Invoke-PhpPolyglotAllCode([string]$allSource, [string]$sourceFilePath = '') {
+            Sync-PhpStateToPolyglot
+            $adapter = Get-AllLanguageAdapter
+            $oldSourceEnv = [Environment]::GetEnvironmentVariable('ALL_SOURCE_FILE', 'Process')
+            $oldRootEnv = [Environment]::GetEnvironmentVariable('ALL_MODULE_ROOT', 'Process')
+            try {
+                if (-not [string]::IsNullOrEmpty($sourceFilePath)) {
+                    [Environment]::SetEnvironmentVariable('ALL_SOURCE_FILE', $sourceFilePath, 'Process')
+                    $dir = [IO.Path]::GetDirectoryName($sourceFilePath)
+                    if (-not [string]::IsNullOrEmpty($dir)) {
+                        [Environment]::SetEnvironmentVariable('ALL_MODULE_ROOT', $dir, 'Process')
+                    }
+                }
+                $sw = [System.IO.StringWriter]::new()
+                $oldOut = [Console]::Out
+                try {
+                    [Console]::SetOut($sw)
+                    [void](& $adapter.Run $allSource)
+                } finally {
+                    [Console]::SetOut($oldOut)
+                }
+                $capturedText = $sw.ToString()
+                if ($capturedText.Length -gt 0) {
+                    Write-PhpBytes (To-PhpBytes $capturedText)
+                }
+            } finally {
+                [Environment]::SetEnvironmentVariable('ALL_SOURCE_FILE', $oldSourceEnv, 'Process')
+                [Environment]::SetEnvironmentVariable('ALL_MODULE_ROOT', $oldRootEnv, 'Process')
+            }
+            Sync-PolyglotToPhpState
+            return [long]1
+        }
+        function Test-PhpPolyglotAllFunction([string]$name) {
+            if ($name -in @('sql_query','sql_exec','sql_migrate','sql_transaction','kv_put','kv_get','kv_delete','kv_keys')) { return $true }
+            if ($null -eq $global:AllPolyglotContext) { return $false }
+            $ctx = $global:AllPolyglotContext
+            $normalized = $name.TrimStart('\').Replace('\', '::')
+            if ($ctx.AllFunctions.ContainsKey($normalized) -or $ctx.AllFunctions.ContainsKey($name)) { return $true }
+            return $false
+        }
+        function Invoke-PhpPolyglotAllFunction([string]$name, $callArgs) {
+            $ctx = Ensure-AllPolyglotContext
+            Sync-PhpStateToPolyglot
+            $normalized = $name.TrimStart('\').Replace('\', '::')
+            $allArgs = [System.Collections.Generic.List[object]]::new()
+            foreach ($a in @($callArgs)) {
+                [void]$allArgs.Add((Convert-PhpValueToAllPolyglot $a))
+            }
+            $targetName = if ($ctx.AllFunctions.ContainsKey($normalized)) { $normalized } else { $name }
+            $ctx.PendingAllCall = [pscustomobject]@{
+                Name = $targetName
+                Args = @($allArgs.ToArray())
+            }
+            $ctx.PendingAllResult = $null
+            [void](Invoke-PhpPolyglotAllCode '')
+            $res = $ctx.PendingAllResult
+            $ctx.PendingAllResult = $null
+            return (Convert-AllPolyglotValueToPhp $res)
+        }
+        function Get-PhpDiagnosticStringLimit {
+            $limit=[long]15
+            if ($state.Ini.ContainsKey('zend.exception_string_param_max_len')) {
+                $configured=Get-PhpHostText (To-PhpBytes $state.Ini['zend.exception_string_param_max_len'])
+                $parsed=[long]0
+                if ([long]::TryParse($configured,[Globalization.NumberStyles]::Integer,[Globalization.CultureInfo]::InvariantCulture,[ref]$parsed) -and $parsed -ge 0) { $limit=$parsed }
+            }
+            return $limit
+        }
+        function Format-PhpDiagnosticString($value,[long]$limit) {
+            $bytes=To-PhpBytes $value
+            $take=[Math]::Min($bytes.LongLength,$limit)
+            $text=[Text.StringBuilder]::new()
+            [void]$text.Append("'")
+            for($offset=[long]0;$offset-lt$take;$offset++) {
+                $byte=$bytes.GetByte($offset)
+                switch([int]$byte) {
+                    9 { [void]$text.Append('\t') }
+                    10 { [void]$text.Append('\n') }
+                    11 { [void]$text.Append('\v') }
+                    12 { [void]$text.Append('\f') }
+                    13 { [void]$text.Append('\r') }
+                    27 { [void]$text.Append('\e') }
+                    92 { [void]$text.Append('\\') }
+                    default {
+                        if($byte-lt32-or$byte-ge127) { [void]$text.Append('\x'+$byte.ToString('X2',[Globalization.CultureInfo]::InvariantCulture)) }
+                        else { [void]$text.Append([char]$byte) }
+                    }
+                }
+            }
+            if($bytes.LongLength-gt$take) { [void]$text.Append('...') }
+            [void]$text.Append("'")
+            return $text.ToString()
         }
         function Format-PhpTraceArgument($value) {
             if ($null -ne $value -and $value.PSObject.Properties['PhpType'] -and
@@ -2563,10 +7157,7 @@ class UnhandledMatchError extends Error {}
             if ($value -is [bool]) { if ($value) { return 'true' }; return 'false' }
             if ($value -is [long]) { return $value.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
             if ($value -is [double]) { return (Format-PhpFloat $value 0) }
-            if ($value -is [string]) {
-                if ($value.Length -gt 15) { return ("'" + $value.Substring(0, 15) + "...'") }
-                return ("'" + $value + "'")
-            }
+            if (Is-PhpStringValue $value) { return (Format-PhpDiagnosticString $value (Get-PhpDiagnosticStringLimit)) }
             if (Is-PhpArray $value) { return 'Array' }
             if (Is-PhpObject $value) { return ('Object(' + $value.Class + ')') }
             return 'Object'
@@ -2577,8 +7168,14 @@ class UnhandledMatchError extends Error {}
             for ($i = $state.CallStack.Count - 1; $i -ge 0; $i--) {
                 $frame = $state.CallStack[$i]
                 $parts = [System.Collections.Generic.List[string]]::new()
-                foreach ($item in $frame.Args) { [void]$parts.Add((Format-PhpTraceArgument $item)) }
-                [void]$sb.Append('#' + $index + ' ' + $state.ScriptName + '(' + $frame.Line + '): ' +
+                $includeArguments=$true
+                if($state.Ini.ContainsKey('zend.exception_ignore_args')) {
+                    $setting=ConvertTo-PhpAsciiLower (Get-PhpHostText (To-PhpBytes $state.Ini['zend.exception_ignore_args']))
+                    $includeArguments=$setting -cin @('','0','off','false','no','none')
+                }
+                if($includeArguments) { foreach ($item in $frame.Args) { [void]$parts.Add((Format-PhpTraceArgument $item)) } }
+                $framePath=if($frame.PSObject.Properties['SourcePath']){[string]$frame.SourcePath}else{$state.ScriptName}
+                [void]$sb.Append('#' + $index + ' ' + $framePath + '(' + $frame.Line + '): ' +
                     $frame.Name + '(' + [string]::Join(', ', $parts.ToArray()) + ")`n")
                 $index++
             }
@@ -2587,23 +7184,38 @@ class UnhandledMatchError extends Error {}
         }
         # Called for every freshly created object: Throwables remember where they were created.
         function Initialize-PhpThrowable($object) {
-            $object.Props['file'] = $state.ScriptName
+            $object.Props['file'] = To-PhpBytes $state.ScriptName
             $object.Props['line'] = [long]$state.Line
-            $object.Props['__trace'] = Format-PhpStackTrace
+            $object.Props['__trace'] = To-PhpBytes (Format-PhpStackTrace)
         }
         function Get-PhpThrowableString($object) {
-            $text = $object.Class + ': ' + (To-PhpText $object.Props['message']) + ' in ' +
-                (To-PhpText $object.Props['file']) + ':' + (To-PhpText $object.Props['line']) +
-                "`nStack trace:`n" + (To-PhpText $object.Props['__trace'])
-            $previous = $object.Props['previous']
-            if (Is-PhpObject $previous) { return ((Get-PhpThrowableString $previous) + "`n`nNext " + $text) }
-            return $text
+            $builder=[AllPhp.ByteValues.PhpByteBuilder]::new()
+            $previous=$object.Props['previous']
+            if (Is-PhpObject $previous) {
+                $builder.Append((Get-PhpThrowableString $previous))
+                $builder.AppendUtf8("`n`nNext ")
+            }
+            $builder.AppendUtf8($object.Class+': ')
+            $builder.Append((To-PhpBytes $object.Props['message']))
+            $builder.AppendUtf8(' in ');$builder.Append((To-PhpBytes $object.Props['file']))
+            $builder.AppendUtf8(':');$builder.Append((To-PhpBytes $object.Props['line']))
+            $builder.AppendUtf8("`nStack trace:`n")
+            $builder.Append((To-PhpBytes $object.Props['__trace']))
+            return $builder.ToPhpBytes()
         }
         # A thrown PHP object travels inside a .NET exception. The message is what a caller that does
         # not understand PHP exceptions sees (and what the legacy regression fixtures match on).
         function Throw-PhpObject($object, [string]$legacyText = '') {
             if ($legacyText.Length -eq 0) {
-                $legacyText = 'ALL PHP: Uncaught ' + $object.Class + ': ' + (To-PhpText $object.Props['message'])
+                $carrierMessage=To-PhpBytes $object.Props['message']
+                $carrierText=$null
+                if ($carrierMessage.TryDecodeUtf8([ref]$carrierText)) {
+                    $legacyText='ALL PHP: Uncaught '+$object.Class+': '+$carrierText
+                } else {
+                    # The raw PHP message is kept on the PHP object. This is
+                    # only a host control carrier and never rendered to PHP.
+                    $legacyText='ALL PHP: Uncaught '+$object.Class+' (raw PHP message retained)'
+                }
             }
             $state.ThrownSeq++
             $id = [string]$state.ThrownSeq
@@ -2624,7 +7236,7 @@ class UnhandledMatchError extends Error {}
             return $null
         }
         # Raise a built-in PHP error from inside the interpreter.
-        function Throw-PhpError([string]$className, [string]$message, [string]$legacyText = '') {
+        function Throw-PhpError([string]$className, $message, [string]$legacyText = '') {
             Ensure-PhpPrelude
             $object = Invoke-PhpExpr ([pscustomobject]@{
                 Kind='new'; Name=$className
@@ -2638,7 +7250,11 @@ class UnhandledMatchError extends Error {}
             if ($value -is [bool]) { if ($value) { return 'true' }; return 'false' }
             if ($value -is [long]) { return $value.ToString([System.Globalization.CultureInfo]::InvariantCulture) }
             if ($value -is [double]) { return (Format-PhpFloat $value 0) }
-            if ($value -is [string]) { return ("'" + $value.Replace('\', '\\').Replace("'", "\'") + "'") }
+            if (Is-PhpStringValue $value) {
+                $limit=Get-PhpDiagnosticStringLimit
+                if($limit-eq0) { return 'of type string' }
+                return (Format-PhpDiagnosticString $value $limit)
+            }
             if (Is-PhpObject $value) { return ('of type ' + $value.Class) }
             return 'of type array'
         }
@@ -2665,7 +7281,7 @@ class UnhandledMatchError extends Error {}
             if ($null -eq $method) {
                 Throw-PhpInvalidValueCallable ('Call to undefined method '+$className+'::'+$methodName+'()') ('class '+$className+' does not have a method "'+$methodName+'"') $callbackFunction
             }
-            try { Assert-PhpVisibility $method.Visibility $method.Owner }
+            try { Assert-PhpVisibility $method.Visibility $method.Owner 'method' $method.Name }
             catch {
                 if ($_.Exception.Message -notlike 'ALL PHP: Cannot access*') { throw }
                 $scope=if ($null -eq $state.ClassContext) { 'global scope' } else { 'scope '+$state.ClassContext }
@@ -2677,6 +7293,7 @@ class UnhandledMatchError extends Error {}
             return $className
         }
         function Assert-PhpValueCallable($callee, [string]$callbackFunction='') {
+            if (Is-PhpBytes $callee) { $callee=Get-PhpHostText $callee }
             if ($null -ne $callee -and $callee.PSObject.Properties['PhpType'] -and
                 $callee.PhpType -in @('closure','first_class_callable')) { return $callee }
             if ($callee -is [string]) {
@@ -2688,7 +7305,7 @@ class UnhandledMatchError extends Error {}
                     return ($className+'::'+$name.Substring($split+2))
                 }
                 if (-not $state.Functions.ContainsKey($name) -and -not $phpBuiltinNames.Contains($name) -and
-                    -not (Test-PhpNativeFunction $name)) {
+                    -not (Test-PhpNativeFunction $name) -and -not (Test-PhpPolyglotAllFunction $name)) {
                     Throw-PhpInvalidValueCallable ('Call to undefined function '+$name+'()') ('function "'+$callee+'" not found or invalid function name') $callbackFunction ("ALL PHP: Undefined function '"+$callee+"'")
                 }
                 return $name
@@ -2703,11 +7320,13 @@ class UnhandledMatchError extends Error {}
                 if ($callee.Items.Count -ne 2) {
                     Throw-PhpInvalidValueCallable 'Array callback must have exactly two elements' 'array callback must have exactly two members' $callbackFunction 'ALL PHP: Array is not a valid callable'
                 }
-                if (-not $callee.Items.Contains('i:0') -or -not $callee.Items.Contains('i:1')) {
+                if (-not $callee.Items.Contains((New-PhpIntegerKey 0)) -or -not $callee.Items.Contains((New-PhpIntegerKey 1))) {
                     Throw-PhpInvalidValueCallable 'Array callback has to contain indices 0 and 1' 'array callback has to contain indices 0 and 1' $callbackFunction 'ALL PHP: Array is not a valid callable'
                 }
                 $target=Get-PhpArrayItem $callee ([long]0)
                 $member=Get-PhpArrayItem $callee ([long]1)
+                if (Is-PhpStringValue $target) { $target=Get-PhpHostText $target }
+                if (Is-PhpStringValue $member) { $member=Get-PhpHostText $member }
                 if ($target -isnot [string] -and -not (Is-PhpObject $target)) {
                     Throw-PhpInvalidValueCallable 'First array member is not a valid class name or object' 'first array member is not a valid class name or object' $callbackFunction 'ALL PHP: Array is not a valid callable'
                 }
@@ -2729,6 +7348,7 @@ class UnhandledMatchError extends Error {}
             Throw-PhpInvalidValueCallable ('Value of type '+$type+' is not callable') 'no array or string given' $callbackFunction
         }
         function Get-PhpValueCallableDefinition($callee) {
+            if (Is-PhpBytes $callee) { $callee=Get-PhpHostText $callee }
             if ($null -ne $callee -and $callee.PSObject.Properties['PhpType']) {
                 if ($callee.PhpType -ceq 'closure') { return $callee.Definition }
                 if ($callee.PhpType -ceq 'first_class_callable') {
@@ -2740,6 +7360,8 @@ class UnhandledMatchError extends Error {}
             if (Is-PhpObject $callee) { return (Find-OptionalPhpMethod $callee.Class '__invoke') }
             if (Is-PhpArray $callee) {
                 $target=Get-PhpArrayItem $callee ([long]0);$member=Get-PhpArrayItem $callee ([long]1)
+                if (Is-PhpStringValue $target) { $target=Get-PhpHostText $target }
+                if (Is-PhpStringValue $member) { $member=Get-PhpHostText $member }
                 $className=if (Is-PhpObject $target) { $target.Class } else { [string]$target }
                 return (Find-OptionalPhpMethod $className $member)
             }
@@ -2754,8 +7376,8 @@ class UnhandledMatchError extends Error {}
             $values=[System.Collections.Generic.List[object]]::new()
             foreach ($key in $array.Items.Keys) {
                 $value=$array.Items[$key]
-                if ($key.StartsWith('s:')) {
-                    [void]$values.Add([pscustomobject]@{ PhpType='named_argument';Name=$key.Substring(2);Value=$value })
+                if (-not $key.IsInteger) {
+                    [void]$values.Add([pscustomobject]@{ PhpType='named_argument';Name=(Get-PhpHostText $key.BytesValue);Value=$value })
                 } else { [void]$values.Add($value) }
             }
             return ,($values.ToArray())
@@ -2769,7 +7391,7 @@ class UnhandledMatchError extends Error {}
                 $name=$null;$value=$item;$parameter=$null
                 if ($null -ne $item -and $item.PSObject.Properties['PhpType'] -and $item.PhpType -ceq 'named_argument') {
                     $name=$item.Name;$value=$item.Value
-                    foreach ($p in $definition.Params) { if ($p.Name -ceq $name) { $parameter=$p;break } }
+                    foreach ($p in $definition.Params) { if ((Test-PhpRawNameEqual $p.Name $name)) { $parameter=$p;break } }
                 } elseif ($position -lt $definition.Params.Count) {
                     $parameter=$definition.Params[$position]
                     if (-not $parameter.Variadic) { $position++ }
@@ -2795,46 +7417,49 @@ class UnhandledMatchError extends Error {}
 
         # Call a PHP callable value (closure, function name, [object, method], invokable object)
         # with already evaluated arguments.
-        function Invoke-PhpValueCallable($callee, $values, [string]$callbackFunction='') {
+        function Invoke-PhpValueCallable($callee, $values, [string]$callbackFunction='', $callPolicy=$null) {
+            if($null-eq$callPolicy){$callPolicy=Get-PhpDirectCallPolicy}
+            if (Is-PhpBytes $callee) { $callee=Get-PhpHostText $callee }
             $callee = Assert-PhpValueCallable $callee $callbackFunction
             $values = @($values)
             if ($callbackFunction.Length -gt 0) { $values=Prepare-PhpCallbackValues $callee $values }
             if ($null -ne $callee -and $callee.PSObject.Properties['PhpType']) {
                 if ($callee.PhpType -ceq 'closure') {
-                    return (Invoke-PhpCallable $callee.Definition $values $callee.BoundThis '' $callee)
+                    return (Invoke-PhpCallable $callee.Definition $values $callee.BoundThis '' $callee $false $callPolicy)
                 }
                 if ($callee.PhpType -ceq 'first_class_callable') {
                     if ($callee.Mode -eq 'function') {
                         if ($state.Functions.ContainsKey($callee.Name)) {
-                            return (Invoke-PhpCallable $state.Functions[$callee.Name] $values $null)
+                            return (Invoke-PhpCallable $state.Functions[$callee.Name] $values $null '' $null $false $callPolicy)
                         }
-                        return (Invoke-PhpFunction $callee.Name $values)
+                        return (Invoke-PhpFunction $callee.Name $values $callPolicy)
                     }
-                    if ($callee.Mode -eq 'method') { return (Invoke-PhpMethod $callee.BoundThis $callee.Name $values) }
-                    return (Invoke-PhpStaticMethod $callee.Class $callee.Name $values)
+                    if ($callee.Mode -eq 'method') { return (Invoke-PhpMethod $callee.BoundThis $callee.Name $values $callPolicy) }
+                    return (Invoke-PhpStaticMethod $callee.Class $callee.Name $values $callPolicy)
                 }
             }
             if (Is-PhpObject $callee) {
                 if ($null -eq (Find-OptionalPhpMethod $callee.Class '__invoke')) { throw 'ALL PHP: Object is not callable' }
-                return (Invoke-PhpMethod $callee '__invoke' $values)
+                return (Invoke-PhpMethod $callee '__invoke' $values $callPolicy)
             }
             if (Is-PhpArray $callee) {
                 $pair = @($callee.Items.Values)
+                for($i=0;$i-lt$pair.Count;$i++) { if (Is-PhpStringValue $pair[$i]) { $pair[$i]=Get-PhpHostText $pair[$i] } }
                 if ($pair.Count -eq 2 -and $pair[1] -is [string]) {
-                    if (Is-PhpObject $pair[0]) { return (Invoke-PhpMethod $pair[0] $pair[1] $values) }
-                    if ($pair[0] -is [string]) { return (Invoke-PhpStaticMethod $pair[0] $pair[1] $values) }
+                    if (Is-PhpObject $pair[0]) { return (Invoke-PhpMethod $pair[0] $pair[1] $values $callPolicy) }
+                    if ($pair[0] -is [string]) { return (Invoke-PhpStaticMethod $pair[0] $pair[1] $values $callPolicy) }
                 }
                 throw 'ALL PHP: Array is not a valid callable'
             }
             if ($callee -is [string]) {
                 $split = $callee.IndexOf('::')
                 if ($split -gt 0) {
-                    return (Invoke-PhpStaticMethod $callee.Substring(0, $split) $callee.Substring($split + 2) $values)
+                    return (Invoke-PhpStaticMethod $callee.Substring(0, $split) $callee.Substring($split + 2) $values $callPolicy)
                 }
                 if ($state.Functions.ContainsKey($callee)) {
-                    return (Invoke-PhpCallable $state.Functions[$callee] $values $null)
+                    return (Invoke-PhpCallable $state.Functions[$callee] $values $null '' $null $false $callPolicy)
                 }
-                return (Invoke-PhpFunction $callee $values)
+                return (Invoke-PhpFunction $callee $values $callPolicy)
             }
             throw 'ALL PHP: Value is not callable'
         }
@@ -2850,32 +7475,6 @@ class UnhandledMatchError extends Error {}
         # Raise a PHP diagnostic (E_WARNING, E_NOTICE, E_DEPRECATED, E_USER_*).
         # A user error handler sees it first. Otherwise it is printed in the PHP CLI format, but only
         # when the adapter runs with -PhpDiagnostics; the default mode stays silent.
-        function Write-PhpDiagnostic([long]$level, [string]$message) {
-            if ($null -ne $state.ErrorHandler -and -not $state.InErrorHandler -and
-                (($state.ErrorHandlerMask -band $level) -ne 0)) {
-                $handlerArgs = @($level, $message, [string]$state.ScriptName, [long]$state.Line)
-                $arity = Get-PhpCallableArity $state.ErrorHandler
-                if ($arity -ge 0 -and $arity -lt 4) {
-                    if ($arity -eq 0) { $handlerArgs = @() } else { $handlerArgs = @($handlerArgs[0..($arity - 1)]) }
-                }
-                $state.InErrorHandler = $true
-                $handled = $null
-                $savedLine = $state.Line
-                try { $handled = Invoke-PhpValueCallable $state.ErrorHandler $handlerArgs }
-                finally { $state.InErrorHandler = $false; $state.Line = $savedLine }
-                if (-not ($handled -is [bool] -and -not $handled)) { return }
-            }
-            if (-not $PhpDiagnostics -and -not $isCli) { return }
-            if ($state.SilenceDepth -gt 0) { return }
-            if (($state.ErrorReporting -band $level) -eq 0) { return }
-            $label = 'Warning'
-            if ($level -eq 8 -or $level -eq 1024) { $label = 'Notice' }
-            elseif ($level -eq 8192 -or $level -eq 16384) { $label = 'Deprecated' }
-            elseif ($level -eq 256) { $label = 'Fatal error' }
-            $diagnostic = $label + ': ' + $message + ' in ' + $state.ScriptName + ' on line ' + $state.Line + "`n"
-            if ($isCli) { [Console]::Error.Write($diagnostic) }
-            else { [Console]::Write("`n" + $diagnostic) }
-        }
         function Test-PhpObjectHasProp($object, [string]$name) {
             if ($object.Props -is [System.Collections.Specialized.OrderedDictionary]) {
                 return $object.Props.Contains($name)
@@ -2891,10 +7490,15 @@ class UnhandledMatchError extends Error {}
                 for ($i = $chain.Count - 1; $i -ge 0; $i--) {
                     foreach ($prop in $chain[$i].Properties) {
                         if ($prop.Static) { continue }
-                        if (-not $seen.Add([string]$prop.Name)) { continue }
-                        $declared = Find-PhpProperty $object.Class $prop.Name $false
+                        $shadowed = ($prop.Visibility -eq 'private' -and (Test-PhpPrivateShadowed $chain $i $prop.Name))
+                        $seenKey = if ($shadowed) { $prop.Owner + '::' + $prop.Name } else { [string]$prop.Name }
+                        if (-not $seen.Add($seenKey)) { continue }
+                        $declared = if ($shadowed) { $prop } else { Find-PhpProperty $object.Class $prop.Name $false }
                         if ($null -eq $declared) { $declared = $prop }
-                        $present = Test-PhpObjectHasProp $object $prop.Name
+                        $storage = if ($shadowed -and $object.PSObject.Properties['PrivateProps'] -and $null -ne $object.PrivateProps) { $object.PrivateProps } else { $object.Props }
+                        $sKey = if ($shadowed) { $prop.Owner + '::' + $prop.Name } else { [string]$prop.Name }
+                        $present = if ($storage -is [System.Collections.Specialized.OrderedDictionary]) { $storage.Contains($sKey) } else { $storage.ContainsKey($sKey) }
+                        if (-not $present -and [string]::IsNullOrEmpty([string]$declared.TypeName)) { continue }
                         $suffix = ''
                         $plain = ''
                         if ($declared.Visibility -eq 'protected') { $suffix = ':protected'; $plain = ':protected' }
@@ -2905,7 +7509,9 @@ class UnhandledMatchError extends Error {}
                         [void]$entries.Add([pscustomobject]@{
                             Name=[string]$prop.Name; Suffix=$suffix; PlainSuffix=$plain; Present=$present
                             TypeName=[string]$declared.TypeName
-                            Value=$(if ($present) { $object.Props[$prop.Name] } else { $null })
+                            Visibility=[string]$declared.Visibility; Owner=[string]$declared.Owner
+                            Storage=$storage; StorageKey=$sKey
+                            Value=$(if ($present) { $storage[$sKey] } else { $null })
                         })
                     }
                 }
@@ -2914,6 +7520,7 @@ class UnhandledMatchError extends Error {}
                 if (-not $seen.Add([string]$key)) { continue }
                 [void]$entries.Add([pscustomobject]@{
                     Name=[string]$key; Suffix=''; PlainSuffix=''; Present=$true; TypeName=''
+                    Visibility='public'; Owner=''; Storage=$object.Props; StorageKey=[string]$key
                     Value=$object.Props[$key]
                 })
             }
@@ -2926,7 +7533,7 @@ class UnhandledMatchError extends Error {}
                 $sb = [System.Text.StringBuilder]::new()
                 [void]$sb.Append("Array`n" + $pad + "(`n")
                 foreach ($key in @($value.Items.Keys)) {
-                    [void]$sb.Append($pad + '    [' + ([string]$key).Substring(2) + '] => ' +
+                    [void]$sb.Append($pad + '    [' + (Get-PhpKeyHostText $key) + '] => ' +
                         (Format-PhpPrintR $value.Items[$key] ($indent + 8)) + "`n")
                 }
                 [void]$sb.Append($pad + ")`n")
@@ -2954,12 +7561,282 @@ class UnhandledMatchError extends Error {}
             }
             return (To-PhpText $value)
         }
-        function New-PhpArray {
-            return [pscustomobject]@{
-                PhpType='array'
-                Items=[System.Collections.Specialized.OrderedDictionary]::new()
-                NextIndex=[long]0
+        function Add-PhpReferenceIdentity($list, $value) {
+            foreach($seen in $list){if([object]::ReferenceEquals($seen,$value)){return $false}}
+            [void]$list.Add($value);return $true
+        }
+        function Add-PhpReferenceStore($context, $store, $globals=$null, $statics=$null) {
+            if($null-eq$store -or -not(Add-PhpReferenceIdentity $context.Stores $store)){return}
+            foreach($key in $store.Keys) {
+                if($null-ne$globals -and $globals.Contains($key)){continue}
+                if($null-ne$statics -and $statics.Contains($key)){continue}
+                $context.Pending.Push($store[$key])
             }
+        }
+        function Get-PhpReferenceOwnerCount($context, $cell) {
+            for($i=0;$i-lt$context.Cells.Count;$i++) {
+                if([object]::ReferenceEquals($context.Cells[$i],$cell)){return [long]$context.Counts[$i]}
+            }
+            return [long]0
+        }
+        function New-PhpReferenceContext($additionalRoots) {
+            $context=[pscustomobject]@{
+                Cells=[Collections.Generic.List[object]]::new()
+                Counts=[Collections.Generic.List[long]]::new()
+                ExpandedCells=[Collections.Generic.List[object]]::new()
+                Arrays=[Collections.Generic.List[object]]::new()
+                Objects=[Collections.Generic.List[object]]::new()
+                Stores=[Collections.Generic.List[object]]::new()
+                Pending=[Collections.Generic.Stack[object]]::new()
+                DumpArrays=[Collections.Generic.List[object]]::new()
+            }
+            Add-PhpReferenceStore $context $state.Globals
+            Add-PhpReferenceStore $context $state.FunctionStatics
+            Add-PhpReferenceStore $context $state.Vars $state.GlobalBindings $state.StaticBindings
+            foreach($frame in $state.ReferenceOwnerFrames) {
+                Add-PhpReferenceStore $context $frame.Vars $frame.Globals $frame.Statics
+            }
+            foreach($definition in $state.Classes.Values) {
+                if($definition.PSObject.Properties['StaticValues']){Add-PhpReferenceStore $context $definition.StaticValues}
+            }
+            foreach($root in $state.ReferenceTemporaryRoots){$context.Pending.Push($root)}
+            foreach($root in $additionalRoots){$context.Pending.Push($root)}
+            while($context.Pending.Count-gt0) {
+                $value=$context.Pending.Pop()
+                if($null-eq$value){continue}
+                if(Is-PhpRefCell $value) {
+                    $found=$false
+                    for($i=0;$i-lt$context.Cells.Count;$i++) {
+                        if([object]::ReferenceEquals($context.Cells[$i],$value)){$context.Counts[$i]++;$found=$true;break}
+                    }
+                    if(-not$found){[void]$context.Cells.Add($value);[void]$context.Counts.Add([long]1)}
+                    if(Add-PhpReferenceIdentity $context.ExpandedCells $value){$context.Pending.Push($value.Value)}
+                    continue
+                }
+                if(Is-PhpArray $value) {
+                    if(-not$value.PSObject.Properties['ReferenceBacking']){throw 'ALL PHP: missing logical array backing metadata'}
+                    if(Add-PhpReferenceIdentity $context.Arrays $value.ReferenceBacking) {
+                        foreach($key in $value.Items.Keys){$context.Pending.Push($value.Items[$key])}
+                    }
+                    continue
+                }
+                if(Is-PhpObject $value) {
+                    if(Add-PhpReferenceIdentity $context.Objects $value){Add-PhpReferenceStore $context $value.Props}
+                    continue
+                }
+                if($value.PSObject.Properties['PhpType'] -and $value.PhpType-ceq'closure') {
+                    if(Add-PhpReferenceIdentity $context.Objects $value){Add-PhpReferenceStore $context $value.Captures}
+                }
+            }
+            return $context
+        }
+        # Traversal metadata has keys/entry identities/cursors and weak host
+        # links only. OrderedDictionary and existing RefCell remain PHP storage.
+        function New-PhpTraversalStorage {
+            return [pscustomobject]@{
+                Entries=[Collections.Generic.List[object]]::new()
+                Live=[Collections.Generic.Dictionary[object,object]]::new()
+                Members=[Collections.Generic.List[object]]::new()
+                Shared=$false
+            }
+        }
+        function Add-PhpTraversalMember($storage,$array) {
+            [void]$storage.Members.Add([WeakReference]::new($array))
+        }
+        function Add-PhpTraversalEntry($array,$key) {
+            $storage=$array.TraversalStorage
+            if($storage.Live.ContainsKey($key)){return}
+            if(-not$array.Items.Contains($key)){throw 'ALL PHP: traversal entry without a canonical array slot'}
+            $entry=[pscustomobject]@{Identity=[object]::new();Key=$key;Live=$true}
+            [void]$storage.Entries.Add($entry);$storage.Live[$key]=$entry
+        }
+        function Remove-PhpTraversalEntry($array,$key) {
+            $storage=$array.TraversalStorage
+            if($storage.Live.ContainsKey($key)){
+                $storage.Live[$key].Live=$false;[void]$storage.Live.Remove($key)
+            }
+        }
+        function Copy-PhpTraversalStorage($source,$copy) {
+            $storage=$source.TraversalStorage;$storage.Shared=$true
+            $copy.TraversalStorage=$storage;Add-PhpTraversalMember $storage $copy
+        }
+        function Separate-PhpTraversalStorage($array) {
+            $old=$array.TraversalStorage
+            if(-not$old.Shared){return}
+            $replacement=New-PhpTraversalStorage
+            foreach($entry in $old.Entries){
+                $clone=[pscustomobject]@{Identity=$entry.Identity;Key=$entry.Key;Live=$entry.Live}
+                [void]$replacement.Entries.Add($clone)
+                if($clone.Live){$replacement.Live[$clone.Key]=$clone}
+            }
+            # Native COW duplicates registered cursor positions, not just keys.
+            # A fetch consumes this copy chain on either match or reset.
+            foreach($cursor in $state.ForeachIterators){
+                $bindings=@($cursor.Primary)+@($cursor.Copies.ToArray())
+                foreach($binding in $bindings){
+                    if([object]::ReferenceEquals($binding.Storage,$old)){
+                        [void]$cursor.Copies.Add([pscustomobject]@{Storage=$replacement;Position=$binding.Position})
+                        break
+                    }
+                }
+            }
+            $array.TraversalStorage=$replacement;Add-PhpTraversalMember $replacement $array
+        }
+        function Get-PhpTraversalCell($array,$key) {
+            $value=$array.Items[$key]
+            if(Is-PhpRefCell $value){return $value}
+            $cell=[pscustomobject]@{PhpType='refcell';Value=(Copy-PhpValue $value)}
+            $storage=$array.TraversalStorage
+            # Eager managed copies of one logical hash must see newly created
+            # reference slots until their next COW separation. Weak metadata
+            # links do not become PHP reference owners.
+            for($index=$storage.Members.Count-1;$index-ge0;$index--){
+                $member=$storage.Members[$index].Target
+                if($null-eq$member){$storage.Members.RemoveAt($index);continue}
+                if([object]::ReferenceEquals($member.TraversalStorage,$storage)-and$member.Items.Contains($key)){
+                    $member.Items[$key]=$cell;$member.ReferenceCellsKnownAbsent=$false
+                }
+            }
+            return $cell
+        }
+        function New-PhpLiveIterator($array) {
+            $cursor=[pscustomobject]@{
+                Primary=[pscustomobject]@{Storage=$array.TraversalStorage;Position=0}
+                Copies=[Collections.Generic.List[object]]::new()
+            }
+            [void]$state.ForeachIterators.Add($cursor)
+            return $cursor
+        }
+        function Remove-PhpLiveIterator($cursor) {
+            for($index=$state.ForeachIterators.Count-1;$index-ge0;$index--){
+                if([object]::ReferenceEquals($state.ForeachIterators[$index],$cursor)){
+                    $state.ForeachIterators.RemoveAt($index);$cursor.Copies.Clear();return
+                }
+            }
+            throw 'ALL PHP: live iterator lifetime mismatch'
+        }
+        function Read-PhpLiveIterator($cursor,$array) {
+            $storage=$array.TraversalStorage
+            if(-not[object]::ReferenceEquals($cursor.Primary.Storage,$storage)){
+                $match=$null
+                foreach($copy in $cursor.Copies){if([object]::ReferenceEquals($copy.Storage,$storage)){$match=$copy;break}}
+                if($null-eq$match){
+                    # FE_FETCH_RW pos_ex separates only an unrelated shared
+                    # replacement. Same-hash and linked-copy fetches do not.
+                    $cursor.Copies.Clear()
+                    Separate-PhpReferenceBacking $array
+                    $storage=$array.TraversalStorage
+                    $cursor.Primary=[pscustomobject]@{Storage=$storage;Position=0}
+                }
+                else{$cursor.Primary=[pscustomobject]@{Storage=$storage;Position=$match.Position}}
+                $cursor.Copies.Clear()
+            }
+            $binding=$cursor.Primary
+            while($binding.Position-lt$storage.Entries.Count){
+                $entry=$storage.Entries[$binding.Position];$binding.Position++
+                if(-not$entry.Live){continue}
+                if(-not$array.Items.Contains($entry.Key)){throw 'ALL PHP: live iterator metadata diverged from canonical array'}
+                return [pscustomobject]@{Key=$entry.Key;Cell=(Get-PhpTraversalCell $array $entry.Key)}
+            }
+            return $null
+        }
+        function Rebuild-PhpTraversalStorage($array,$replacement,[int]$prepended) {
+            $storage=$array.TraversalStorage;$anchors=[Collections.Generic.List[object]]::new()
+            foreach($cursor in $state.ForeachIterators){
+                foreach($binding in (@($cursor.Primary)+@($cursor.Copies.ToArray()))){
+                    if(-not[object]::ReferenceEquals($binding.Storage,$storage)){continue}
+                    $identity=$null
+                    for($position=$binding.Position;$position-lt$storage.Entries.Count;$position++){
+                        $entry=$storage.Entries[$position]
+                        if($entry.Live){$identity=$entry.Identity;break}
+                    }
+                    [void]$anchors.Add([pscustomobject]@{Binding=$binding;Identity=$identity})
+                }
+            }
+            $keys=@($replacement.Items.Keys);$entries=[Collections.Generic.List[object]]::new()
+            $live=[Collections.Generic.Dictionary[object,object]]::new()
+            for($index=0;$index-lt$prepended;$index++){
+                $entry=[pscustomobject]@{Identity=[object]::new();Key=$keys[$index];Live=$true}
+                [void]$entries.Add($entry);$live[$entry.Key]=$entry
+            }
+            $index=$prepended
+            foreach($entry in $storage.Entries){
+                if(-not$entry.Live){continue}
+                if(-not$array.Items.Contains($entry.Key)){throw 'ALL PHP: rebuild lost a live canonical slot'}
+                if($index-ge$keys.Count){throw 'ALL PHP: rebuild key mapping underflow'}
+                $mapped=[pscustomobject]@{Identity=$entry.Identity;Key=$keys[$index];Live=$true};$index++
+                [void]$entries.Add($mapped);$live[$mapped.Key]=$mapped
+            }
+            if($index-ne$keys.Count){throw 'ALL PHP: rebuild key mapping overflow'}
+            $storage.Entries=$entries;$storage.Live=$live
+            foreach($anchor in $anchors){
+                $position=$entries.Count
+                if($null-ne$anchor.Identity){
+                    for($index=0;$index-lt$entries.Count;$index++){
+                        if([object]::ReferenceEquals($entries[$index].Identity,$anchor.Identity)){$position=$index;break}
+                    }
+                }
+                $anchor.Binding.Position=$position
+            }
+        }
+
+        function Separate-PhpReferenceBacking($array) {
+            if(-not(Is-PhpArray $array)){throw 'ALL PHP: logical backing separation requires array'}
+            Separate-PhpTraversalStorage $array
+            # Reference-free arrays can separate without traversing the live graph.
+            # Every existing reference-slot writer invalidates this exact absence bit.
+            if($array.ReferenceCellsKnownAbsent){$array.ReferenceBacking=[object]::new();return}
+            $context=New-PhpReferenceContext @($array)
+            $array.ReferenceCellsKnownAbsent=$true
+            foreach($key in @($array.Items.Keys)) {
+                $entry=$array.Items[$key]
+                if(Is-PhpRefCell $entry) {
+                    if((Get-PhpReferenceOwnerCount $context $entry)-le1){$array.Items[$key]=Copy-PhpValue $entry.Value}
+                    else{$array.ReferenceCellsKnownAbsent=$false}
+                }
+            }
+            $array.ReferenceBacking=[object]::new()
+        }
+        function Add-PhpReferenceArgumentRoot($value) {
+            if($null-ne$value -and $value.PSObject.Properties['PhpType']) {
+                if($value.PhpType-ceq'named_argument'){Add-PhpReferenceArgumentRoot $value.Value;return}
+                if($value.PhpType-ceq'refargument'){[void]$state.ReferenceTemporaryRoots.Add($value.Cell);return}
+            }
+            [void]$state.ReferenceTemporaryRoots.Add($value)
+        }
+        function Remove-PhpReferenceTemporaryRoots([int]$start) {
+            if($start-lt0 -or $start-gt$state.ReferenceTemporaryRoots.Count){throw 'ALL PHP: reference temporary lifetime mismatch'}
+            if($state.ReferenceTemporaryRoots.Count-gt$start){$state.ReferenceTemporaryRoots.RemoveRange($start,$state.ReferenceTemporaryRoots.Count-$start)}
+        }
+        function Update-PhpNextIndex($array, [long]$integerKey) {
+            if($integerKey-ge$array.NextIndex){
+                if($integerKey-eq[long]::MaxValue){$array.NextIndex=[long]::MaxValue}
+                else{$array.NextIndex=[long]($integerKey+1)}
+            }
+        }
+        function Allocate-PhpAppendKey($array) {
+            $index=[long]$array.NextIndex
+            if($index-eq[long]::MinValue){$index=[long]0}
+            $key=New-PhpIntegerKey $index
+            if($array.Items.Contains($key)){
+                Throw-PhpError 'Error' 'Cannot add element to the array as the next element is already occupied'
+            }
+            Update-PhpNextIndex $array $index
+            return $key
+        }
+        function New-PhpArray {
+            $storage=New-PhpTraversalStorage
+            $array=[pscustomobject]@{
+                PhpType='array'
+                ReferenceBacking=[object]::new()
+                ReferenceCellsKnownAbsent=$true
+                TraversalStorage=$storage
+                Items=[System.Collections.Specialized.OrderedDictionary]::new()
+                NextIndex=[long]::MinValue
+                InternalPointer=0
+            }
+            Add-PhpTraversalMember $storage $array
+            return $array
         }
         function Is-PhpArray($value) {
             return ($null -ne $value -and $value.PSObject.Properties['PhpType'] -and
@@ -2970,7 +7847,7 @@ class UnhandledMatchError extends Error {}
                 $value.PhpType -ceq 'object')
         }
         function Copy-PhpValue($value, [int]$depth = 0) {
-            if (-not (Is-PhpArray $value)) { return $value }
+            if (-not (Is-PhpArray $value)) { return (ConvertTo-PhpOwnedValue $value) }
             if ($depth -ge 64) {
                 throw 'ALL PHP: Array nesting exceeds supported copy depth (64)'
             }
@@ -2978,9 +7855,13 @@ class UnhandledMatchError extends Error {}
             # Clone directly to preserve insertion order and NextIndex. Do not
             # call Set-PhpArrayItem, which also copies incoming array values.
             foreach ($key in $value.Items.Keys) {
-                $copy.Items[[string]$key] = Copy-PhpValue $value.Items[$key] ($depth + 1)
+                $copy.Items[$key] = Copy-PhpValue $value.Items[$key] ($depth + 1)
             }
+            Copy-PhpTraversalStorage $value $copy
+            $copy.ReferenceBacking=$value.ReferenceBacking
+            $copy.ReferenceCellsKnownAbsent=$value.ReferenceCellsKnownAbsent
             $copy.NextIndex = $value.NextIndex
+            $copy.InternalPointer = if ($value.PSObject.Properties['InternalPointer']) { [int]$value.InternalPointer } else { 0 }
             return $copy
         }
         function Get-PhpVariableSlot([string]$name) {
@@ -2993,15 +7874,12 @@ class UnhandledMatchError extends Error {}
                 return [pscustomobject]@{ Store=$state.Globals; Key=$name }
             }
             if ($state.StaticBindings.Contains($name)) {
+                $callableScope = if ([string]::IsNullOrEmpty($state.CurrentCallable)) { '{main}' } else { $state.CurrentCallable }
                 return [pscustomobject]@{
-                    Store=$state.FunctionStatics; Key=($state.CurrentCallable + '|' + $name)
+                    Store=$state.FunctionStatics; Key=($callableScope + '|' + $name)
                 }
             }
             return [pscustomobject]@{ Store=$state.Vars; Key=$name }
-        }
-        function Is-PhpRefCell($value) {
-            return ($null -ne $value -and $value.PSObject.Properties['PhpType'] -and
-                $value.PhpType -ceq 'refcell')
         }
         function Get-PhpVariableValue([string]$name) {
             if ($name -ceq 'GLOBALS') {
@@ -3068,25 +7946,26 @@ class UnhandledMatchError extends Error {}
                     $state.QuietDepth++
                     try { $baseValue=Get-PhpVariableValue $baseName }
                     catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
                         if ($_.Exception.Message -notlike 'ALL PHP: Undefined variable*') { throw }
                     }
                     finally { $state.QuietDepth-- }
                     if ($null -eq $baseValue) { Set-PhpVariableValue $baseName (New-PhpArray) }
                 }
                 $array=Invoke-PhpExpr $node.Base
+                if (Is-PhpStringValue $array) { Throw-PhpError 'Error' 'Cannot create references to/from string offsets' }
                 if (-not (Is-PhpArray $array)) { throw 'ALL PHP: Reference index requires array' }
+                Separate-PhpReferenceBacking $array
                 if ($null -eq $node.Key) {
-                    $key='i:' + [string]$array.NextIndex
-                    $array.NextIndex++
+                    $key=Allocate-PhpAppendKey $array
                 } else {
                     $key=To-PhpKey (Invoke-PhpExpr $node.Key)
-                    if ($key.StartsWith('i:')) {
-                        $numeric=[long]$key.Substring(2)
-                        if ($numeric -ge $array.NextIndex) { $array.NextIndex=$numeric+1 }
+                    if ($key.IsInteger) {
+                        $numeric=[long]$key.IntegerValue
+                        Update-PhpNextIndex $array $numeric
                     }
                 }
-                return [pscustomobject]@{ Store=$array.Items; Key=$key }
+                return [pscustomobject]@{ Store=$array.Items; Key=$key; ReferenceArray=$array }
             }
             if ($node.Kind -eq 'property') {
                 if ($node.NullSafe) { throw 'ALL PHP: Nullsafe property is not a reference target' }
@@ -3095,29 +7974,33 @@ class UnhandledMatchError extends Error {}
                 if ($object.PSObject.Properties['EnumCase']) {
                     throw 'ALL PHP: Enum case properties cannot be referenced'
                 }
+                $propName = Resolve-PhpMemberNodeName $node
+                $declared = $null
                 if ($object.Class -ne 'stdClass') {
-                    $declared=Find-PhpProperty $object.Class $node.Name $false
+                    $declared=Find-PhpPropertyForScope $object.Class $propName $false
                     if ($null -ne $declared) {
-                        Assert-PhpVisibility $declared.Visibility $declared.Owner
-                        if ($declared.Readonly -or -not [string]::IsNullOrEmpty([string]$declared.TypeName)) {
+                        Assert-PhpVisibility $declared.Visibility $declared.Owner 'property' $propName
+                        Assert-PhpSetVisibility $declared 'indirect'
+                        if ($declared.Readonly -or (-not [string]::IsNullOrEmpty([string]$declared.TypeName) -and [string]::IsNullOrEmpty([string]$declared.SetVisibility))) {
                             throw 'ALL PHP: Reference to typed/readonly property requires typed reference tracking'
                         }
                     }
                 }
-                $present=if ($object.Props -is [System.Collections.Specialized.OrderedDictionary]) {
-                    $object.Props.Contains($node.Name)
-                } else { $object.Props.ContainsKey($node.Name) }
+                $storageInfo = Get-PhpObjectPropertyStorage $object $declared $propName
+                $present=if ($storageInfo.Store -is [System.Collections.Specialized.OrderedDictionary]) {
+                    $storageInfo.Store.Contains($storageInfo.Key)
+                } else { $storageInfo.Store.ContainsKey($storageInfo.Key) }
                 if (-not $present -and
                     $null -ne (Find-OptionalPhpMethod $object.Class '__get')) {
                     throw 'ALL PHP: Cannot bind __get result by reference without reference return semantics'
                 }
-                return [pscustomobject]@{ Store=$object.Props; Key=$node.Name }
+                return [pscustomobject]@{ Store=$storageInfo.Store; Key=$storageInfo.Key }
             }
             if ($node.Kind -eq 'static_property') {
-                $klass=Resolve-PhpClass ([string](Invoke-PhpExpr $node.Base))
+                $klass=Resolve-PhpClass (Get-PhpHostText (Invoke-PhpExpr $node.Base))
                 $prop=Find-PhpProperty $klass $node.Name $true
                 if ($null -eq $prop) { throw 'ALL PHP: Undefined static property reference' }
-                Assert-PhpVisibility $prop.Visibility $prop.Owner
+                Assert-PhpVisibility $prop.Visibility $prop.Owner 'property' $node.Name
                 if (-not [string]::IsNullOrEmpty([string]$prop.TypeName)) {
                     throw 'ALL PHP: Reference to typed static property requires typed reference tracking'
                 }
@@ -3141,27 +8024,177 @@ class UnhandledMatchError extends Error {}
                 PhpType='refcell'; Value=(Copy-PhpValue $previous)
             }
             $slot.Store[$slot.Key]=$cell
+            if($slot.PSObject.Properties['ReferenceArray']){$slot.ReferenceArray.ReferenceCellsKnownAbsent=$false;Add-PhpTraversalEntry $slot.ReferenceArray $slot.Key}
             return $cell
         }
         function Set-PhpReferenceTarget($target, $cell) {
+            $referenceTargetRoot=$state.ReferenceTemporaryRoots.Count
+            [void]$state.ReferenceTemporaryRoots.Add($cell)
+            try {
             if (-not (Is-PhpRefCell $cell)) { throw 'ALL PHP: Internal reference cell missing' }
             $slot=Resolve-PhpLValueSlot $target
             $slot.Store[$slot.Key]=$cell
+            if($slot.PSObject.Properties['ReferenceArray']){$slot.ReferenceArray.ReferenceCellsKnownAbsent=$false;Add-PhpTraversalEntry $slot.ReferenceArray $slot.Key}
+            } finally {
+                Remove-PhpReferenceTemporaryRoots $referenceTargetRoot
+            }
+        }
+        function Expand-PhpSpreadValue($spreadVal, [string]$context = 'argument') {
+            if (Is-PhpRefCell $spreadVal) { $spreadVal = $spreadVal.Value }
+            $items = [System.Collections.Generic.List[object]]::new()
+            if (Is-PhpArray $spreadVal) {
+                foreach ($k in $spreadVal.Items.Keys) {
+                    $rawItem = $spreadVal.Items[$k]
+                    $rawRefCell = if (Is-PhpRefCell $rawItem) { $rawItem } else { $null }
+                    $val = if ($null -ne $rawRefCell) { $rawRefCell.Value } else { $rawItem }
+                    $keyName = if ($k.IsInteger) { $null } else { Get-PhpHostText $k.BytesValue }
+                    [void]$items.Add([pscustomobject]@{
+                        IsInteger=[bool]$k.IsInteger; Key=$keyName; RawKey=$k; StringKeyBytes=$null
+                        Value=$val; RawRefCell=$rawRefCell
+                    })
+                }
+                return ,($items.ToArray())
+            }
+            if (Is-PhpObject $spreadVal) {
+                Ensure-PhpPrelude
+                $iterObj = $spreadVal
+                while ($state.PreludeLoaded -and (Test-PhpInstanceOf $iterObj.Class 'IteratorAggregate') -and -not (Test-PhpInstanceOf $iterObj.Class 'Iterator')) {
+                    $iterObj = Invoke-PhpMethod $iterObj 'getIterator' @()
+                    if (-not (Is-PhpObject $iterObj)) {
+                        Throw-PhpError 'Exception' 'Objects returned by IteratorAggregate::getIterator() must be traversable'
+                    }
+                }
+                if ($iterObj.Class -ieq 'Generator' -or ($state.PreludeLoaded -and (Test-PhpInstanceOf $iterObj.Class 'Iterator'))) {
+                    [void](Invoke-PhpMethod $iterObj 'rewind' @())
+                    while (Is-Truthy (Invoke-PhpMethod $iterObj 'valid' @())) {
+                        $curVal = Invoke-PhpMethod $iterObj 'current' @()
+                        $curKey = Invoke-PhpMethod $iterObj 'key' @()
+                        $rawRefCell = if (Is-PhpRefCell $curVal) { $curVal } else { $null }
+                        $val = if ($null -ne $rawRefCell) { $rawRefCell.Value } else { $curVal }
+                        if ($curKey -is [long] -or $curKey -is [int]) {
+                            [void]$items.Add([pscustomobject]@{
+                                IsInteger=$true; Key=$null; RawKey=$null; StringKeyBytes=$null
+                                Value=$val; RawRefCell=$rawRefCell
+                            })
+                        } elseif (Is-PhpStringValue $curKey) {
+                            $kb = To-PhpBytes $curKey
+                            [void]$items.Add([pscustomobject]@{
+                                IsInteger=$false; Key=(Get-PhpHostText $kb); RawKey=$null; StringKeyBytes=$kb
+                                Value=$val; RawRefCell=$rawRefCell
+                            })
+                        } else {
+                            $keyErr = if ($context -ceq 'argument') { 'Keys must be of type int|string during argument unpacking' } else { 'Keys must be of type int|string during array unpacking' }
+                            Throw-PhpError 'Error' $keyErr
+                        }
+                        [void](Invoke-PhpMethod $iterObj 'next' @())
+                    }
+                    return ,($items.ToArray())
+                }
+            }
+            $gotType = Get-PhpBuiltinTypeName $spreadVal
+            if ($context -ceq 'array') {
+                Throw-PhpError 'Error' ('Only arrays and Traversables can be unpacked, ' + $gotType + ' given') 'ALL PHP: Only arrays can be unpacked in array literals'
+            }
+            Throw-PhpError 'TypeError' ('Only arrays and Traversables can be unpacked, ' + $gotType + ' given') 'ALL PHP: Argument unpacking requires array or Traversable'
+        }
+        function ConvertTo-PhpCallCollectedArray($expressions) {
+            $collected = New-PhpArray
+            $sawNamed = $false
+            foreach ($arg in $expressions) {
+                if ($arg.Kind -ceq 'named_argument') {
+                    $sawNamed = $true
+                    Set-PhpArrayItem $collected $arg.Name (Invoke-PhpExpr $arg.Expr) $false
+                } elseif ($arg.Kind -ceq 'spread_argument') {
+                    $spreadVal = Invoke-PhpExpr $arg.Expr
+                    foreach ($item in (Expand-PhpSpreadValue $spreadVal 'argument')) {
+                        if ($item.IsInteger) {
+                            if ($sawNamed) {
+                                Throw-PhpError 'Error' 'Cannot use positional argument after named argument during unpacking' 'ALL PHP: Positional argument after named argument'
+                            }
+                            Set-PhpArrayItem $collected $null $item.Value $true
+                        } else {
+                            $sawNamed = $true
+                            Set-PhpArrayItem $collected $item.Key $item.Value $false
+                        }
+                    }
+                } else {
+                    if ($sawNamed) {
+                        Throw-PhpError 'Error' 'Cannot use positional argument after named argument' 'ALL PHP: Positional argument after named argument'
+                    }
+                    Set-PhpArrayItem $collected $null (Invoke-PhpExpr $arg) $true
+                }
+            }
+            return $collected
         }
         function Evaluate-PhpUserArguments($expressions, $definition) {
+            $referenceArgumentsRoot=$state.ReferenceTemporaryRoots.Count
+            try {
             $args=[System.Collections.Generic.List[object]]::new()
             $position=0
+            $sawNamed=$false
             foreach ($arg in $expressions) {
+                if ($arg.Kind -ceq 'spread_argument') {
+                    $spreadVal=Invoke-PhpExpr $arg.Expr
+                    foreach ($item in (Expand-PhpSpreadValue $spreadVal 'argument')) {
+                        if ($item.IsInteger) {
+                            if ($sawNamed) {
+                                Throw-PhpError 'Error' 'Cannot use positional argument after named argument during unpacking' 'ALL PHP: Positional argument after named argument'
+                            }
+                            $param=$null
+                            if ($position -lt $definition.Params.Count) {
+                                $param=$definition.Params[$position]
+                                if (-not $param.Variadic) { $position++ }
+                            }
+                            if ($null -ne $param -and $param.ByRef -and $null -ne $item.RawRefCell) {
+                                $value=[pscustomobject]@{
+                                    PhpType='refargument'; Cell=$item.RawRefCell; Value=(Copy-PhpValue $item.RawRefCell.Value)
+                                }
+                            } else {
+                                $value=Copy-PhpValue $item.Value
+                            }
+                            [void]$args.Add($value)
+                            Add-PhpReferenceArgumentRoot $value
+                        } else {
+                            $sawNamed=$true
+                            $param=$null
+                            foreach ($candidate in $definition.Params) {
+                                if ((Test-PhpRawNameEqual $candidate.Name $item.Key)) { $param=$candidate; break }
+                            }
+                            if ($null -eq $param) {
+                                foreach ($candidate in $definition.Params) {
+                                    if ($candidate.Variadic) { $param=$candidate; break }
+                                }
+                            }
+                            if ($null -ne $param -and $param.ByRef -and $null -ne $item.RawRefCell) {
+                                $val=[pscustomobject]@{
+                                    PhpType='refargument'; Cell=$item.RawRefCell; Value=(Copy-PhpValue $item.RawRefCell.Value)
+                                }
+                            } else {
+                                $val=Copy-PhpValue $item.Value
+                            }
+                            [void]$args.Add([pscustomobject]@{
+                                PhpType='named_argument'; Name=$item.Key; Value=$val
+                            })
+                            Add-PhpReferenceArgumentRoot $val
+                        }
+                    }
+                    continue
+                }
                 $name=$null
                 $expr=$arg
                 if ($arg.Kind -ceq 'named_argument') {
                     $name=$arg.Name
                     $expr=$arg.Expr
+                    $sawNamed=$true
+                } else {
+                    if ($sawNamed) {
+                        Throw-PhpError 'Error' 'Cannot use positional argument after named argument' 'ALL PHP: Positional argument after named argument'
+                    }
                 }
                 $param=$null
                 if ($null -ne $name) {
                     foreach ($candidate in $definition.Params) {
-                        if ($candidate.Name -ceq $name) { $param=$candidate; break }
+                        if ((Test-PhpRawNameEqual $candidate.Name $name)) { $param=$candidate; break }
                     }
                     if ($null -eq $param) {
                         foreach ($candidate in $definition.Params) {
@@ -3180,16 +8213,30 @@ class UnhandledMatchError extends Error {}
                     $value=[pscustomobject]@{
                         PhpType='refargument'; Cell=$cell; Value=(Copy-PhpValue $cell.Value)
                     }
+                } elseif ($null -ne $param -and $param.ByRef -and
+                    $expr.Kind -in @('call','method','static_method','invoke')) {
+                    $cell=Invoke-PhpReferenceCall $expr $null 'Only variables should be passed by reference'
+                    $value=[pscustomobject]@{
+                        PhpType='refargument'; Cell=$cell; Value=(Copy-PhpValue $cell.Value)
+                    }
                 } else { $value=Invoke-PhpExpr $expr }
                 if ($null -ne $name) {
                     [void]$args.Add([pscustomobject]@{
                         PhpType='named_argument'; Name=$name; Value=$value
                     })
                 } else { [void]$args.Add($value) }
+                Add-PhpReferenceArgumentRoot $value
             }
             return ,($args.ToArray())
+            } finally {
+                Remove-PhpReferenceTemporaryRoots $referenceArgumentsRoot
+            }
         }
-        function Encode-JsonQuoted([string]$value) {
+        function Encode-JsonQuoted($value, [long]$flags=0) {
+            $raw=To-PhpBytes $value
+            $decoded=$null
+            if(-not$raw.TryDecodeUtf8([ref]$decoded)){Throw-PhpJsonFailure 5 'Malformed UTF-8 characters, possibly incorrectly encoded'}
+            $value=$decoded
             $sb = [System.Text.StringBuilder]::new()
             [void]$sb.Append('"')
             for ($i = 0; $i -lt $value.Length; $i++) {
@@ -3197,9 +8244,13 @@ class UnhandledMatchError extends Error {}
                 $code = [int]$ch
                 $escape = $null
                 switch ($code) {
-                    34 { $escape = '\"' }
+                    34 { $escape = if (($flags -band 8) -ne 0) { '\u0022' } else { '\"' } }
+                    38 { if (($flags -band 2) -ne 0) { $escape = '\u0026' } }
+                    39 { if (($flags -band 4) -ne 0) { $escape = '\u0027' } }
+                    60 { if (($flags -band 1) -ne 0) { $escape = '\u003C' } }
+                    62 { if (($flags -band 1) -ne 0) { $escape = '\u003E' } }
                     92 { $escape = '\\' }
-                    47 { $escape = '\/' }
+                    47 { if (($flags -band 64) -eq 0) { $escape = '\/' } }
                     8  { $escape = '\b' }
                     9  { $escape = '\t' }
                     10 { $escape = '\n' }
@@ -3210,7 +8261,7 @@ class UnhandledMatchError extends Error {}
                     [void]$sb.Append($escape)
                     continue
                 }
-                if ($code -lt 32 -or $code -gt 126) {
+                if ($code -lt 32 -or ($code -gt 127 -and ($flags -band 256) -eq 0)) {
                     [void]$sb.Append(('\u{0:x4}' -f $code))
                 } else {
                     [void]$sb.Append($ch)
@@ -3219,54 +8270,73 @@ class UnhandledMatchError extends Error {}
             [void]$sb.Append('"')
             return $sb.ToString()
         }
-        function Encode-PhpJson($value, [int]$depth = 0) {
-            if ($depth -ge 64) { throw 'ALL PHP: JSON nesting depth exceeded (64)' }
-            if ($null -eq $value) { return 'null' }
-            if ($value -is [bool]) {
-                if ($value) { return 'true' }
-                return 'false'
+        function Throw-PhpJsonFailure([long]$code, [string]$message) {
+            $jsonFailure=[InvalidOperationException]::new($message)
+            $jsonFailure.Data['AllPhpJsonError']=$code
+            throw $jsonFailure
+        }
+        function Encode-PhpJson($value, [int]$depth=0, $path=$null, [long]$flags=0, [int]$maxDepth=512) {
+            if(Is-PhpRefCell $value){$value=$value.Value}
+            if($maxDepth -le 0 -or $depth -ge $maxDepth){Throw-PhpJsonFailure 1 'Maximum stack depth exceeded'}
+            if($null -eq $value){return 'null'}
+            if($value -is [bool]){if($value){return 'true'};return 'false'}
+            if($value -is [long]){return $value.ToString([Globalization.CultureInfo]::InvariantCulture)}
+            if($value -is [double]){
+                if([double]::IsNaN($value)-or[double]::IsInfinity($value)){Throw-PhpJsonFailure 7 'Inf and NaN cannot be JSON encoded'}
+                return (Format-PhpFloat $value 0).Replace('E','e')
             }
-            if ($value -is [long]) {
-                return $value.ToString([System.Globalization.CultureInfo]::InvariantCulture)
-            }
-            if ($value -is [double]) {
-                if ([double]::IsNaN($value) -or [double]::IsInfinity($value)) {
-                    throw 'ALL PHP: Inf and NaN cannot be JSON encoded'
+            if(Is-PhpStringValue $value){return (Encode-JsonQuoted $value $flags)}
+            $array=Is-PhpArray $value
+            $object=Is-PhpObject $value
+            if(-not$array-and-not$object){Throw-PhpJsonFailure 8 'Type is not supported'}
+            if($null -eq $path){$path=[Collections.Generic.List[object]]::new()}
+            foreach($ancestor in $path){if([object]::ReferenceEquals($ancestor,$value)){Throw-PhpJsonFailure 6 'Recursion detected'}}
+            [void]$path.Add($value)
+            try {
+                if($object-and$state.Classes.ContainsKey($value.Class)-and
+                    $state.Classes[$value.Class].PSObject.Properties['Enum']-and$state.Classes[$value.Class].Enum){
+                    if($null -eq $state.Classes[$value.Class].BackingType){Throw-PhpJsonFailure 11 'Non-backed enums have no default serialization'}
+                    return (Encode-PhpJson $value.Props['value'] $depth $path $flags $maxDepth)
                 }
-                return (Format-PhpFloat $value 0).Replace('E', 'e')
-            }
-            if ($value -is [string]) { return (Encode-JsonQuoted $value) }
-            if (Is-PhpArray $value) {
-                $index = [long]0
-                $isList = $true
-                foreach ($key in $value.Items.Keys) {
-                    if ([string]$key -cne "i:$index") { $isList = $false; break }
-                    $index++
-                }
-                $parts = [System.Collections.Generic.List[string]]::new()
-                foreach ($key in $value.Items.Keys) {
-                    $encoded = Encode-PhpJson $value.Items[$key] ($depth + 1)
-                    if ($isList) {
-                        [void]$parts.Add($encoded)
-                    } else {
-                        $name = if (([string]$key).StartsWith('i:')) {
-                            ([string]$key).Substring(2)
-                        } else { ([string]$key).Substring(2) }
-                        [void]$parts.Add((Encode-JsonQuoted $name) + ':' + $encoded)
+                $parts=[Collections.Generic.List[string]]::new()
+                $pretty = (($flags -band 128) -ne 0)
+                $forceObj = (($flags -band 16) -ne 0)
+                $list=$array -and (-not $forceObj)
+                if($array){
+                    $index=[long]0
+                    if ($list) {
+                        foreach($key in $value.Items.Keys){if(-not$key.IsInteger-or$key.IntegerValue-ne$index){$list=$false;break};$index++}
+                    }
+                    foreach($key in $value.Items.Keys){
+                        $encoded=Encode-PhpJson $value.Items[$key] ($depth+1) $path $flags $maxDepth
+                        if($list){[void]$parts.Add($encoded)}
+                        else{
+                            $sep = if ($pretty) { ': ' } else { ':' }
+                            [void]$parts.Add((Encode-JsonQuoted (Get-PhpKeyValue $key) $flags)+$sep+$encoded)
+                        }
+                    }
+                } else {
+                    foreach($entry in (Get-PhpObjectDumpEntries $value)){
+                        if(-not$entry.Present-or$entry.Suffix.Length-gt0){continue}
+                        $encoded=Encode-PhpJson $entry.Value ($depth+1) $path $flags $maxDepth
+                        $sep = if ($pretty) { ': ' } else { ':' }
+                        [void]$parts.Add((Encode-JsonQuoted $entry.Name $flags)+$sep+$encoded)
                     }
                 }
-                if ($isList) { return ('[' + [string]::Join(',', $parts.ToArray()) + ']') }
-                return ('{' + [string]::Join(',', $parts.ToArray()) + '}')
-            }
-            if (Is-PhpObject $value) {
-                $parts = [System.Collections.Generic.List[string]]::new()
-                foreach ($key in $value.Props.Keys) {
-                    $encoded = Encode-PhpJson $value.Props[$key] ($depth + 1)
-                    [void]$parts.Add((Encode-JsonQuoted ([string]$key)) + ':' + $encoded)
+                if($parts.Count -eq 0){
+                    if($list){return '[]'}
+                    return '{}'
                 }
-                return ('{' + [string]::Join(',', $parts.ToArray()) + '}')
-            }
-            throw 'ALL PHP: Unsupported JSON value type'
+                if($pretty){
+                    $childIndent = '    ' * ($depth + 1)
+                    $closeIndent = '    ' * $depth
+                    $joined = "`n" + $childIndent + [string]::Join(",`n" + $childIndent, $parts.ToArray()) + "`n" + $closeIndent
+                    if($list){return ('['+$joined+']')}
+                    return ('{'+$joined+'}')
+                }
+                if($list){return ('['+[string]::Join(',',$parts.ToArray())+']')}
+                return ('{'+[string]::Join(',',$parts.ToArray())+'}')
+            } finally {$path.RemoveAt($path.Count-1)}
         }
         function New-PhpStdObject {
             return [pscustomobject]@{
@@ -3278,7 +8348,7 @@ class UnhandledMatchError extends Error {}
         function Convert-JsonToPhp($value, [bool]$assoc, [int]$depth = 0) {
             if ($depth -ge 64) { throw 'ALL PHP: JSON nesting depth exceeded (64)' }
             if ($null -eq $value) { return $null }
-            if ($value -is [bool] -or $value -is [string]) { return $value }
+            if ($value -is [bool] -or $value -is [string]) { return (ConvertTo-PhpOwnedValue $value) }
             if ($value -is [System.ValueType]) {
                 # JSON integers become PHP int when they fit in 64 bits; everything else is float.
                 if ($value -is [double] -or $value -is [single]) { return [double]$value }
@@ -3432,7 +8502,8 @@ class UnhandledMatchError extends Error {}
             return ($sign + $dg.Substring(0, $pt) + '.' + $dg.Substring($pt))
         }
         # Numeric string -> int/float, or $null when the string is not numeric.
-        function ConvertFrom-PhpNumericString([string]$text, [bool]$leadingOnly) {
+        function ConvertFrom-PhpNumericString($text, [bool]$leadingOnly) {
+            $text = Get-PhpNumericView $text
             $m = if ($leadingOnly) { $phpLeadingNumericRx.Match($text) } else { $phpNumericStringRx.Match($text) }
             if (-not $m.Success) { return $null }
             $body = $m.Groups[1].Value
@@ -3447,7 +8518,7 @@ class UnhandledMatchError extends Error {}
             }
             try { return [double]::Parse($body, [System.Globalization.NumberStyles]::Float, $inv) }
             catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
                 if ($body.StartsWith('-')) { return [double]::NegativeInfinity }
                 return [double]::PositiveInfinity
             }
@@ -3484,7 +8555,7 @@ class UnhandledMatchError extends Error {}
             if ($a -is [long] -and $b -is [long]) {
                 $r = $null
                 try { $r = [System.Decimal]$a * [System.Decimal]$b } catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw } $r = $null }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw } $r = $null }
                 if ($null -ne $r -and $r -ge $phpIntMinDec -and $r -le $phpIntMaxDec) { return [long]$r }
             }
             return ([double]$a * [double]$b)
@@ -3529,7 +8600,7 @@ class UnhandledMatchError extends Error {}
                         if ($exp -gt 0) { $base = $base * $base }
                     }
                 } catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw } $ok = $false }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw } $ok = $false }
                 if ($ok -and $result -ge $phpIntMinDec -and $result -le $phpIntMaxDec) { return [long]$result }
             }
             return [Math]::Pow([double]$a, [double]$b)
@@ -3571,11 +8642,11 @@ class UnhandledMatchError extends Error {}
                     if ($null -eq $value) { return [long]0 }
                     if ($value -is [bool]) { if ($value) { return [long]1 }; return [long]0 }
                     if (Is-PhpNum $value) { return (To-PhpInt $value) }
-                    if ($value -is [string]) {
+                    if ((Is-PhpStringValue $value)) {
                         $parsed = ConvertFrom-PhpNumericString $value $true
                         if ($null -eq $parsed) { return [long]0 }
                         if ($parsed -is [double] -and
-                            $phpLeadingNumericRx.Match($value).Groups[1].Value.IndexOfAny([char[]]'.eE') -lt 0) {
+                            $phpLeadingNumericRx.Match((Get-PhpNumericView $value)).Groups[1].Value.IndexOfAny([char[]]'.eE') -lt 0) {
                             # integer syntax too large for 64 bits saturates, like strtol()
                             if ($parsed -lt 0) { return [long]::MinValue }
                             return [long]::MaxValue
@@ -3589,10 +8660,10 @@ class UnhandledMatchError extends Error {}
                     if ($null -eq $value) { return [double]0 }
                     if ($value -is [bool]) { if ($value) { return [double]1 }; return [double]0 }
                     if (Is-PhpNum $value) { return [double]$value }
-                    if ($value -is [string]) {
+                    if ((Is-PhpStringValue $value)) {
                         $parsed = ConvertFrom-PhpNumericString $value $true
                         if ($null -eq $parsed) { return [double]0 }
-                        if ($parsed -eq 0 -and $value.TrimStart().StartsWith('-')) {
+                        if ($parsed -eq 0 -and (Get-PhpNumericView $value).TrimStart().StartsWith('-')) {
                             return ([double]0 * -1.0)
                         }
                         return [double]$parsed
@@ -3600,7 +8671,7 @@ class UnhandledMatchError extends Error {}
                     if (Is-PhpArray $value) { if ($value.Items.Count -gt 0) { return [double]1 }; return [double]0 }
                     return [double]1
                 }
-                'string' { return (To-PhpText $value) }
+                'string' { return (To-PhpBytes $value) }
                 default { return [bool](Is-Truthy $value) }
             }
         }
@@ -3623,9 +8694,9 @@ class UnhandledMatchError extends Error {}
                 $sb = [System.Text.StringBuilder]::new()
                 [void]$sb.Append($pad + 'array(' + $value.Items.Count + ") {`n")
                 foreach ($key in @($value.Items.Keys)) {
-                    $name = [string]$key
-                    if ($name.StartsWith('i:')) { [void]$sb.Append($pad + '  [' + $name.Substring(2) + "]=>`n") }
-                    else { [void]$sb.Append($pad + '  ["' + $name.Substring(2) + "`"]=>`n") }
+                    $name = Get-PhpKeyHostText $key
+                    if ($key.IsInteger) { [void]$sb.Append($pad + '  [' + $name + "]=>`n") }
+                    else { [void]$sb.Append($pad + '  ["' + $name + "`"]=>`n") }
                     [void]$sb.Append((Format-PhpVarDump $value.Items[$key] ($pad + '  ')))
                 }
                 [void]$sb.Append($pad + "}`n")
@@ -3661,30 +8732,98 @@ class UnhandledMatchError extends Error {}
             throw 'ALL PHP: var_dump() of this value type is not implemented'
         }
         function To-PhpText($value) {
-            if (Is-PhpRefCell $value) { $value=$value.Value }
-            if ($null -eq $value) { return '' }
-            if ($value -is [bool]) {
-                if ($value) { return '1' }
-                return ''
+            # Explicit legacy host-text boundary. Raw PHP operations use bytes.
+            # Never decode invalid data with replacement or implicit ToString().
+            return (Get-PhpHostText (To-PhpBytes $value))
+        }
+        function Test-PhpCanConvertToNumber($value) {
+            if (Is-PhpRefCell $value) { $value = $value.Value }
+            if ($null -eq $value -or $value -is [bool] -or $value -is [long] -or $value -is [double]) { return $true }
+            if (Is-PhpStringValue $value) {
+                if ($null -ne (ConvertFrom-PhpNumericString $value $false)) { return $true }
+                if (($isCli -or $PhpDiagnostics) -and $null -ne (ConvertFrom-PhpNumericString $value $true)) { return $true }
+                return $false
             }
-            if ($value -is [long]) {
-                return $value.ToString([System.Globalization.CultureInfo]::InvariantCulture)
+            return $false
+        }
+        function Convert-PhpBinaryNumericOperands($left, $right, [string]$op) {
+            if (Is-PhpRefCell $left) { $left = $left.Value }
+            if (Is-PhpRefCell $right) { $right = $right.Value }
+            if (($isCli -or $PhpDiagnostics) -and (-not (Test-PhpCanConvertToNumber $left) -or -not (Test-PhpCanConvertToNumber $right))) {
+                Throw-PhpError 'TypeError' ('Unsupported operand types: ' + (Get-PhpBuiltinTypeName $left) + ' ' + $op + ' ' + (Get-PhpBuiltinTypeName $right)) 'ALL PHP: Unsupported numeric operand'
             }
-            if ($value -is [double]) { return (Format-PhpFloat $value 14) }
-            if (Is-PhpArray $value) { throw 'ALL PHP: Array to string conversion is not supported' }
-            if (Is-PhpObject $value) {
-                $magic=Find-OptionalPhpMethod $value.Class '__toString'
-                if ($null -ne $magic) {
-                    $converted=Invoke-PhpMethod $value '__toString' @()
-                    if ($converted -is [string]) { return $converted }
-                    if ((Is-PhpNum $converted) -or $converted -is [bool]) {
-                        return (To-PhpText $converted)
-                    }
-                    throw 'ALL PHP: __toString must return string'
+            return ,@((To-Number $left), (To-Number $right))
+        }
+        function Convert-PhpUnaryNumericOperand($value, [string]$op) {
+            if (Is-PhpRefCell $value) { $value = $value.Value }
+            if (($isCli -or $PhpDiagnostics) -and -not (Test-PhpCanConvertToNumber $value)) {
+                if ($op -in @('+','-')) {
+                    Throw-PhpError 'TypeError' ('Unsupported operand types: ' + (Get-PhpBuiltinTypeName $value) + ' * int') 'ALL PHP: Unsupported numeric operand'
                 }
-                throw 'ALL PHP: Object to string conversion is not supported'
+                Throw-PhpError 'TypeError' ('Cannot perform bitwise not on ' + (Get-PhpBuiltinTypeName $value)) 'ALL PHP: Unsupported numeric operand'
             }
-            return [string]$value
+            return (To-Number $value)
+        }
+        function Step-PhpIncrementDecrement($value, [string]$op) {
+            if (Is-PhpRefCell $value) { $value = $value.Value }
+            if ($value -is [long]) {
+                if ($op -ceq '++') { return (Php-Add $value ([long]1)) }
+                return (Php-Sub $value ([long]1))
+            }
+            if ($value -is [double]) {
+                if ($op -ceq '++') { return [double]($value + 1.0) }
+                return [double]($value - 1.0)
+            }
+            if ($null -eq $value) {
+                if ($op -ceq '++') { return [long]1 }
+                Write-PhpDiagnostic 2 'Decrement on type null has no effect, this will change in the next major version of PHP'
+                return $null
+            }
+            if ($value -is [bool]) {
+                $act = if ($op -ceq '++') { 'Increment' } else { 'Decrement' }
+                Write-PhpDiagnostic 2 ($act + ' on type bool has no effect, this will change in the next major version of PHP')
+                return $value
+            }
+            if (Is-PhpStringValue $value) {
+                $parsed = ConvertFrom-PhpNumericString $value $false
+                if ($null -ne $parsed) {
+                    if ($op -ceq '++') { return (Php-Add $parsed ([long]1)) }
+                    return (Php-Sub $parsed ([long]1))
+                }
+                $bytesObj = To-PhpBytes $value
+                if ($op -ceq '--') {
+                    Write-PhpDiagnostic 8192 'Decrement on non-numeric string has no effect and is deprecated'
+                    return $bytesObj
+                }
+                Write-PhpDiagnostic 8192 'Increment on non-numeric string is deprecated, use str_increment() instead'
+                $raw = $bytesObj.ToArray()
+                if ($raw.Length -eq 0) { return (To-PhpBytes '1') }
+                $lastB = [int]$raw[$raw.Length - 1]
+                $lastIsAlnum = (($lastB -ge 48 -and $lastB -le 57) -or ($lastB -ge 65 -and $lastB -le 90) -or ($lastB -ge 97 -and $lastB -le 122))
+                if (-not $lastIsAlnum) { return [AllPhp.ByteValues.PhpBytes]::FromBytes($raw) }
+                $out = [byte[]]$raw.Clone()
+                $carry = $true
+                $carryByte = [byte]0
+                for ($idx = $out.Length - 1; $idx -ge 0 -and $carry; $idx--) {
+                    $b = [int]$out[$idx]
+                    if ($b -ge 48 -and $b -le 56) { $out[$idx] = [byte]($b + 1); $carry = $false }
+                    elseif ($b -eq 57) { $out[$idx] = [byte]48; $carryByte = [byte]49 }
+                    elseif ($b -ge 97 -and $b -le 121) { $out[$idx] = [byte]($b + 1); $carry = $false }
+                    elseif ($b -eq 122) { $out[$idx] = [byte]97; $carryByte = [byte]97 }
+                    elseif ($b -ge 65 -and $b -le 89) { $out[$idx] = [byte]($b + 1); $carry = $false }
+                    elseif ($b -eq 90) { $out[$idx] = [byte]65; $carryByte = [byte]65 }
+                    else { $carry = $false }
+                }
+                if ($carry) {
+                    $prepended = [byte[]]::new($out.Length + 1)
+                    $prepended[0] = $carryByte
+                    [Array]::Copy($out, 0, $prepended, 1, $out.Length)
+                    return [AllPhp.ByteValues.PhpBytes]::FromBytes($prepended)
+                }
+                return [AllPhp.ByteValues.PhpBytes]::FromBytes($out)
+            }
+            $opVerb = if ($op -ceq '++') { 'increment' } else { 'decrement' }
+            Throw-PhpError 'TypeError' ('Cannot perform ' + $opVerb + ' on ' + (Get-PhpBuiltinTypeName $value)) 'ALL PHP: Unsupported numeric operand'
         }
         function To-Number($value) {
             if (Is-PhpRefCell $value) { $value=$value.Value }
@@ -3694,9 +8833,20 @@ class UnhandledMatchError extends Error {}
                 if ($value) { return [long]1 }
                 return [long]0
             }
-            if ($value -is [string]) {
+            if ((Is-PhpStringValue $value)) {
                 $parsed = ConvertFrom-PhpNumericString $value $false
                 if ($null -ne $parsed) { return $parsed }
+                if ($isCli -or $PhpDiagnostics) {
+                    $leading = ConvertFrom-PhpNumericString $value $true
+                    if ($null -ne $leading) {
+                        Write-PhpDiagnostic 2 'A non-numeric value encountered'
+                        return $leading
+                    }
+                    Throw-PhpError 'TypeError' 'Unsupported operand types: string' 'ALL PHP: Unsupported numeric operand'
+                }
+            } elseif ($isCli -or $PhpDiagnostics) {
+                if (Is-PhpArray $value) { Throw-PhpError 'TypeError' 'Unsupported operand types: array' 'ALL PHP: Unsupported numeric operand' }
+                if (Is-PhpObject $value) { Throw-PhpError 'TypeError' ('Unsupported operand types: ' + $value.Class) 'ALL PHP: Unsupported numeric operand' }
             }
             throw 'ALL PHP: Unsupported numeric operand'
         }
@@ -3705,42 +8855,38 @@ class UnhandledMatchError extends Error {}
             if ($null -eq $value) { return $false }
             if ($value -is [bool]) { return $value }
             if ($value -is [long] -or $value -is [double]) { return ($value -ne 0) }
-            if ($value -is [string]) {
-                return ($value.Length -gt 0 -and $value -cne '0')
-            }
+            if (Is-PhpStringValue $value) { return (To-PhpBytes $value).Truthy }
             if (Is-PhpArray $value) { return ($value.Items.Count -gt 0) }
             return $true
         }
         function To-PhpKey($value) {
+            if (Is-PhpRefCell $value) { $value=$value.Value }
             if ($value -is [bool]) {
-                if ($value) { return 'i:1' }
-                return 'i:0'
+                if ($value) { return (New-PhpIntegerKey 1) }
+                return (New-PhpIntegerKey 0)
             }
-            if ($null -eq $value) { return 's:' }
-            if ($value -is [long]) { return "i:$value" }
-            if ($value -is [double]) {
-                $num = To-PhpInt $value
-                return "i:$num"
-            }
-            if ($value -is [string]) {
-                if ($value -cmatch '^(?:0|-?[1-9][0-9]*)$') {
-                    $num = [long]0
-                    if ([long]::TryParse($value, [ref]$num)) { return "i:$num" }
-                }
-                return ('s:' + $value)
-            }
+            if ($null -eq $value) { return [AllPhp.ByteValues.PhpKey]::FromString([AllPhp.ByteValues.PhpBytes]::Empty) }
+            if ($value -is [long]) { return (New-PhpIntegerKey $value) }
+            if ($value -is [double]) { return (New-PhpIntegerKey (To-PhpInt $value)) }
+            if (Is-PhpStringValue $value) { return [AllPhp.ByteValues.PhpKey]::FromString((To-PhpBytes $value)) }
             throw 'ALL PHP: Unsupported array key type'
         }
         function Set-PhpArrayItem($array, $key, $value, [bool]$append) {
-            if (-not (Is-PhpArray $array)) { throw 'ALL PHP: Index assignment requires array' }
+            if (-not (Is-PhpArray $array)) {
+                if (Is-PhpObject $array) {
+                    Throw-PhpError 'Error' ('Cannot use object of type ' + $array.Class + ' as array') 'ALL PHP: Index assignment requires array'
+                }
+                Throw-PhpError 'Error' 'Cannot use a scalar value as an array' 'ALL PHP: Index assignment requires array'
+            }
+            Separate-PhpReferenceBacking $array
+            if(Is-PhpRefCell $value){$array.ReferenceCellsKnownAbsent=$false}
             if ($append) {
-                $keyString = "i:$($array.NextIndex)"
-                $array.NextIndex++
+                $keyString = Allocate-PhpAppendKey $array
             } else {
                 $keyString = To-PhpKey $key
-                if ($keyString.StartsWith('i:')) {
-                    $intKey = [long]$keyString.Substring(2)
-                    if ($intKey -ge $array.NextIndex) { $array.NextIndex = $intKey + 1 }
+                if ($keyString.IsInteger) {
+                    $intKey = [long]$keyString.IntegerValue
+                    Update-PhpNextIndex $array $intKey
                 }
             }
             if ($array.Items.Contains($keyString) -and
@@ -3749,17 +8895,77 @@ class UnhandledMatchError extends Error {}
             } else {
                 $array.Items[$keyString] = Copy-PhpValue $value
             }
+            Add-PhpTraversalEntry $array $keyString
+        }
+        function ConvertTo-PhpStringOffset($key) {
+            if (Is-PhpRefCell $key) { $key=$key.Value }
+            if ($key -is [long]) { return $key }
+            if (Is-PhpStringValue $key) {
+                $number=ConvertFrom-PhpNumericString $key $true
+                # PHP permits integer syntax and integer-leading malformed
+                # strings, but not floating syntax or integer overflow strings.
+                if ($number -is [long]) {
+                    $whole=ConvertFrom-PhpNumericString $key $false
+                    if ($null -eq $whole -and $state.QuietDepth -eq 0) {
+                        $builder=[AllPhp.ByteValues.PhpByteBuilder]::new()
+                        $builder.AppendUtf8('Illegal string offset "')
+                        $builder.Append((To-PhpBytes $key));$builder.AppendUtf8('"')
+                        Write-PhpDiagnostic 2 ($builder.ToPhpBytes())
+                    }
+                    return $number
+                }
+                Throw-PhpError 'TypeError' 'Cannot access offset of type string on string'
+            }
+            if ($null -eq $key -or $key -is [bool] -or $key -is [double]) {
+                if ($state.QuietDepth -eq 0) { Write-PhpDiagnostic 2 'String offset cast occurred' }
+                return (To-PhpInt $key)
+            }
+            $type=if(Is-PhpArray $key){'array'}elseif(Is-PhpObject $key){$key.Class}else{'resource'}
+            Throw-PhpError 'TypeError' ('Cannot access offset of type '+$type+' on string')
+        }
+        function Read-PhpStringOffset($value, $key) {
+            $result=(To-PhpBytes $value).ReadOffset((ConvertTo-PhpStringOffset $key))
+            if ($result.WarningLevel -gt 0 -and $state.QuietDepth -eq 0) {
+                Write-PhpDiagnostic $result.WarningLevel $result.Message
+            }
+            return $result.Value
         }
         function Get-PhpArrayItem($array, $key) {
-            if (-not (Is-PhpArray $array)) { throw 'ALL PHP: Indexing requires array' }
-            $keyString = To-PhpKey $key
-            if (-not $array.Items.Contains($keyString)) {
-                if (($PhpDiagnostics -or $isCli) -and $state.QuietDepth -eq 0) {
-                    if ($keyString.StartsWith('i:')) { Write-PhpDiagnostic 2 ('Undefined array key ' + $keyString.Substring(2)) }
-                    else { Write-PhpDiagnostic 2 ('Undefined array key "' + $keyString.Substring(2) + '"') }
+            if (Is-PhpStringValue $array) { return (Read-PhpStringOffset $array $key) }
+            if (Is-PhpObject $array) {
+                if ($state.PreludeLoaded -and (Test-PhpInstanceOf $array.Class 'ArrayAccess')) {
+                    return (Invoke-PhpMethod $array 'offsetGet' @($key))
+                }
+                Throw-PhpError 'Error' ('Cannot use object of type ' + $array.Class + ' as array') 'ALL PHP: Indexing requires array'
+            }
+            if (-not (Is-PhpArray $array)) {
+                if ($isCli -or $PhpDiagnostics) {
+                    if ($state.QuietDepth -eq 0) {
+                        $tName = if ($null -eq $array) { 'null' } elseif ($array -is [bool]) { if ($array) { 'true' } else { 'false' } } elseif ($array -is [long]) { 'int' } elseif ($array -is [double]) { 'float' } else { 'unknown' }
+                        Write-PhpDiagnostic 2 ('Trying to access array offset on ' + $tName)
+                    }
                     return $null
                 }
-                throw "ALL PHP: Undefined array key '$keyString'"
+                throw 'ALL PHP: Indexing requires array'
+            }
+            $keyString = To-PhpKey $key
+            if (-not $array.Items.Contains($keyString)) {
+                if($state.QuietDepth-gt0){return $null}
+                if (($PhpDiagnostics -or $isCli) -and $state.QuietDepth -eq 0) {
+                    $keyDiagnostic=[AllPhp.ByteValues.PhpByteBuilder]::new()
+                    $keyDiagnostic.AppendUtf8('Undefined array key ')
+                    if($keyString.IsInteger){$keyDiagnostic.AppendUtf8((Get-PhpKeyHostText $keyString))}
+                    else{
+                        $displayKey=$keyString.BytesValue
+                        $nul=Find-PhpBytes $displayKey ([AllPhp.ByteValues.PhpBytes]::FromBytes([byte[]]@(0))) 0
+                        if($nul-ge0){$displayKey=$displayKey.Slice(0,$nul)}
+                        $keyDiagnostic.AppendUtf8('"');$keyDiagnostic.Append($displayKey);$keyDiagnostic.AppendUtf8('"')
+                    }
+                    Write-PhpDiagnostic 2 ($keyDiagnostic.ToPhpBytes())
+                    return $null
+                }
+                $legacyKey = if ($keyString.IsInteger) { 'i:' + (Get-PhpKeyHostText $keyString) } else { 's:' + (Get-PhpKeyHostText $keyString) }
+                throw "ALL PHP: Undefined array key '$legacyKey'"
             }
             $value = $array.Items[$keyString]
             if (Is-PhpRefCell $value) { return $value.Value }
@@ -3772,7 +8978,7 @@ class UnhandledMatchError extends Error {}
                 $aKeys = @($a.Items.Keys)
                 $bKeys = @($b.Items.Keys)
                 for ($i=0; $i -lt $aKeys.Count; $i++) {
-                    if ([string]$aKeys[$i] -cne [string]$bKeys[$i]) { return $false }
+                    if (-not $aKeys[$i].Equals($bKeys[$i])) { return $false }
                     $x = $a.Items[$aKeys[$i]]
                     $y = $b.Items[$bKeys[$i]]
                     if (-not (Php-Equal $x $y $true ($depth + 1))) { return $false }
@@ -3797,7 +9003,7 @@ class UnhandledMatchError extends Error {}
             if ((Is-PhpObject $a) -or (Is-PhpObject $b)) {
                 if (-not (Is-PhpObject $a) -or -not (Is-PhpObject $b)) { return $false }
                 if ($strict) { return [object]::ReferenceEquals($a, $b) }
-                if ($a.Class -cne $b.Class -or $a.Props.Count -ne $b.Props.Count) {
+                if ((-not (Test-PhpNameEqual $a.Class $b.Class)) -or $a.Props.Count -ne $b.Props.Count) {
                     return $false
                 }
                 foreach ($key in $a.Props.Keys) {
@@ -3815,8 +9021,11 @@ class UnhandledMatchError extends Error {}
                 if ($null -eq $a -or $null -eq $b) {
                     return ($null -eq $a -and $null -eq $b)
                 }
+                if ((Is-PhpStringValue $a) -or (Is-PhpStringValue $b)) {
+                    if (-not (Is-PhpStringValue $a) -or -not (Is-PhpStringValue $b)) { return $false }
+                    return (To-PhpBytes $a).Equals((To-PhpBytes $b))
+                }
                 if ($a.GetType() -ne $b.GetType()) { return $false }
-                if ($a -is [string]) { return ($a -ceq $b) }
                 return ($a -eq $b)
             }
             return ((Compare-Values $a $b) -eq 0)
@@ -3834,23 +9043,23 @@ class UnhandledMatchError extends Error {}
             $aNum = ($a -is [long] -or $a -is [double])
             $bNum = ($b -is [long] -or $b -is [double])
             if ($aNum -and $bNum) { return (Compare-PhpNumbers $a $b) }
-            if ($a -is [string] -and $b -is [string]) {
+            if ((Is-PhpStringValue $a) -and (Is-PhpStringValue $b)) {
                 $x = ConvertFrom-PhpNumericString $a $false
                 if ($null -ne $x) {
                     $y = ConvertFrom-PhpNumericString $b $false
                     if ($null -ne $y) { return (Compare-PhpNumbers $x $y) }
                 }
-                return [Math]::Sign([string]::CompareOrdinal($a, $b))
+                return (To-PhpBytes $a).CompareBinary((To-PhpBytes $b))
             }
-            if (($aNum -and $b -is [string]) -or ($a -is [string] -and $bNum)) {
-                if ($a -is [string]) {
+            if (($aNum -and (Is-PhpStringValue $b)) -or ((Is-PhpStringValue $a) -and $bNum)) {
+                if ((Is-PhpStringValue $a)) {
                     $x = ConvertFrom-PhpNumericString $a $false
                     if ($null -ne $x) { return (Compare-PhpNumbers $x $b) }
                 } else {
                     $y = ConvertFrom-PhpNumericString $b $false
                     if ($null -ne $y) { return (Compare-PhpNumbers $a $y) }
                 }
-                return [Math]::Sign([string]::CompareOrdinal((To-PhpText $a),(To-PhpText $b)))
+                return (To-PhpBytes $a).CompareBinary((To-PhpBytes $b))
             }
             throw 'ALL PHP: Comparison for these types is not supported'
         }
@@ -3870,7 +9079,7 @@ class UnhandledMatchError extends Error {}
         function Resolve-PhpClass([string]$name) {
             if ($name -in @('self','parent','static')) {
                 if ($null -eq $state.ClassContext) {
-                    throw "ALL PHP: '$name' used outside class context"
+                    Throw-PhpError 'Error' ('Cannot use "' + $name + '" when no class scope is active') ("ALL PHP: '$name' used outside class context")
                 }
                 if ($name -eq 'self') { return $state.ClassContext }
                 if ($name -eq 'parent') {
@@ -3887,22 +9096,29 @@ class UnhandledMatchError extends Error {}
         }
         function Test-PhpTypeAtom($value, [string]$type) {
             if (Is-PhpRefCell $value) { $value=$value.Value }
-            switch ($type.ToLowerInvariant()) {
+            switch ((ConvertTo-PhpAsciiLower $type)) {
                 'mixed' { return $true }
                 'null' { return ($null -eq $value) }
                 'true' { return ($value -is [bool] -and $value) }
                 'false' { return ($value -is [bool] -and -not $value) }
                 'bool' { return ($value -is [bool]) }
-                'string' { return ($value -is [string]) }
+                'string' { return (Is-PhpStringValue $value) }
                 'int' {
                     return ($value -is [long])
                 }
                 'float' { return ($value -is [double]) }
                 'array' { return (Is-PhpArray $value) }
                 'object' { return (Is-PhpObject $value) }
-                'iterable' { return (Is-PhpArray $value) }
+                'iterable' {
+                    if (Is-PhpArray $value) { return $true }
+                    if (Is-PhpObject $value) {
+                        Ensure-PhpPrelude
+                        return ($value.Class -ieq 'Generator' -or (Test-PhpInstanceOf $value.Class 'Traversable'))
+                    }
+                    return $false
+                }
                 'callable' {
-                    if ($value -is [string]) { return ($state.Functions.ContainsKey($value) -or (Test-PhpNativeFunction $value)) }
+                    if (Is-PhpStringValue $value) { $symbol=Get-PhpHostText $value;return ($state.Functions.ContainsKey($symbol) -or (Test-PhpNativeFunction $symbol)) }
                     if ($null -eq $value) { return $false }
                     if ($value.PSObject.Properties['PhpType']) {
                         if ($value.PhpType -in @('closure','first_class_callable')) { return $true }
@@ -3924,7 +9140,9 @@ class UnhandledMatchError extends Error {}
                 }
             }
         }
-        function Convert-PhpTypedValue($value, [string]$typeName, [string]$location) {
+        function Convert-PhpTypedValue($value, [string]$typeName, [string]$location, [bool]$strict=$false, $typeContext=$null) {
+            $value=ConvertTo-PhpOwnedValue $value
+            $declaredTypeName=$typeName
             if ([string]::IsNullOrEmpty($typeName)) { return $value }
             if ($typeName.StartsWith('?')) {
                 if ($null -eq $value) { return $null }
@@ -3945,11 +9163,12 @@ class UnhandledMatchError extends Error {}
                     if ($variant -ieq 'float') { return [double]$value }
                 }
             }
+            if($strict){Throw-PhpDeclaredTypeError $value $declaredTypeName $location $typeContext}
             # Weak-mode coercion into a union: PHP prefers int, then float, then string, then bool.
             if ($union.Count -gt 1 -and -not $typeName.Contains('&') -and $null -ne $value) {
                 $hasInt = $false; $hasFloat = $false; $hasString = $false; $hasBool = $false
                 foreach ($variant in $union) {
-                    switch ($variant.ToLowerInvariant()) {
+                    switch ((ConvertTo-PhpAsciiLower $variant)) {
                         'int' { $hasInt = $true }
                         'float' { $hasFloat = $true }
                         'string' { $hasString = $true }
@@ -3962,12 +9181,12 @@ class UnhandledMatchError extends Error {}
                         $value -ge -9223372036854775808.0 -and $value -lt 9223372036854775808.0) {
                         return (To-PhpInt $value)
                     }
-                    if ($hasString) { return (To-PhpText $value) }
+                    if ($hasString) { return (To-PhpBytes $value) }
                     if ($hasBool) { return (Is-Truthy $value) }
                 } elseif ($value -is [long]) {
-                    if ($hasString) { return (To-PhpText $value) }
+                    if ($hasString) { return (To-PhpBytes $value) }
                     if ($hasBool) { return (Is-Truthy $value) }
-                } elseif ($value -is [string]) {
+                } elseif ((Is-PhpStringValue $value)) {
                     $parsed = ConvertFrom-PhpNumericString $value $false
                     if ($parsed -is [long] -and $hasInt) { return $parsed }
                     if ($null -ne $parsed -and $hasFloat) { return [double]$parsed }
@@ -3979,20 +9198,21 @@ class UnhandledMatchError extends Error {}
                 } elseif ($value -is [bool]) {
                     if ($hasInt) { if ($value) { return [long]1 }; return [long]0 }
                     if ($hasFloat) { if ($value) { return [double]1 }; return [double]0 }
-                    if ($hasString) { return (To-PhpText $value) }
+                    if ($hasString) { return (To-PhpBytes $value) }
                 }
             }
             # Weak PHP scalar conversions for a single primitive annotation.
             if ($union.Count -eq 1 -and -not $typeName.Contains('&') -and
                 $null -ne $value) {
-                switch ($typeName.ToLowerInvariant()) {
+                switch ((ConvertTo-PhpAsciiLower $typeName)) {
                     'string' {
-                        if ((Is-PhpNum $value) -or $value -is [bool]) {
-                            return (To-PhpText $value)
+                        if ((Is-PhpNum $value) -or $value -is [bool] -or
+                            ((Is-PhpObject $value)-and$null-ne(Find-OptionalPhpMethod $value.Class '__toString'))) {
+                            return (To-PhpBytes $value)
                         }
                     }
                     'bool' {
-                        if ((Is-PhpNum $value) -or $value -is [string]) {
+                        if ((Is-PhpNum $value) -or (Is-PhpStringValue $value)) {
                             return (Is-Truthy $value)
                         }
                     }
@@ -4005,7 +9225,7 @@ class UnhandledMatchError extends Error {}
                             -not [double]::IsInfinity($value)) {
                             return (To-PhpInt $value)
                         }
-                        if ($value -is [string]) {
+                        if ((Is-PhpStringValue $value)) {
                             $parsed = ConvertFrom-PhpNumericString $value $false
                             if ($null -ne $parsed) { return (To-PhpInt $parsed) }
                         }
@@ -4015,14 +9235,14 @@ class UnhandledMatchError extends Error {}
                             if ($value) { return [double]1 }
                             return [double]0
                         }
-                        if ($value -is [string]) {
+                        if ((Is-PhpStringValue $value)) {
                             $parsed = ConvertFrom-PhpNumericString $value $false
                             if ($null -ne $parsed) { return [double]$parsed }
                         }
                     }
                 }
             }
-            throw "ALL PHP: Type mismatch at $location (expected $typeName)"
+            Throw-PhpDeclaredTypeError $value $declaredTypeName $location $typeContext
         }
         function Assert-PhpPropertyDefault($value, [string]$typeName, [string]$propertyName) {
             if ([string]::IsNullOrEmpty($typeName)) { return }
@@ -4040,23 +9260,27 @@ class UnhandledMatchError extends Error {}
         }
         function Copy-PhpTraitMethod($method, [string]$newName, [string]$visibility) {
             if ([string]::IsNullOrEmpty($visibility)) { $visibility=$method.Visibility }
+            $traitOwner = if ($method.PSObject.Properties['TraitOwner'] -and -not [string]::IsNullOrEmpty([string]$method.TraitOwner)) { [string]$method.TraitOwner } else { [string]$method.Owner }
             return [pscustomobject]@{
                 Kind='functiondef'; Name=$newName
                 Params=$method.Params; Body=$method.Body; Expr=$method.Expr
                 Visibility=$visibility; Static=$method.Static
-                Owner=$method.Owner; Abstract=$method.Abstract; Final=$method.Final
+                Owner=$method.Owner; TraitOwner=$traitOwner; Abstract=$method.Abstract; Final=$method.Final
                 ReturnByRef=$method.ReturnByRef; ReturnType=$method.ReturnType
+                Attributes=$(if($method.PSObject.Properties['Attributes']){$method.Attributes}else{@()})
+                IsGenerator=$(if($method.PSObject.Properties['IsGenerator']){$method.IsGenerator}else{$false})
+                StrictSourceUnit=(Get-PhpDefinitionUnit $method); DefinitionLine=$method.DefinitionLine
             }
         }
         function Get-PhpTraitComposition($declaration) {
             $resultMethods=[System.Collections.Generic.Dictionary[string,object]]::new(
-                [System.StringComparer]::OrdinalIgnoreCase)
+                [AllPhp.ValidTextSymbols.Comparers]::Ascii)
             $resultProperties=[System.Collections.Generic.List[object]]::new()
             foreach ($use in $declaration.TraitUses) {
                 $selected=[System.Collections.Generic.Dictionary[string,object]]::new(
-                    [System.StringComparer]::OrdinalIgnoreCase)
+                    [AllPhp.ValidTextSymbols.Comparers]::Ascii)
                 $excluded=[System.Collections.Generic.HashSet[string]]::new(
-                    [System.StringComparer]::OrdinalIgnoreCase)
+                    [AllPhp.ValidTextSymbols.Comparers]::Ascii)
                 foreach ($traitName in $use.Names) {
                     if (-not $state.Traits.ContainsKey($traitName)) {
                         throw "ALL PHP: Undefined trait '$traitName'"
@@ -4064,16 +9288,16 @@ class UnhandledMatchError extends Error {}
                 }
                 foreach ($rule in $use.Adaptations) {
                     if ($rule.Kind -ne 'insteadof') { continue }
-                    if ($rule.Trait -notin $use.Names) {
+                    if ((-not (Test-PhpNameIn $rule.Trait $use.Names))) {
                         throw 'ALL PHP: Trait selection names a trait not used in this group'
                     }
                     $winner=$state.Traits[$rule.Trait]
-                    $winnerMethod=@($winner.Methods | Where-Object { $_.Name -ieq $rule.Method })
+                    $winnerMethod=@($winner.Methods | Where-Object { (Test-PhpNameEqual $_.Name $rule.Method) })
                     if ($winnerMethod.Count -eq 0) {
                         throw "ALL PHP: Trait method '$($rule.Method)' not defined"
                     }
                     foreach ($loserName in $rule.Excluded) {
-                        if ($loserName -notin $use.Names -or $loserName -ieq $rule.Trait) {
+                        if ((-not (Test-PhpNameIn $loserName $use.Names)) -or (Test-PhpNameEqual $loserName $rule.Trait)) {
                             throw 'ALL PHP: Invalid insteadof trait selection'
                         }
                         [void]$excluded.Add(($rule.Method + '|' + $loserName))
@@ -4086,8 +9310,8 @@ class UnhandledMatchError extends Error {}
                         $methodCopy=Copy-PhpTraitMethod $method $method.Name ''
                         foreach ($rule in $use.Adaptations) {
                             if ($rule.Kind -ne 'alias' -or $null -ne $rule.Alias) { continue }
-                            if ($rule.Method -ine $method.Name) { continue }
-                            if ($null -ne $rule.Trait -and $rule.Trait -ine $traitName) { continue }
+                            if ((-not (Test-PhpNameEqual $rule.Method $method.Name))) { continue }
+                            if ($null -ne $rule.Trait -and (-not (Test-PhpNameEqual $rule.Trait $traitName))) { continue }
                             $methodCopy.Visibility=$rule.Visibility
                         }
                         if ($resultMethods.ContainsKey($method.Name)) {
@@ -4097,7 +9321,7 @@ class UnhandledMatchError extends Error {}
                     }
                     foreach ($prop in $trait.Properties) {
                         foreach ($prior in $resultProperties) {
-                            if ($prior.Name -ceq $prop.Name) {
+                            if ((Test-PhpRawNameEqual $prior.Name $prop.Name)) {
                                 throw "ALL PHP: Conflicting trait property '$($prop.Name)'"
                             }
                         }
@@ -4109,9 +9333,9 @@ class UnhandledMatchError extends Error {}
                     if ($null -eq $rule.Alias) { continue }
                     $origin=$null
                     foreach ($traitName in $use.Names) {
-                        if ($null -ne $rule.Trait -and $rule.Trait -ine $traitName) { continue }
+                        if ($null -ne $rule.Trait -and (-not (Test-PhpNameEqual $rule.Trait $traitName))) { continue }
                         foreach ($method in $state.Traits[$traitName].Methods) {
-                            if ($method.Name -ine $rule.Method) { continue }
+                            if ((-not (Test-PhpNameEqual $method.Name $rule.Method))) { continue }
                             if ($null -ne $origin) {
                                 throw 'ALL PHP: Ambiguous unqualified trait alias'
                             }
@@ -4138,7 +9362,7 @@ class UnhandledMatchError extends Error {}
                 }
                 $item=$state.Classes[$name]
                 foreach ($prior in $chain) {
-                    if ($prior.Name -ieq $item.Name) { throw 'ALL PHP: Cyclic class inheritance' }
+                    if ((Test-PhpNameEqual $prior.Name $item.Name)) { throw 'ALL PHP: Cyclic class inheritance' }
                 }
                 [void]$chain.Add($item)
                 $name=$item.Parent
@@ -4150,7 +9374,7 @@ class UnhandledMatchError extends Error {}
             $result=[System.Collections.Generic.List[object]]::new()
             $pending=[System.Collections.Generic.Queue[string]]::new()
             $seen=[System.Collections.Generic.HashSet[string]]::new(
-                [System.StringComparer]::OrdinalIgnoreCase)
+                [AllPhp.ValidTextSymbols.Comparers]::Ascii)
             $pending.Enqueue($name)
             while ($pending.Count -gt 0) {
                 $item=$pending.Dequeue()
@@ -4168,7 +9392,7 @@ class UnhandledMatchError extends Error {}
             foreach ($cls in (Get-PhpClassChain $className)) {
                 foreach ($name in $cls.Interfaces) {
                     foreach ($iface in (Get-PhpInterfaceChain $name)) {
-                        if ($iface.Name -ieq $interfaceName) { return $true }
+                        if ((Test-PhpNameEqual $iface.Name $interfaceName)) { return $true }
                     }
                 }
             }
@@ -4207,18 +9431,20 @@ class UnhandledMatchError extends Error {}
             }
         }
         function Test-PhpInstanceOf([string]$actual, [string]$target) {
-            if ($actual -ieq $target) { return $true }
+            if ($state.ClassAliases.ContainsKey($actual)) { $actual = $state.ClassAliases[$actual] }
+            if ($state.ClassAliases.ContainsKey($target)) { $target = $state.ClassAliases[$target] }
+            if ((Test-PhpNameEqual $actual $target)) { return $true }
             if ($state.Classes.ContainsKey($actual) -and
                 $state.Classes[$actual].PSObject.Properties['Enum'] -and
                 $state.Classes[$actual].Enum) {
-                if ($target -ieq 'UnitEnum') { return $true }
-                if ($target -ieq 'BackedEnum') {
+                if ((Test-PhpNameEqual $target 'UnitEnum')) { return $true }
+                if ((Test-PhpNameEqual $target 'BackedEnum')) {
                     return ($null -ne $state.Classes[$actual].BackingType)
                 }
             }
             if ($actual -eq 'stdClass') { return $false }
             foreach ($cls in (Get-PhpClassChain $actual)) {
-                if ($cls.Name -ieq $target) { return $true }
+                if ((Test-PhpNameEqual $cls.Name $target)) { return $true }
             }
             if ($state.Interfaces.ContainsKey($target)) {
                 return (Test-PhpImplements $actual $target)
@@ -4237,7 +9463,7 @@ class UnhandledMatchError extends Error {}
             if ($className -eq 'stdClass') { return $null }
             try { return (Find-PhpMethod $className $methodName) }
             catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
                 if ($_.Exception.Message -notlike 'ALL PHP: Undefined method*') { throw }
                 return $null
             }
@@ -4245,33 +9471,145 @@ class UnhandledMatchError extends Error {}
         function Find-PhpProperty([string]$className, [string]$propertyName, [bool]$staticOnly) {
             foreach ($cls in (Get-PhpClassChain $className)) {
                 foreach ($prop in $cls.Properties) {
-                    if ($prop.Name -ceq $propertyName -and [bool]$prop.Static -eq $staticOnly) {
+                    if ((Test-PhpRawNameEqual $prop.Name $propertyName) -and [bool]$prop.Static -eq $staticOnly) {
                         return $prop
                     }
                 }
             }
             return $null
         }
-        function Assert-PhpVisibility([string]$visibility, [string]$owner) {
-            if ($visibility -eq 'public') { return }
-            if ($null -eq $state.ClassContext) {
-                if ($visibility -eq 'private') { throw 'ALL PHP: Cannot access private member' }
-                throw 'ALL PHP: Cannot access protected member'
+        function Find-PhpPropertyForScope([string]$className, [string]$propertyName, [bool]$staticOnly) {
+            if (-not $staticOnly -and $null -ne $state.ClassContext -and
+                $state.Classes.ContainsKey($state.ClassContext) -and
+                (Test-PhpInstanceOf $className $state.ClassContext)) {
+                foreach ($prop in $state.Classes[$state.ClassContext].Properties) {
+                    if (-not $prop.Static -and $prop.Visibility -eq 'private' -and (Test-PhpRawNameEqual $prop.Name $propertyName)) {
+                        return $prop
+                    }
+                }
             }
-            if ($visibility -eq 'private' -and $state.ClassContext -ine $owner) {
-                throw 'ALL PHP: Cannot access private member'
+            return (Find-PhpProperty $className $propertyName $staticOnly)
+        }
+        function Test-PhpPrivateShadowed($chain, [int]$ownerIndex, [string]$propName) {
+            for ($j = 0; $j -lt $ownerIndex; $j++) {
+                foreach ($cp in $chain[$j].Properties) {
+                    if (-not $cp.Static -and (Test-PhpRawNameEqual $cp.Name $propName)) {
+                        return $true
+                    }
+                }
             }
-            if ($visibility -eq 'protected' -and
-                -not (Test-PhpInstanceOf $state.ClassContext $owner) -and
-                -not (Test-PhpInstanceOf $owner $state.ClassContext)) {
-                throw 'ALL PHP: Cannot access protected member'
+            return $false
+        }
+        function Get-PhpObjectPropertyStorage($object, $declared, [string]$propName) {
+            if ($null -ne $declared -and $declared.Visibility -eq 'private' -and
+                $object.PSObject.Properties['PrivateProps'] -and $null -ne $object.PrivateProps) {
+                $privKey = $declared.Owner + '::' + $propName
+                if ($object.PrivateProps.ContainsKey($privKey)) {
+                    return [pscustomobject]@{ Store=$object.PrivateProps; Key=$privKey }
+                }
+                if (-not (Test-PhpNameEqual $declared.Owner $object.Class)) {
+                    foreach ($cls in (Get-PhpClassChain $object.Class)) {
+                        if (Test-PhpNameEqual $cls.Name $declared.Owner) { break }
+                        foreach ($cp in $cls.Properties) {
+                            if (-not $cp.Static -and (Test-PhpRawNameEqual $cp.Name $propName)) {
+                                return [pscustomobject]@{ Store=$object.PrivateProps; Key=$privKey }
+                            }
+                        }
+                    }
+                }
+            }
+            return [pscustomobject]@{ Store=$object.Props; Key=$propName }
+        }
+        function Resolve-PhpMemberNodeName($node) {
+            if ($node.PSObject.Properties['NameExpr'] -and $null -ne $node.NameExpr) {
+                return (To-PhpText (Invoke-PhpExpr $node.NameExpr))
+            }
+            return [string]$node.Name
+        }
+        function Initialize-PhpObjectProperties($object, $chain, [bool]$strictTyped) {
+            for ($i = $chain.Count - 1; $i -ge 0; $i--) {
+                foreach ($prop in $chain[$i].Properties) {
+                    if ($prop.Static) { continue }
+                    $isShadowed = ($prop.Visibility -eq 'private' -and (Test-PhpPrivateShadowed $chain $i $prop.Name))
+                    if ($null -eq $prop.Default -and -not [string]::IsNullOrEmpty([string]$prop.TypeName)) {
+                        continue
+                    }
+                    $val = $null
+                    if ($null -ne $prop.Default) { $val = Invoke-PhpExpr $prop.Default }
+                    $converted = if ($strictTyped) {
+                        Convert-PhpTypedValue $val ([string]$prop.TypeName) ('property ' + $prop.Name) $true (New-PhpPropertyTypedContext $prop)
+                    } else { $val }
+                    if ($isShadowed -and $object.PSObject.Properties['PrivateProps'] -and $null -ne $object.PrivateProps) {
+                        $object.PrivateProps[$prop.Owner + '::' + $prop.Name] = Copy-PhpValue $converted
+                    } else {
+                        $object.Props[$prop.Name] = Copy-PhpValue $converted
+                    }
+                }
             }
         }
+        function Test-PhpVisibilityAllowed([string]$visibility, [string]$owner, [string]$memberKind = 'property', [string]$memberName = '') {
+            if ($visibility -eq 'public') { return $true }
+            if ([string]::IsNullOrEmpty([string]$state.ClassContext)) { return $false }
+            if ($visibility -eq 'private') { return (Test-PhpNameEqual $state.ClassContext $owner) }
+            if ($visibility -eq 'protected') {
+                if ((Test-PhpInstanceOf $state.ClassContext $owner) -or (Test-PhpInstanceOf $owner $state.ClassContext)) { return $true }
+                if ($memberKind -eq 'method' -and -not [string]::IsNullOrEmpty($memberName) -and $state.Classes.ContainsKey($state.ClassContext)) {
+                    foreach ($anc in (Get-PhpClassChain $state.ClassContext)) {
+                        if ($anc.Methods.ContainsKey($memberName) -and $anc.Methods[$memberName].Visibility -in @('protected','public') -and (Test-PhpInstanceOf $owner $anc.Name)) {
+                            return $true
+                        }
+                    }
+                }
+                return $false
+            }
+            return $true
+        }
+        function Assert-PhpVisibility([string]$visibility, [string]$owner, [string]$memberKind = 'property', [string]$memberName = '') {
+            if (Test-PhpVisibilityAllowed $visibility $owner $memberKind $memberName) { return }
+            $legacy = 'ALL PHP: Cannot access ' + $visibility + ' member'
+            $scope = if ([string]::IsNullOrEmpty([string]$state.ClassContext)) { 'global scope' } else { 'scope ' + $state.ClassContext }
+            if ($memberKind -eq 'method' -and -not [string]::IsNullOrEmpty($memberName)) {
+                $msg = 'Call to ' + $visibility + ' method ' + $owner + '::' + $memberName + '() from ' + $scope
+            } elseif ($memberKind -eq 'property' -and -not [string]::IsNullOrEmpty($memberName)) {
+                $msg = 'Cannot access ' + $visibility + ' property ' + $owner + '::$' + $memberName
+            } elseif ($memberKind -eq 'constant' -and -not [string]::IsNullOrEmpty($memberName)) {
+                $msg = 'Cannot access ' + $visibility + ' constant ' + $owner + '::' + $memberName
+            } else {
+                $msg = 'Cannot access ' + $visibility + ' member of class ' + $owner
+            }
+            Throw-PhpError 'Error' $msg $legacy
+        }
+        function Test-PhpSetVisibilityAllowed($declared) {
+            if ($null -eq $declared -or -not $declared.PSObject.Properties['SetVisibility'] -or
+                [string]::IsNullOrEmpty([string]$declared.SetVisibility)) {
+                return $true
+            }
+            $setVis = [string]$declared.SetVisibility
+            if ($setVis -ceq 'public') { return $true }
+            if ([string]::IsNullOrEmpty([string]$state.ClassContext)) { return $false }
+            $owner = [string]$declared.Owner
+            if ($setVis -ceq 'private') {
+                return (Test-PhpNameEqual $state.ClassContext $owner)
+            }
+            if ($setVis -ceq 'protected') {
+                return ((Test-PhpInstanceOf $state.ClassContext $owner) -or
+                    (Test-PhpInstanceOf $owner $state.ClassContext))
+            }
+            return $true
+        }
+        function Assert-PhpSetVisibility($declared, [string]$action = 'modify') {
+            if (Test-PhpSetVisibilityAllowed $declared) { return }
+            $setVis = [string]$declared.SetVisibility
+            $owner = [string]$declared.Owner
+            $verb = if ($action -ceq 'indirect') { 'indirectly modify' } elseif ($action -ceq 'unset') { 'unset' } else { 'modify' }
+            $scopeText = if ([string]::IsNullOrEmpty([string]$state.ClassContext)) { 'global scope' } else { 'scope ' + $state.ClassContext }
+            Throw-PhpError 'Error' ('Cannot ' + $verb + ' ' + $setVis + '(set) property ' + $owner + '::$' + $declared.Name + ' from ' + $scopeText)
+        }
         function Get-PhpStaticProperty($node) {
-            $klass = Resolve-PhpClass ([string](Invoke-PhpExpr $node.Base))
+            $klass = Resolve-PhpClassRef (Invoke-PhpExpr $node.Base)
             $prop = Find-PhpProperty $klass $node.Name $true
             if ($null -eq $prop) { throw "ALL PHP: Undefined static property '$($node.Name)'" }
-            Assert-PhpVisibility $prop.Visibility $prop.Owner
+            Assert-PhpVisibility $prop.Visibility $prop.Owner 'property' $node.Name
             $store=$state.Classes[$prop.Owner].StaticValues
             if (-not $store.ContainsKey($node.Name)) {
                 throw "ALL PHP: Typed static property '$($node.Name)' must not be accessed before initialization"
@@ -4281,12 +9619,12 @@ class UnhandledMatchError extends Error {}
             return $result
         }
         function Set-PhpStaticProperty($node, $value) {
-            $klass = Resolve-PhpClass ([string](Invoke-PhpExpr $node.Base))
+            $klass = Resolve-PhpClassRef (Invoke-PhpExpr $node.Base)
             $prop = Find-PhpProperty $klass $node.Name $true
             if ($null -eq $prop) { throw "ALL PHP: Undefined static property '$($node.Name)'" }
-            Assert-PhpVisibility $prop.Visibility $prop.Owner
+            Assert-PhpVisibility $prop.Visibility $prop.Owner 'property' $node.Name
             $store = $state.Classes[$prop.Owner].StaticValues
-            $value=Convert-PhpTypedValue $value ([string]$prop.TypeName) ('property ' + $node.Name)
+            $value=Convert-PhpTypedValue $value ([string]$prop.TypeName) ('property ' + $node.Name) ([bool](Get-PhpDirectCallPolicy).ArgumentStrict) (New-PhpPropertyTypedContext $prop)
             if ($store.ContainsKey($node.Name) -and (Is-PhpRefCell $store[$node.Name])) {
                 $store[$node.Name].Value = Copy-PhpValue $value
             } else { $store[$node.Name] = Copy-PhpValue $value }
@@ -4294,12 +9632,12 @@ class UnhandledMatchError extends Error {}
         function Resolve-PhpDynamicVariableName($node) {
             $value = Invoke-PhpExpr $node.NameExpr
             if ($null -eq $value) { return '' }
-            if ($value -isnot [string] -and -not (Is-PhpNum $value) -and
+            if (-not (Is-PhpStringValue $value) -and -not (Is-PhpNum $value) -and
                 $value -isnot [bool]) {
                 throw 'ALL PHP: Invalid dynamic variable name type'
             }
-            $name=To-PhpText $value
-            if ($name -eq 'this') {
+            $name=Get-PhpHostText (To-PhpBytes $value)
+            if ((Test-PhpRawNameEqual $name 'this')) {
                 throw 'ALL PHP: Cannot access $this dynamically'
             }
             return $name
@@ -4318,20 +9656,22 @@ class UnhandledMatchError extends Error {}
                         $parameters=@($hook.Params)
                     } else {
                         $parameters=@([pscustomobject]@{
-                            Name='value'; Default=$null; TypeName=''; ByRef=$false
+                            Name='value'; Default=$null; TypeName=([string]$declared.TypeName); ByRef=$false
                             Variadic=$false; Promoted=$false
                         })
                     }
                 }
                 $hookDefinition=[pscustomobject]@{
                     Name=('__property_' + $mode + '_' + $declared.Name)
-                    Abstract=$false; ReturnByRef=$false; ReturnType=''
+                    Abstract=$false; ReturnByRef=$false; ReturnType=$(if($mode-ceq'get'){[string]$declared.TypeName}else{''})
+                    StrictSourceUnit=(Get-PhpDefinitionUnit $hook);DefinitionLine=$hook.DefinitionLine
+                    TypedDisplayName=([string]$declared.Owner+'::$'+[string]$declared.Name+'::'+$mode)
                     Params=$parameters; Body=$hook.Body; Expr=$hook.Expr
                 }
                 $callArgs=if ($mode -ceq 'get') { @() } else { ,$value }
                 $result=Invoke-PhpCallable $hookDefinition $callArgs $object $declared.Owner
                 if ($mode -ceq 'get') {
-                    return (Convert-PhpTypedValue $result ([string]$declared.TypeName) ('property ' + $declared.Name))
+                    return $result
                 }
                 if ($hook.Arrow) {
                     # PHP expression-bodied setter writes the expression result
@@ -4341,7 +9681,9 @@ class UnhandledMatchError extends Error {}
                         Kind='property'; Base=[pscustomobject]@{Kind='literal';Value=$object}
                         Name=$declared.Name; NullSafe=$false
                     }
-                    Set-LValue $target $result '='
+                    $oldHookUnit=$state.ActiveSourceUnit
+                    try{$state.ActiveSourceUnit=Get-PhpDefinitionUnit $hook;Set-LValue $target $result '='}
+                    finally{$state.ActiveSourceUnit=$oldHookUnit}
                 }
                 return $null
             } finally {
@@ -4351,7 +9693,7 @@ class UnhandledMatchError extends Error {}
         # isset/empty container reads are quiet, but offset expressions are normal
         # expressions. Keep that distinction explicit rather than incrementing
         # QuietDepth around a complete dimension expression.
-        function Get-PhpCliQuietPath($node) {
+        function Get-PhpCliQuietPath($node, [bool]$FetchLeafValue = $true) {
             $missing = [pscustomobject]@{ Found=$false; Value=$null; ShortCircuited=$false }
             if ($node.Kind -in @('variable','dynamic_variable')) {
                 $name = if ($node.Kind -ceq 'variable') { $node.Name } else { Resolve-PhpDynamicVariableName $node }
@@ -4362,14 +9704,43 @@ class UnhandledMatchError extends Error {}
                 return [pscustomobject]@{ Found=$true; Value=$value; ShortCircuited=$false }
             }
             if ($node.Kind -ceq 'index') {
-                if ($null -eq $node.Key) { throw 'ALL PHP: Cannot read an empty [] index' }
-                $container = Get-PhpCliQuietPath $node.Base
+                if ($null -eq $node.Key) { Throw-PhpError 'Error' 'Cannot use [] for reading' 'ALL PHP: Cannot read an empty [] index' }
+                $container = Get-PhpCliQuietPath $node.Base $true
                 if ($container.ShortCircuited) { return $container }
                 # Evaluate even if a parent variable/offset is absent. Undefined
                 # key variables, user callbacks, throws and exit retain normal
                 # evaluation/diagnostic semantics, in source order.
                 $key = Invoke-PhpExpr $node.Key
                 if (-not $container.Found -or $null -eq $container.Value) { return $missing }
+                if ((Is-PhpObject $container.Value)) {
+                    if ($state.PreludeLoaded -and (Test-PhpInstanceOf $container.Value.Class 'ArrayAccess')) {
+                        $exists = Is-Truthy (Invoke-PhpMethod $container.Value 'offsetExists' @($key))
+                        if (-not $exists) { return $missing }
+                        $aaVal = if ($FetchLeafValue) { Invoke-PhpMethod $container.Value 'offsetGet' @($key) } else { $true }
+                        return [pscustomobject]@{ Found=$true; Value=$aaVal; ShortCircuited=$false }
+                    }
+                    Throw-PhpError 'Error' ('Cannot use object of type ' + $container.Value.Class + ' as array')
+                }
+                if (Is-PhpStringValue $container.Value) {
+                    if ((Is-PhpArray $key) -or (Is-PhpObject $key)) {
+                        $type = if (Is-PhpArray $key) { 'array' } else { $key.Class }
+                        Throw-PhpError 'TypeError' ('Cannot access offset of type ' + $type + ' on string')
+                    }
+                    $strOffset = $null
+                    if ($key -is [long]) { $strOffset = $key }
+                    elseif ($key -is [bool]) { $strOffset = if ($key) { [long]1 } else { [long]0 } }
+                    elseif ($null -eq $key) { $strOffset = [long]0 }
+                    elseif ($key -is [double]) { $strOffset = To-PhpInt $key }
+                    elseif (Is-PhpStringValue $key) {
+                        $parsed = ConvertFrom-PhpNumericString $key $false
+                        if ($parsed -is [long]) { $strOffset = $parsed }
+                    }
+                    if ($null -eq $strOffset) { return $missing }
+                    $bytes = To-PhpBytes $container.Value
+                    if ($strOffset -lt 0) { $strOffset = $bytes.Length + $strOffset }
+                    if ($strOffset -lt 0 -or $strOffset -ge $bytes.Length) { return $missing }
+                    return [pscustomobject]@{ Found=$true; Value=$bytes.Slice($strOffset, [long]1); ShortCircuited=$false }
+                }
                 if (-not (Is-PhpArray $container.Value)) { return $missing }
                 if ((Is-PhpArray $key) -or (Is-PhpObject $key)) {
                     $type = if (Is-PhpArray $key) { 'array' } else { $key.Class }
@@ -4382,7 +9753,7 @@ class UnhandledMatchError extends Error {}
                 return [pscustomobject]@{ Found=$true; Value=$value; ShortCircuited=$false }
             }
             if ($node.Kind -ceq 'property') {
-                $container = Get-PhpCliQuietPath $node.Base
+                $container = Get-PhpCliQuietPath $node.Base $true
                 if ($container.ShortCircuited) { return $container }
                 if ($node.NullSafe -and $null -eq $container.Value) {
                     return [pscustomobject]@{ Found=$false; Value=$null; ShortCircuited=$true }
@@ -4390,14 +9761,42 @@ class UnhandledMatchError extends Error {}
                 if (-not $container.Found -or -not (Is-PhpObject $container.Value)) { return $missing }
                 # Capture the receiver once; property lookup has no remaining
                 # key expression to accidentally suppress or evaluate twice.
+                $propName = Resolve-PhpMemberNodeName $node
+                $receiver = $container.Value
+                $declared = if ($receiver.Class -ne 'stdClass') { Find-PhpPropertyForScope $receiver.Class $propName $false } else { $null }
+                $hasGetHook = ($null -ne $declared -and $declared.PSObject.Properties['GetHook'] -and
+                    $null -ne $declared.GetHook -and -not $state.PropertyHookActive.Contains(([string]$receiver.GetHashCode() + ':' + $propName)))
+                if (-not $hasGetHook) {
+                    $storageInfo = Get-PhpObjectPropertyStorage $receiver $declared $propName
+                    $present = if ($storageInfo.Store -is [System.Collections.Specialized.OrderedDictionary]) {
+                        $storageInfo.Store.Contains($storageInfo.Key)
+                    } else { $storageInfo.Store.ContainsKey($storageInfo.Key) }
+                    if (-not $present) {
+                        if ($null -ne $declared -and -not [string]::IsNullOrEmpty([string]$declared.TypeName)) {
+                            Assert-PhpVisibility $declared.Visibility $declared.Owner 'property' $propName
+                            return $missing
+                        }
+                        $issetMethod = Find-OptionalPhpMethod $receiver.Class '__isset'
+                        if ($null -ne $issetMethod) {
+                            $hasProp = Is-Truthy (Invoke-PhpMethod $receiver '__isset' @($propName))
+                            if (-not $hasProp) { return $missing }
+                            if (-not $FetchLeafValue) {
+                                return [pscustomobject]@{ Found=$true; Value=$true; ShortCircuited=$false }
+                            }
+                        } else {
+                            if ($null -ne $declared) { Assert-PhpVisibility $declared.Visibility $declared.Owner 'property' $propName }
+                            return $missing
+                        }
+                    }
+                }
                 $property = [pscustomobject]@{
-                    Kind='property'; Base=[pscustomobject]@{Kind='literal';Value=$container.Value}
-                    Name=$node.Name; NullSafe=$node.NullSafe
+                    Kind='property'; Base=[pscustomobject]@{Kind='literal';Value=$receiver}
+                    Name=$propName; NullSafe=$node.NullSafe
                 }
                 $state.QuietDepth++
                 try { $value=Get-LValue $property }
                 catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
                     if ($_.Exception.Message -like 'ALL PHP: Undefined *' -or
                         $_.Exception.Message -like 'ALL PHP: Typed property *') { return $missing }
                     throw
@@ -4417,7 +9816,7 @@ class UnhandledMatchError extends Error {}
                 return (Get-PhpVariableValue $node.Name)
             }
             if ($node.Kind -eq 'index') {
-                if ($null -eq $node.Key) { throw 'ALL PHP: Cannot read an empty [] index' }
+                if ($null -eq $node.Key) { Throw-PhpError 'Error' 'Cannot use [] for reading' 'ALL PHP: Cannot read an empty [] index' }
                 return (Get-PhpArrayItem (Invoke-PhpExpr $node.Base) (Invoke-PhpExpr $node.Key))
             }
             if ($node.Kind -eq 'static_property') {
@@ -4427,61 +9826,152 @@ class UnhandledMatchError extends Error {}
                 $base = Invoke-PhpExpr $node.Base
                 if ($node.NullSafe -and $null -eq $base) { return $null }
                 if (-not (Is-PhpObject $base)) { throw 'ALL PHP: Property access requires object' }
+                $propName = Resolve-PhpMemberNodeName $node
+                $declared = $null
                 if ($base.Class -ne 'stdClass') {
-                    $declared = Find-PhpProperty $base.Class $node.Name $false
-                    if ($null -ne $declared) {
-                        Assert-PhpVisibility $declared.Visibility $declared.Owner
+                    $declared = Find-PhpPropertyForScope $base.Class $propName $false
+                    if ($null -ne $declared -and -not (Test-PhpVisibilityAllowed $declared.Visibility $declared.Owner 'property' $propName)) {
+                        $magic = Find-OptionalPhpMethod $base.Class '__get'
+                        $guardKey = ([string]$base.GetHashCode() + ':' + $propName)
+                        if ($null -ne $magic -and $state.MagicGetActive.Add($guardKey)) {
+                            try { return (Invoke-PhpMethod $base '__get' @($propName)) }
+                            finally { [void]$state.MagicGetActive.Remove($guardKey) }
+                        }
+                        Assert-PhpVisibility $declared.Visibility $declared.Owner 'property' $propName
                     }
                 }
-                $present = if ($base.Props -is [System.Collections.Specialized.OrderedDictionary]) {
-                    $base.Props.Contains($node.Name)
-                } else { $base.Props.ContainsKey($node.Name) }
+                $storageInfo = Get-PhpObjectPropertyStorage $base $declared $propName
+                $present = if ($storageInfo.Store -is [System.Collections.Specialized.OrderedDictionary]) {
+                    $storageInfo.Store.Contains($storageInfo.Key)
+                } else { $storageInfo.Store.ContainsKey($storageInfo.Key) }
                 if ($null -ne $declared -and $declared.PSObject.Properties['GetHook'] -and
                     $null -ne $declared.GetHook -and
                     -not $state.PropertyHookActive.Contains(
-                        ([string]$base.GetHashCode() + ':' + $node.Name))) {
+                        ([string]$base.GetHashCode() + ':' + $propName))) {
                     return (Invoke-PhpPropertyHook $base $declared 'get')
                 }
                 if ($null -ne $declared -and $declared.PSObject.Properties['SetHook'] -and
                     $null -ne $declared.SetHook -and $null -eq $declared.GetHook -and
                     -not $declared.HookBacked -and
                     -not $state.PropertyHookActive.Contains(
-                        ([string]$base.GetHashCode() + ':' + $node.Name))) {
-                    throw "ALL PHP: write-only property '$($node.Name)'"
+                        ([string]$base.GetHashCode() + ':' + $propName))) {
+                    throw "ALL PHP: write-only property '$propName'"
                 }
                 if (-not $present) {
                     if ($null -ne $declared -and
                         -not [string]::IsNullOrEmpty([string]$declared.TypeName)) {
-                        throw "ALL PHP: Typed property '$($node.Name)' must not be accessed before initialization"
+                        Throw-PhpError 'Error' ('Typed property ' + $declared.Owner + '::$' + $propName + ' must not be accessed before initialization') ("ALL PHP: Typed property '$propName' must not be accessed before initialization")
                     }
                     $magic=Find-OptionalPhpMethod $base.Class '__get'
                     if ($null -ne $magic) {
-                        $guardKey=([string]$base.GetHashCode() + ':' + $node.Name)
+                        $guardKey=([string]$base.GetHashCode() + ':' + $propName)
                         if (-not $state.MagicGetActive.Add($guardKey)) {
                             throw 'ALL PHP: Recursive __get property access'
                         }
-                        try { return (Invoke-PhpMethod $base '__get' @($node.Name)) }
+                        try { return (Invoke-PhpMethod $base '__get' @($propName)) }
                         finally { [void]$state.MagicGetActive.Remove($guardKey) }
                     }
                     if (($PhpDiagnostics -or $isCli) -and $state.QuietDepth -eq 0) {
-                        Write-PhpDiagnostic 2 ('Undefined property: ' + $base.Class + '::$' + $node.Name)
+                        Write-PhpDiagnostic 2 ('Undefined property: ' + $base.Class + '::$' + $propName)
                         return $null
                     }
-                    throw "ALL PHP: Undefined property '$($node.Name)'"
+                    throw "ALL PHP: Undefined property '$propName'"
                 }
-                $value=$base.Props[$node.Name]
+                $value=$storageInfo.Store[$storageInfo.Key]
                 if (Is-PhpRefCell $value) { return $value.Value }
                 return $value
             }
             throw 'ALL PHP: Not a readable value'
         }
-        function Set-LValue($node, $value, [string]$op) {
+        function Set-LValue($node, $value, [string]$op, $AssignmentResult=$null) {
+            $hasResolvedIndexBase=$false;$resolvedIndexBase=$null
+            if ($node.Kind -eq 'index') {
+                $indexChain=[System.Collections.Generic.List[object]]::new()
+                $walkNode=$node.Base
+                while ($null -ne $walkNode -and $walkNode.Kind -eq 'index') {
+                    [void]$indexChain.Add($walkNode)
+                    $walkNode=$walkNode.Base
+                }
+                if ($null -ne $walkNode -and $walkNode.Kind -eq 'property' -and -not $walkNode.NullSafe) {
+                    $propTargetObj = Invoke-PhpExpr $walkNode.Base
+                    $resolvedRootVal=$null
+                    $usedFastRoot=$false
+                    if ((Is-PhpObject $propTargetObj) -and $propTargetObj.Class -ne 'stdClass') {
+                        $propRootName = Resolve-PhpMemberNodeName $walkNode
+                        $propDeclared = Find-PhpPropertyForScope $propTargetObj.Class $propRootName $false
+                        if ($null -ne $propDeclared) {
+                            Assert-PhpVisibility $propDeclared.Visibility $propDeclared.Owner 'property' $propRootName
+                            $propStorageInfo = Get-PhpObjectPropertyStorage $propTargetObj $propDeclared $propRootName
+                            $propPresent = if ($propStorageInfo.Store -is [System.Collections.Specialized.OrderedDictionary]) {
+                                $propStorageInfo.Store.Contains($propStorageInfo.Key)
+                            } else { $propStorageInfo.Store.ContainsKey($propStorageInfo.Key) }
+                            $hasGetHook = ($propDeclared.PSObject.Properties['GetHook'] -and $null -ne $propDeclared.GetHook -and -not $state.PropertyHookActive.Contains(([string]$propTargetObj.GetHashCode() + ':' + $propRootName)))
+                            if ($propPresent) {
+                                $propCur = $propStorageInfo.Store[$propStorageInfo.Key]
+                                if (Is-PhpRefCell $propCur) { $propCur = $propCur.Value }
+                                if (-not (Is-PhpObject $propCur)) {
+                                    Assert-PhpSetVisibility $propDeclared 'indirect'
+                                    if ([bool]$propDeclared.Readonly) {
+                                        Throw-PhpError 'Error' ('Cannot modify readonly property ' + $propDeclared.Owner + '::$' + $propRootName) ("ALL PHP: Cannot modify readonly property '$propRootName'")
+                                    }
+                                }
+                                if (-not $hasGetHook -and -not ($propDeclared.PSObject.Properties['SetHook'] -and $null -ne $propDeclared.SetHook)) {
+                                    $resolvedRootVal=$propCur
+                                    $usedFastRoot=$true
+                                }
+                            } elseif (-not $hasGetHook) {
+                                Assert-PhpSetVisibility $propDeclared 'indirect'
+                                if ([bool]$propDeclared.Readonly) {
+                                    Throw-PhpError 'Error' ('Cannot modify readonly property ' + $propDeclared.Owner + '::$' + $propRootName) ("ALL PHP: Cannot modify readonly property '$propRootName'")
+                                }
+                                if ($op -ceq '=' -and $indexChain.Count -eq 0) {
+                                    $autoArr = Convert-PhpTypedValue (New-PhpArray) ([string]$propDeclared.TypeName) ('property ' + $propRootName) ([bool](Get-PhpDirectCallPolicy).ArgumentStrict) (New-PhpPropertyTypedContext $propDeclared)
+                                    $propStorageInfo.Store[$propStorageInfo.Key] = $autoArr
+                                    $resolvedRootVal = $autoArr
+                                    $usedFastRoot = $true
+                                }
+                            }
+                        } else {
+                            $resolvedRootVal = Get-LValue ([pscustomobject]@{ Kind='property'; Base=[pscustomobject]@{ Kind='literal'; Value=$propTargetObj }; Name=$propRootName; NullSafe=$false })
+                            $usedFastRoot = $true
+                        }
+                    } elseif (Is-PhpObject $propTargetObj) {
+                        $propRootName = Resolve-PhpMemberNodeName $walkNode
+                        $resolvedRootVal = Get-LValue ([pscustomobject]@{ Kind='property'; Base=[pscustomobject]@{ Kind='literal'; Value=$propTargetObj }; Name=$propRootName; NullSafe=$false })
+                        $usedFastRoot = $true
+                    }
+                    if ($usedFastRoot) {
+                        if ($indexChain.Count -eq 0) {
+                            $resolvedIndexBase = $resolvedRootVal
+                            $hasResolvedIndexBase = $true
+                        } elseif ($op -ceq '=') {
+                            $curVal = $resolvedRootVal
+                            for ($ci = $indexChain.Count - 1; $ci -ge 0; $ci--) {
+                                $curStep = $indexChain[$ci]
+                                if ($null -eq $curStep.Key) { Throw-PhpError 'Error' 'Cannot use [] for reading' 'ALL PHP: Cannot read an empty [] index' }
+                                $stepKey = Invoke-PhpExpr $curStep.Key
+                                if ((Is-PhpObject $curVal) -and $state.PreludeLoaded -and (Test-PhpInstanceOf $curVal.Class 'ArrayAccess')) {
+                                    $curVal = Invoke-PhpMethod $curVal 'offsetGet' @($stepKey)
+                                } else {
+                                    $curVal = Get-PhpArrayItem $curVal $stepKey
+                                }
+                            }
+                            $resolvedIndexBase = $curVal
+                            $hasResolvedIndexBase = $true
+                        }
+                    }
+                }
+            }
             if ($node.Kind -eq 'array') {
                 if ($op -cne '=' -or -not (Is-PhpArray $value)) {
                     throw 'ALL PHP: Destructuring requires array and plain assignment'
                 }
                 $numeric = [long]0
                 foreach ($item in $node.Entries) {
+                    if ($item.PSObject.Properties['Skipped'] -and $item.Skipped) {
+                        $numeric++
+                        continue
+                    }
                     if ($item.Spread) { throw 'ALL PHP: Cannot unpack into a destructuring target' }
                     $key=$numeric
                     if ($null -ne $item.Key) { $key=Invoke-PhpExpr $item.Key }
@@ -4489,11 +9979,39 @@ class UnhandledMatchError extends Error {}
                     if ($item.Value.Kind -notin @('variable','dynamic_variable','index','property','static_property','array')) {
                         throw 'ALL PHP: Invalid destructuring target'
                     }
+                    if ($item.PSObject.Properties['ByReference'] -and $item.ByReference) {
+                        if ($item.Value.Kind -eq 'array') {
+                            throw 'ALL PHP: Cannot assign reference to list'
+                        }
+                        Separate-PhpReferenceBacking $value
+                        $tKey = To-PhpKey $key
+                        if ($tKey.IsInteger) { Update-PhpNextIndex $value ([long]$tKey.IntegerValue) }
+                        if ($value.Items.Contains($tKey)) {
+                            $existing = $value.Items[$tKey]
+                            if (Is-PhpRefCell $existing) { $cell = $existing }
+                            else {
+                                $cell = [pscustomobject]@{ PhpType='refcell'; Value=(Copy-PhpValue $existing) }
+                                $value.Items[$tKey] = $cell
+                            }
+                        } else {
+                            try { [void](Get-PhpArrayItem $value $key) }
+                            catch {
+                                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
+                                if ($_.Exception.Message -notlike 'ALL PHP: Undefined array key*') { throw }
+                            }
+                            $cell = [pscustomobject]@{ PhpType='refcell'; Value=$null }
+                            $value.Items[$tKey] = $cell
+                        }
+                        $value.ReferenceCellsKnownAbsent = $false
+                        Add-PhpTraversalEntry $value $tKey
+                        Set-PhpReferenceTarget $item.Value $cell
+                        continue
+                    }
                     $found=$false
                     $part=$null
                     try { $part=Get-PhpArrayItem $value $key; $found=$true }
                     catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
                         if ($_.Exception.Message -notlike 'ALL PHP: Undefined array key*') { throw }
                     }
                     if (-not $found) { $part=$null }
@@ -4505,20 +10023,50 @@ class UnhandledMatchError extends Error {}
                 throw 'ALL PHP: Cannot use nullsafe access as assignment target'
             }
             if ($op -cne '=') {
+                if ($node.Kind -ceq 'index') {
+                    if (-not $hasResolvedIndexBase) {
+                        $resolvedIndexBase=Invoke-PhpExpr $node.Base;$hasResolvedIndexBase=$true
+                    }
+                    if (Is-PhpStringValue $resolvedIndexBase) {
+                        Throw-PhpError 'Error' 'Cannot use assign-op operators with string offsets'
+                    }
+                }
                 $previous = Get-LValue $node
                 switch ($op) {
-                    '+=' { $value = Php-Add (To-Number $previous) (To-Number $value) }
-                    '-=' { $value = Php-Sub (To-Number $previous) (To-Number $value) }
-                    '.=' { $value = (To-PhpText $previous) + (To-PhpText $value) }
-                    '*=' { $value = Php-Mul (To-Number $previous) (To-Number $value) }
-                    '/=' { $value = Php-Div (To-Number $previous) (To-Number $value) }
-                    '%=' { $value = Php-Mod (To-Number $previous) (To-Number $value) }
-                    '&=' { $value = [long]((To-PhpInt $previous) -band (To-PhpInt $value)) }
-                    '|=' { $value = [long]((To-PhpInt $previous) -bor (To-PhpInt $value)) }
-                    '^=' { $value = [long]((To-PhpInt $previous) -bxor (To-PhpInt $value)) }
-                    '<<=' { $value = Php-Shift $previous $value $true }
-                    '>>=' { $value = Php-Shift $previous $value $false }
-                    '**=' { $value = Php-Pow (To-Number $previous) (To-Number $value) }
+                    '+=' {
+                        if ((Is-PhpArray $previous) -and (Is-PhpArray $value)) {
+                            $union = Copy-PhpValue $previous
+                            foreach ($key in $value.Items.Keys) {
+                                if (-not $union.Items.Contains($key)) {
+                                    Set-PhpArrayItem $union (Get-PhpKeyValue $key) $value.Items[$key] $false
+                                }
+                            }
+                            $value = $union
+                        } else {
+                            $nums = Convert-PhpBinaryNumericOperands $previous $value '+'
+                            $value = Php-Add $nums[0] $nums[1]
+                        }
+                    }
+                    '-=' { $nums = Convert-PhpBinaryNumericOperands $previous $value '-'; $value = Php-Sub $nums[0] $nums[1] }
+                    '.=' { $value = (To-PhpBytes $previous).Concat((To-PhpBytes $value)) }
+                    '*=' { $nums = Convert-PhpBinaryNumericOperands $previous $value '*'; $value = Php-Mul $nums[0] $nums[1] }
+                    '/=' { $nums = Convert-PhpBinaryNumericOperands $previous $value '/'; $value = Php-Div $nums[0] $nums[1] }
+                    '%=' { $nums = Convert-PhpBinaryNumericOperands $previous $value '%'; $value = Php-Mod $nums[0] $nums[1] }
+                    '&=' {
+                        if ((Is-PhpStringValue $previous) -and (Is-PhpStringValue $value)) { $value=(To-PhpBytes $previous).Bitwise((To-PhpBytes $value),[char]'&') }
+                        else { $nums = Convert-PhpBinaryNumericOperands $previous $value '&'; $value = [long]((To-PhpInt $nums[0]) -band (To-PhpInt $nums[1])) }
+                    }
+                    '|=' {
+                        if ((Is-PhpStringValue $previous) -and (Is-PhpStringValue $value)) { $value=(To-PhpBytes $previous).Bitwise((To-PhpBytes $value),[char]'|') }
+                        else { $nums = Convert-PhpBinaryNumericOperands $previous $value '|'; $value = [long]((To-PhpInt $nums[0]) -bor (To-PhpInt $nums[1])) }
+                    }
+                    '^=' {
+                        if ((Is-PhpStringValue $previous) -and (Is-PhpStringValue $value)) { $value=(To-PhpBytes $previous).Bitwise((To-PhpBytes $value),[char]'^') }
+                        else { $nums = Convert-PhpBinaryNumericOperands $previous $value '^'; $value = [long]((To-PhpInt $nums[0]) -bxor (To-PhpInt $nums[1])) }
+                    }
+                    '<<=' { $nums = Convert-PhpBinaryNumericOperands $previous $value '<<'; $value = Php-Shift $nums[0] $nums[1] $true }
+                    '>>=' { $nums = Convert-PhpBinaryNumericOperands $previous $value '>>'; $value = Php-Shift $nums[0] $nums[1] $false }
+                    '**=' { $nums = Convert-PhpBinaryNumericOperands $previous $value '**'; $value = Php-Pow $nums[0] $nums[1] }
                 }
             }
             if ($node.Kind -eq 'dynamic_variable') {
@@ -4543,7 +10091,7 @@ class UnhandledMatchError extends Error {}
                     $state.QuietDepth++
                     try { $baseValue=Get-PhpVariableValue $baseName }
                     catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
                         if ($_.Exception.Message -notlike 'ALL PHP: Undefined variable*') { throw }
                     }
                     finally { $state.QuietDepth-- }
@@ -4551,10 +10099,54 @@ class UnhandledMatchError extends Error {}
                         Set-PhpVariableValue $baseName (New-PhpArray)
                     }
                 }
-                $base = Invoke-PhpExpr $node.Base
+                $base = if ($hasResolvedIndexBase) {
+                    $resolvedIndexBase
+                } elseif ($node.Base.Kind -in @('index','property','static_property')) {
+                    $qBase = $null
+                    $state.QuietDepth++
+                    try { $qBase = Invoke-PhpExpr $node.Base }
+                    catch {
+                        if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
+                        if ($_.Exception.Message -notlike 'ALL PHP: Undefined *') { throw }
+                    }
+                    finally { $state.QuietDepth-- }
+                    $qBase
+                } else {
+                    Invoke-PhpExpr $node.Base
+                }
                 $append = ($null -eq $node.Key)
                 $key = $null
                 if (-not $append) { $key = Invoke-PhpExpr $node.Key }
+                if ($node.Base.Kind -in @('variable','dynamic_variable','index','property','static_property') -and
+                    ($null -eq $base -or (($isCli -or $PhpDiagnostics) -and $base -is [bool] -and -not $base))) {
+                    if ($base -is [bool]) {
+                        Write-PhpDiagnostic 8192 'Automatic conversion of false to array is deprecated'
+                    }
+                    $newArr = New-PhpArray
+                    Set-PhpArrayItem $newArr $key $value $append
+                    Set-LValue $node.Base $newArr '='
+                    return
+                }
+                if (Is-PhpStringValue $base) {
+                    if ($append) { Throw-PhpError 'Error' '[] operator not supported for strings' }
+                    $offset=ConvertTo-PhpStringOffset $key
+                    $original=To-PhpBytes $base
+                    $replacement=To-PhpBytes $value
+                    $written=$original.WithOffset($offset,$replacement)
+                    if ($written.ErrorClass.Length -gt 0) { Throw-PhpError $written.ErrorClass $written.Message }
+                    if ($written.WarningLevel -gt 0) { Write-PhpDiagnostic $written.WarningLevel $written.Message }
+                    Set-LValue $node.Base $written.Value '='
+                    if ($null -ne $AssignmentResult) {
+                        $AssignmentResult.IsStringOffset=$true
+                        if($offset -lt 0 -and $offset -lt (-$original.Length)){$AssignmentResult.Value=$null}
+                        else{$AssignmentResult.Value=$replacement.Slice(0,[long]1)}
+                    }
+                    return
+                }
+                if ((Is-PhpObject $base) -and $state.PreludeLoaded -and (Test-PhpInstanceOf $base.Class 'ArrayAccess')) {
+                    [void](Invoke-PhpMethod $base 'offsetSet' @($key, (Copy-PhpValue $value)))
+                    return
+                }
                 Set-PhpArrayItem $base $key $value $append
                 return
             }
@@ -4564,34 +10156,46 @@ class UnhandledMatchError extends Error {}
                 if ($base.PSObject.Properties['EnumCase']) {
                     throw 'ALL PHP: Cannot modify enum case property'
                 }
+                $propName = Resolve-PhpMemberNodeName $node
                 $declared=$null
                 if ($base.Class -ne 'stdClass') {
-                    $declared = Find-PhpProperty $base.Class $node.Name $false
-                    if ($null -ne $declared) {
-                        Assert-PhpVisibility $declared.Visibility $declared.Owner
+                    $declared = Find-PhpPropertyForScope $base.Class $propName $false
+                    if ($null -ne $declared -and -not (Test-PhpVisibilityAllowed $declared.Visibility $declared.Owner 'property' $propName)) {
+                        $magic = Find-OptionalPhpMethod $base.Class '__set'
+                        $guardKey = ([string]$base.GetHashCode() + ':' + $propName)
+                        if ($null -ne $magic -and $state.MagicSetActive.Add($guardKey)) {
+                            try {
+                                [void](Invoke-PhpMethod $base '__set' @($propName, (Copy-PhpValue $value)))
+                                return
+                            } finally { [void]$state.MagicSetActive.Remove($guardKey) }
+                        }
+                        Assert-PhpVisibility $declared.Visibility $declared.Owner 'property' $propName
                     }
                 }
-                $present=if ($base.Props -is [System.Collections.Specialized.OrderedDictionary]) {
-                    $base.Props.Contains($node.Name)
-                } else { $base.Props.ContainsKey($node.Name) }
-                if ($null -eq $declared -and -not $present) {
+                $storageInfo = Get-PhpObjectPropertyStorage $base $declared $propName
+                $present=if ($storageInfo.Store -is [System.Collections.Specialized.OrderedDictionary]) {
+                    $storageInfo.Store.Contains($storageInfo.Key)
+                } else { $storageInfo.Store.ContainsKey($storageInfo.Key) }
+                $unsetTrackKey = if ($null -ne $declared -and $declared.Visibility -eq 'private') { $declared.Owner + '::' + $propName } else { $propName }
+                $wasExplicitlyUnset = ($base.PSObject.Properties['UnsetProps'] -and $null -ne $base.UnsetProps -and $base.UnsetProps.Contains($unsetTrackKey))
+                if (-not $present -and ($null -eq $declared -or (-not (Test-PhpSetVisibilityAllowed $declared) -and $wasExplicitlyUnset))) {
                     $magic=Find-OptionalPhpMethod $base.Class '__set'
                     if ($null -ne $magic) {
-                        $guardKey=([string]$base.GetHashCode() + ':' + $node.Name)
+                        $guardKey=([string]$base.GetHashCode() + ':' + $propName)
                         if ($state.MagicSetActive.Add($guardKey)) {
                             try {
-                                [void](Invoke-PhpMethod $base '__set' @($node.Name, (Copy-PhpValue $value)))
+                                [void](Invoke-PhpMethod $base '__set' @($propName, (Copy-PhpValue $value)))
                                 return
                             } finally { [void]$state.MagicSetActive.Remove($guardKey) }
                         }
                     }
                 }
                 if ($null -ne $declared) {
+                    Assert-PhpSetVisibility $declared 'modify'
                     if ($declared.PSObject.Properties['SetHook'] -and
                         $null -ne $declared.SetHook -and
                         -not $state.PropertyHookActive.Contains(
-                            ([string]$base.GetHashCode() + ':' + $node.Name))) {
-                        $value=Convert-PhpTypedValue $value ([string]$declared.TypeName) ('property ' + $node.Name)
+                            ([string]$base.GetHashCode() + ':' + $propName))) {
                         [void](Invoke-PhpPropertyHook $base $declared 'set' $value)
                         return
                     }
@@ -4599,41 +10203,55 @@ class UnhandledMatchError extends Error {}
                         $null -ne $declared.GetHook -and $null -eq $declared.SetHook -and
                         -not $declared.HookBacked -and
                         -not $state.PropertyHookActive.Contains(
-                            ([string]$base.GetHashCode() + ':' + $node.Name))) {
-                        throw "ALL PHP: get-only property '$($node.Name)'"
+                            ([string]$base.GetHashCode() + ':' + $propName))) {
+                        throw "ALL PHP: get-only property '$propName'"
                     }
                     if ([bool]$declared.Readonly) {
-                        if ($present) { throw "ALL PHP: Cannot modify readonly property '$($node.Name)'" }
-                        if ($null -eq $state.ClassContext -or $state.ClassContext -ine $declared.Owner) {
-                            throw "ALL PHP: Cannot initialize readonly property '$($node.Name)' outside its declaring class"
+                        if ($present) { throw "ALL PHP: Cannot modify readonly property '$propName'" }
+                        if ($null -eq $state.ClassContext -or (-not (Test-PhpNameEqual $state.ClassContext $declared.Owner))) {
+                            throw "ALL PHP: Cannot initialize readonly property '$propName' outside its declaring class"
                         }
                     }
-                    $value=Convert-PhpTypedValue $value ([string]$declared.TypeName) ('property ' + $node.Name)
+                    $value=Convert-PhpTypedValue $value ([string]$declared.TypeName) ('property ' + $propName) ([bool](Get-PhpDirectCallPolicy).ArgumentStrict) (New-PhpPropertyTypedContext $declared)
                 } elseif ($base.Class -ne 'stdClass' -and $state.Classes[$base.Class].Readonly) {
                     throw 'ALL PHP: Cannot create dynamic property on readonly class'
                 }
-                if ($present -and (Is-PhpRefCell $base.Props[$node.Name])) {
-                    $base.Props[$node.Name].Value = Copy-PhpValue $value
-                } else { $base.Props[$node.Name] = Copy-PhpValue $value }
+                if ($present -and (Is-PhpRefCell $storageInfo.Store[$storageInfo.Key])) {
+                    $storageInfo.Store[$storageInfo.Key].Value = Copy-PhpValue $value
+                } else { $storageInfo.Store[$storageInfo.Key] = Copy-PhpValue $value }
+                if ($base.PSObject.Properties['UnsetProps'] -and $null -ne $base.UnsetProps) {
+                    [void]$base.UnsetProps.Remove($unsetTrackKey)
+                }
                 return
             }
             throw 'ALL PHP: Invalid assignment target'
         }
-        function Invoke-PhpCallable($definition, $callArgs, $object, [string]$owner = '', $closure = $null, [bool]$referenceContext = $false) {
+        function Invoke-PhpCallable($definition, $callArgs, $object, [string]$owner = '', $closure = $null, [bool]$referenceContext = $false, $callPolicy=$null, [string]$nonRefNotice = 'Only variables should be assigned by reference') {
             if ($definition.Abstract) { throw 'ALL PHP: Cannot invoke an abstract method' }
             if ($state.CallDepth -ge 64) { throw 'ALL PHP: Call depth limit reached (64)' }
+            if($null-eq$callPolicy){$callPolicy=Get-PhpDirectCallPolicy}
+            $definitionUnit=Get-PhpDefinitionUnit $definition
+            $oldSourceUnit=$state.ActiveSourceUnit
+            $oldBuiltinPolicy=$state.BuiltinCallPolicy
+            $oldFileContext=$null
             $oldVars = $state.Vars
             $oldFlow = $state.Flow
             $oldGlobals = $state.GlobalBindings
             $oldStatics = $state.StaticBindings
             $oldCallable = $state.CurrentCallable
             $oldContext = $state.ClassContext
+            $oldTraitContext = $state.TraitContext
+            $oldFnName = $state.CurrentFunctionName
+            $oldMethodName = $state.CurrentMethodName
             $oldReturnByRef=$state.ReturnByRef
             $functionReturnsByRef=($definition.PSObject.Properties['ReturnByRef'] -and $definition.ReturnByRef)
-            if ($referenceContext -and -not $functionReturnsByRef) {
+            if ($referenceContext -and -not $functionReturnsByRef -and -not $isCli -and -not $PhpDiagnostics) {
                 throw 'ALL PHP: Function does not return by reference'
             }
             $state.ReturnByRef=$functionReturnsByRef
+            [void]$state.ReferenceOwnerFrames.Add([pscustomobject]@{Vars=$oldVars;Globals=$oldGlobals;Statics=$oldStatics})
+            $referenceFrameRoot=$state.ReferenceTemporaryRoots.Count
+            if($null-ne$closure){[void]$state.ReferenceTemporaryRoots.Add($closure)}
             $state.Vars = [System.Collections.Generic.Dictionary[string,object]]::new(
                 [System.StringComparer]::Ordinal)
             $state.Flow = @{ Returned=$false; ReturnedWithExpr=$false; Value=$null; RefCell=$null; LoopControl=$null; LoopDepth=0 }
@@ -4642,6 +10260,20 @@ class UnhandledMatchError extends Error {}
             $state.StaticBindings = [System.Collections.Generic.HashSet[string]]::new(
                 [System.StringComparer]::Ordinal)
             $state.ClassContext = if ($owner.Length -gt 0) { $owner } else { $null }
+            if ($null -ne $closure) {
+                $state.TraitContext = if ($closure.PSObject.Properties['TraitContext']) { [string]$closure.TraitContext } else { '' }
+                $state.CurrentFunctionName = '{closure}'
+                $state.CurrentMethodName = '{closure}'
+            } elseif ($owner.Length -gt 0) {
+                $callTraitOwner = if ($definition.PSObject.Properties['TraitOwner'] -and -not [string]::IsNullOrEmpty([string]$definition.TraitOwner)) { [string]$definition.TraitOwner } else { '' }
+                $state.TraitContext = $callTraitOwner
+                $state.CurrentFunctionName = [string]$definition.Name
+                $state.CurrentMethodName = if ($callTraitOwner.Length -gt 0) { $callTraitOwner + '::' + $definition.Name } else { $owner + '::' + $definition.Name }
+            } else {
+                $state.TraitContext = ''
+                $state.CurrentFunctionName = [string]$definition.Name
+                $state.CurrentMethodName = [string]$definition.Name
+            }
             $state.CurrentCallable = if ($owner.Length -gt 0) { $owner + '::' + $definition.Name } else { $definition.Name }
             $state.CallDepth++
             $oldLine = $state.Line
@@ -4655,10 +10287,20 @@ class UnhandledMatchError extends Error {}
             if ($frameName.Length -eq 0) { $frameName = '{closure}' }
             $frameArgs = @()
             if ($null -ne $callArgs) { $frameArgs = @($callArgs) }
-            [void]$state.CallStack.Add([pscustomobject]@{ Name=$frameName; Line=$state.Line; Args=$frameArgs })
+            $topFrame = [pscustomobject]@{
+                Name=$frameName; Line=$state.Line; SourcePath=$state.ScriptName; Args=$frameArgs
+                IsUserFrame=$true; PassedArgs=@(); ParamNames=@()
+            }
+            [void]$state.CallStack.Add($topFrame)
             try {
+                $oldFileContext=Enter-PhpSourceUnitContext $definitionUnit
+                $state.ActiveSourceUnit=$definitionUnit
+                $state.BuiltinCallPolicy=$null
                 if ($null -ne $closure) {
                     $state.ClassContext=$closure.ClassContext
+                    $state.TraitContext = if ($closure.PSObject.Properties['TraitContext']) { [string]$closure.TraitContext } else { '' }
+                    $state.CurrentFunctionName = '{closure}'
+                    $state.CurrentMethodName = '{closure}'
                     foreach ($capturedName in $closure.Captures.Keys) {
                         $captured=$closure.Captures[$capturedName]
                         if (Is-PhpRefCell $captured) {
@@ -4679,7 +10321,7 @@ class UnhandledMatchError extends Error {}
                         $namedStarted = $true
                         $known = $false
                         foreach ($param in $definition.Params) {
-                            if ($param.Name -ceq $arg.Name) { $known=$true; break }
+                            if ((Test-PhpRawNameEqual $param.Name $arg.Name)) { $known=$true; break }
                         }
                         if (-not $known) {
                             $variadicParam=$null
@@ -4703,9 +10345,12 @@ class UnhandledMatchError extends Error {}
                         } else { [void]$extra.Add((Copy-PhpValue $arg)) }
                     }
                 }
+                $referenceBindingRoot=$state.ReferenceTemporaryRoots.Count
+                foreach($referenceArgument in $callArgs){Add-PhpReferenceArgumentRoot $referenceArgument}
                 foreach ($param in $definition.Params) {
                     if ($param.Variadic) {
                         $varargs = New-PhpArray
+                        $varStorage = $varargs.TraversalStorage
                         foreach ($extraArg in $extra) {
                             $element=$extraArg
                             $key=$null
@@ -4722,8 +10367,20 @@ class UnhandledMatchError extends Error {}
                                     throw "ALL PHP: must be a variable passed by reference (argument '$($param.Name)')"
                                 }
                                 $element=$element.Cell
-                            } elseif ($isReferenceArgument) { $element=$element.Value }
-                            Set-PhpArrayItem $varargs $key $element ($null -eq $key)
+                                Set-PhpArrayItem $varargs $key $element ($null -eq $key)
+                            } else {
+                                if ($isReferenceArgument) { $element=$element.Value }
+                                if ($null -eq $key -and -not ($element -is [pscustomobject])) {
+                                    $kInt = if ($varargs.NextIndex -eq [long]::MinValue) { [long]0 } else { [long]$varargs.NextIndex }
+                                    $kObj = [AllPhp.ByteValues.PhpKey]::FromInteger($kInt)
+                                    $varargs.Items[$kObj] = if ($element -is [string]) { [AllPhp.ByteValues.PhpBytes]::FromUtf8($element) } else { $element }
+                                    $tEntry = [pscustomobject]@{Identity=[object]::new();Key=$kObj;Live=$true}
+                                    [void]$varStorage.Entries.Add($tEntry); $varStorage.Live[$kObj] = $tEntry
+                                    $varargs.NextIndex = if ($kInt -eq [long]::MaxValue) { [long]::MaxValue } else { [long]($kInt + 1) }
+                                } else {
+                                    Set-PhpArrayItem $varargs $key $element ($null -eq $key)
+                                }
+                            }
                         }
                         if ($bound.ContainsKey($param.Name)) {
                             $named=$bound[$param.Name]
@@ -4755,31 +10412,45 @@ class UnhandledMatchError extends Error {}
                         throw "ALL PHP: Too few arguments for $($definition.Name)"
                     }
                 }
+                Remove-PhpReferenceTemporaryRoots $referenceBindingRoot
                 # Enforce declared parameter types after resolving named/default/variadic
                 # arguments and before entering the function body.
+                $parameterNumber=0
                 foreach ($param in $definition.Params) {
+                    $parameterNumber++
                     if (-not $param.PSObject.Properties['TypeName'] -or
                         [string]::IsNullOrEmpty($param.TypeName)) { continue }
                     $name=[string]$param.Name
                     if ($param.Variadic) {
                         $argsArray=$state.Vars[$name]
+                        $variadicArgumentNumber=$parameterNumber
                         foreach ($key in @($argsArray.Items.Keys)) {
                             $item=$argsArray.Items[$key]
                             $cell=$null
                             if (Is-PhpRefCell $item) { $cell=$item; $item=$item.Value }
-                            $checked=Convert-PhpTypedValue $item $param.TypeName ('argument $' + $name)
+                            $checked=Convert-PhpTypedValue $item $param.TypeName ('argument $' + $name) ([bool]$callPolicy.ArgumentStrict) (New-PhpTypedContext $definition 'argument' $variadicArgumentNumber '' $callPolicy)
                             if ($null -ne $cell) { $cell.Value=$checked }
-                            else { $argsArray.Items[$key]=$checked }
+                            else { Separate-PhpReferenceBacking $argsArray;$argsArray.Items[$key]=$checked }
+                            # Extra named arguments retain the number after positional ones.
+                            if($key.IsInteger){$variadicArgumentNumber++}
                         }
                     } else {
                         $item=$state.Vars[$name]
                         $cell=$null
                         if (Is-PhpRefCell $item) { $cell=$item; $item=$item.Value }
-                        $checked=Convert-PhpTypedValue $item $param.TypeName ('argument $' + $name)
+                        $checked=Convert-PhpTypedValue $item $param.TypeName ('argument $' + $name) ([bool]$callPolicy.ArgumentStrict) (New-PhpTypedContext $definition 'argument' $parameterNumber $name $callPolicy)
                         if ($null -ne $cell) { $cell.Value=$checked }
                         else { $state.Vars[$name]=$checked }
                     }
                 }
+                $nonVariadicParams = [System.Collections.Generic.List[string]]::new()
+                foreach ($param in $definition.Params) {
+                    if (-not $param.Variadic) { [void]$nonVariadicParams.Add([string]$param.Name) }
+                }
+                $topFrame | Add-Member -NotePropertyName RawCallArgs -NotePropertyValue $callArgs -Force
+                $topFrame | Add-Member -NotePropertyName ExtraArgs -NotePropertyValue $extra -Force
+                $topFrame.PassedArgs = $null
+                $topFrame.ParamNames = $nonVariadicParams.ToArray()
                 if ($null -ne $object) {
                     $state.Vars['this'] = $object
                     if ($definition.Name -ieq '__construct') {
@@ -4801,17 +10472,24 @@ class UnhandledMatchError extends Error {}
                 if ($definition.PSObject.Properties['ReturnType']) {
                     $returnType=[string]$definition.ReturnType
                 }
+                if ($definition.PSObject.Properties['IsGenerator'] -and $definition.IsGenerator) {
+                    [void](Resolve-PhpFramePassedArgs $topFrame)
+                    return (New-PhpGeneratorObject $definition $state.Vars $object $owner $closure $callPolicy $topFrame.PassedArgs $topFrame.ParamNames)
+                }
                 if ($null -ne $definition.Expr) {
                     if ($state.ReturnByRef) {
                         $expr=$definition.Expr
                         if ($expr.Kind -in @('variable','dynamic_variable','index','property','static_property')) {
                             $cell=Get-PhpLValueCell $expr
                         } elseif ($expr.Kind -in @('call','method','static_method','invoke')) {
-                            $cell=Invoke-PhpReferenceCall $expr
+                            $cell=Invoke-PhpReferenceCall $expr $null 'Only variable references should be returned by reference'
+                        } elseif ($isCli -or $PhpDiagnostics) {
+                            Write-PhpDiagnostic 8 'Only variable references should be returned by reference'
+                            $cell=[pscustomobject]@{ PhpType='refcell'; Value=(Copy-PhpValue (Invoke-PhpExpr $expr)) }
                         } else {
                             throw 'ALL PHP: Reference return requires a writable value'
                         }
-                        $cell.Value=Convert-PhpTypedValue $cell.Value $returnType 'return value'
+                        $cell.Value=Convert-PhpTypedValue $cell.Value $returnType 'return value' ([bool]$definitionUnit.StrictTypes) (New-PhpTypedContext $definition 'return')
                         if ($referenceContext) { return $cell }
                         return $cell.Value
                     }
@@ -4820,26 +10498,42 @@ class UnhandledMatchError extends Error {}
                         throw 'ALL PHP: void function cannot return a value'
                     }
                     if ($returnType -eq 'never') {
-                        throw 'ALL PHP: never function returned a value'
+                        Throw-PhpError 'TypeError' ((Get-PhpTypedDisplayName $definition)+'(): never-returning function must not implicitly return') 'ALL PHP: never function returned a value'
                     }
-                    return (Convert-PhpTypedValue $result $returnType 'return value')
+                    $typedExprVal = Convert-PhpTypedValue $result $returnType 'return value' ([bool]$definitionUnit.StrictTypes) (New-PhpTypedContext $definition 'return')
+                    if ($referenceContext) {
+                        Write-PhpDiagnostic 8 $nonRefNotice
+                        return [pscustomobject]@{ PhpType='refcell'; Value=(Copy-PhpValue $typedExprVal) }
+                    }
+                    return $typedExprVal
                 }
                 Invoke-PhpStatement $definition.Body
                 if ($returnType -eq 'never') {
-                    throw 'ALL PHP: never function returned'
+                    Throw-PhpError 'TypeError' ((Get-PhpTypedDisplayName $definition)+'(): never-returning function must not implicitly return') 'ALL PHP: never function returned'
                 }
                 if ($returnType -eq 'void' -and $state.Flow.ReturnedWithExpr) {
                     throw 'ALL PHP: void function cannot return a value'
                 }
                 if ($referenceContext) {
+                    if (-not $functionReturnsByRef) {
+                        Write-PhpDiagnostic 8 $nonRefNotice
+                        $typedVal = Convert-PhpTypedValue $state.Flow.Value $returnType 'return value' ([bool]$definitionUnit.StrictTypes) (New-PhpTypedContext $definition 'return')
+                        return [pscustomobject]@{ PhpType='refcell'; Value=(Copy-PhpValue $typedVal) }
+                    }
                     if (-not (Is-PhpRefCell $state.Flow.RefCell)) {
+                        if ($isCli -or $PhpDiagnostics) {
+                            Write-PhpDiagnostic 8 'Only variable references should be returned by reference'
+                            return [pscustomobject]@{ PhpType='refcell'; Value=$null }
+                        }
                         throw 'ALL PHP: Function did not return a reference'
                     }
-                    $state.Flow.RefCell.Value=Convert-PhpTypedValue $state.Flow.RefCell.Value $returnType 'return value'
+                    $state.Flow.RefCell.Value=Convert-PhpTypedValue $state.Flow.RefCell.Value $returnType 'return value' ([bool]$definitionUnit.StrictTypes) (New-PhpTypedContext $definition 'return')
                     return $state.Flow.RefCell
                 }
-                return (Convert-PhpTypedValue $state.Flow.Value $returnType 'return value')
+                return (Convert-PhpTypedValue $state.Flow.Value $returnType 'return value' ([bool]$definitionUnit.StrictTypes) (New-PhpTypedContext $definition 'return'))
             } finally {
+                Remove-PhpReferenceTemporaryRoots $referenceFrameRoot
+                $state.ReferenceOwnerFrames.RemoveAt($state.ReferenceOwnerFrames.Count-1)
                 $state.CallDepth--
                 $state.Line = $oldLine
                 $state.QuietDepth = $oldQuiet
@@ -4850,12 +10544,17 @@ class UnhandledMatchError extends Error {}
                 $state.StaticBindings = $oldStatics
                 $state.CurrentCallable = $oldCallable
                 $state.ClassContext = $oldContext
+                $state.TraitContext = $oldTraitContext
+                $state.CurrentFunctionName = $oldFnName
+                $state.CurrentMethodName = $oldMethodName
                 $state.ReturnByRef = $oldReturnByRef
+                if($null-ne$oldFileContext){Exit-PhpSourceUnitContext $oldFileContext}
+                $state.ActiveSourceUnit=$oldSourceUnit
+                $state.BuiltinCallPolicy=$oldBuiltinPolicy
             }
         }
-        function KeyString-ToValue([string]$encoded) {
-            if ($encoded.StartsWith('i:')) { return [long]$encoded.Substring(2) }
-            return $encoded.Substring(2)
+        function KeyString-ToValue($encoded) {
+            return (Get-PhpKeyValue $encoded)
         }
         function Invoke-PhpCliExit($callArgs) {
             if ($callArgs.Count -gt 1) {
@@ -4870,8 +10569,11 @@ class UnhandledMatchError extends Error {}
                     $argument = $argument.Value
                 }
                 if (Is-PhpRefCell $argument) { $argument = $argument.Value }
+                if((Get-PhpBuiltinCallPolicy).ArgumentStrict-and$argument-isnot[long]-and-not(Is-PhpStringValue $argument)){
+                    Throw-PhpError 'TypeError' ('exit(): Argument #1 ($status) must be of type string|int, '+(Get-PhpStrictUnionActualType $argument)+' given')
+                }
                 if ($argument -is [long]) { $status = $argument }
-                elseif ($argument -is [string]) { [Console]::Write($argument) }
+                elseif (Is-PhpStringValue $argument) { Write-PhpBytes $argument }
                 elseif ($argument -is [bool]) { if ($argument) { $status = [long]1 } }
                 elseif ($null -eq $argument) {
                     Write-PhpDiagnostic 8192 'exit(): Passing null to parameter #1 ($status) of type string|int is deprecated'
@@ -4879,10 +10581,10 @@ class UnhandledMatchError extends Error {}
                 elseif ($argument -is [double]) {
                     if ([double]::IsNaN($argument)) {
                         Write-PhpDiagnostic 2 'unexpected NAN value was coerced to string'
-                        [Console]::Write('NAN')
+                        Write-PhpBytes 'NAN'
                     } elseif ([double]::IsInfinity($argument) -or
                         $argument -lt -9223372036854775808.0 -or $argument -ge 9223372036854775808.0) {
-                        [Console]::Write((To-PhpText $argument))
+                        Write-PhpBytes $argument
                     } else {
                         $status = To-PhpInt $argument
                         if ([double]$status -ne $argument) {
@@ -4891,7 +10593,7 @@ class UnhandledMatchError extends Error {}
                     }
                 }
                 elseif ((Is-PhpObject $argument) -and $null -ne (Find-OptionalPhpMethod $argument.Class '__toString')) {
-                    [Console]::Write((To-PhpText $argument))
+                    Write-PhpBytes $argument
                 } else {
                     $type = if (Is-PhpArray $argument) { 'array' } elseif (Is-PhpObject $argument) { $argument.Class } else { $argument.GetType().Name }
                     Throw-PhpError 'TypeError' ('exit(): Argument #1 ($status) must be of type string|int, ' + $type + ' given')
@@ -4907,35 +10609,360 @@ class UnhandledMatchError extends Error {}
             $signal.Data['AllPhpCliExit'] = $cliExitToken
             throw $signal
         }
-        function Invoke-PhpFunction([string]$name, $callArgs) {
+        function Initialize-PhpBase64Runtime {
+            if ([AllPhp.ByteCodecs.PhpBase64]::ContractVersion -ne 1) { throw 'ALL PHP: Base64 helper contract differs' }
+        }
+        function Test-PhpBase64StrictArguments {
+            if($state.ContainsKey('BuiltinCallPolicy')-and$null-ne$state.BuiltinCallPolicy){return [bool]$state.BuiltinCallPolicy.ArgumentStrict}
+            if($state.ContainsKey('ActiveSourceUnit')-and$null-ne$state.ActiveSourceUnit){return [bool]$state.ActiveSourceUnit.StrictTypes}
+            return $false
+        }
+        function ConvertTo-PhpBase64Arguments($arguments,[string]$function) {
+            $hasNames=$false
+            foreach($argument in $arguments){
+                if($null-ne$argument-and$argument.PSObject.Properties['PhpType']-and$argument.PhpType-ceq'named_argument'){$hasNames=$true;break}
+            }
+            if(-not$hasNames){return ,@($arguments)}
+            [string[]]$names=@('string')
+            if($function-ceq'base64_decode'){$names=@('string','strict')}
+            $bound=[object[]]::new($names.Count);$present=[bool[]]::new($names.Count)
+            $extras=[Collections.Generic.List[object]]::new();$position=0;$namedStarted=$false
+            foreach($argument in $arguments){
+                if($null-ne$argument-and$argument.PSObject.Properties['PhpType']-and$argument.PhpType-ceq'named_argument'){
+                    $namedStarted=$true;$index=-1
+                    for($i=0;$i-lt$names.Count;$i++){if($argument.Name-ceq$names[$i]){$index=$i;break}}
+                    if($index-lt0){Throw-PhpError 'Error' ('Unknown named parameter $'+$argument.Name)}
+                    if($present[$index]){Throw-PhpError 'Error' ('Named parameter $'+$argument.Name+' overwrites previous argument')}
+                    $bound[$index]=$argument.Value;$present[$index]=$true
+                }else{
+                    if($namedStarted){Throw-PhpError 'Error' 'Cannot use positional argument after named argument' 'ALL PHP: Positional argument after named argument'}
+                    if($position-lt$names.Count){$bound[$position]=$argument;$present[$position]=$true}
+                    else{[void]$extras.Add($argument)}
+                    $position++
+                }
+            }
+            if(-not$present[0]){Throw-PhpError 'ArgumentCountError' ($function+'(): Argument #1 ($string) not passed')}
+            $result=[Collections.Generic.List[object]]::new();[void]$result.Add($bound[0])
+            if($names.Count-eq2-and$present[1]){[void]$result.Add($bound[1])}
+            foreach($extra in $extras){[void]$result.Add($extra)}
+            return ,($result.ToArray())
+        }
+        function Get-PhpBase64ActualType($value) {
+            if(Is-PhpRefCell $value){$value=$value.Value}
+            if($value-is[bool]){if($value){return 'true'};return 'false'}
+            return (Get-PhpBuiltinTypeName $value)
+        }
+        function ConvertTo-PhpBase64Input($value,[string]$function) {
+            if(Is-PhpRefCell $value){$value=$value.Value}
+            if(Is-PhpStringValue $value){return (To-PhpBytes $value)}
+            if(Test-PhpBase64StrictArguments){
+                Throw-PhpError 'TypeError' ($function+'(): Argument #1 ($string) must be of type string, '+(Get-PhpBase64ActualType $value)+' given')
+            }
+            return (ConvertTo-PhpBuiltinBytes $value $function 1 'string')
+        }
+        function ConvertTo-PhpBase64StrictFlag($value) {
+            if(Is-PhpRefCell $value){$value=$value.Value}
+            if($value-is[bool]){return $value}
+            if(Test-PhpBase64StrictArguments){
+                Throw-PhpError 'TypeError' ('base64_decode(): Argument #2 ($strict) must be of type bool, '+(Get-PhpBase64ActualType $value)+' given')
+            }
+            if($null-eq$value){
+                Write-PhpDiagnostic 8192 'base64_decode(): Passing null to parameter #2 ($strict) of type bool is deprecated'
+                return $false
+            }
+            if((Is-PhpStringValue $value)-or(Is-PhpNum $value)){return (Is-Truthy $value)}
+            Throw-PhpError 'TypeError' ('base64_decode(): Argument #2 ($strict) must be of type bool, '+(Get-PhpBase64ActualType $value)+' given')
+        }
+
+        function Get-PhpBuiltinTypeName($value) {
+            if (Is-PhpRefCell $value) { $value=$value.Value }
+            if ($null -eq $value) { return 'null' }
+            if (Is-PhpStringValue $value) { return 'string' }
+            if ($value -is [long]) { return 'int' }
+            if ($value -is [double]) { return 'float' }
+            if ($value -is [bool]) { return 'bool' }
+            if (Is-PhpArray $value) { return 'array' }
+            if ($null -ne $value -and $value.PSObject.Properties['PhpType'] -and $value.PhpType -in @('closure','first_class_callable')) { return 'Closure' }
+            if (Is-PhpObject $value) { return $value.Class }
+            return $value.GetType().Name
+        }
+        function Assert-PhpStringBuiltinArity([string]$function, $arguments, [int]$minimum, [int]$maximum) {
+            $actual=$arguments.Count
+            if ($actual -ge $minimum -and $actual -le $maximum) { return }
+            $mode=if($minimum -eq $maximum){'exactly'}elseif($actual -lt $minimum){'at least'}else{'at most'}
+            $expected=if($actual -gt $maximum){$maximum}else{$minimum}
+            $noun=if($expected -eq 1){'argument'}else{'arguments'}
+            Throw-PhpError 'ArgumentCountError' ($function+'() expects '+$mode+' '+$expected+' '+$noun+', '+$actual+' given')
+        }
+        function ConvertTo-PhpBuiltinBytes($value, [string]$function, [int]$number, [string]$parameter, [string]$accepted='string') {
+            if (Is-PhpRefCell $value) { $value=$value.Value }
+            if((Get-PhpBuiltinCallPolicy).ArgumentStrict-and-not(Is-PhpStringValue $value)){Throw-PhpBuiltinStrictTypeError $value $function $number $parameter $accepted}
+            if ($null -eq $value) {
+                Write-PhpDiagnostic 8192 ($function+'(): Passing null to parameter #'+$number+' ($'+$parameter+') of type '+$accepted+' is deprecated')
+                return [AllPhp.ByteValues.PhpBytes]::Empty
+            }
+            if ((Is-PhpStringValue $value) -or (Is-PhpNum $value) -or $value -is [bool]) { return (To-PhpBytes $value) }
+            if ((Is-PhpObject $value) -and $null -ne (Find-OptionalPhpMethod $value.Class '__toString')) { return (To-PhpBytes $value) }
+            Throw-PhpError 'TypeError' ($function+'(): Argument #'+$number+' ($'+$parameter+') must be of type '+$accepted+', '+(Get-PhpBuiltinTypeName $value)+' given')
+        }
+        function ConvertTo-PhpBuiltinInteger($value, [string]$function, [int]$number, [string]$parameter) {
+            if (Is-PhpRefCell $value) { $value=$value.Value }
+            if ($value -is [long]) { return $value }
+            if((Get-PhpBuiltinCallPolicy).ArgumentStrict){Throw-PhpBuiltinStrictTypeError $value $function $number $parameter 'int'}
+            if ($null -eq $value) {
+                Write-PhpDiagnostic 8192 ($function+'(): Passing null to parameter #'+$number+' ($'+$parameter+') of type int is deprecated')
+                return [long]0
+            }
+            if ($value -is [bool]) { if($value){return [long]1};return [long]0 }
+            $numeric=$null;$fromString=Is-PhpStringValue $value
+            if ($fromString) { $numeric=ConvertFrom-PhpNumericString $value $false }
+            elseif ($value -is [double]) { $numeric=$value }
+            if ($null -ne $numeric) {
+                if ($numeric -is [long]) { return $numeric }
+                if (-not [double]::IsNaN($numeric) -and -not [double]::IsInfinity($numeric) -and
+                    $numeric -ge -9223372036854775808.0 -and $numeric -lt 9223372036854775808.0) {
+                    $integer=To-PhpInt $numeric
+                    if ([double]$integer -ne $numeric) {
+                        $shown=if($fromString){'float-string "'+(Get-PhpHostText (To-PhpBytes $value))+'"'}else{'float '+(Format-PhpFloat $numeric 14)}
+                        Write-PhpDiagnostic 8192 ('Implicit conversion from '+$shown+' to int loses precision')
+                    }
+                    return [long]$integer
+                }
+            }
+            Throw-PhpError 'TypeError' ($function+'(): Argument #'+$number+' ($'+$parameter+') must be of type int, '+(Get-PhpBuiltinTypeName $value)+' given')
+        }
+        function Test-PhpBytesAt($haystack, $needle, [long]$position) {
+            if ($position -lt 0 -or $position -gt $haystack.Length -or $needle.Length -gt $haystack.Length-$position) { return $false }
+            return $haystack.Slice($position,$needle.Length).Equals($needle)
+        }
+        function Find-PhpBytes($haystack, $needle, [long]$start) {
+            if ($start -lt 0 -or $start -gt $haystack.Length) { throw 'ALL PHP byte builtin: invalid internal search start' }
+            if ($needle.Length -eq 0) { return [long]$start }
+            if ($needle.Length -gt $haystack.Length-$start) { return [long]-1 }
+            $first=[byte]$needle.GetByte(0);$buffer=[byte[]]::new(65536)
+            $last=[long]($haystack.Length-$needle.Length);$position=[long]$start
+            while ($position -le $last) {
+                $count=[int][Math]::Min([long]65536,$last-$position+1)
+                $haystack.CopyTo($position,$buffer,0,$count);$cursor=0
+                while ($cursor -lt $count) {
+                    $found=[Array]::IndexOf($buffer,$first,[int]$cursor,[int]($count-$cursor))
+                    if ($found -lt 0) { break }
+                    $absolute=[long]($position+$found)
+                    if (Test-PhpBytesAt $haystack $needle $absolute) { return $absolute }
+                    $cursor=$found+1
+                }
+                $position+=$count
+            }
+            return [long]-1
+        }
+        function New-PhpTrimMask($characters, [bool]$hasCharacters) {
+            $mask=[bool[]]::new(256)
+            if (-not $hasCharacters) { foreach($b in @(0,9,10,11,13,32)){$mask[$b]=$true};return ,$mask }
+            $length=$characters.Length
+            for($i=[long]0;$i -lt $length;$i++) {
+                $byte=[int]$characters.GetByte($i)
+                if($i+3 -lt $length -and $characters.GetByte($i+1)-eq46 -and $characters.GetByte($i+2)-eq46 -and $byte-le$characters.GetByte($i+3)) {
+                    $end=[int]$characters.GetByte($i+3)
+                    for($b=$byte;$b-le$end;$b++){$mask[$b]=$true}
+                    $i+=3;continue
+                }
+                $mask[$byte]=$true
+                if($byte-eq46 -and $i+1-lt$length -and $characters.GetByte($i+1)-eq46) {
+                    $detail=''
+                    if($i-eq0){$detail=", no character to the left of '..'"}
+                    elseif($i+2-ge$length){$detail=", no character to the right of '..'"}
+                    elseif($characters.GetByte($i-1)-gt$characters.GetByte($i+2)){$detail=", '..'-range needs to be incrementing"}
+                    Write-PhpDiagnostic 2 ("trim(): Invalid '..'-range"+$detail)
+                    $i++
+                }
+            }
+            return ,$mask
+        }
+        function Trim-PhpBytes($value, $mask) {
+            $start=[long]0;$end=[long]$value.Length;$buffer=[byte[]]::new(65536)
+            while($start-lt$end) {
+                $count=[int][Math]::Min([long]65536,$end-$start);$value.CopyTo($start,$buffer,0,$count);$i=0
+                while($i-lt$count -and $mask[[int]$buffer[$i]]){$i++}
+                $start+=$i;if($i-lt$count){break}
+            }
+            while($end-gt$start) {
+                $count=[int][Math]::Min([long]65536,$end-$start);$value.CopyTo($end-$count,$buffer,0,$count);$i=$count-1
+                while($i-ge0 -and $mask[[int]$buffer[$i]]){$i--}
+                $end-=($count-1-$i);if($i-ge0){break}
+            }
+            return $value.Slice($start,$end-$start)
+        }
+        function Replace-PhpByteSequence($subject, $needle, $replacement) {
+            if ($needle.Length-eq0) { return $subject }
+            $builder=[AllPhp.ByteValues.PhpByteBuilder]::new();$start=[long]0
+            while($start-le$subject.Length) {
+                $found=Find-PhpBytes $subject $needle $start
+                if($found-lt0){$builder.Append($subject.Slice($start,$null));break}
+                $builder.Append($subject.Slice($start,$found-$start));$builder.Append($replacement)
+                $start=$found+$needle.Length
+            }
+            return $builder.ToPhpBytes()
+        }
+        function Invoke-PhpByteReplace($search, $replace, $subject) {
+            $searchArray=Is-PhpArray $search;$replaceArray=Is-PhpArray $replace
+            if(-not $searchArray -and $replaceArray) {
+                Throw-PhpError 'TypeError' 'str_replace(): Argument #2 ($replace) must be of type string when argument #1 ($search) is a string'
+            }
+            $needles=[Collections.Generic.List[object]]::new();$replacements=[Collections.Generic.List[object]]::new()
+            if($searchArray){foreach($k in $search.Items.Keys){[void]$needles.Add((To-PhpBytes $search.Items[$k]))}}
+            else{[void]$needles.Add((ConvertTo-PhpBuiltinBytes $search 'str_replace' 1 'search' 'array|string'))}
+            if($replaceArray){foreach($k in $replace.Items.Keys){[void]$replacements.Add((To-PhpBytes $replace.Items[$k]))}}
+            else{[void]$replacements.Add((ConvertTo-PhpBuiltinBytes $replace 'str_replace' 2 'replace' 'array|string'))}
+            $subjectArray=Is-PhpArray $subject
+            if($subjectArray){$out=New-PhpArray;$keys=@($subject.Items.Keys)}else{$keys=@($null)}
+            foreach($key in $keys) {
+                $entry=if($subjectArray){To-PhpBytes $subject.Items[$key]}else{ConvertTo-PhpBuiltinBytes $subject 'str_replace' 3 'subject' 'array|string'}
+                for($i=0;$i-lt$needles.Count;$i++) {
+                    $replacement=if(-not$replaceArray){$replacements[0]}elseif($i-lt$replacements.Count){$replacements[$i]}else{[AllPhp.ByteValues.PhpBytes]::Empty}
+                    $entry=Replace-PhpByteSequence $entry $needles[$i] $replacement
+                }
+                if($subjectArray){Set-PhpArrayItem $out (Get-PhpKeyValue $key) $entry $false}else{return $entry}
+            }
+            return $out
+        }
+        function Invoke-PhpFunction([string]$name, $callArgs, $callPolicy=$null) {
+            if($null-eq$callPolicy){$callPolicy=Get-PhpDirectCallPolicy}
+            $previousBuiltinPolicy=$state.BuiltinCallPolicy
+            $state.BuiltinCallPolicy=$callPolicy
+            try {
             if ($isCli -and $name -in @('exit','die')) { Invoke-PhpCliExit $callArgs }
 
             if (-not $state.Functions.ContainsKey($name)) {
                 foreach ($arg in $callArgs) {
                     if ($null -ne $arg -and $arg.PSObject.Properties['PhpType'] -and
                         $arg.PhpType -ceq 'named_argument') {
+                        $base64FunctionName=ConvertTo-PhpAsciiLower $name
+                        if($base64FunctionName-cin@('base64_encode','base64_decode')){
+                            $callArgs=ConvertTo-PhpBase64Arguments $callArgs $base64FunctionName
+                            break
+                        }
                         if (Test-PhpNativeFunction $name) { Throw-PhpNativeUnsupported 'named native arguments are not implemented' }
                         throw 'ALL PHP: Named arguments for builtins are not yet supported'
                     }
                 }
             }
-            switch ($name.ToLowerInvariant()) {
+            switch ((ConvertTo-PhpAsciiLower $name)) {
+                {$_-cin@('get_included_files','get_required_files')} {
+                    Assert-PhpStringBuiltinArity (ConvertTo-PhpAsciiLower $name) $callArgs 0 0
+                    $files=New-PhpArray
+                    foreach($path in $state.SourceFilesList){Set-PhpArrayItem $files $null ([AllPhp.ByteValues.PhpBytes]::FromUtf8($path)) $true}
+                    return $files
+                }
+                'get_include_path' {
+                    Assert-PhpStringBuiltinArity 'get_include_path' $callArgs 0 0
+                    return (To-PhpBytes (Get-PhpSourceIncludePath))
+                }
+                'set_include_path' {
+                    Assert-PhpStringBuiltinArity 'set_include_path' $callArgs 1 1
+                    $previous=To-PhpBytes (Get-PhpSourceIncludePath)
+                    $state.Ini['include_path']=ConvertTo-PhpBuiltinBytes $callArgs[0] 'set_include_path' 1 'include_path'
+                    return $previous
+                }
+                'bin2hex' {
+                    Assert-PhpStringBuiltinArity 'bin2hex' $callArgs 1 1
+                    $data=ConvertTo-PhpBuiltinBytes $callArgs[0] 'bin2hex' 1 'string'
+                    if($data.Length -gt ([long]::MaxValue-shr1)) {
+                        Throw-PhpError 'Error' 'Possible integer overflow in memory allocation'
+                    }
+                    $builder=[AllPhp.ByteValues.PhpByteBuilder]::new()
+                    $buffer=[byte[]]::new(65536)
+                    $position=[long]0
+                    while($position-lt$data.Length) {
+                        $count=[int][Math]::Min([long]65536,$data.Length-$position)
+                        $data.CopyTo($position,$buffer,0,$count)
+                        # BitConverter output is strictly ASCII hex. This lower
+                        # operation never consumes a PHP string or symbol.
+                        $chunk=[BitConverter]::ToString($buffer,0,$count).Replace('-','').ToLowerInvariant()
+                        $builder.AppendAscii($chunk)
+                        $position+=$count
+                    }
+                    return $builder.ToPhpBytes()
+                }
+                'base64_encode' {
+                    Assert-PhpStringBuiltinArity 'base64_encode' $callArgs 1 1
+                    $inputBytes=ConvertTo-PhpBase64Input $callArgs[0] 'base64_encode'
+                    Initialize-PhpBase64Runtime
+                    try{return [AllPhp.ByteCodecs.PhpBase64]::Encode($inputBytes)}
+                    catch{
+                        $inner=$_.Exception;while($null-ne$inner.InnerException){$inner=$inner.InnerException}
+                        if($inner-is[OverflowException]){Throw-PhpError 'Error' 'Possible integer overflow in memory allocation'}
+                        throw
+                    }
+                }
+                'base64_decode' {
+                    Assert-PhpStringBuiltinArity 'base64_decode' $callArgs 1 2
+                    $inputBytes=ConvertTo-PhpBase64Input $callArgs[0] 'base64_decode'
+                    $strictDecode=$false
+                    if($callArgs.Count-eq2){$strictDecode=ConvertTo-PhpBase64StrictFlag $callArgs[1]}
+                    Initialize-PhpBase64Runtime
+                    $decodedBytes=$null
+                    if(-not[AllPhp.ByteCodecs.PhpBase64]::TryDecode($inputBytes,$strictDecode,[ref]$decodedBytes)){return $false}
+                    return $decodedBytes
+                }
                 'json_encode' {
-                    if ($callArgs.Count -ne 1) {
+                    if (-not $isCli -and $callArgs.Count -ne 1) {
                         throw 'ALL PHP: json_encode() supports one argument; options are not implemented'
                     }
-                    $encoded = Encode-PhpJson $callArgs[0]
-                    $state.JsonError = 0
-                    $state.JsonErrorMessage = 'No error'
-                    return $encoded
+                    if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 3) {
+                        $mode = if ($callArgs.Count -lt 1) { 'at least 1' } else { 'at most 3' }
+                        Throw-PhpError 'ArgumentCountError' ('json_encode() expects ' + $mode + ' arguments, ' + $callArgs.Count + ' given')
+                    }
+                    $jFlags = if ($callArgs.Count -ge 2) { ConvertTo-PhpBuiltinInteger $callArgs[1] 'json_encode' 2 'flags' } else { [long]0 }
+                    $jDepth = if ($callArgs.Count -ge 3) { [int](ConvertTo-PhpBuiltinInteger $callArgs[2] 'json_encode' 3 'depth') } else { [int]512 }
+                    if ($jDepth -le 0) {
+                        $state.JsonError=1;$state.JsonErrorMessage='Maximum stack depth exceeded'
+                        return $false
+                    }
+                    try {
+                        $encoded=Encode-PhpJson $callArgs[0] 0 $null $jFlags $jDepth
+                        $state.JsonError=0;$state.JsonErrorMessage='No error'
+                        return (To-PhpBytes $encoded)
+                    } catch {
+                        if($isCli-and(Test-PhpCliExit $_)){throw}
+                        $cause=$_.Exception
+                        while($null-ne$cause-and-not$cause.Data.Contains('AllPhpJsonError')){$cause=$cause.InnerException}
+                        if($null-eq$cause){throw}
+                        $state.JsonError=[long]$cause.Data['AllPhpJsonError']
+                        $state.JsonErrorMessage=$cause.Message
+                        return $false
+                    }
                 }
                 'json_decode' {
-                    if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 2) {
+                    if (-not $isCli -and -not $PhpDiagnostics -and ($callArgs.Count -lt 1 -or $callArgs.Count -gt 2)) {
                         throw 'ALL PHP: json_decode() supports one or two arguments'
                     }
-                    $json = To-PhpText $callArgs[0]
+                    if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 4) {
+                        $mode = if ($callArgs.Count -lt 1) { 'at least 1 argument' } else { 'at most 4 arguments' }
+                        Throw-PhpError 'ArgumentCountError' ('json_decode() expects ' + $mode + ', ' + $callArgs.Count + ' given')
+                    }
+                    $json=$null
+                    if(-not(ConvertTo-PhpBuiltinBytes $callArgs[0] 'json_decode' 1 'json').TryDecodeUtf8([ref]$json)){
+                        $state.JsonError=5
+                        $state.JsonErrorMessage='Malformed UTF-8 characters, possibly incorrectly encoded'
+                        return $null
+                    }
                     $assoc = $false
-                    if ($callArgs.Count -eq 2) { $assoc = Is-Truthy $callArgs[1] }
+                    if ($callArgs.Count -ge 2) {
+                        if($callPolicy.ArgumentStrict-and$null-ne$callArgs[1]-and$callArgs[1]-isnot[bool]){Throw-PhpBuiltinStrictTypeError $callArgs[1] 'json_decode' 2 'associative' '?bool'}
+                        if($null-ne$callArgs[1]){$assoc=Is-Truthy $callArgs[1]}
+                    }
+                    if ($callArgs.Count -ge 3) {
+                        $jDepth = ConvertTo-PhpBuiltinInteger $callArgs[2] 'json_decode' 3 'depth'
+                        if ($jDepth -le 0) {
+                            Throw-PhpError 'ValueError' 'json_decode(): Argument #3 ($depth) must be greater than 0'
+                        }
+                    }
+                    if ($callArgs.Count -ge 4) {
+                        $jFlags = ConvertTo-PhpBuiltinInteger $callArgs[3] 'json_decode' 4 'flags'
+                        if (($jFlags -band 1) -ne 0 -and ($callArgs.Count -lt 2 -or $null -eq $callArgs[1])) {
+                            $assoc = $true
+                        }
+                    }
                     try {
                         # Windows PowerShell 5.1 emits a JSON array as one
                         # array object. Wrapping the cmdlet in @() would introduce
@@ -4953,7 +10980,7 @@ class UnhandledMatchError extends Error {}
                         $state.JsonErrorMessage = 'No error'
                         return $output
                     } catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
                         # Invalid JSON is not an interpreter error in PHP without THROW_ON_ERROR.
                         $state.JsonError = 4
                         $state.JsonErrorMessage = 'Syntax error'
@@ -4968,27 +10995,42 @@ class UnhandledMatchError extends Error {}
                     if ($callArgs.Count -ne 0) { throw 'ALL PHP: json_last_error_msg() expects no arguments' }
                     return $state.JsonErrorMessage
                 }
-                'count' {
-                    if ($callArgs.Count -ne 1 -or -not (Is-PhpArray $callArgs[0])) {
-                        throw 'ALL PHP: count() requires one array argument'
+                { $_ -in @('count','sizeof') } {
+                    if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 2) {
+                        throw 'ALL PHP: count() requires one array or Countable argument'
                     }
-                    return [long]$callArgs[0].Items.Count
+                    $target = $callArgs[0]
+                    if (Is-PhpRefCell $target) { $target = $target.Value }
+                    if (Is-PhpArray $target) {
+                        return [long]$target.Items.Count
+                    }
+                    if (Is-PhpObject $target) {
+                        Ensure-PhpPrelude
+                        if (Test-PhpInstanceOf $target.Class 'Countable') {
+                            return (To-PhpInt (Invoke-PhpMethod $target 'count' @()))
+                        }
+                    }
+                    throw 'ALL PHP: count() requires one array argument'
                 }
                 'strlen' {
-                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: strlen() requires one argument' }
-                    return [long]([System.Text.Encoding]::UTF8.GetByteCount((To-PhpText $callArgs[0])))
+                    Assert-PhpStringBuiltinArity 'strlen' $callArgs 1 1
+                    return [long](ConvertTo-PhpBuiltinBytes $callArgs[0] 'strlen' 1 'string').Length
                 }
                 'strtoupper' {
-                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: strtoupper() requires one argument' }
-                    return (To-PhpText $callArgs[0]).ToUpperInvariant()
+                    Assert-PhpStringBuiltinArity 'strtoupper' $callArgs 1 1
+                    return (ConvertTo-PhpBuiltinBytes $callArgs[0] 'strtoupper' 1 'string').UpperAscii()
                 }
                 'strtolower' {
-                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: strtolower() requires one argument' }
-                    return (To-PhpText $callArgs[0]).ToLowerInvariant()
+                    Assert-PhpStringBuiltinArity 'strtolower' $callArgs 1 1
+                    return (ConvertTo-PhpBuiltinBytes $callArgs[0] 'strtolower' 1 'string').LowerAscii()
                 }
                 'trim' {
-                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: trim() supports one argument' }
-                    return (To-PhpText $callArgs[0]).Trim(@([char]32,[char]9,[char]10,[char]13,[char]0,[char]11))
+                    Assert-PhpStringBuiltinArity 'trim' $callArgs 1 2
+                    $bytes=ConvertTo-PhpBuiltinBytes $callArgs[0] 'trim' 1 'string'
+                    $characters=$null
+                    if($callArgs.Count-eq2){$characters=ConvertTo-PhpBuiltinBytes $callArgs[1] 'trim' 2 'characters'}
+                    $mask=New-PhpTrimMask $characters ($callArgs.Count-eq2)
+                    return (Trim-PhpBytes $bytes $mask)
                 }
                 'abs' {
                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: abs() requires one argument' }
@@ -5021,8 +11063,8 @@ class UnhandledMatchError extends Error {}
                     return (Is-PhpArray $callArgs[0])
                 }
                 'is_string' {
-                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_string() requires one argument' }
-                    return ($callArgs[0] -is [string])
+                    Assert-PhpStringBuiltinArity 'is_string' $callArgs 1 1
+                    return (Is-PhpStringValue $callArgs[0])
                 }
                 'is_bool' {
                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_bool() requires one argument' }
@@ -5042,20 +11084,19 @@ class UnhandledMatchError extends Error {}
                         throw 'ALL PHP: array_pop() expects one array'
                     }
                     $arr = $callArgs[0]
+                    Separate-PhpReferenceBacking $arr
                     if ($arr.Items.Count -eq 0) { return $null }
                     $keys = @($arr.Items.Keys)
-                    $lastKey = [string]$keys[$arr.Items.Count - 1]
+                    $lastKey = $keys[$arr.Items.Count - 1]
                     $lastValue = $arr.Items[$lastKey]
+                    Remove-PhpTraversalEntry $arr $lastKey
                     $arr.Items.Remove($lastKey)
-                    # PHP resets the next free index after array_pop().
-                    $high = [long]-1
-                    foreach ($k in $arr.Items.Keys) {
-                        if ($k.StartsWith('i:')) {
-                            $number = [long]$k.Substring(2)
-                            if ($number -gt $high) { $high = $number }
-                        }
+                    # Pop retreats only when the removed integer was exactly
+                    # next-1. String keys and holes retain prior signed history.
+                    if($lastKey.IsInteger-and$arr.NextIndex-ne[long]::MinValue-and
+                        $lastKey.IntegerValue-eq($arr.NextIndex-1)){
+                        $arr.NextIndex=[long]$lastKey.IntegerValue
                     }
-                    $arr.NextIndex = $high + 1
                     if (Is-PhpRefCell $lastValue) { return $lastValue.Value }
                     return $lastValue
                 }
@@ -5064,22 +11105,30 @@ class UnhandledMatchError extends Error {}
                         throw 'ALL PHP: array_shift() expects one array'
                     }
                     $arr = $callArgs[0]
+                    Separate-PhpReferenceBacking $arr
                     if ($arr.Items.Count -eq 0) { return $null }
                     $keys = @($arr.Items.Keys)
-                    $firstKey = [string]$keys[0]
+                    $firstKey = $keys[0]
                     $firstValue = $arr.Items[$firstKey]
+                    Remove-PhpTraversalEntry $arr $firstKey
                     $arr.Items.Remove($firstKey)
                     $replacement = New-PhpArray
                     foreach ($k in $arr.Items.Keys) {
                         $v = $arr.Items[$k]
-                        if ($k.StartsWith('i:')) {
+                        if ($k.IsInteger) {
                             Set-PhpArrayItem $replacement $null $v $true
                         } else {
-                            Set-PhpArrayItem $replacement (KeyString-ToValue ([string]$k)) $v $false
+                            Set-PhpArrayItem $replacement (Get-PhpKeyValue $k) $v $false
                         }
                     }
+                    Rebuild-PhpTraversalStorage $arr $replacement 0
                     $arr.Items = $replacement.Items
-                    $arr.NextIndex = $replacement.NextIndex
+                    $arr.ReferenceBacking=$replacement.ReferenceBacking
+                    $arr.ReferenceCellsKnownAbsent=$replacement.ReferenceCellsKnownAbsent
+                    # array_shift reindexes numerics and resets empty/string-
+                    # only next-index history to zero as well.
+                    $arr.NextIndex = [long][Math]::Max([long]0,[long]$replacement.NextIndex)
+                    $arr.InternalPointer = 0
                     if (Is-PhpRefCell $firstValue) { return $firstValue.Value }
                     return $firstValue
                 }
@@ -5088,20 +11137,25 @@ class UnhandledMatchError extends Error {}
                         throw 'ALL PHP: array_unshift() expects an array'
                     }
                     $arr = $callArgs[0]
+                    Separate-PhpReferenceBacking $arr
                     $replacement = New-PhpArray
                     for ($i=1; $i -lt $callArgs.Count; $i++) {
                         Set-PhpArrayItem $replacement $null $callArgs[$i] $true
                     }
                     foreach ($k in $arr.Items.Keys) {
                         $v = $arr.Items[$k]
-                        if ($k.StartsWith('i:')) {
+                        if ($k.IsInteger) {
                             Set-PhpArrayItem $replacement $null $v $true
                         } else {
-                            Set-PhpArrayItem $replacement (KeyString-ToValue ([string]$k)) $v $false
+                            Set-PhpArrayItem $replacement (Get-PhpKeyValue $k) $v $false
                         }
                     }
+                    Rebuild-PhpTraversalStorage $arr $replacement ($callArgs.Count-1)
                     $arr.Items = $replacement.Items
+                    $arr.ReferenceBacking=$replacement.ReferenceBacking
+                    $arr.ReferenceCellsKnownAbsent=$replacement.ReferenceCellsKnownAbsent
                     $arr.NextIndex = $replacement.NextIndex
+                    $arr.InternalPointer = 0
                     return [long]$arr.Items.Count
                 }
                 'array_reverse' {
@@ -5114,12 +11168,12 @@ class UnhandledMatchError extends Error {}
                     $out = New-PhpArray
                     $keys = @($callArgs[0].Items.Keys)
                     for ($i=$keys.Count - 1; $i -ge 0; $i--) {
-                        $k = [string]$keys[$i]
+                        $k = $keys[$i]
                         $v = $callArgs[0].Items[$k]
-                        if (-not $preserve -and $k.StartsWith('i:')) {
+                        if (-not $preserve -and $k.IsInteger) {
                             Set-PhpArrayItem $out $null $v $true
                         } else {
-                            Set-PhpArrayItem $out (KeyString-ToValue $k) $v $false
+                            Set-PhpArrayItem $out (Get-PhpKeyValue $k) $v $false
                         }
                     }
                     return $out
@@ -5132,12 +11186,55 @@ class UnhandledMatchError extends Error {}
                         }
                         foreach ($k in $arr.Items.Keys) {
                             $v = $arr.Items[$k]
-                            if ($k.StartsWith('i:')) {
+                            if ($k.IsInteger) {
                                 Set-PhpArrayItem $out $null $v $true
                             } else {
-                                Set-PhpArrayItem $out (KeyString-ToValue ([string]$k)) $v $false
+                                Set-PhpArrayItem $out (Get-PhpKeyValue $k) $v $false
                             }
                         }
+                    }
+                    return $out
+                }
+                'array_merge_recursive' {
+                    $mergeRec = $null
+                    $mergeRec = {
+                        param($dst, $src)
+                        foreach ($k in $src.Items.Keys) {
+                            $v = $src.Items[$k]
+                            if (Is-PhpRefCell $v) { $v = $v.Value }
+                            if ($k.IsInteger) {
+                                Set-PhpArrayItem $dst $null (Copy-PhpValue $v) $true
+                            } elseif ($dst.Items.Contains($k)) {
+                                $existing = $dst.Items[$k]
+                                if (Is-PhpRefCell $existing) { $existing = $existing.Value }
+                                if ((Is-PhpArray $existing) -and (Is-PhpArray $v)) {
+                                    Set-PhpArrayItem $dst (Get-PhpKeyValue $k) (& $mergeRec (Copy-PhpValue $existing) $v) $false
+                                } elseif (Is-PhpArray $existing) {
+                                    $arrCopy = Copy-PhpValue $existing
+                                    Set-PhpArrayItem $arrCopy $null (Copy-PhpValue $v) $true
+                                    Set-PhpArrayItem $dst (Get-PhpKeyValue $k) $arrCopy $false
+                                } elseif (Is-PhpArray $v) {
+                                    $arrNew = New-PhpArray
+                                    Set-PhpArrayItem $arrNew $null (Copy-PhpValue $existing) $true
+                                    Set-PhpArrayItem $dst (Get-PhpKeyValue $k) (& $mergeRec $arrNew $v) $false
+                                } else {
+                                    $arrNew = New-PhpArray
+                                    Set-PhpArrayItem $arrNew $null (Copy-PhpValue $existing) $true
+                                    Set-PhpArrayItem $arrNew $null (Copy-PhpValue $v) $true
+                                    Set-PhpArrayItem $dst (Get-PhpKeyValue $k) $arrNew $false
+                                }
+                            } else {
+                                Set-PhpArrayItem $dst (Get-PhpKeyValue $k) (Copy-PhpValue $v) $false
+                            }
+                        }
+                        return $dst
+                    }
+                    $out = New-PhpArray
+                    foreach ($arr in $callArgs) {
+                        if (-not (Is-PhpArray $arr)) {
+                            throw 'ALL PHP: array_merge_recursive() requires arrays'
+                        }
+                        $out = & $mergeRec $out $arr
                     }
                     return $out
                 }
@@ -5162,12 +11259,12 @@ class UnhandledMatchError extends Error {}
                     $out = New-PhpArray
                     $keys = @($arr.Items.Keys)
                     for ($i=$start; $i -lt $end; $i++) {
-                        $k = [string]$keys[$i]
+                        $k = $keys[$i]
                         $v = $arr.Items[$k]
-                        if ($k.StartsWith('i:') -and -not $preserve) {
+                        if ($k.IsInteger -and -not $preserve) {
                             Set-PhpArrayItem $out $null $v $true
                         } else {
-                            Set-PhpArrayItem $out (KeyString-ToValue $k) $v $false
+                            Set-PhpArrayItem $out (Get-PhpKeyValue $k) $v $false
                         }
                     }
                     return $out
@@ -5178,7 +11275,7 @@ class UnhandledMatchError extends Error {}
                     }
                     $output = New-PhpArray
                     foreach ($key in $callArgs[0].Items.Keys) {
-                        Set-PhpArrayItem $output $null (KeyString-ToValue ([string]$key)) $true
+                        Set-PhpArrayItem $output $null (Get-PhpKeyValue $key) $true
                     }
                     return $output
                 }
@@ -5197,7 +11294,7 @@ class UnhandledMatchError extends Error {}
                         throw 'ALL PHP: array_key_first() requires one array argument'
                     }
                     foreach ($key in $callArgs[0].Items.Keys) {
-                        return (KeyString-ToValue ([string]$key))
+                        return (Get-PhpKeyValue $key)
                     }
                     return $null
                 }
@@ -5206,8 +11303,8 @@ class UnhandledMatchError extends Error {}
                         throw 'ALL PHP: array_key_last() requires one array argument'
                     }
                     $last = $null
-                    foreach ($key in $callArgs[0].Items.Keys) { $last = [string]$key }
-                    if ($null -ne $last) { return (KeyString-ToValue $last) }
+                    foreach ($key in $callArgs[0].Items.Keys) { $last = $key }
+                    if ($null -ne $last) { return (Get-PhpKeyValue $last) }
                     return $null
                 }
                 'array_first' {
@@ -5250,89 +11347,120 @@ class UnhandledMatchError extends Error {}
                     return $false
                 }
                 'str_contains' {
-                    if ($callArgs.Count -ne 2) { throw 'ALL PHP: str_contains() requires two arguments' }
-                    $haystack = To-PhpText $callArgs[0]
-                    $needle = To-PhpText $callArgs[1]
-                    return ($haystack.IndexOf($needle, [StringComparison]::Ordinal) -ge 0)
+                    Assert-PhpStringBuiltinArity 'str_contains' $callArgs 2 2
+                    $haystack=ConvertTo-PhpBuiltinBytes $callArgs[0] 'str_contains' 1 'haystack'
+                    $needle=ConvertTo-PhpBuiltinBytes $callArgs[1] 'str_contains' 2 'needle'
+                    return ((Find-PhpBytes $haystack $needle 0)-ge0)
                 }
                 'str_starts_with' {
-                    if ($callArgs.Count -ne 2) { throw 'ALL PHP: str_starts_with() requires two arguments' }
-                    return (To-PhpText $callArgs[0]).StartsWith(
-                        (To-PhpText $callArgs[1]), [StringComparison]::Ordinal)
+                    Assert-PhpStringBuiltinArity 'str_starts_with' $callArgs 2 2
+                    $haystack=ConvertTo-PhpBuiltinBytes $callArgs[0] 'str_starts_with' 1 'haystack'
+                    $needle=ConvertTo-PhpBuiltinBytes $callArgs[1] 'str_starts_with' 2 'needle'
+                    return (Test-PhpBytesAt $haystack $needle 0)
                 }
                 'str_ends_with' {
-                    if ($callArgs.Count -ne 2) { throw 'ALL PHP: str_ends_with() requires two arguments' }
-                    return (To-PhpText $callArgs[0]).EndsWith(
-                        (To-PhpText $callArgs[1]), [StringComparison]::Ordinal)
+                    Assert-PhpStringBuiltinArity 'str_ends_with' $callArgs 2 2
+                    $haystack=ConvertTo-PhpBuiltinBytes $callArgs[0] 'str_ends_with' 1 'haystack'
+                    $needle=ConvertTo-PhpBuiltinBytes $callArgs[1] 'str_ends_with' 2 'needle'
+                    return (Test-PhpBytesAt $haystack $needle ($haystack.Length-$needle.Length))
                 }
                 'strpos' {
-                    if ($callArgs.Count -lt 2 -or $callArgs.Count -gt 3) {
-                        throw 'ALL PHP: strpos() requires two or three arguments'
+                    Assert-PhpStringBuiltinArity 'strpos' $callArgs 2 3
+                    $haystack=ConvertTo-PhpBuiltinBytes $callArgs[0] 'strpos' 1 'haystack'
+                    $needle=ConvertTo-PhpBuiltinBytes $callArgs[1] 'strpos' 2 'needle'
+                    $offset=[long]0
+                    if($callArgs.Count-eq3){$offset=ConvertTo-PhpBuiltinInteger $callArgs[2] 'strpos' 3 'offset'}
+                    if($offset-lt0){$offset=$haystack.Length+$offset}
+                    if($offset-lt0 -or $offset-gt$haystack.Length) {
+                        Throw-PhpError 'ValueError' 'strpos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)'
                     }
-                    $haystack = To-PhpText $callArgs[0]
-                    $needle = To-PhpText $callArgs[1]
-                    $offset = 0
-                    if ($callArgs.Count -eq 3) { $offset = [int](To-Number $callArgs[2]) }
-                    if ($offset -lt 0) { $offset = [Math]::Max(0, $haystack.Length + $offset) }
-                    if ($offset -gt $haystack.Length) { throw 'ALL PHP: strpos offset is out of range' }
-                    $pos = $haystack.IndexOf($needle, $offset, [StringComparison]::Ordinal)
-                    if ($pos -lt 0) { return $false }
-                    return [long]$pos
+                    $position=Find-PhpBytes $haystack $needle $offset
+                    if($position-lt0){return $false};return [long]$position
                 }
                 'substr' {
-                    if ($callArgs.Count -lt 2 -or $callArgs.Count -gt 3) {
-                        throw 'ALL PHP: substr() requires two or three arguments'
+                    Assert-PhpStringBuiltinArity 'substr' $callArgs 2 3
+                    $bytes=ConvertTo-PhpBuiltinBytes $callArgs[0] 'substr' 1 'string'
+                    $offset=ConvertTo-PhpBuiltinInteger $callArgs[1] 'substr' 2 'offset'
+                    $length=$null
+                    if($callArgs.Count-eq3 -and $null-ne$callArgs[2]){$length=ConvertTo-PhpBuiltinInteger $callArgs[2] 'substr' 3 'length'}
+                    return $bytes.Slice($offset,$length)
+                }
+                { $_ -in @('strstr','strchr','stristr') } {
+                    $fnLow = ConvertTo-PhpAsciiLower $_
+                    Assert-PhpStringBuiltinArity $fnLow $callArgs 2 3
+                    $haystack = ConvertTo-PhpBuiltinBytes $callArgs[0] $fnLow 1 'haystack'
+                    $needle = ConvertTo-PhpBuiltinBytes $callArgs[1] $fnLow 2 'needle'
+                    $before = if ($callArgs.Count -eq 3) { Is-Truthy $callArgs[2] } else { $false }
+                    if ($needle.Length -eq 0) {
+                        if ($before) { return [AllPhp.ByteValues.PhpBytes]::Empty }
+                        return $haystack
                     }
-                    $s = To-PhpText $callArgs[0]
-                    $start = [int](To-Number $callArgs[1])
-                    if ($start -lt 0) { $start = [Math]::Max(0, $s.Length + $start) }
-                    if ($start -gt $s.Length) { $start = $s.Length }
-                    $end = $s.Length
-                    if ($callArgs.Count -eq 3 -and $null -ne $callArgs[2]) {
-                        $size = [int](To-Number $callArgs[2])
-                        if ($size -ge 0) { $end = [Math]::Min($end, $start + $size) }
-                        else { $end = [Math]::Max($start, $end + $size) }
+                    $pos = if ($fnLow -ceq 'stristr') {
+                        Find-PhpBytes ($haystack.LowerAscii()) ($needle.LowerAscii()) 0
+                    } else {
+                        Find-PhpBytes $haystack $needle 0
                     }
-                    return $s.Substring($start, [Math]::Max(0, $end - $start))
+                    if ($pos -lt 0) { return $false }
+                    if ($before) { return $haystack.Slice([long]0, [long]$pos) }
+                    return $haystack.Slice([long]$pos, $null)
                 }
                 'str_replace' {
-                    if ($callArgs.Count -ne 3) { throw 'ALL PHP: str_replace() supports three scalar arguments' }
-                    $needle = To-PhpText $callArgs[0]
-                    $replacement = To-PhpText $callArgs[1]
-                    $subject = To-PhpText $callArgs[2]
-                    return $subject.Replace($needle, $replacement)
+                    # Fourth by-reference count is a separate call-binding obligation.
+                    if($callArgs.Count-ne3){throw 'ALL PHP: str_replace() count-reference binding is not implemented; three arguments are supported'}
+                    return (Invoke-PhpByteReplace $callArgs[0] $callArgs[1] $callArgs[2])
                 }
                 'explode' {
-                    if ($callArgs.Count -ne 2) { throw 'ALL PHP: explode() supports two arguments' }
-                    $separator = To-PhpText $callArgs[0]
-                    if ($separator.Length -eq 0) { throw 'ALL PHP: explode separator cannot be empty' }
-                    $subject = To-PhpText $callArgs[1]
-                    $parts = $subject.Split([string[]]@($separator), [StringSplitOptions]::None)
-                    $out = New-PhpArray
-                    foreach ($part in $parts) { Set-PhpArrayItem $out $null $part $true }
+                    Assert-PhpStringBuiltinArity 'explode' $callArgs 2 3
+                    $separator=ConvertTo-PhpBuiltinBytes $callArgs[0] 'explode' 1 'separator'
+                    $subject=ConvertTo-PhpBuiltinBytes $callArgs[1] 'explode' 2 'string'
+                    $limit=[long]::MaxValue
+                    if($callArgs.Count-eq3){$limit=ConvertTo-PhpBuiltinInteger $callArgs[2] 'explode' 3 'limit'}
+                    if($separator.Length-eq0){Throw-PhpError 'ValueError' 'explode(): Argument #1 ($separator) must not be empty'}
+                    if($limit-eq0){$limit=[long]1}
+                    $parts=[Collections.Generic.List[object]]::new();$start=[long]0
+                    while($start-le$subject.Length) {
+                        if($limit-gt0 -and [long]$parts.Count-ge$limit-1){[void]$parts.Add($subject.Slice($start,$null));break}
+                        $found=Find-PhpBytes $subject $separator $start
+                        if($found-lt0){[void]$parts.Add($subject.Slice($start,$null));break}
+                        [void]$parts.Add($subject.Slice($start,$found-$start));$start=$found+$separator.Length
+                    }
+                    $take=[long]$parts.Count
+                    if($limit-lt0){$take=[Math]::Max([long]0,$take+$limit)}
+                    $out=New-PhpArray
+                    for($i=0;$i-lt$take;$i++){Set-PhpArrayItem $out $null $parts[$i] $true}
                     return $out
                 }
                 'implode' {
-                    if ($callArgs.Count -ne 2 -or -not (Is-PhpArray $callArgs[1])) {
-                        throw 'ALL PHP: implode() requires separator and array'
+                    Assert-PhpStringBuiltinArity 'implode' $callArgs 1 2
+                    $separator=[AllPhp.ByteValues.PhpBytes]::Empty;$items=$null
+                    if($callArgs.Count-eq1) {
+                        $items=$callArgs[0]
+                        if(-not(Is-PhpArray $items)){Throw-PhpError 'TypeError' ('implode(): Argument #1 ($array) must be of type array, '+(Get-PhpBuiltinTypeName $items)+' given')}
+                    } else {
+                        $separator=ConvertTo-PhpBuiltinBytes $callArgs[0] 'implode' 1 'separator' 'array|string'
+                        $items=$callArgs[1]
+                        if(-not(Is-PhpArray $items)){Throw-PhpError 'TypeError' ('implode(): Argument #2 ($array) must be of type ?array, '+(Get-PhpBuiltinTypeName $items)+' given')}
                     }
-                    $separator = To-PhpText $callArgs[0]
-                    $items = [System.Collections.Generic.List[string]]::new()
-                    foreach ($key in $callArgs[1].Items.Keys) {
-                        [void]$items.Add((To-PhpText $callArgs[1].Items[$key]))
+                    $builder=[AllPhp.ByteValues.PhpByteBuilder]::new();$first=$true
+                    foreach($key in $items.Items.Keys) {
+                        if(-not$first){$builder.Append($separator)};$first=$false
+                        $builder.Append((To-PhpBytes $items.Items[$key]))
                     }
-                    return [string]::Join($separator, $items.ToArray())
+                    return $builder.ToPhpBytes()
                 }
                 'print_r' {
                     if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 2) { throw 'ALL PHP: print_r() requires one or two arguments' }
-                    $printed = Format-PhpPrintR $callArgs[0] 0
+                    $printed = Format-PhpBytesPrintR $callArgs[0] 0
                     if ($callArgs.Count -eq 2 -and (Is-Truthy $callArgs[1])) { return $printed }
-                    [Console]::Write($printed)
+                    Write-PhpBytes $printed
                     return $true
                 }
                 'define' {
                     if ($callArgs.Count -ne 2) { throw 'ALL PHP: define() requires two arguments' }
                     $constName = To-PhpText $callArgs[0]
+                    if ($constName.Contains('::')) {
+                        Throw-PhpError 'ValueError' 'define(): Argument #1 ($constant_name) cannot be a class constant'
+                    }
                     if ($state.Constants.ContainsKey($constName) -or $phpConstants.ContainsKey($constName)) {
                         Write-PhpDiagnostic 2 ('Constant ' + $constName + ' already defined, this will be an error in PHP 9')
                         return $false
@@ -5343,13 +11471,15 @@ class UnhandledMatchError extends Error {}
                 'defined' {
                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: defined() requires one argument' }
                     $constName = To-PhpText $callArgs[0]
+                    if ($constName.Contains('::')) { return (Resolve-PhpClassConstantBySpec $constName $true) }
                     return ($state.Constants.ContainsKey($constName) -or $phpConstants.ContainsKey($constName))
                 }
                 'constant' {
                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: constant() requires one argument' }
                     $constName = To-PhpText $callArgs[0]
-                    if ($state.Constants.ContainsKey($constName)) { return $state.Constants[$constName] }
-                    if ($phpConstants.ContainsKey($constName)) { return $phpConstants[$constName] }
+                    if ($constName.Contains('::')) { return (Resolve-PhpClassConstantBySpec $constName $false) }
+                    if ($state.Constants.ContainsKey($constName)) { return (ConvertTo-PhpOwnedValue $state.Constants[$constName]) }
+                    if ($phpConstants.ContainsKey($constName)) { return (ConvertTo-PhpOwnedValue $phpConstants[$constName]) }
                     Throw-PhpError 'Error' ('Undefined constant "' + $constName + '"')
                 }
                 'error_reporting' {
@@ -5360,9 +11490,21 @@ class UnhandledMatchError extends Error {}
                 'ini_set' {
                     if ($callArgs.Count -ne 2) { throw 'ALL PHP: ini_set() requires two arguments' }
                     $iniName = To-PhpText $callArgs[0]
+                    $newVal = To-PhpText $callArgs[1]
                     $previous = $false
                     if ($state.Ini.ContainsKey($iniName)) { $previous = $state.Ini[$iniName] }
-                    $state.Ini[$iniName] = To-PhpText $callArgs[1]
+                    if ($iniName -ceq 'zend.assertions') {
+                        $initAssert = if ($state.PSObject.Properties['InitialZendAssertions']) { [string]$state.InitialZendAssertions } else { '1' }
+                        if ($newVal -cnotin @('-1','0','1')) {
+                            $newNum = To-PhpInt (To-Number $callArgs[1])
+                            $newVal = $newNum.ToString([Globalization.CultureInfo]::InvariantCulture)
+                        }
+                        if ($initAssert -ceq '-1' -or $newVal -ceq '-1') {
+                            Write-PhpDiagnostic 2 'zend.assertions may be completely enabled or disabled only in php.ini'
+                            return $false
+                        }
+                    }
+                    $state.Ini[$iniName] = $newVal
                     if ($iniName -ceq 'error_reporting') { $state.ErrorReporting = To-PhpInt (To-Number $callArgs[1]) }
                     return $previous
                 }
@@ -5405,22 +11547,23 @@ class UnhandledMatchError extends Error {}
                     return $true
                 }
                 { $_ -in @('trigger_error', 'user_error') } {
-                    if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 2) { throw "ALL PHP: $name() requires one or two arguments" }
+                    $errorFunction=ConvertTo-PhpAsciiLower $name
+                    Assert-PhpStringBuiltinArity $errorFunction $callArgs 1 2
+                    $message=ConvertTo-PhpBuiltinBytes $callArgs[0] $errorFunction 1 'message'
                     $level = [long]1024
-                    if ($callArgs.Count -eq 2) { $level = To-PhpInt (To-Number $callArgs[1]) }
+                    if ($callArgs.Count -eq 2) { $level = ConvertTo-PhpBuiltinInteger $callArgs[1] $errorFunction 2 'error_level' }
                     if ($level -notin @(256, 512, 1024, 16384)) {
-                        Throw-PhpError 'ValueError' 'trigger_error(): Argument #2 ($error_level) must be one of E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE, or E_USER_DEPRECATED'
+                        Throw-PhpError 'ValueError' ($errorFunction+'(): Argument #2 ($error_level) must be one of E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE, or E_USER_DEPRECATED')
                     }
-                    Write-PhpDiagnostic $level (To-PhpText $callArgs[0])
+                    Write-PhpDiagnostic $level $message
                     return $true
                 }
                 'str_repeat' {
-                    if ($callArgs.Count -ne 2) { throw 'ALL PHP: str_repeat() requires two arguments' }
-                    $times = To-PhpInt (To-Number $callArgs[1])
-                    if ($times -lt 0) {
-                        Throw-PhpError 'ValueError' 'str_repeat(): Argument #2 ($times) must be greater than or equal to 0'
-                    }
-                    return ((To-PhpText $callArgs[0]) * [int]$times)
+                    Assert-PhpStringBuiltinArity 'str_repeat' $callArgs 2 2
+                    $bytes=ConvertTo-PhpBuiltinBytes $callArgs[0] 'str_repeat' 1 'string'
+                    $times=ConvertTo-PhpBuiltinInteger $callArgs[1] 'str_repeat' 2 'times'
+                    if($times-lt0){Throw-PhpError 'ValueError' 'str_repeat(): Argument #2 ($times) must be greater than or equal to 0'}
+                    return $bytes.Repeat($times)
                 }
                 'function_exists' {
                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: function_exists() requires one argument' }
@@ -5431,35 +11574,32 @@ class UnhandledMatchError extends Error {}
                     if ($callArgs.Count -lt 1) { throw 'ALL PHP: call_user_func() requires a callable' }
                     $rest = @()
                     if ($callArgs.Count -gt 1) { $rest = @($callArgs[1..($callArgs.Count - 1)]) }
-                    return (Invoke-PhpValueCallable $callArgs[0] $rest 'call_user_func')
+                    return (Invoke-PhpValueCallable $callArgs[0] $rest 'call_user_func' $callPolicy)
                 }
                 'call_user_func_array' {
                     if ($callArgs.Count -ne 2 -or -not (Is-PhpArray $callArgs[1])) {
                         throw 'ALL PHP: call_user_func_array() requires a callable and an array'
                     }
-                    return (Invoke-PhpValueCallable $callArgs[0] (Get-PhpCallbackArrayArguments $callArgs[1]) 'call_user_func_array')
+                    return (Invoke-PhpValueCallable $callArgs[0] (Get-PhpCallbackArrayArguments $callArgs[1]) 'call_user_func_array' $callPolicy)
                 }
                 'get_class' {
                     if ($callArgs.Count -ne 1 -or -not (Is-PhpObject $callArgs[0])) {
                         throw 'ALL PHP: get_class() requires one object argument'
                     }
-                    return [string]$callArgs[0].Class
+                    return (To-PhpBytes ([string]$callArgs[0].Class))
                 }
                 'var_dump' {
                     if ($callArgs.Count -lt 1) { throw 'ALL PHP: var_dump() requires at least one argument' }
-                    foreach ($item in $callArgs) { [Console]::Write((Format-PhpVarDump $item '')) }
+                    $referenceDumpContext=New-PhpReferenceContext $callArgs
+                    foreach ($item in $callArgs) { Write-PhpBytes (Format-PhpBytesDump $item '' $referenceDumpContext) }
                     return $null
                 }
                 'gettype' {
-                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: gettype() requires one argument' }
-                    $item = $callArgs[0]
-                    if ($null -eq $item) { return 'NULL' }
-                    if ($item -is [bool]) { return 'boolean' }
-                    if ($item -is [long]) { return 'integer' }
-                    if ($item -is [double]) { return 'double' }
-                    if ($item -is [string]) { return 'string' }
-                    if (Is-PhpArray $item) { return 'array' }
-                    return 'object'
+                    Assert-PhpStringBuiltinArity 'gettype' $callArgs 1 1
+                    $item=$callArgs[0]
+                    if(Is-PhpRefCell $item){$item=$item.Value}
+                    $type=if($null-eq$item){'NULL'}elseif($item-is[bool]){'boolean'}elseif($item-is[long]){'integer'}elseif($item-is[double]){'double'}elseif(Is-PhpStringValue $item){'string'}elseif(Is-PhpArray $item){'array'}else{'object'}
+                    return [AllPhp.ByteValues.PhpBytes]::FromUtf8($type)
                 }
                 { $_ -in @('is_int', 'is_integer', 'is_long') } {
                     if ($callArgs.Count -ne 1) { throw "ALL PHP: $name() requires one argument" }
@@ -5476,7 +11616,7 @@ class UnhandledMatchError extends Error {}
                 'is_numeric' {
                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_numeric() requires one argument' }
                     if (Is-PhpNum $callArgs[0]) { return $true }
-                    if ($callArgs[0] -is [string]) {
+                    if (Is-PhpStringValue $callArgs[0]) {
                         return ($null -ne (ConvertFrom-PhpNumericString $callArgs[0] $false))
                     }
                     return $false
@@ -5495,8 +11635,8 @@ class UnhandledMatchError extends Error {}
                 }
                 'intdiv' {
                     if ($callArgs.Count -ne 2) { throw 'ALL PHP: intdiv() requires two arguments' }
-                    $dividend = To-PhpInt (To-Number $callArgs[0])
-                    $divisor = To-PhpInt (To-Number $callArgs[1])
+                    $dividend = ConvertTo-PhpBuiltinInteger $callArgs[0] 'intdiv' 1 'num1'
+                    $divisor = ConvertTo-PhpBuiltinInteger $callArgs[1] 'intdiv' 2 'num2'
                     if ($divisor -eq 0) {
                         Throw-PhpError 'DivisionByZeroError' 'Division by zero' 'ALL PHP: Division by zero'
                     }
@@ -5508,7 +11648,7 @@ class UnhandledMatchError extends Error {}
                 }
                 'fdiv' {
                     if ($callArgs.Count -ne 2) { throw 'ALL PHP: fdiv() requires two arguments' }
-                    return ([double](To-Number $callArgs[0]) / [double](To-Number $callArgs[1]))
+                    return ((ConvertTo-PhpBuiltinFloat $callArgs[0] 'fdiv' 1 'num1') / (ConvertTo-PhpBuiltinFloat $callArgs[1] 'fdiv' 2 'num2'))
                 }
                 'pow' {
                     if ($callArgs.Count -ne 2) { throw 'ALL PHP: pow() requires two arguments' }
@@ -5516,79 +11656,2292 @@ class UnhandledMatchError extends Error {}
                 }
                 'sqrt' {
                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: sqrt() requires one argument' }
-                    return [Math]::Sqrt([double](To-Number $callArgs[0]))
+                    return [Math]::Sqrt((ConvertTo-PhpBuiltinFloat $callArgs[0] 'sqrt' 1 'num'))
                 }
                 'floor' {
                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: floor() requires one argument' }
-                    return [Math]::Floor([double](To-Number $callArgs[0]))
+                    return [Math]::Floor([double](ConvertTo-PhpBuiltinNumber $callArgs[0] 'floor' 1 'num'))
                 }
                 'ceil' {
                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: ceil() requires one argument' }
-                    return [Math]::Ceiling([double](To-Number $callArgs[0]))
+                    return [Math]::Ceiling([double](ConvertTo-PhpBuiltinNumber $callArgs[0] 'ceil' 1 'num'))
                 }
                 'is_nan' {
                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_nan() requires one argument' }
-                    return [double]::IsNaN([double](To-Number $callArgs[0]))
+                    return [double]::IsNaN((ConvertTo-PhpBuiltinFloat $callArgs[0] 'is_nan' 1 'num'))
                 }
                 'is_infinite' {
                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_infinite() requires one argument' }
-                    return [double]::IsInfinity([double](To-Number $callArgs[0]))
+                    return [double]::IsInfinity((ConvertTo-PhpBuiltinFloat $callArgs[0] 'is_infinite' 1 'num'))
                 }
                 'is_finite' {
                     if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_finite() requires one argument' }
-                    $number = [double](To-Number $callArgs[0])
+                    $number = ConvertTo-PhpBuiltinFloat $callArgs[0] 'is_finite' 1 'num'
                     return (-not [double]::IsNaN($number) -and -not [double]::IsInfinity($number))
                 }
                 'strval' {
-                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: strval() requires one argument' }
-                    return (To-PhpText $callArgs[0])
+                    Assert-PhpStringBuiltinArity 'strval' $callArgs 1 1
+                    return (To-PhpBytes $callArgs[0])
+                }
+                '__all_inline_exec' {
+                    $b64 = Get-PhpHostText $callArgs[0]
+                    $allCode = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($b64))
+                    return (Invoke-PhpPolyglotAllCode $allCode $state.ScriptName)
+                }
+                'all_eval' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: all_eval() requires one string argument' }
+                    $allCode = To-PhpText $callArgs[0]
+                    return (Invoke-PhpPolyglotAllCode $allCode $state.ScriptName)
+                }
+                'all_call' {
+                    if ($callArgs.Count -lt 1) { throw 'ALL PHP: all_call() requires function name' }
+                    $fnName = To-PhpText $callArgs[0]
+                    $restArgs = if ($callArgs.Count -gt 1) { @($callArgs[1..($callArgs.Count - 1)]) } else { @() }
+                    return (Invoke-PhpPolyglotAllFunction $fnName $restArgs)
+                }
+                'is_scalar' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_scalar() requires one argument' }
+                    $v = $callArgs[0]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                    return ($v -is [bool] -or $v -is [long] -or $v -is [double] -or (Is-PhpStringValue $v))
+                }
+                'is_object' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_object() requires one argument' }
+                    $v = $callArgs[0]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                    if ($null -ne $v -and $v.PSObject.Properties['PhpType'] -and $v.PhpType -in @('closure','first_class_callable')) { return $true }
+                    return (Is-PhpObject $v)
+                }
+                'is_callable' {
+                    if ($callArgs.Count -lt 1) { throw 'ALL PHP: is_callable() requires at least one argument' }
+                    try {
+                        [void](Assert-PhpValueCallable $callArgs[0])
+                        return $true
+                    } catch {
+                        return $false
+                    }
+                }
+                'is_iterable' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_iterable() requires one argument' }
+                    return (Test-PhpTypeAtom $callArgs[0] 'iterable')
+                }
+                'is_countable' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: is_countable() requires one argument' }
+                    $v = $callArgs[0]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                    if (Is-PhpArray $v) { return $true }
+                    if (Is-PhpObject $v) { Ensure-PhpPrelude; return (Test-PhpInstanceOf $v.Class 'Countable') }
+                    return $false
+                }
+                'get_debug_type' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: get_debug_type() requires one argument' }
+                    $v = $callArgs[0]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                    if ($null -eq $v) { return (To-PhpBytes 'null') }
+                    if ($v -is [bool]) { return (To-PhpBytes 'bool') }
+                    if ($v -is [long]) { return (To-PhpBytes 'int') }
+                    if ($v -is [double]) { return (To-PhpBytes 'float') }
+                    if (Is-PhpStringValue $v) { return (To-PhpBytes 'string') }
+                    if (Is-PhpArray $v) { return (To-PhpBytes 'array') }
+                    if ($v.PSObject.Properties['PhpType'] -and $v.PhpType -in @('closure','first_class_callable')) { return (To-PhpBytes 'Closure') }
+                    if (Is-PhpObject $v) { return (To-PhpBytes ([string]$v.Class)) }
+                    return (To-PhpBytes 'unknown')
+                }
+                'min' {
+                    if ($callArgs.Count -lt 1) { throw 'ALL PHP: min() requires at least one argument' }
+                    $items = if ($callArgs.Count -eq 1 -and (Is-PhpArray $callArgs[0])) { @($callArgs[0].Items.Values) } else { @($callArgs) }
+                    if ($items.Count -eq 0) { Throw-PhpError 'ValueError' 'min(): Argument #1 ($value) must contain at least one element' }
+                    $best = $items[0]; if (Is-PhpRefCell $best) { $best = $best.Value }
+                    for ($i = 1; $i -lt $items.Count; $i++) {
+                        $cur = $items[$i]; if (Is-PhpRefCell $cur) { $cur = $cur.Value }
+                        if ((Compare-Values $cur $best) -lt 0) { $best = $cur }
+                    }
+                    return $best
+                }
+                'max' {
+                    if ($callArgs.Count -lt 1) { throw 'ALL PHP: max() requires at least one argument' }
+                    $items = if ($callArgs.Count -eq 1 -and (Is-PhpArray $callArgs[0])) { @($callArgs[0].Items.Values) } else { @($callArgs) }
+                    if ($items.Count -eq 0) { Throw-PhpError 'ValueError' 'max(): Argument #1 ($value) must contain at least one element' }
+                    $best = $items[0]; if (Is-PhpRefCell $best) { $best = $best.Value }
+                    for ($i = 1; $i -lt $items.Count; $i++) {
+                        $cur = $items[$i]; if (Is-PhpRefCell $cur) { $cur = $cur.Value }
+                        if ((Compare-Values $cur $best) -gt 0) { $best = $cur }
+                    }
+                    return $best
+                }
+                'round' {
+                    if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 3) { throw 'ALL PHP: round() expects 1 to 3 arguments' }
+                    $num = [double](ConvertTo-PhpBuiltinNumber $callArgs[0] 'round' 1 'num')
+                    $prec = if ($callArgs.Count -ge 2) { [int](ConvertTo-PhpBuiltinInteger $callArgs[1] 'round' 2 'precision') } else { 0 }
+                    if ([double]::IsNaN($num) -or [double]::IsInfinity($num)) { return $num }
+                    if ($prec -ge 0 -and $prec -le 15) {
+                        return [double][Math]::Round($num, $prec, [MidpointRounding]::AwayFromZero)
+                    }
+                    $factor = [Math]::Pow(10.0, $prec)
+                    return [double]([Math]::Round($num * $factor, 0, [MidpointRounding]::AwayFromZero) / $factor)
+                }
+                'exp' { return [double][Math]::Exp((ConvertTo-PhpBuiltinFloat $callArgs[0] 'exp' 1 'num')) }
+                'log' {
+                    $n = ConvertTo-PhpBuiltinFloat $callArgs[0] 'log' 1 'num'
+                    if ($callArgs.Count -ge 2) {
+                        $b = ConvertTo-PhpBuiltinFloat $callArgs[1] 'log' 2 'base'
+                        return [double][Math]::Log($n, $b)
+                    }
+                    return [double][Math]::Log($n)
+                }
+                'log10' { return [double][Math]::Log10((ConvertTo-PhpBuiltinFloat $callArgs[0] 'log10' 1 'num')) }
+                'sin' { return [double][Math]::Sin((ConvertTo-PhpBuiltinFloat $callArgs[0] 'sin' 1 'num')) }
+                'cos' { return [double][Math]::Cos((ConvertTo-PhpBuiltinFloat $callArgs[0] 'cos' 1 'num')) }
+                'tan' { return [double][Math]::Tan((ConvertTo-PhpBuiltinFloat $callArgs[0] 'tan' 1 'num')) }
+                'pi' { return [double][Math]::PI }
+                'deg2rad' { return [double]((ConvertTo-PhpBuiltinFloat $callArgs[0] 'deg2rad' 1 'num') * [Math]::PI / 180.0) }
+                'rad2deg' { return [double]((ConvertTo-PhpBuiltinFloat $callArgs[0] 'rad2deg' 1 'num') * 180.0 / [Math]::PI) }
+                'hypot' {
+                    $x = ConvertTo-PhpBuiltinFloat $callArgs[0] 'hypot' 1 'x'
+                    $y = ConvertTo-PhpBuiltinFloat $callArgs[1] 'hypot' 2 'y'
+                    return [double][Math]::Sqrt($x * $x + $y * $y)
+                }
+                { $_ -in @('srand','mt_srand') } {
+                    $seed = if ($callArgs.Count -ge 1 -and $null -ne $callArgs[0]) {
+                        [int]((ConvertTo-PhpBuiltinInteger $callArgs[0] $_ 1 'seed') -band 0x7fffffff)
+                    } else { [Environment]::TickCount }
+                    $state.Prng = [System.Random]::new($seed)
+                    return $null
+                }
+                { $_ -in @('rand','mt_rand') } {
+                    $fnLow = ConvertTo-PhpAsciiLower $_
+                    if ($null -eq $state.Prng) { $state.Prng = [System.Random]::new() }
+                    if ($callArgs.Count -eq 0) {
+                        return [long]$state.Prng.Next(0, [int]::MaxValue)
+                    }
+                    if ($callArgs.Count -ne 2) {
+                        Throw-PhpError 'ArgumentCountError' ($fnLow + '() expects either 0 or 2 arguments, ' + $callArgs.Count + ' given')
+                    }
+                    $min = ConvertTo-PhpBuiltinInteger $callArgs[0] $fnLow 1 'min'
+                    $max = ConvertTo-PhpBuiltinInteger $callArgs[1] $fnLow 2 'max'
+                    if ($max -lt $min) {
+                        if ($fnLow -ceq 'mt_rand') {
+                            Throw-PhpError 'ValueError' 'mt_rand(): Argument #2 ($max) must be greater than or equal to argument #1 ($min)'
+                        }
+                        $tmp = $min; $min = $max; $max = $tmp
+                    }
+                    if ($min -eq $max) { return $min }
+                    $span = [double]$max - [double]$min + 1.0
+                    return [long]($min + [long][Math]::Floor($state.Prng.NextDouble() * $span))
+                }
+                'random_int' {
+                    if ($callArgs.Count -ne 2) {
+                        Throw-PhpError 'ArgumentCountError' ('random_int() expects exactly 2 arguments, ' + $callArgs.Count + ' given')
+                    }
+                    $min = ConvertTo-PhpBuiltinInteger $callArgs[0] 'random_int' 1 'min'
+                    $max = ConvertTo-PhpBuiltinInteger $callArgs[1] 'random_int' 2 'max'
+                    if ($max -lt $min) {
+                        Throw-PhpError 'ValueError' 'random_int(): Argument #1 ($min) must be less than or equal to argument #2 ($max)'
+                    }
+                    if ($min -eq $max) { return $min }
+                    $uRange = [uint64]([decimal]$max - [decimal]$min)
+                    $rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+                    try {
+                        $buf = New-Object byte[] 8
+                        if ($uRange -eq [uint64]::MaxValue) {
+                            $rng.GetBytes($buf)
+                            return [BitConverter]::ToInt64($buf, 0)
+                        }
+                        $uSpan = $uRange + [uint64]1
+                        $limit = [uint64]::MaxValue - (([uint64]::MaxValue % $uSpan) + [uint64]1) % $uSpan
+                        do {
+                            $rng.GetBytes($buf)
+                            $rawU64 = [BitConverter]::ToUInt64($buf, 0)
+                        } while ($rawU64 -gt $limit)
+                        $off = $rawU64 % $uSpan
+                        return [long]([decimal]$min + [decimal]$off)
+                    } finally {
+                        $rng.Dispose()
+                    }
+                }
+                'md5' {
+                    Assert-PhpStringBuiltinArity 'md5' $callArgs 1 2
+                    $bytes = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'md5' 1 'string').ToArray()
+                    $raw = if ($callArgs.Count -eq 2) { Is-Truthy $callArgs[1] } else { $false }
+                    $out = [AllPhp.NativeEngine.RustBridge]::Md5($bytes, $raw, $phpAdapterDir)
+                    return [AllPhp.ByteValues.PhpBytes]::FromBytes($out)
+                }
+                'sha1' {
+                    Assert-PhpStringBuiltinArity 'sha1' $callArgs 1 2
+                    $bytes = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'sha1' 1 'string').ToArray()
+                    $raw = if ($callArgs.Count -eq 2) { Is-Truthy $callArgs[1] } else { $false }
+                    $out = [AllPhp.NativeEngine.RustBridge]::Sha1($bytes, $raw, $phpAdapterDir)
+                    return [AllPhp.ByteValues.PhpBytes]::FromBytes($out)
+                }
+                'crc32' {
+                    Assert-PhpStringBuiltinArity 'crc32' $callArgs 1 1
+                    $bytes = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'crc32' 1 'string').ToArray()
+                    return [long][AllPhp.NativeEngine.RustBridge]::Crc32($bytes, $phpAdapterDir)
+                }
+                'hash' {
+                    Assert-PhpStringBuiltinArity 'hash' $callArgs 2 3
+                    $algo = (To-PhpText $callArgs[0]).ToLowerInvariant()
+                    $bytes = (ConvertTo-PhpBuiltinBytes $callArgs[1] 'hash' 2 'data').ToArray()
+                    $raw = if ($callArgs.Count -eq 3) { Is-Truthy $callArgs[2] } else { $false }
+                    switch ($algo) {
+                        'md5' { return [AllPhp.ByteValues.PhpBytes]::FromBytes([AllPhp.NativeEngine.RustBridge]::Md5($bytes, $raw, $phpAdapterDir)) }
+                        'sha1' { return [AllPhp.ByteValues.PhpBytes]::FromBytes([AllPhp.NativeEngine.RustBridge]::Sha1($bytes, $raw, $phpAdapterDir)) }
+                        'sha256' { return [AllPhp.ByteValues.PhpBytes]::FromBytes([AllPhp.NativeEngine.RustBridge]::Sha256($bytes, $raw, $phpAdapterDir)) }
+                        'sha384' {
+                            $sha = [System.Security.Cryptography.SHA384]::Create()
+                            $h = $sha.ComputeHash($bytes)
+                            if ($raw) { return [AllPhp.ByteValues.PhpBytes]::FromBytes($h) }
+                            return (To-PhpBytes ([BitConverter]::ToString($h).Replace('-','').ToLowerInvariant()))
+                        }
+                        'sha512' {
+                            $sha = [System.Security.Cryptography.SHA512]::Create()
+                            $h = $sha.ComputeHash($bytes)
+                            if ($raw) { return [AllPhp.ByteValues.PhpBytes]::FromBytes($h) }
+                            return (To-PhpBytes ([BitConverter]::ToString($h).Replace('-','').ToLowerInvariant()))
+                        }
+                        default { Throw-PhpError 'ValueError' "hash(): Argument #1 (`$algo) must be a valid hashing algorithm" }
+                    }
+                }
+                'levenshtein' {
+                    Assert-PhpStringBuiltinArity 'levenshtein' $callArgs 2 2
+                    $b1 = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'levenshtein' 1 'string1').ToArray()
+                    $b2 = (ConvertTo-PhpBuiltinBytes $callArgs[1] 'levenshtein' 2 'string2').ToArray()
+                    return [long][AllPhp.NativeEngine.RustBridge]::Levenshtein($b1, $b2, $phpAdapterDir)
+                }
+                'str_rot13' {
+                    Assert-PhpStringBuiltinArity 'str_rot13' $callArgs 1 1
+                    $arr = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'str_rot13' 1 'string').ToArray()
+                    for ($i = 0; $i -lt $arr.Length; $i++) {
+                        $b = $arr[$i]
+                        if ($b -ge 65 -and $b -le 90) { $arr[$i] = [byte]((($b - 65 + 13) % 26) + 65) }
+                        elseif ($b -ge 97 -and $b -le 122) { $arr[$i] = [byte]((($b - 97 + 13) % 26) + 97) }
+                    }
+                    return [AllPhp.ByteValues.PhpBytes]::FromBytes($arr)
+                }
+                'ord' {
+                    Assert-PhpStringBuiltinArity 'ord' $callArgs 1 1
+                    $b = ConvertTo-PhpBuiltinBytes $callArgs[0] 'ord' 1 'character'
+                    if ($b.Length -eq 0) { return [long]0 }
+                    return [long]$b.GetByte(0)
+                }
+                'chr' {
+                    Assert-PhpStringBuiltinArity 'chr' $callArgs 1 1
+                    $code = ConvertTo-PhpBuiltinInteger $callArgs[0] 'chr' 1 'codepoint'
+                    return [AllPhp.ByteValues.PhpBytes]::FromBytes([byte[]]@([byte]($code -band 0xFF)))
+                }
+                'hex2bin' {
+                    Assert-PhpStringBuiltinArity 'hex2bin' $callArgs 1 1
+                    $hex = To-PhpText (ConvertTo-PhpBuiltinBytes $callArgs[0] 'hex2bin' 1 'string')
+                    if (($hex.Length % 2) -ne 0 -or $hex -notmatch '^[0-9a-fA-F]*$') {
+                        Write-PhpDiagnostic 2 'hex2bin(): Hexadecimal input string must have an even length'
+                        return $false
+                    }
+                    $out = [byte[]]::new($hex.Length / 2)
+                    for ($i = 0; $i -lt $out.Length; $i++) {
+                        $out[$i] = [Convert]::ToByte($hex.Substring($i * 2, 2), 16)
+                    }
+                    return [AllPhp.ByteValues.PhpBytes]::FromBytes($out)
+                }
+                'ucfirst' {
+                    Assert-PhpStringBuiltinArity 'ucfirst' $callArgs 1 1
+                    $b = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'ucfirst' 1 'string').ToArray()
+                    if ($b.Length -gt 0 -and $b[0] -ge 97 -and $b[0] -le 122) { $b[0] = [byte]($b[0] - 32) }
+                    return [AllPhp.ByteValues.PhpBytes]::FromBytes($b)
+                }
+                'lcfirst' {
+                    Assert-PhpStringBuiltinArity 'lcfirst' $callArgs 1 1
+                    $b = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'lcfirst' 1 'string').ToArray()
+                    if ($b.Length -gt 0 -and $b[0] -ge 65 -and $b[0] -le 90) { $b[0] = [byte]($b[0] + 32) }
+                    return [AllPhp.ByteValues.PhpBytes]::FromBytes($b)
+                }
+                'ucwords' {
+                    Assert-PhpStringBuiltinArity 'ucwords' $callArgs 1 2
+                    $b = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'ucwords' 1 'string').ToArray()
+                    $delims = if ($callArgs.Count -eq 2) { (ConvertTo-PhpBuiltinBytes $callArgs[1] 'ucwords' 2 'separators').ToArray() } else { [byte[]]@(32, 9, 10, 13, 11, 12) }
+                    $atStart = $true
+                    for ($i = 0; $i -lt $b.Length; $i++) {
+                        if ($delims -contains $b[$i]) { $atStart = $true }
+                        elseif ($atStart) {
+                            if ($b[$i] -ge 97 -and $b[$i] -le 122) { $b[$i] = [byte]($b[$i] - 32) }
+                            $atStart = $false
+                        }
+                    }
+                    return [AllPhp.ByteValues.PhpBytes]::FromBytes($b)
+                }
+                'strrev' {
+                    Assert-PhpStringBuiltinArity 'strrev' $callArgs 1 1
+                    $b = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'strrev' 1 'string').ToArray()
+                    [Array]::Reverse($b)
+                    return [AllPhp.ByteValues.PhpBytes]::FromBytes($b)
+                }
+                'nl2br' {
+                    Assert-PhpStringBuiltinArity 'nl2br' $callArgs 1 2
+                    $s = To-PhpText (ConvertTo-PhpBuiltinBytes $callArgs[0] 'nl2br' 1 'string')
+                    $xhtml = if ($callArgs.Count -eq 2) { Is-Truthy $callArgs[1] } else { $true }
+                    $tag = if ($xhtml) { '<br />' } else { '<br>' }
+                    $res = [regex]::Replace($s, "(
+|
+||
+)", ($tag + '$1'))
+                    return (To-PhpBytes $res)
+                }
+                'ltrim' {
+                    Assert-PhpStringBuiltinArity 'ltrim' $callArgs 1 2
+                    $b = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'ltrim' 1 'string').ToArray()
+                    $chars = if ($callArgs.Count -eq 2) { (ConvertTo-PhpBuiltinBytes $callArgs[1] 'ltrim' 2 'characters') } else { $null }
+                    $mask = New-PhpTrimMask $chars ($callArgs.Count -eq 2)
+                    $start = 0
+                    while ($start -lt $b.Length -and $mask[$b[$start]]) { $start++ }
+                    if ($start -ge $b.Length) { return [AllPhp.ByteValues.PhpBytes]::Empty }
+                    return [AllPhp.ByteValues.PhpBytes]::FromBytes($b[$start..($b.Length - 1)])
+                }
+                { $_ -in @('rtrim','chop') } {
+                    Assert-PhpStringBuiltinArity $_ $callArgs 1 2
+                    $b = (ConvertTo-PhpBuiltinBytes $callArgs[0] $_ 1 'string').ToArray()
+                    $chars = if ($callArgs.Count -eq 2) { (ConvertTo-PhpBuiltinBytes $callArgs[1] $_ 2 'characters') } else { $null }
+                    $mask = New-PhpTrimMask $chars ($callArgs.Count -eq 2)
+                    $end = $b.Length - 1
+                    while ($end -ge 0 -and $mask[$b[$end]]) { $end-- }
+                    if ($end -lt 0) { return [AllPhp.ByteValues.PhpBytes]::Empty }
+                    return [AllPhp.ByteValues.PhpBytes]::FromBytes($b[0..$end])
+                }
+                'str_pad' {
+                    Assert-PhpStringBuiltinArity 'str_pad' $callArgs 2 4
+                    $inputBytes = ConvertTo-PhpBuiltinBytes $callArgs[0] 'str_pad' 1 'string'
+                    $padLen = ConvertTo-PhpBuiltinInteger $callArgs[1] 'str_pad' 2 'length'
+                    $padStr = if ($callArgs.Count -ge 3) { ConvertTo-PhpBuiltinBytes $callArgs[2] 'str_pad' 3 'pad_string' } else { To-PhpBytes ' ' }
+                    if ($padStr.Length -eq 0) { Throw-PhpError 'ValueError' 'str_pad(): Argument #3 ($pad_string) must not be empty' }
+                    $padType = if ($callArgs.Count -ge 4) { ConvertTo-PhpBuiltinInteger $callArgs[3] 'str_pad' 4 'pad_type' } else { [long]1 }
+                    if ($padLen -le $inputBytes.Length) { return $inputBytes }
+                    $needed = $padLen - $inputBytes.Length
+                    $makePad = {
+                        param([long]$len)
+                        if ($len -le 0) { return [AllPhp.ByteValues.PhpBytes]::Empty }
+                        $reps = [long][Math]::Ceiling([double]$len / [double]$padStr.Length)
+                        return $padStr.Repeat($reps).Slice(0, $len)
+                    }
+                    if ($padType -eq 0) {
+                        return (& $makePad $needed).Concat($inputBytes)
+                    } elseif ($padType -eq 2) {
+                        $left = [long][Math]::Floor($needed / 2.0)
+                        $right = $needed - $left
+                        return (& $makePad $left).Concat($inputBytes).Concat((& $makePad $right))
+                    } else {
+                        return $inputBytes.Concat((& $makePad $needed))
+                    }
+                }
+                'str_split' {
+                    Assert-PhpStringBuiltinArity 'str_split' $callArgs 1 2
+                    $bytes = ConvertTo-PhpBuiltinBytes $callArgs[0] 'str_split' 1 'string'
+                    $len = if ($callArgs.Count -eq 2) { ConvertTo-PhpBuiltinInteger $callArgs[1] 'str_split' 2 'length' } else { [long]1 }
+                    if ($len -le 0) { Throw-PhpError 'ValueError' 'str_split(): Argument #2 ($length) must be greater than 0' }
+                    $out = New-PhpArray
+                    if ($bytes.Length -eq 0) {
+                        Set-PhpArrayItem $out $null ([AllPhp.ByteValues.PhpBytes]::Empty) $true
+                        return $out
+                    }
+                    for ($offset = [long]0; $offset -lt $bytes.Length; $offset += $len) {
+                        $take = [Math]::Min($len, $bytes.Length - $offset)
+                        Set-PhpArrayItem $out $null ($bytes.Slice($offset, $take)) $true
+                    }
+                    return $out
+                }
+                'stripos' {
+                    Assert-PhpStringBuiltinArity 'stripos' $callArgs 2 3
+                    $hay = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'stripos' 1 'haystack').LowerAscii()
+                    $needle = (ConvertTo-PhpBuiltinBytes $callArgs[1] 'stripos' 2 'needle').LowerAscii()
+                    $offset = if ($callArgs.Count -eq 3) { ConvertTo-PhpBuiltinInteger $callArgs[2] 'stripos' 3 'offset' } else { [long]0 }
+                    if ($offset -lt 0) { $offset = $hay.Length + $offset }
+                    $pos = Find-PhpBytes $hay $needle $offset
+                    if ($pos -lt 0) { return $false }
+                    return [long]$pos
+                }
+                'strrpos' {
+                    Assert-PhpStringBuiltinArity 'strrpos' $callArgs 2 3
+                    $hay = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'strrpos' 1 'haystack').ToArray()
+                    $needle = (ConvertTo-PhpBuiltinBytes $callArgs[1] 'strrpos' 2 'needle').ToArray()
+                    $sHay = [Text.Encoding]::GetEncoding(28591).GetString($hay)
+                    $sNeedle = [Text.Encoding]::GetEncoding(28591).GetString($needle)
+                    $pos = $sHay.LastIndexOf($sNeedle, [StringComparison]::Ordinal)
+                    if ($pos -lt 0) { return $false }
+                    return [long]$pos
+                }
+                'strripos' {
+                    Assert-PhpStringBuiltinArity 'strripos' $callArgs 2 3
+                    $hay = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'strripos' 1 'haystack').LowerAscii().ToArray()
+                    $needle = (ConvertTo-PhpBuiltinBytes $callArgs[1] 'strripos' 2 'needle').LowerAscii().ToArray()
+                    $sHay = [Text.Encoding]::GetEncoding(28591).GetString($hay)
+                    $sNeedle = [Text.Encoding]::GetEncoding(28591).GetString($needle)
+                    $pos = $sHay.LastIndexOf($sNeedle, [StringComparison]::Ordinal)
+                    if ($pos -lt 0) { return $false }
+                    return [long]$pos
+                }
+                'str_ireplace' {
+                    Assert-PhpStringBuiltinArity 'str_ireplace' $callArgs 3 3
+                    $search = To-PhpText $callArgs[0]
+                    $replace = To-PhpText $callArgs[1]
+                    $subject = To-PhpText $callArgs[2]
+                    $res = [regex]::Replace($subject, [regex]::Escape($search), $replace.Replace('$','$$'), [Text.RegularExpressions.RegexOptions]::IgnoreCase)
+                    return (To-PhpBytes $res)
+                }
+                'substr_count' {
+                    Assert-PhpStringBuiltinArity 'substr_count' $callArgs 2 4
+                    $hay = ConvertTo-PhpBuiltinBytes $callArgs[0] 'substr_count' 1 'haystack'
+                    $needle = ConvertTo-PhpBuiltinBytes $callArgs[1] 'substr_count' 2 'needle'
+                    if ($needle.Length -eq 0) { Throw-PhpError 'ValueError' 'substr_count(): Argument #2 ($needle) must not be empty' }
+                    $count = [long]0
+                    $pos = [long]0
+                    while ($pos -le $hay.Length - $needle.Length) {
+                        $found = Find-PhpBytes $hay $needle $pos
+                        if ($found -lt 0) { break }
+                        $count++
+                        $pos = $found + $needle.Length
+                    }
+                    return $count
+                }
+                'strcmp' {
+                    Assert-PhpStringBuiltinArity 'strcmp' $callArgs 2 2
+                    $b1 = ConvertTo-PhpBuiltinBytes $callArgs[0] 'strcmp' 1 'string1'
+                    $b2 = ConvertTo-PhpBuiltinBytes $callArgs[1] 'strcmp' 2 'string2'
+                    return [long]$b1.CompareBinary($b2)
+                }
+                'strcasecmp' {
+                    Assert-PhpStringBuiltinArity 'strcasecmp' $callArgs 2 2
+                    $b1 = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'strcasecmp' 1 'string1').LowerAscii()
+                    $b2 = (ConvertTo-PhpBuiltinBytes $callArgs[1] 'strcasecmp' 2 'string2').LowerAscii()
+                    return [long]$b1.CompareBinary($b2)
+                }
+                'strncmp' {
+                    Assert-PhpStringBuiltinArity 'strncmp' $callArgs 3 3
+                    $len = ConvertTo-PhpBuiltinInteger $callArgs[2] 'strncmp' 3 'length'
+                    $b1 = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'strncmp' 1 'string1').Slice(0, $len)
+                    $b2 = (ConvertTo-PhpBuiltinBytes $callArgs[1] 'strncmp' 2 'string2').Slice(0, $len)
+                    return [long]$b1.CompareBinary($b2)
+                }
+                'strncasecmp' {
+                    Assert-PhpStringBuiltinArity 'strncasecmp' $callArgs 3 3
+                    $len = ConvertTo-PhpBuiltinInteger $callArgs[2] 'strncasecmp' 3 'length'
+                    $b1 = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'strncasecmp' 1 'string1').Slice(0, $len).LowerAscii()
+                    $b2 = (ConvertTo-PhpBuiltinBytes $callArgs[1] 'strncasecmp' 2 'string2').Slice(0, $len).LowerAscii()
+                    return [long]$b1.CompareBinary($b2)
+                }
+                'urlencode' {
+                    Assert-PhpStringBuiltinArity 'urlencode' $callArgs 1 1
+                    $bytes = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'urlencode' 1 'string').ToArray()
+                    $sb = [Text.StringBuilder]::new()
+                    foreach ($b in $bytes) {
+                        if ($b -eq 32) { [void]$sb.Append('+') }
+                        elseif (($b -ge 48 -and $b -le 57) -or ($b -ge 65 -and $b -le 90) -or ($b -ge 97 -and $b -le 122) -or $b -in @(45, 95, 46)) {
+                            [void]$sb.Append([char]$b)
+                        } else {
+                            [void]$sb.Append('%' + $b.ToString('X2'))
+                        }
+                    }
+                    return (To-PhpBytes $sb.ToString())
+                }
+                'rawurlencode' {
+                    Assert-PhpStringBuiltinArity 'rawurlencode' $callArgs 1 1
+                    $bytes = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'rawurlencode' 1 'string').ToArray()
+                    $sb = [Text.StringBuilder]::new()
+                    foreach ($b in $bytes) {
+                        if (($b -ge 48 -and $b -le 57) -or ($b -ge 65 -and $b -le 90) -or ($b -ge 97 -and $b -le 122) -or $b -in @(45, 95, 46, 126)) {
+                            [void]$sb.Append([char]$b)
+                        } else {
+                            [void]$sb.Append('%' + $b.ToString('X2'))
+                        }
+                    }
+                    return (To-PhpBytes $sb.ToString())
+                }
+                'urldecode' {
+                    Assert-PhpStringBuiltinArity 'urldecode' $callArgs 1 1
+                    $s = (To-PhpText (ConvertTo-PhpBuiltinBytes $callArgs[0] 'urldecode' 1 'string')).Replace('+', ' ')
+                    return (To-PhpBytes ([Uri]::UnescapeDataString($s)))
+                }
+                'rawurldecode' {
+                    Assert-PhpStringBuiltinArity 'rawurldecode' $callArgs 1 1
+                    $s = To-PhpText (ConvertTo-PhpBuiltinBytes $callArgs[0] 'rawurldecode' 1 'string')
+                    return (To-PhpBytes ([Uri]::UnescapeDataString($s)))
+                }
+                'htmlspecialchars' {
+                    Assert-PhpStringBuiltinArity 'htmlspecialchars' $callArgs 1 4
+                    $s = To-PhpText (ConvertTo-PhpBuiltinBytes $callArgs[0] 'htmlspecialchars' 1 'string')
+                    $flags = if ($callArgs.Count -ge 2) { ConvertTo-PhpBuiltinInteger $callArgs[1] 'htmlspecialchars' 2 'flags' } else { [long]3 }
+                    $s = $s.Replace('&', '&amp;').Replace('<', '&lt;').Replace('>', '&gt;')
+                    if (($flags -band 2) -ne 0) { $s = $s.Replace('"', '&quot;') }
+                    if (($flags -band 1) -ne 0) { $s = $s.Replace("'", '&#039;') }
+                    return (To-PhpBytes $s)
+                }
+                'htmlspecialchars_decode' {
+                    Assert-PhpStringBuiltinArity 'htmlspecialchars_decode' $callArgs 1 2
+                    $s = To-PhpText (ConvertTo-PhpBuiltinBytes $callArgs[0] 'htmlspecialchars_decode' 1 'string')
+                    $s = $s.Replace('&quot;', '"').Replace('&#039;', "'").Replace('&apos;', "'").Replace('&lt;', '<').Replace('&gt;', '>').Replace('&amp;', '&')
+                    return (To-PhpBytes $s)
+                }
+                'number_format' {
+                    Assert-PhpStringBuiltinArity 'number_format' $callArgs 1 4
+                    $num = ConvertTo-PhpBuiltinFloat $callArgs[0] 'number_format' 1 'num'
+                    $dec = if ($callArgs.Count -ge 2) { [int](ConvertTo-PhpBuiltinInteger $callArgs[1] 'number_format' 2 'decimals') } else { 0 }
+                    $decSep = if ($callArgs.Count -ge 3 -and $null -ne $callArgs[2]) { To-PhpText $callArgs[2] } else { '.' }
+                    $thouSep = if ($callArgs.Count -ge 4 -and $null -ne $callArgs[3]) { To-PhpText $callArgs[3] } else { ',' }
+                    $neg = $num -lt 0
+                    $absVal = [Math]::Round([Math]::Abs($num), [Math]::Max(0, $dec), [MidpointRounding]::AwayFromZero)
+                    $fmt = if ($dec -gt 0) { '0.' + ('0' * $dec) } else { '0' }
+                    $rawStr = $absVal.ToString($fmt, [Globalization.CultureInfo]::InvariantCulture)
+                    $parts = $rawStr -split '\.'
+                    $intPart = $parts[0]
+                    if ($thouSep.Length -gt 0 -and $intPart.Length -gt 3) {
+                        $intPart = [regex]::Replace($intPart, '\B(?=(\d{3})+(?!\d))', $thouSep)
+                    }
+                    $final = if ($dec -gt 0 -and $parts.Length -gt 1) { $intPart + $decSep + $parts[1] } else { $intPart }
+                    if ($neg -and $absVal -ne 0) { $final = '-' + $final }
+                    return (To-PhpBytes $final)
+                }
+                { $_ -in @('sprintf','printf','vsprintf') } {
+                    $fnName = ConvertTo-PhpAsciiLower $name
+                    if ($callArgs.Count -lt 1) { throw "ALL PHP: $fnName() requires format string" }
+                    $fmt = To-PhpText (ConvertTo-PhpBuiltinBytes $callArgs[0] $fnName 1 'format')
+                    $fmtArgs = @()
+                    if ($fnName -ceq 'vsprintf') {
+                        if ($callArgs.Count -ge 2 -and (Is-PhpArray $callArgs[1])) {
+                            $fmtArgs = @($callArgs[1].Items.Values)
+                        }
+                    } elseif ($callArgs.Count -gt 1) {
+                        $fmtArgs = @($callArgs[1..($callArgs.Count - 1)])
+                    }
+                    $state['SprintfIndex'] = 0
+                    $formatted = [regex]::Replace($fmt, '%(?:(\d+)\$)?([+\-0 #]*)(\d+)?(?:\.(\d+))?([%bcdeEfFgGosuxX])', {
+                        param($m)
+                        $spec = $m.Groups[5].Value
+                        if ($spec -ceq '%') { return '%' }
+                        $idx = if ($m.Groups[1].Success) { [int]$m.Groups[1].Value - 1 } else { $curIdx = [int]$state['SprintfIndex']; $state['SprintfIndex'] = $curIdx + 1; $curIdx }
+                        $val = if ($idx -lt $fmtArgs.Count) { $fmtArgs[$idx] } else { $null }
+                        if (Is-PhpRefCell $val) { $val = $val.Value }
+                        $flags = $m.Groups[2].Value
+                        $width = if ($m.Groups[3].Success) { [int]$m.Groups[3].Value } else { 0 }
+                        $prec = if ($m.Groups[4].Success) { [int]$m.Groups[4].Value } else { -1 }
+                        $res = ''
+                        switch -CaseSensitive ($spec) {
+                            's' {
+                                $res = To-PhpText $val
+                                if ($prec -ge 0 -and $res.Length -gt $prec) { $res = $res.Substring(0, $prec) }
+                            }
+                            { $_ -in @('d','u') } {
+                                $iv = To-PhpInt $val
+                                $res = $iv.ToString([Globalization.CultureInfo]::InvariantCulture)
+                                if ($flags.Contains('+') -and $iv -ge 0) { $res = '+' + $res }
+                            }
+                            'b' { $res = [Convert]::ToString((To-PhpInt $val), 2) }
+                            'o' { $res = [Convert]::ToString((To-PhpInt $val), 8) }
+                            'x' { $res = (To-PhpInt $val).ToString('x', [Globalization.CultureInfo]::InvariantCulture) }
+                            'X' { $res = (To-PhpInt $val).ToString('X', [Globalization.CultureInfo]::InvariantCulture) }
+                            'c' { $res = [string][char]((To-PhpInt $val) -band 0xFF) }
+                            { $_ -in @('f','F') } {
+                                $fv = [double](To-Number $val)
+                                $p = if ($prec -ge 0) { $prec } else { 6 }
+                                $res = $fv.ToString(('F' + $p), [Globalization.CultureInfo]::InvariantCulture)
+                            }
+                            { $_ -in @('e','E') } {
+                                $fv = [double](To-Number $val)
+                                $p = if ($prec -ge 0) { $prec } else { 6 }
+                                $res = $fv.ToString(($spec + $p), [Globalization.CultureInfo]::InvariantCulture)
+                            }
+                            default { $res = To-PhpText $val }
+                        }
+                        if ($width -gt $res.Length) {
+                            $padChar = if ($flags.Contains('0') -and -not $flags.Contains('-')) { '0' } else { ' ' }
+                            if ($flags.Contains('-')) { $res = $res.PadRight($width, ' ') }
+                            else { $res = $res.PadLeft($width, [char]$padChar) }
+                        }
+                        return $res
+                    })
+                    $bytesOut = To-PhpBytes $formatted
+                    if ($fnName -ceq 'printf') {
+                        Write-PhpBytes $bytesOut
+                        return [long]$bytesOut.Length
+                    }
+                    return $bytesOut
+                }
+                'array_map' {
+                    if ($callArgs.Count -lt 2) { throw 'ALL PHP: array_map() requires callback and at least one array' }
+                    $cb = $callArgs[0]
+                    if (Is-PhpRefCell $cb) { $cb = $cb.Value }
+                    $out = New-PhpArray
+                    if ($callArgs.Count -eq 2) {
+                        $arr = $callArgs[1]
+                        if (-not (Is-PhpArray $arr)) { Throw-PhpError 'TypeError' 'array_map(): Argument #2 ($array) must be of type array' }
+                        foreach ($k in @($arr.Items.Keys)) {
+                            $v = $arr.Items[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                            $mapped = if ($null -eq $cb) { $v } else { Invoke-PhpValueCallable $cb @($v) 'array_map' $callPolicy }
+                            if ($k.IsInteger) { Set-PhpArrayItem $out $k.IntegerValue $mapped $false }
+                            else { Set-PhpArrayItem $out (Get-PhpKeyValue $k) $mapped $false }
+                        }
+                        return $out
+                    }
+                    $arrays = @($callArgs[1..($callArgs.Count - 1)])
+                    $maxLen = 0
+                    $valLists = [System.Collections.Generic.List[object]]::new()
+                    foreach ($a in $arrays) {
+                        if (-not (Is-PhpArray $a)) { Throw-PhpError 'TypeError' 'array_map(): Argument must be of type array' }
+                        $vs = @($a.Items.Values)
+                        if ($vs.Count -gt $maxLen) { $maxLen = $vs.Count }
+                        [void]$valLists.Add($vs)
+                    }
+                    for ($i = 0; $i -lt $maxLen; $i++) {
+                        $row = [System.Collections.Generic.List[object]]::new()
+                        foreach ($vs in $valLists) {
+                            $item = if ($i -lt $vs.Count) { $vs[$i] } else { $null }
+                            if (Is-PhpRefCell $item) { $item = $item.Value }
+                            [void]$row.Add($item)
+                        }
+                        if ($null -eq $cb) {
+                            $subArr = New-PhpArray
+                            foreach ($rItem in $row) { Set-PhpArrayItem $subArr $null $rItem $true }
+                            Set-PhpArrayItem $out $null $subArr $true
+                        } else {
+                            $mapped = Invoke-PhpValueCallable $cb ($row.ToArray()) 'array_map' $callPolicy
+                            Set-PhpArrayItem $out $null $mapped $true
+                        }
+                    }
+                    return $out
+                }
+                'array_filter' {
+                    if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 3 -or -not (Is-PhpArray $callArgs[0])) {
+                        throw 'ALL PHP: array_filter() requires an array'
+                    }
+                    $arr = $callArgs[0]
+                    $cb = if ($callArgs.Count -ge 2) { $callArgs[1] } else { $null }
+                    if (Is-PhpRefCell $cb) { $cb = $cb.Value }
+                    $mode = if ($callArgs.Count -eq 3) { ConvertTo-PhpBuiltinInteger $callArgs[2] 'array_filter' 3 'mode' } else { [long]0 }
+                    $out = New-PhpArray
+                    foreach ($k in @($arr.Items.Keys)) {
+                        $v = $arr.Items[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                        $kv = Get-PhpKeyValue $k
+                        $keep = $false
+                        if ($null -eq $cb) {
+                            $keep = Is-Truthy $v
+                        } elseif ($mode -eq 2) {
+                            $keep = Is-Truthy (Invoke-PhpValueCallable $cb @($kv) 'array_filter' $callPolicy)
+                        } elseif ($mode -eq 1) {
+                            $keep = Is-Truthy (Invoke-PhpValueCallable $cb @($v, $kv) 'array_filter' $callPolicy)
+                        } else {
+                            $keep = Is-Truthy (Invoke-PhpValueCallable $cb @($v) 'array_filter' $callPolicy)
+                        }
+                        if ($keep) {
+                            Set-PhpArrayItem $out $kv $v $false
+                        }
+                    }
+                    return $out
+                }
+                'array_reduce' {
+                    if ($callArgs.Count -lt 2 -or $callArgs.Count -gt 3 -or -not (Is-PhpArray $callArgs[0])) {
+                        throw 'ALL PHP: array_reduce() requires array and callback'
+                    }
+                    $arr = $callArgs[0]
+                    $cb = $callArgs[1]
+                    $acc = if ($callArgs.Count -eq 3) { $callArgs[2] } else { $null }
+                    foreach ($k in @($arr.Items.Keys)) {
+                        $v = $arr.Items[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                        $acc = Invoke-PhpValueCallable $cb @($acc, $v) 'array_reduce' $callPolicy
+                    }
+                    return $acc
+                }
+                'array_unique' {
+                    if ($callArgs.Count -lt 1 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_unique() requires an array' }
+                    $arr = $callArgs[0]
+                    $out = New-PhpArray
+                    $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+                    foreach ($k in @($arr.Items.Keys)) {
+                        $v = $arr.Items[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                        $s = To-PhpText $v
+                        if ($seen.Add($s)) {
+                            Set-PhpArrayItem $out (Get-PhpKeyValue $k) $v $false
+                        }
+                    }
+                    return $out
+                }
+                'array_search' {
+                    if ($callArgs.Count -lt 2 -or $callArgs.Count -gt 3 -or -not (Is-PhpArray $callArgs[1])) {
+                        throw 'ALL PHP: array_search() requires needle and haystack'
+                    }
+                    $needle = $callArgs[0]
+                    $arr = $callArgs[1]
+                    $strict = if ($callArgs.Count -eq 3) { Is-Truthy $callArgs[2] } else { $false }
+                    foreach ($k in @($arr.Items.Keys)) {
+                        $v = $arr.Items[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                        $match = if ($strict) { Is-StrictEqual $needle $v } else { (Compare-Values $needle $v) -eq 0 }
+                        if ($match) { return (Get-PhpKeyValue $k) }
+                    }
+                    return $false
+                }
+                'array_combine' {
+                    if ($callArgs.Count -ne 2 -or -not (Is-PhpArray $callArgs[0]) -or -not (Is-PhpArray $callArgs[1])) {
+                        throw 'ALL PHP: array_combine() requires two arrays'
+                    }
+                    $kArr = @($callArgs[0].Items.Values)
+                    $vArr = @($callArgs[1].Items.Values)
+                    if ($kArr.Count -ne $vArr.Count) {
+                        Throw-PhpError 'ValueError' 'array_combine(): Argument #1 ($keys) and argument #2 ($values) must have the same number of elements'
+                    }
+                    $out = New-PhpArray
+                    for ($i = 0; $i -lt $kArr.Count; $i++) {
+                        $kv = $kArr[$i]; if (Is-PhpRefCell $kv) { $kv = $kv.Value }
+                        $vv = $vArr[$i]; if (Is-PhpRefCell $vv) { $vv = $vv.Value }
+                        if (-not ($kv -is [long]) -and -not (Is-PhpStringValue $kv)) { $kv = To-PhpBytes $kv }
+                        Set-PhpArrayItem $out $kv $vv $false
+                    }
+                    return $out
+                }
+                'array_chunk' {
+                    if ($callArgs.Count -lt 2 -or $callArgs.Count -gt 3 -or -not (Is-PhpArray $callArgs[0])) {
+                        throw 'ALL PHP: array_chunk() requires array and length'
+                    }
+                    $arr = $callArgs[0]
+                    $size = ConvertTo-PhpBuiltinInteger $callArgs[1] 'array_chunk' 2 'length'
+                    if ($size -le 0) { Throw-PhpError 'ValueError' 'array_chunk(): Argument #2 ($length) must be greater than 0' }
+                    $preserve = if ($callArgs.Count -eq 3) { Is-Truthy $callArgs[2] } else { $false }
+                    $out = New-PhpArray
+                    $chunk = $null
+                    $count = 0
+                    foreach ($k in @($arr.Items.Keys)) {
+                        if ($count -eq 0) { $chunk = New-PhpArray }
+                        $v = $arr.Items[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                        if ($preserve) { Set-PhpArrayItem $chunk (Get-PhpKeyValue $k) $v $false }
+                        else { Set-PhpArrayItem $chunk $null $v $true }
+                        $count++
+                        if ($count -eq $size) {
+                            Set-PhpArrayItem $out $null $chunk $true
+                            $count = 0
+                        }
+                    }
+                    if ($count -gt 0) { Set-PhpArrayItem $out $null $chunk $true }
+                    return $out
+                }
+                'array_column' {
+                    if ($callArgs.Count -lt 2 -or $callArgs.Count -gt 3 -or -not (Is-PhpArray $callArgs[0])) {
+                        throw 'ALL PHP: array_column() requires array and column_key'
+                    }
+                    $arr = $callArgs[0]
+                    $colKey = $callArgs[1]; if (Is-PhpRefCell $colKey) { $colKey = $colKey.Value }
+                    $idxKey = if ($callArgs.Count -eq 3) { $callArgs[2] } else { $null }
+                    if (Is-PhpRefCell $idxKey) { $idxKey = $idxKey.Value }
+                    $out = New-PhpArray
+                    foreach ($k in @($arr.Items.Keys)) {
+                        $row = $arr.Items[$k]; if (Is-PhpRefCell $row) { $row = $row.Value }
+                        $hasVal = $false; $val = $null
+                        if ($null -eq $colKey) { $hasVal = $true; $val = $row }
+                        elseif (Is-PhpArray $row) {
+                            $rk = To-PhpKey $colKey
+                            if ($row.Items.Contains($rk)) { $hasVal = $true; $val = $row.Items[$rk]; if (Is-PhpRefCell $val) { $val = $val.Value } }
+                        } elseif (Is-PhpObject $row) {
+                            $pName = To-PhpText $colKey
+                            if (Test-PhpObjectHasProp $row $pName) { $hasVal = $true; $val = $row.Props[$pName]; if (Is-PhpRefCell $val) { $val = $val.Value } }
+                        }
+                        if (-not $hasVal) { continue }
+                        $targetKey = $null
+                        if ($null -ne $idxKey) {
+                            if (Is-PhpArray $row) {
+                                $ik = To-PhpKey $idxKey
+                                if ($row.Items.Contains($ik)) { $targetKey = $row.Items[$ik]; if (Is-PhpRefCell $targetKey) { $targetKey = $targetKey.Value } }
+                            } elseif (Is-PhpObject $row) {
+                                $ipName = To-PhpText $idxKey
+                                if (Test-PhpObjectHasProp $row $ipName) { $targetKey = $row.Props[$ipName]; if (Is-PhpRefCell $targetKey) { $targetKey = $targetKey.Value } }
+                            }
+                        }
+                        if ($null -eq $targetKey) { Set-PhpArrayItem $out $null $val $true }
+                        else { Set-PhpArrayItem $out $targetKey $val $false }
+                    }
+                    return $out
+                }
+                'array_fill' {
+                    if ($callArgs.Count -ne 3) { throw 'ALL PHP: array_fill() requires 3 arguments' }
+                    $start = ConvertTo-PhpBuiltinInteger $callArgs[0] 'array_fill' 1 'start_index'
+                    $count = ConvertTo-PhpBuiltinInteger $callArgs[1] 'array_fill' 2 'count'
+                    $val = $callArgs[2]
+                    if ($count -lt 0) { Throw-PhpError 'ValueError' 'array_fill(): Argument #2 ($count) must be greater than or equal to 0' }
+                    $out = New-PhpArray
+                    if ($count -gt 0) {
+                        $ownedVal = Copy-PhpValue $val
+                        $storage = $out.TraversalStorage
+                        $isArrayVal = (Is-PhpArray $ownedVal)
+                        for ($i = [long]0; $i -lt $count; $i++) {
+                            $kInt = if ($i -eq 0) { $start } else { $nx = [long]$out.NextIndex; if ($nx -eq [long]::MinValue) { [long]0 } else { $nx } }
+                            $kObj = [AllPhp.ByteValues.PhpKey]::FromInteger($kInt)
+                            $out.Items[$kObj] = if ($isArrayVal) { Copy-PhpValue $ownedVal } else { $ownedVal }
+                            $entry = [pscustomobject]@{Identity=[object]::new();Key=$kObj;Live=$true}
+                            [void]$storage.Entries.Add($entry)
+                            $storage.Live[$kObj] = $entry
+                            if ($kInt -ge $out.NextIndex) {
+                                $out.NextIndex = if ($kInt -eq [long]::MaxValue) { [long]::MaxValue } else { [long]($kInt + 1) }
+                            }
+                        }
+                    }
+                    return $out
+                }
+                'array_fill_keys' {
+                    if ($callArgs.Count -ne 2 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_fill_keys() requires keys array and value' }
+                    $out = New-PhpArray
+                    foreach ($k in @($callArgs[0].Items.Keys)) {
+                        $kv = $callArgs[0].Items[$k]; if (Is-PhpRefCell $kv) { $kv = $kv.Value }
+                        if (-not ($kv -is [long]) -and -not (Is-PhpStringValue $kv)) { $kv = To-PhpBytes $kv }
+                        Set-PhpArrayItem $out $kv $callArgs[1] $false
+                    }
+                    return $out
+                }
+                'array_flip' {
+                    if ($callArgs.Count -ne 1 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_flip() requires one array' }
+                    $out = New-PhpArray
+                    foreach ($k in @($callArgs[0].Items.Keys)) {
+                        $v = $callArgs[0].Items[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                        if (-not ($v -is [long]) -and -not (Is-PhpStringValue $v)) {
+                            Write-PhpDiagnostic 2 'array_flip(): Can only flip string and integer values, entry skipped'
+                            continue
+                        }
+                        Set-PhpArrayItem $out $v (Get-PhpKeyValue $k) $false
+                    }
+                    return $out
+                }
+                'array_diff' {
+                    if ($callArgs.Count -lt 1 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_diff() requires arrays' }
+                    $base = $callArgs[0]
+                    $others = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+                    for ($i = 1; $i -lt $callArgs.Count; $i++) {
+                        foreach ($v in $callArgs[$i].Items.Values) {
+                            $uv = if (Is-PhpRefCell $v) { $v.Value } else { $v }
+                            [void]$others.Add((To-PhpText $uv))
+                        }
+                    }
+                    $out = New-PhpArray
+                    foreach ($k in @($base.Items.Keys)) {
+                        $v = $base.Items[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                        if (-not $others.Contains((To-PhpText $v))) {
+                            Set-PhpArrayItem $out (Get-PhpKeyValue $k) $v $false
+                        }
+                    }
+                    return $out
+                }
+                'array_diff_key' {
+                    if ($callArgs.Count -lt 1 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_diff_key() requires arrays' }
+                    $base = $callArgs[0]
+                    $out = New-PhpArray
+                    foreach ($k in @($base.Items.Keys)) {
+                        $present = $false
+                        for ($i = 1; $i -lt $callArgs.Count; $i++) {
+                            if ($callArgs[$i].Items.Contains($k)) { $present = $true; break }
+                        }
+                        if (-not $present) {
+                            Set-PhpArrayItem $out (Get-PhpKeyValue $k) $base.Items[$k] $false
+                        }
+                    }
+                    return $out
+                }
+                'array_intersect' {
+                    if ($callArgs.Count -lt 1 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_intersect() requires arrays' }
+                    $base = $callArgs[0]
+                    $out = New-PhpArray
+                    foreach ($k in @($base.Items.Keys)) {
+                        $v = $base.Items[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                        $sv = To-PhpText $v
+                        $allHave = $true
+                        for ($i = 1; $i -lt $callArgs.Count; $i++) {
+                            $found = $false
+                            foreach ($ov in $callArgs[$i].Items.Values) {
+                                $uov = if (Is-PhpRefCell $ov) { $ov.Value } else { $ov }
+                                if ((To-PhpText $uov) -ceq $sv) { $found = $true; break }
+                            }
+                            if (-not $found) { $allHave = $false; break }
+                        }
+                        if ($allHave) { Set-PhpArrayItem $out (Get-PhpKeyValue $k) $v $false }
+                    }
+                    return $out
+                }
+                'array_intersect_key' {
+                    if ($callArgs.Count -lt 1 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_intersect_key() requires arrays' }
+                    $base = $callArgs[0]
+                    $out = New-PhpArray
+                    foreach ($k in @($base.Items.Keys)) {
+                        $allHave = $true
+                        for ($i = 1; $i -lt $callArgs.Count; $i++) {
+                            if (-not $callArgs[$i].Items.Contains($k)) { $allHave = $false; break }
+                        }
+                        if ($allHave) { Set-PhpArrayItem $out (Get-PhpKeyValue $k) $base.Items[$k] $false }
+                    }
+                    return $out
+                }
+                'array_pad' {
+                    if ($callArgs.Count -ne 3 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_pad() requires 3 arguments' }
+                    $arr = $callArgs[0]
+                    $size = ConvertTo-PhpBuiltinInteger $callArgs[1] 'array_pad' 2 'length'
+                    $padVal = $callArgs[2]
+                    $absSize = [Math]::Abs($size)
+                    $out = New-PhpArray
+                    if ($size -lt 0 -and $absSize -gt $arr.Items.Count) {
+                        $padCount = $absSize - $arr.Items.Count
+                        for ($i = 0; $i -lt $padCount; $i++) { Set-PhpArrayItem $out $null $padVal $true }
+                    }
+                    foreach ($k in @($arr.Items.Keys)) {
+                        $v = $arr.Items[$k]
+                        if ($k.IsInteger) { Set-PhpArrayItem $out $null $v $true }
+                        else { Set-PhpArrayItem $out (Get-PhpKeyValue $k) $v $false }
+                    }
+                    if ($size -gt 0 -and $absSize -gt $arr.Items.Count) {
+                        $padCount = $absSize - $arr.Items.Count
+                        for ($i = 0; $i -lt $padCount; $i++) { Set-PhpArrayItem $out $null $padVal $true }
+                    }
+                    return $out
+                }
+                'array_product' {
+                    if ($callArgs.Count -ne 1 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_product() requires one array' }
+                    $prod = [long]1
+                    foreach ($v in $callArgs[0].Items.Values) {
+                        $prod = Php-Mul $prod (To-Number $v)
+                    }
+                    return $prod
+                }
+                'array_replace' {
+                    if ($callArgs.Count -lt 1 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_replace() requires arrays' }
+                    $out = New-PhpArray
+                    foreach ($arr in $callArgs) {
+                        if (-not (Is-PhpArray $arr)) { throw 'ALL PHP: array_replace() requires arrays' }
+                        foreach ($k in @($arr.Items.Keys)) {
+                            Set-PhpArrayItem $out (Get-PhpKeyValue $k) $arr.Items[$k] $false
+                        }
+                    }
+                    return $out
+                }
+                'array_is_list' {
+                    if ($callArgs.Count -ne 1 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_is_list() requires one array' }
+                    $idx = [long]0
+                    foreach ($k in $callArgs[0].Items.Keys) {
+                        if (-not $k.IsInteger -or $k.IntegerValue -ne $idx) { return $false }
+                        $idx++
+                    }
+                    return $true
+                }
+                'array_find' {
+                    if ($callArgs.Count -ne 2 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_find() requires array and callback' }
+                    $arr = $callArgs[0]; $cb = $callArgs[1]
+                    foreach ($k in @($arr.Items.Keys)) {
+                        $v = $arr.Items[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                        if (Is-Truthy (Invoke-PhpValueCallable $cb @($v, (Get-PhpKeyValue $k)) 'array_find' $callPolicy)) {
+                            return $v
+                        }
+                    }
+                    return $null
+                }
+                'array_find_key' {
+                    if ($callArgs.Count -ne 2 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_find_key() requires array and callback' }
+                    $arr = $callArgs[0]; $cb = $callArgs[1]
+                    foreach ($k in @($arr.Items.Keys)) {
+                        $v = $arr.Items[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                        $kv = Get-PhpKeyValue $k
+                        if (Is-Truthy (Invoke-PhpValueCallable $cb @($v, $kv) 'array_find_key' $callPolicy)) {
+                            return $kv
+                        }
+                    }
+                    return $null
+                }
+                'array_any' {
+                    if ($callArgs.Count -ne 2 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_any() requires array and callback' }
+                    $arr = $callArgs[0]; $cb = $callArgs[1]
+                    foreach ($k in @($arr.Items.Keys)) {
+                        $v = $arr.Items[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                        if (Is-Truthy (Invoke-PhpValueCallable $cb @($v, (Get-PhpKeyValue $k)) 'array_any' $callPolicy)) {
+                            return $true
+                        }
+                    }
+                    return $false
+                }
+                'array_all' {
+                    if ($callArgs.Count -ne 2 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_all() requires array and callback' }
+                    $arr = $callArgs[0]; $cb = $callArgs[1]
+                    foreach ($k in @($arr.Items.Keys)) {
+                        $v = $arr.Items[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                        if (-not (Is-Truthy (Invoke-PhpValueCallable $cb @($v, (Get-PhpKeyValue $k)) 'array_all' $callPolicy))) {
+                            return $false
+                        }
+                    }
+                    return $true
+                }
+                'array_count_values' {
+                    if ($callArgs.Count -ne 1 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_count_values() requires one array' }
+                    $out = New-PhpArray
+                    foreach ($v in $callArgs[0].Items.Values) {
+                        $uv = if (Is-PhpRefCell $v) { $v.Value } else { $v }
+                        $k = To-PhpKey $uv
+                        if ($out.Items.Contains($k)) {
+                            $out.Items[$k] = [long]$out.Items[$k] + 1
+                        } else {
+                            Set-PhpArrayItem $out $uv ([long]1) $false
+                        }
+                    }
+                    return $out
+                }
+                'array_change_key_case' {
+                    if ($callArgs.Count -lt 1 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_change_key_case() requires an array' }
+                    $arr = $callArgs[0]
+                    $caseMode = if ($callArgs.Count -ge 2) { ConvertTo-PhpBuiltinInteger $callArgs[1] 'array_change_key_case' 2 'case' } else { [long]0 }
+                    $out = New-PhpArray
+                    foreach ($k in @($arr.Items.Keys)) {
+                        if ($k.IsInteger) {
+                            Set-PhpArrayItem $out $k.IntegerValue $arr.Items[$k] $false
+                        } else {
+                            $b = if ($caseMode -eq 1) { $k.BytesValue.UpperAscii() } else { $k.BytesValue.LowerAscii() }
+                            Set-PhpArrayItem $out $b $arr.Items[$k] $false
+                        }
+                    }
+                    return $out
+                }
+                'range' {
+                    if ($callArgs.Count -lt 2 -or $callArgs.Count -gt 3) { throw 'ALL PHP: range() requires 2 or 3 arguments' }
+                    $start = $callArgs[0]; if (Is-PhpRefCell $start) { $start = $start.Value }
+                    $end = $callArgs[1]; if (Is-PhpRefCell $end) { $end = $end.Value }
+                    $step = if ($callArgs.Count -eq 3) { To-Number $callArgs[2] } else { [long]1 }
+                    if ($step -eq 0) { Throw-PhpError 'ValueError' 'range(): Argument #3 ($step) must not be 0' }
+                    $out = New-PhpArray
+                    if ((Is-PhpStringValue $start) -and (Is-PhpStringValue $end) -and (To-PhpBytes $start).Length -eq 1 -and (To-PhpBytes $end).Length -eq 1) {
+                        $bStart = [int](To-PhpBytes $start).GetByte(0)
+                        $bEnd = [int](To-PhpBytes $end).GetByte(0)
+                        $iStep = [int][Math]::Abs((To-PhpInt $step))
+                        if ($bStart -le $bEnd) {
+                            for ($c = $bStart; $c -le $bEnd; $c += $iStep) {
+                                Set-PhpArrayItem $out $null ([AllPhp.ByteValues.PhpBytes]::FromBytes([byte[]]@([byte]$c))) $true
+                            }
+                        } else {
+                            for ($c = $bStart; $c -ge $bEnd; $c -= $iStep) {
+                                Set-PhpArrayItem $out $null ([AllPhp.ByteValues.PhpBytes]::FromBytes([byte[]]@([byte]$c))) $true
+                            }
+                        }
+                        return $out
+                    }
+                    $nStart = To-Number $start
+                    $nEnd = To-Number $end
+                    $isFloat = ($nStart -is [double] -or $nEnd -is [double] -or $step -is [double])
+                    $absStep = [Math]::Abs([double]$step)
+                    if ($nStart -le $nEnd) {
+                        for ($cur = [double]$nStart; $cur -le [double]$nEnd + 1e-12; $cur += $absStep) {
+                            $item = if ($isFloat) { [double]$cur } else { [long][Math]::Round($cur) }
+                            Set-PhpArrayItem $out $null $item $true
+                        }
+                    } else {
+                        for ($cur = [double]$nStart; $cur -ge [double]$nEnd - 1e-12; $cur -= $absStep) {
+                            $item = if ($isFloat) { [double]$cur } else { [long][Math]::Round($cur) }
+                            Set-PhpArrayItem $out $null $item $true
+                        }
+                    }
+                    return $out
+                }
+                { $_ -in @('sort','rsort','asort','arsort','ksort','krsort','usort','uasort','uksort') } {
+                    $sortFn = ConvertTo-PhpAsciiLower $name
+                    if ($callArgs.Count -lt 1 -or -not (Is-PhpArray $callArgs[0])) { throw "ALL PHP: $sortFn() requires an array" }
+                    $arr = $callArgs[0]
+                    Separate-PhpReferenceBacking $arr
+                    $entries = [System.Collections.Generic.List[object]]::new()
+                    foreach ($k in @($arr.Items.Keys)) {
+                        $v = $arr.Items[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                        [void]$entries.Add([pscustomobject]@{ Key = $k; KeyVal = (Get-PhpKeyValue $k); Val = $v })
+                    }
+                    $cb = if ($sortFn.StartsWith('u')) { $callArgs[1] } else { $null }
+                    $n = $entries.Count
+                    for ($i = 1; $i -lt $n; $i++) {
+                        $curr = $entries[$i]
+                        $j = $i - 1
+                        while ($j -ge 0) {
+                            $prev = $entries[$j]
+                            $cmp = 0
+                            if ($sortFn -in @('usort','uasort')) {
+                                $cmp = To-PhpInt (Invoke-PhpValueCallable $cb @($prev.Val, $curr.Val) $sortFn $callPolicy)
+                            } elseif ($sortFn -ceq 'uksort') {
+                                $cmp = To-PhpInt (Invoke-PhpValueCallable $cb @($prev.KeyVal, $curr.KeyVal) $sortFn $callPolicy)
+                            } elseif ($sortFn -in @('ksort','krsort')) {
+                                $cmp = Compare-Values $prev.KeyVal $curr.KeyVal
+                                if ($sortFn -ceq 'krsort') { $cmp = -$cmp }
+                            } else {
+                                $cmp = Compare-Values $prev.Val $curr.Val
+                                if ($sortFn -in @('rsort','arsort')) { $cmp = -$cmp }
+                            }
+                            if ($cmp -gt 0) {
+                                $entries[$j + 1] = $entries[$j]
+                                $j--
+                            } else {
+                                break
+                            }
+                        }
+                        $entries[$j + 1] = $curr
+                    }
+                    $preserveKeys = ($sortFn -in @('asort','arsort','ksort','krsort','uasort','uksort'))
+                    $replacement = New-PhpArray
+                    foreach ($e in $entries) {
+                        if ($preserveKeys) { Set-PhpArrayItem $replacement $e.KeyVal $e.Val $false }
+                        else { Set-PhpArrayItem $replacement $null $e.Val $true }
+                    }
+                    $arr.Items = $replacement.Items
+                    $arr.NextIndex = $replacement.NextIndex
+                    $arr.TraversalStorage = $replacement.TraversalStorage
+                    return $true
+                }
+                'array_splice' {
+                    if ($callArgs.Count -lt 2 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: array_splice() requires array and offset' }
+                    $arr = $callArgs[0]
+                    Separate-PhpReferenceBacking $arr
+                    $keys = @($arr.Items.Keys)
+                    $count = $keys.Count
+                    $offset = [int](ConvertTo-PhpBuiltinInteger $callArgs[1] 'array_splice' 2 'offset')
+                    if ($offset -lt 0) { $offset = [Math]::Max(0, $count + $offset) }
+                    if ($offset -gt $count) { $offset = $count }
+                    $len = $count - $offset
+                    if ($callArgs.Count -ge 3 -and $null -ne $callArgs[2]) {
+                        $rawLen = [int](ConvertTo-PhpBuiltinInteger $callArgs[2] 'array_splice' 3 'length')
+                        if ($rawLen -lt 0) { $len = [Math]::Max(0, ($count + $rawLen) - $offset) }
+                        else { $len = [Math]::Min($len, $rawLen) }
+                    }
+                    $repItems = @()
+                    if ($callArgs.Count -ge 4) {
+                        if (Is-PhpArray $callArgs[3]) { $repItems = @($callArgs[3].Items.Values) }
+                        else { $repItems = @($callArgs[3]) }
+                    }
+                    $removed = New-PhpArray
+                    $kept = New-PhpArray
+                    for ($i = 0; $i -lt $offset; $i++) {
+                        $k = $keys[$i]; $v = $arr.Items[$k]
+                        if ($k.IsInteger) { Set-PhpArrayItem $kept $null $v $true }
+                        else { Set-PhpArrayItem $kept (Get-PhpKeyValue $k) $v $false }
+                    }
+                    for ($i = $offset; $i -lt ($offset + $len); $i++) {
+                        $k = $keys[$i]; $v = $arr.Items[$k]
+                        if ($k.IsInteger) { Set-PhpArrayItem $removed $null $v $true }
+                        else { Set-PhpArrayItem $removed (Get-PhpKeyValue $k) $v $false }
+                    }
+                    foreach ($rv in $repItems) { Set-PhpArrayItem $kept $null $rv $true }
+                    for ($i = $offset + $len; $i -lt $count; $i++) {
+                        $k = $keys[$i]; $v = $arr.Items[$k]
+                        if ($k.IsInteger) { Set-PhpArrayItem $kept $null $v $true }
+                        else { Set-PhpArrayItem $kept (Get-PhpKeyValue $k) $v $false }
+                    }
+                    $arr.Items = $kept.Items
+                    $arr.NextIndex = $kept.NextIndex
+                    $arr.TraversalStorage = $kept.TraversalStorage
+                    return $removed
+                }
+                'compact' {
+                    $out = New-PhpArray
+                    foreach ($arg in $callArgs) {
+                        $names = if (Is-PhpArray $arg) { @($arg.Items.Values) } else { @($arg) }
+                        foreach ($nVal in $names) {
+                            $varName = To-PhpText $nVal
+                            $slot = Get-PhpVariableSlot $varName
+                            if ($slot.Store.ContainsKey($slot.Key)) {
+                                Set-PhpArrayItem $out $varName (Get-PhpVariableValue $varName) $false
+                            }
+                        }
+                    }
+                    return $out
+                }
+                'extract' {
+                    if ($callArgs.Count -lt 1 -or -not (Is-PhpArray $callArgs[0])) { throw 'ALL PHP: extract() requires an array' }
+                    $arr = $callArgs[0]
+                    $extracted = [long]0
+                    foreach ($k in @($arr.Items.Keys)) {
+                        if ($k.IsInteger) { continue }
+                        $varName = Get-PhpKeyHostText $k
+                        if ($varName -cmatch '^[A-Za-z_-￿][A-Za-z_0-9-￿]*$') {
+                            Set-PhpVariableValue $varName $arr.Items[$k]
+                            $extracted++
+                        }
+                    }
+                    return $extracted
+                }
+                'iterator_to_array' {
+                    if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 2) { throw 'ALL PHP: iterator_to_array() requires 1 or 2 arguments' }
+                    $iter = $callArgs[0]
+                    $preserve = if ($callArgs.Count -eq 2) { Is-Truthy $callArgs[1] } else { $true }
+                    if (Is-PhpArray $iter) {
+                        if ($preserve) { return (Copy-PhpValue $iter) }
+                        $out = New-PhpArray
+                        foreach ($v in $iter.Items.Values) { Set-PhpArrayItem $out $null $v $true }
+                        return $out
+                    }
+                    if (Is-PhpObject $iter) {
+                        Ensure-PhpPrelude
+                        $objIter = $iter
+                        while ($state.PreludeLoaded -and (Test-PhpInstanceOf $objIter.Class 'IteratorAggregate') -and -not (Test-PhpInstanceOf $objIter.Class 'Iterator')) {
+                            $objIter = Invoke-PhpMethod $objIter 'getIterator' @()
+                        }
+                        $out = New-PhpArray
+                        [void](Invoke-PhpMethod $objIter 'rewind' @())
+                        while (Is-Truthy (Invoke-PhpMethod $objIter 'valid' @())) {
+                            $curVal = Invoke-PhpMethod $objIter 'current' @()
+                            if ($preserve) {
+                                $curKey = Invoke-PhpMethod $objIter 'key' @()
+                                Set-PhpArrayItem $out $curKey $curVal $false
+                            } else {
+                                Set-PhpArrayItem $out $null $curVal $true
+                            }
+                            [void](Invoke-PhpMethod $objIter 'next' @())
+                        }
+                        return $out
+                    }
+                    Throw-PhpError 'TypeError' 'iterator_to_array(): Argument #1 ($iterator) must be of type Traversable|array'
+                }
+                'iterator_count' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: iterator_count() requires 1 argument' }
+                    $iter = $callArgs[0]
+                    if (Is-PhpArray $iter) { return [long]$iter.Items.Count }
+                    if (Is-PhpObject $iter) {
+                        Ensure-PhpPrelude
+                        $objIter = $iter
+                        while ($state.PreludeLoaded -and (Test-PhpInstanceOf $objIter.Class 'IteratorAggregate') -and -not (Test-PhpInstanceOf $objIter.Class 'Iterator')) {
+                            $objIter = Invoke-PhpMethod $objIter 'getIterator' @()
+                        }
+                        $cnt = [long]0
+                        [void](Invoke-PhpMethod $objIter 'rewind' @())
+                        while (Is-Truthy (Invoke-PhpMethod $objIter 'valid' @())) {
+                            $cnt++
+                            [void](Invoke-PhpMethod $objIter 'next' @())
+                        }
+                        return $cnt
+                    }
+                    Throw-PhpError 'TypeError' 'iterator_count(): Argument #1 ($iterator) must be of type Traversable|array'
+                }
+                'preg_quote' {
+                    Assert-PhpStringBuiltinArity 'preg_quote' $callArgs 1 2
+                    $str = To-PhpText (ConvertTo-PhpBuiltinBytes $callArgs[0] 'preg_quote' 1 'str')
+                    $delim = if ($callArgs.Count -eq 2 -and $null -ne $callArgs[1]) { To-PhpText $callArgs[1] } else { '' }
+                    $special = '.\+*?[^]$(){}=!<>|:-#' + $delim
+                    $sb = [Text.StringBuilder]::new()
+                    foreach ($ch in $str.ToCharArray()) {
+                        if ($special.IndexOf($ch) -ge 0) { [void]$sb.Append('') }
+                        [void]$sb.Append($ch)
+                    }
+                    return (To-PhpBytes $sb.ToString())
+                }
+                { $_ -in @('preg_match','preg_match_all','preg_replace','preg_split') } {
+                    $pFn = ConvertTo-PhpAsciiLower $name
+                    $rawPat = To-PhpText $callArgs[0]
+                    if ($rawPat.Length -lt 2) { Throw-PhpError 'ValueError' "$pFn(): Empty regular expression" }
+                    $delim = $rawPat[0]
+                    $closeDelim = switch ($delim) { '(' {')'} '[' {']'} '{' {'}'} '<' {'>'} default {$delim} }
+                    $lastIdx = $rawPat.LastIndexOf($closeDelim)
+                    if ($lastIdx -le 0) { Throw-PhpError 'ValueError' "$pFn(): No ending delimiter '$closeDelim' found" }
+                    $innerPat = $rawPat.Substring(1, $lastIdx - 1)
+                    $mods = $rawPat.Substring($lastIdx + 1)
+                    $opts = [Text.RegularExpressions.RegexOptions]::None
+                    if ($mods.Contains('i')) { $opts = $opts -bor [Text.RegularExpressions.RegexOptions]::IgnoreCase }
+                    if ($mods.Contains('m')) { $opts = $opts -bor [Text.RegularExpressions.RegexOptions]::Multiline }
+                    if ($mods.Contains('s')) { $opts = $opts -bor [Text.RegularExpressions.RegexOptions]::Singleline }
+                    if ($mods.Contains('x')) { $opts = $opts -bor [Text.RegularExpressions.RegexOptions]::IgnorePatternWhitespace }
+                    $rxObj = [regex]::new($innerPat, $opts)
+                    if ($pFn -ceq 'preg_match') {
+                        $subj = To-PhpText $callArgs[1]
+                        $m = $rxObj.Match($subj)
+                        if ($m.Success) { return [long]1 }
+                        return [long]0
+                    }
+                    if ($pFn -ceq 'preg_match_all') {
+                        $subj = To-PhpText $callArgs[1]
+                        $ms = $rxObj.Matches($subj)
+                        return [long]$ms.Count
+                    }
+                    if ($pFn -ceq 'preg_replace') {
+                        $rep = To-PhpText $callArgs[1]
+                        $subj = To-PhpText $callArgs[2]
+                        $res = $rxObj.Replace($subj, $rep)
+                        return (To-PhpBytes $res)
+                    }
+                    if ($pFn -ceq 'preg_split') {
+                        $subj = To-PhpText $callArgs[1]
+                        $limit = if ($callArgs.Count -ge 3) { ConvertTo-PhpBuiltinInteger $callArgs[2] 'preg_split' 3 'limit' } else { [long]-1 }
+                        $flags = if ($callArgs.Count -ge 4) { ConvertTo-PhpBuiltinInteger $callArgs[3] 'preg_split' 4 'flags' } else { [long]0 }
+                        $parts = if ($limit -gt 0) { $rxObj.Split($subj, [int]$limit) } else { $rxObj.Split($subj) }
+                        $out = New-PhpArray
+                        foreach ($p in $parts) {
+                            if (($flags -band 1) -ne 0 -and $p.Length -eq 0) { continue }
+                            Set-PhpArrayItem $out $null (To-PhpBytes $p) $true
+                        }
+                        return $out
+                    }
+                }
+                'class_exists' {
+                    $cName = (To-PhpText $callArgs[0]).TrimStart('\')
+                    if ($phpPreludeTriggers.Contains($cName)) { Ensure-PhpPrelude }
+                    if ($cName -ieq 'stdClass') { return $true }
+                    return [bool]$state.Classes.ContainsKey($cName)
+                }
+                'interface_exists' {
+                    $iName = (To-PhpText $callArgs[0]).TrimStart('\')
+                    if ($phpPreludeTriggers.Contains($iName)) { Ensure-PhpPrelude }
+                    return [bool]$state.Interfaces.ContainsKey($iName)
+                }
+                'trait_exists' {
+                    $tName = (To-PhpText $callArgs[0]).TrimStart('\')
+                    return [bool]$state.Traits.ContainsKey($tName)
+                }
+                'enum_exists' {
+                    $eName = (To-PhpText $callArgs[0]).TrimStart('\')
+                    return [bool]($state.Classes.ContainsKey($eName) -and $state.Classes[$eName].PSObject.Properties['Enum'] -and $state.Classes[$eName].Enum)
+                }
+                'method_exists' {
+                    $target = $callArgs[0]; if (Is-PhpRefCell $target) { $target = $target.Value }
+                    $mName = To-PhpText $callArgs[1]
+                    $cName = if (Is-PhpObject $target) { [string]$target.Class } else { (To-PhpText $target).TrimStart('\') }
+                    if ($phpPreludeTriggers.Contains($cName)) { Ensure-PhpPrelude }
+                    return ($null -ne (Find-OptionalPhpMethod $cName $mName))
+                }
+                'property_exists' {
+                    $target = $callArgs[0]; if (Is-PhpRefCell $target) { $target = $target.Value }
+                    $pName = To-PhpText $callArgs[1]
+                    if (Is-PhpObject $target -and (Test-PhpObjectHasProp $target $pName)) { return $true }
+                    $cName = if (Is-PhpObject $target) { [string]$target.Class } else { (To-PhpText $target).TrimStart('\') }
+                    if ($phpPreludeTriggers.Contains($cName)) { Ensure-PhpPrelude }
+                    if (-not $state.Classes.ContainsKey($cName)) { return $false }
+                    return ($null -ne (Find-PhpProperty $cName $pName $false) -or $null -ne (Find-PhpProperty $cName $pName $true))
+                }
+                'is_a' {
+                    $target = $callArgs[0]; if (Is-PhpRefCell $target) { $target = $target.Value }
+                    $cName = (To-PhpText $callArgs[1]).TrimStart('\')
+                    $allowStr = if ($callArgs.Count -ge 3) { Is-Truthy $callArgs[2] } else { $false }
+                    if ($phpPreludeTriggers.Contains($cName)) { Ensure-PhpPrelude }
+                    if (Is-PhpObject $target) { return (Test-PhpInstanceOf $target.Class $cName) }
+                    if ($allowStr -and (Is-PhpStringValue $target)) {
+                        $tName = (To-PhpText $target).TrimStart('\')
+                        return (Test-PhpInstanceOf $tName $cName)
+                    }
+                    return $false
+                }
+                'is_subclass_of' {
+                    $target = $callArgs[0]; if (Is-PhpRefCell $target) { $target = $target.Value }
+                    $cName = (To-PhpText $callArgs[1]).TrimStart('\')
+                    $tName = if (Is-PhpObject $target) { [string]$target.Class } elseif (Is-PhpStringValue $target) { (To-PhpText $target).TrimStart('\') } else { return $false }
+                    if (Test-PhpNameEqual $tName $cName) { return $false }
+                    return (Test-PhpInstanceOf $tName $cName)
+                }
+                'get_parent_class' {
+                    $target = if ($callArgs.Count -ge 1) { $callArgs[0] } else { $null }
+                    if (Is-PhpRefCell $target) { $target = $target.Value }
+                    $cName = if ($null -eq $target) { $state.ClassContext } elseif (Is-PhpObject $target) { [string]$target.Class } elseif (Is-PhpStringValue $target) { (To-PhpText $target).TrimStart('\') } else { return $false }
+                    if ($null -ne $cName -and $state.Classes.ContainsKey($cName) -and $null -ne $state.Classes[$cName].Parent) {
+                        return (To-PhpBytes ([string]$state.Classes[$cName].Parent))
+                    }
+                    return $false
+                }
+                'class_alias' {
+                    if ($callArgs.Count -lt 2 -or $callArgs.Count -gt 3) {
+                        Throw-PhpError 'ArgumentCountError' ('class_alias() expects between 2 and 3 arguments, ' + $callArgs.Count + ' given')
+                    }
+                    $orig = (To-PhpText $callArgs[0]).TrimStart('\')
+                    $alias = (To-PhpText $callArgs[1]).TrimStart('\')
+                    if ($phpPreludeTriggers.Contains($orig)) { Ensure-PhpPrelude }
+                    if ($state.Classes.ContainsKey($alias) -or $state.Interfaces.ContainsKey($alias) -or $state.Traits.ContainsKey($alias)) {
+                        Write-PhpDiagnostic 2 ('Cannot declare class ' + $alias + ', because the name is already in use')
+                        return $false
+                    }
+                    if ($state.Classes.ContainsKey($orig)) {
+                        $clsDef = $state.Classes[$orig]
+                        $state.Classes[$alias] = $clsDef
+                        $state.ClassAliases[$alias] = [string]$clsDef.Name
+                        return $true
+                    }
+                    if ($state.Interfaces.ContainsKey($orig)) {
+                        $ifDef = $state.Interfaces[$orig]
+                        $state.Interfaces[$alias] = $ifDef
+                        $state.ClassAliases[$alias] = [string]$ifDef.Name
+                        return $true
+                    }
+                    if ($state.Traits.ContainsKey($orig)) {
+                        $trDef = $state.Traits[$orig]
+                        $state.Traits[$alias] = $trDef
+                        $state.ClassAliases[$alias] = [string]$trDef.Name
+                        return $true
+                    }
+                    Write-PhpDiagnostic 2 ('Class "' + $orig + '" not found')
+                    return $false
+                }
+                'class_implements' {
+                    if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 2) {
+                        Throw-PhpError 'ArgumentCountError' ('class_implements() expects between 1 and 2 arguments, ' + $callArgs.Count + ' given')
+                    }
+                    $target = $callArgs[0]; if (Is-PhpRefCell $target) { $target = $target.Value }
+                    $cName = if (Is-PhpObject $target) { [string]$target.Class } elseif (Is-PhpStringValue $target) { (To-PhpText $target).TrimStart('\') } else { return $false }
+                    if ($phpPreludeTriggers.Contains($cName)) { Ensure-PhpPrelude }
+                    $out = New-PhpArray
+                    if ($state.Interfaces.ContainsKey($cName)) {
+                        foreach ($iface in (Get-PhpInterfaceChain $cName)) {
+                            if (-not (Test-PhpNameEqual $iface.Name $cName)) {
+                                Set-PhpArrayItem $out ([string]$iface.Name) (To-PhpBytes ([string]$iface.Name)) $false
+                            }
+                        }
+                        return $out
+                    }
+                    if ($cName -ieq 'stdClass') { return $out }
+                    if (-not $state.Classes.ContainsKey($cName)) { return $false }
+                    foreach ($cls in (Get-PhpClassChain $cName)) {
+                        foreach ($ifName in $cls.Interfaces) {
+                            foreach ($iface in (Get-PhpInterfaceChain $ifName)) {
+                                Set-PhpArrayItem $out ([string]$iface.Name) (To-PhpBytes ([string]$iface.Name)) $false
+                            }
+                        }
+                    }
+                    return $out
+                }
+                'class_parents' {
+                    if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 2) {
+                        Throw-PhpError 'ArgumentCountError' ('class_parents() expects between 1 and 2 arguments, ' + $callArgs.Count + ' given')
+                    }
+                    $target = $callArgs[0]; if (Is-PhpRefCell $target) { $target = $target.Value }
+                    $cName = if (Is-PhpObject $target) { [string]$target.Class } elseif (Is-PhpStringValue $target) { (To-PhpText $target).TrimStart('\') } else { return $false }
+                    if ($phpPreludeTriggers.Contains($cName)) { Ensure-PhpPrelude }
+                    $out = New-PhpArray
+                    if ($cName -ieq 'stdClass') { return $out }
+                    if (-not $state.Classes.ContainsKey($cName)) { return $false }
+                    $chain = Get-PhpClassChain $cName
+                    for ($i = 1; $i -lt $chain.Count; $i++) {
+                        $pName = [string]$chain[$i].Name
+                        Set-PhpArrayItem $out $pName (To-PhpBytes $pName) $false
+                    }
+                    return $out
+                }
+                'get_class_methods' {
+                    $target = $callArgs[0]; if (Is-PhpRefCell $target) { $target = $target.Value }
+                    $cName = if (Is-PhpObject $target) { [string]$target.Class } else { (To-PhpText $target).TrimStart('\') }
+                    if ($phpPreludeTriggers.Contains($cName)) { Ensure-PhpPrelude }
+                    if ($cName -ieq 'stdClass') { return (New-PhpArray) }
+                    if (-not $state.Classes.ContainsKey($cName)) { return $null }
+                    $out = New-PhpArray
+                    $seen = [System.Collections.Generic.HashSet[string]]::new([AllPhp.ValidTextSymbols.Comparers]::Ascii)
+                    foreach ($cls in (Get-PhpClassChain $cName)) {
+                        foreach ($m in $cls.Methods.Values) {
+                            if ($m.Visibility -eq 'public' -and $seen.Add([string]$m.Name)) {
+                                Set-PhpArrayItem $out $null (To-PhpBytes ([string]$m.Name)) $true
+                            }
+                        }
+                    }
+                    return $out
+                }
+                'get_object_vars' {
+                    if ($callArgs.Count -ne 1 -or -not (Is-PhpObject $callArgs[0])) { throw 'ALL PHP: get_object_vars() requires an object' }
+                    $obj = $callArgs[0]
+                    $out = New-PhpArray
+                    foreach ($entry in (Get-PhpObjectDumpEntries $obj)) {
+                        if (-not $entry.Present -or $entry.Suffix.Length -gt 0) { continue }
+                        Set-PhpArrayItem $out $entry.Name $entry.Value $false
+                    }
+                    return $out
+                }
+                'spl_object_id' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: spl_object_id() requires 1 argument' }
+                    $obj = $callArgs[0]; if (Is-PhpRefCell $obj) { $obj = $obj.Value }
+                    if ($null -ne $obj -and $obj.PSObject.Properties['Id']) { return [long]$obj.Id }
+                    Throw-PhpError 'TypeError' 'spl_object_id(): Argument #1 ($object) must be of type object'
+                }
+                'var_export' {
+                    if ($callArgs.Count -lt 1 -or $callArgs.Count -gt 2) { throw 'ALL PHP: var_export() requires 1 or 2 arguments' }
+                    $ret = if ($callArgs.Count -eq 2) { Is-Truthy $callArgs[1] } else { $false }
+                    $formatExport = {
+                        param($v, [string]$ind)
+                        if (Is-PhpRefCell $v) { $v = $v.Value }
+                        if ($null -eq $v) { return 'NULL' }
+                        if ($v -is [bool]) { return $(if ($v) { 'true' } else { 'false' }) }
+                        if ($v -is [long]) { return $v.ToString([Globalization.CultureInfo]::InvariantCulture) }
+                        if ($v -is [double]) { return (Format-PhpFloat $v 0) }
+                        if (Is-PhpStringValue $v) {
+                            $s = To-PhpText $v
+                            return ("'" + $s.Replace('\', '\\').Replace("'", "\'") + "'")
+                        }
+                        if (Is-PhpArray $v) {
+                            $sb = [Text.StringBuilder]::new()
+                            [void]$sb.Append("array (`n")
+                            foreach ($k in $v.Items.Keys) {
+                                $kStr = if ($k.IsInteger) { $k.IntegerValue.ToString() } else { "'" + (Get-PhpKeyHostText $k).Replace('\','\\').Replace("'","\'") + "'" }
+                                $vStr = & $formatExport $v.Items[$k] ($ind + '  ')
+                                [void]$sb.Append($ind + '  ' + $kStr + ' => ' + $vStr + ",`n")
+                            }
+                            [void]$sb.Append($ind + ')')
+                            return $sb.ToString()
+                        }
+                        return 'NULL'
+                    }
+                    $exported = To-PhpBytes (& $formatExport $callArgs[0] '')
+                    if ($ret) { return $exported }
+                    Write-PhpBytes $exported
+                    return $null
+                }
+                'serialize' {
+                    if ($callArgs.Count -ne 1) { throw 'ALL PHP: serialize() requires 1 argument' }
+                    $ser = {
+                        param($v)
+                        if (Is-PhpRefCell $v) { $v = $v.Value }
+                        if ($null -eq $v) { return 'N;' }
+                        if ($v -is [bool]) { return ('b:' + $(if ($v) { '1' } else { '0' }) + ';') }
+                        if ($v -is [long]) { return ('i:' + $v.ToString([Globalization.CultureInfo]::InvariantCulture) + ';') }
+                        if ($v -is [double]) { return ('d:' + (Format-PhpFloat $v 0) + ';') }
+                        if (Is-PhpStringValue $v) {
+                            $b = To-PhpBytes $v
+                            return ('s:' + $b.Length + ':"' + (To-PhpText $b) + '";')
+                        }
+                        if (Is-PhpArray $v) {
+                            $sb = [Text.StringBuilder]::new()
+                            [void]$sb.Append('a:' + $v.Items.Count + ':{')
+                            foreach ($k in $v.Items.Keys) {
+                                if ($k.IsInteger) { [void]$sb.Append('i:' + $k.IntegerValue + ';') }
+                                else { [void]$sb.Append('s:' + $k.BytesValue.Length + ':"' + (Get-PhpKeyHostText $k) + '";') }
+                                [void]$sb.Append((& $ser $v.Items[$k]))
+                            }
+                            [void]$sb.Append('}')
+                            return $sb.ToString()
+                        }
+                        return 'N;'
+                    }
+                    return (To-PhpBytes (& $ser $callArgs[0]))
+                }
+                'unserialize' {
+                    if ($callArgs.Count -lt 1) { throw 'ALL PHP: unserialize() requires 1 argument' }
+                    $str = To-PhpText $callArgs[0]
+                    $script:unserPos = 0
+                    $unser = {
+                        if ($script:unserPos -ge $str.Length) { return $null }
+                        $tag = $str[$script:unserPos]
+                        if ($tag -ceq 'N') { $script:unserPos += 2; return $null }
+                        if ($tag -ceq 'b') {
+                            $val = ($str[$script:unserPos + 2] -ceq '1')
+                            $script:unserPos += 4
+                            return $val
+                        }
+                        if ($tag -ceq 'i') {
+                            $semi = $str.IndexOf(';', $script:unserPos + 2)
+                            $num = [long]::Parse($str.Substring($script:unserPos + 2, $semi - ($script:unserPos + 2)), [Globalization.CultureInfo]::InvariantCulture)
+                            $script:unserPos = $semi + 1
+                            return $num
+                        }
+                        if ($tag -ceq 'd') {
+                            $semi = $str.IndexOf(';', $script:unserPos + 2)
+                            $num = [double]::Parse($str.Substring($script:unserPos + 2, $semi - ($script:unserPos + 2)), [Globalization.CultureInfo]::InvariantCulture)
+                            $script:unserPos = $semi + 1
+                            return $num
+                        }
+                        if ($tag -ceq 's') {
+                            $colon = $str.IndexOf(':', $script:unserPos + 2)
+                            $len = [int]::Parse($str.Substring($script:unserPos + 2, $colon - ($script:unserPos + 2)))
+                            $start = $colon + 2
+                            $val = To-PhpBytes $str.Substring($start, $len)
+                            $script:unserPos = $start + $len + 2
+                            return $val
+                        }
+                        if ($tag -ceq 'a') {
+                            $colon = $str.IndexOf(':', $script:unserPos + 2)
+                            $cnt = [int]::Parse($str.Substring($script:unserPos + 2, $colon - ($script:unserPos + 2)))
+                            $script:unserPos = $colon + 2
+                            $arr = New-PhpArray
+                            for ($i = 0; $i -lt $cnt; $i++) {
+                                $k = & $unser
+                                $v = & $unser
+                                Set-PhpArrayItem $arr $k $v $false
+                            }
+                            $script:unserPos++
+                            return $arr
+                        }
+                        return $false
+                    }
+                    return (& $unser)
+                }
+                'func_num_args' {
+                    Assert-PhpStringBuiltinArity 'func_num_args' $callArgs 0 0
+                    $frame = Get-PhpCurrentUserCallFrame 'func_num_args'
+                    return [long]$frame.PassedArgs.Count
+                }
+                'func_get_args' {
+                    Assert-PhpStringBuiltinArity 'func_get_args' $callArgs 0 0
+                    $frame = Get-PhpCurrentUserCallFrame 'func_get_args'
+                    $out = New-PhpArray
+                    for ($i = 0; $i -lt $frame.PassedArgs.Count; $i++) {
+                        $val = if ($i -lt $frame.ParamNames.Count -and $state.Vars.ContainsKey($frame.ParamNames[$i])) {
+                            Get-PhpVariableValue $frame.ParamNames[$i]
+                        } else {
+                            $frame.PassedArgs[$i]
+                        }
+                        Set-PhpArrayItem $out $null (Copy-PhpValue $val) $true
+                    }
+                    return $out
+                }
+                'func_get_arg' {
+                    Assert-PhpStringBuiltinArity 'func_get_arg' $callArgs 1 1
+                    $frame = Get-PhpCurrentUserCallFrame 'func_get_arg'
+                    $pos = ConvertTo-PhpBuiltinInteger $callArgs[0] 'func_get_arg' 1 'position'
+                    if ($pos -lt 0) {
+                        Throw-PhpError 'ValueError' 'func_get_arg(): Argument #1 ($position) must be greater than or equal to 0'
+                    }
+                    if ($pos -ge $frame.PassedArgs.Count) {
+                        Throw-PhpError 'ValueError' 'func_get_arg(): Argument #1 ($position) must be less than the number of the arguments passed to the currently executed function'
+                    }
+                    $val = if ($pos -lt $frame.ParamNames.Count -and $state.Vars.ContainsKey($frame.ParamNames[$pos])) {
+                        Get-PhpVariableValue $frame.ParamNames[$pos]
+                    } else {
+                        $frame.PassedArgs[$pos]
+                    }
+                    return (Copy-PhpValue $val)
+                }
+                'settype' {
+                    Assert-PhpStringBuiltinArity 'settype' $callArgs 2 2
+                    $cell = $callArgs[0]
+                    if (-not (Is-PhpRefCell $cell)) {
+                        Throw-PhpError 'Error' 'settype(): Argument #1 ($var) cannot be passed by reference'
+                    }
+                    $tName = (To-PhpText (ConvertTo-PhpBuiltinBytes $callArgs[1] 'settype' 2 'type')).ToLowerInvariant()
+                    $cur = $cell.Value
+                    switch ($tName) {
+                        { $_ -in @('boolean','bool') } { $cell.Value = Convert-PhpCast $cur 'bool' }
+                        { $_ -in @('integer','int') } { $cell.Value = Convert-PhpCast $cur 'int' }
+                        { $_ -in @('float','double') } { $cell.Value = Convert-PhpCast $cur 'float' }
+                        'string' { $cell.Value = Convert-PhpCast $cur 'string' }
+                        'array' {
+                            if ($null -eq $cur) { $cell.Value = New-PhpArray }
+                            elseif (Is-PhpArray $cur) { $cell.Value = $cur }
+                            elseif (Is-PhpObject $cur) {
+                                $a = New-PhpArray
+                                foreach ($e in (Get-PhpObjectDumpEntries $cur)) {
+                                    if ($e.Present -and $e.Suffix.Length -eq 0) {
+                                        Set-PhpArrayItem $a $e.Name $e.Value $false
+                                    }
+                                }
+                                $cell.Value = $a
+                            } else {
+                                $a = New-PhpArray
+                                Set-PhpArrayItem $a $null $cur $true
+                                $cell.Value = $a
+                            }
+                        }
+                        'object' {
+                            if (Is-PhpObject $cur) { $cell.Value = $cur }
+                            elseif ($null -eq $cur) { $cell.Value = New-PhpStdObject }
+                            elseif (Is-PhpArray $cur) {
+                                $o = New-PhpStdObject
+                                foreach ($k in $cur.Items.Keys) {
+                                    $o.Props[(Get-PhpKeyHostText $k)] = Copy-PhpValue $cur.Items[$k]
+                                }
+                                $cell.Value = $o
+                            } else {
+                                $o = New-PhpStdObject
+                                $o.Props['scalar'] = Copy-PhpValue $cur
+                                $cell.Value = $o
+                            }
+                        }
+                        'null' { $cell.Value = $null }
+                        default { Throw-PhpError 'ValueError' 'settype(): Argument #2 ($type) must be a valid type' }
+                    }
+                    return $true
+                }
+                'get_class_vars' {
+                    Assert-PhpStringBuiltinArity 'get_class_vars' $callArgs 1 1
+                    $cName = (To-PhpText (ConvertTo-PhpBuiltinBytes $callArgs[0] 'get_class_vars' 1 'class')).TrimStart('\')
+                    if ($phpPreludeTriggers.Contains($cName)) { Ensure-PhpPrelude }
+                    if ($cName -ieq 'stdClass') { return (New-PhpArray) }
+                    if (-not $state.Classes.ContainsKey($cName)) {
+                        Throw-PhpError 'Error' ('Class "' + $cName + '" does not exist')
+                    }
+                    $out = New-PhpArray
+                    $chain = Get-PhpClassChain $cName
+                    $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+                    foreach ($cls in $chain) {
+                        foreach ($prop in $cls.Properties) {
+                            if (-not $seen.Add([string]$prop.Name)) { continue }
+                            $vis = $false
+                            try {
+                                Assert-PhpVisibility $prop.Visibility $prop.Owner 'property' $prop.Name
+                                $vis = $true
+                            } catch {
+                                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
+                                $vis = $false
+                            }
+                            if (-not $vis) { continue }
+                            if ($prop.Static) {
+                                $sStore = $state.Classes[$prop.Owner].StaticValues
+                                $v = if ($sStore.ContainsKey($prop.Name)) { $sStore[$prop.Name] } else { $null }
+                                if (Is-PhpRefCell $v) { $v = $v.Value }
+                                Set-PhpArrayItem $out $prop.Name (Copy-PhpValue $v) $false
+                            } else {
+                                $v = if ($null -ne $prop.Default) { Invoke-PhpExpr $prop.Default } else { $null }
+                                Set-PhpArrayItem $out $prop.Name (Copy-PhpValue $v) $false
+                            }
+                        }
+                    }
+                    return $out
+                }
+                'substr_replace' {
+                    Assert-PhpStringBuiltinArity 'substr_replace' $callArgs 3 4
+                    $s = ConvertTo-PhpBuiltinBytes $callArgs[0] 'substr_replace' 1 'string'
+                    $rep = ConvertTo-PhpBuiltinBytes $callArgs[1] 'substr_replace' 2 'replace'
+                    $off = ConvertTo-PhpBuiltinInteger $callArgs[2] 'substr_replace' 3 'offset'
+                    $start = if ($off -lt 0) { [Math]::Max([long]0, $s.Length + $off) } else { [Math]::Min([long]$s.Length, $off) }
+                    $len = $s.Length - $start
+                    if ($callArgs.Count -eq 4 -and $null -ne $callArgs[3]) {
+                        $rawL = ConvertTo-PhpBuiltinInteger $callArgs[3] 'substr_replace' 4 'length'
+                        if ($rawL -lt 0) { $len = [Math]::Max([long]0, ($s.Length + $rawL) - $start) }
+                        else { $len = [Math]::Min($s.Length - $start, $rawL) }
+                    }
+                    return $s.Slice(0, $start).Concat($rep).Concat($s.Slice($start + $len, $s.Length - ($start + $len)))
+                }
+                'chunk_split' {
+                    Assert-PhpStringBuiltinArity 'chunk_split' $callArgs 1 3
+                    $bytes = ConvertTo-PhpBuiltinBytes $callArgs[0] 'chunk_split' 1 'string'
+                    $cLen = if ($callArgs.Count -ge 2) { ConvertTo-PhpBuiltinInteger $callArgs[1] 'chunk_split' 2 'length' } else { [long]76 }
+                    if ($cLen -le 0) { Throw-PhpError 'ValueError' 'chunk_split(): Argument #2 ($length) must be greater than 0' }
+                    $sep = if ($callArgs.Count -eq 3) { ConvertTo-PhpBuiltinBytes $callArgs[2] 'chunk_split' 3 'separator' } else { To-PhpBytes "`r`n" }
+                    if ($bytes.Length -eq 0) { return $sep }
+                    $builder = [AllPhp.ByteValues.PhpByteBuilder]::new()
+                    for ($off = [long]0; $off -lt $bytes.Length; $off += $cLen) {
+                        $take = [Math]::Min($cLen, $bytes.Length - $off)
+                        $builder.Append($bytes.Slice($off, $take))
+                        $builder.Append($sep)
+                    }
+                    return $builder.ToPhpBytes()
+                }
+                'wordwrap' {
+                    Assert-PhpStringBuiltinArity 'wordwrap' $callArgs 1 4
+                    $str = To-PhpText (ConvertTo-PhpBuiltinBytes $callArgs[0] 'wordwrap' 1 'string')
+                    $width = if ($callArgs.Count -ge 2) { ConvertTo-PhpBuiltinInteger $callArgs[1] 'wordwrap' 2 'width' } else { [long]75 }
+                    $brk = if ($callArgs.Count -ge 3) { To-PhpText (ConvertTo-PhpBuiltinBytes $callArgs[2] 'wordwrap' 3 'break') } else { "`n" }
+                    $cut = if ($callArgs.Count -eq 4) { Is-Truthy $callArgs[3] } else { $false }
+                    if ($brk.Length -eq 0) { Throw-PhpError 'ValueError' 'wordwrap(): Argument #3 ($break) must not be empty' }
+                    if ($width -eq 0 -and $cut) { Throw-PhpError 'ValueError' 'wordwrap(): Cannot force cut when width is zero' }
+                    if ($str.Length -eq 0) { return [AllPhp.ByteValues.PhpBytes]::Empty }
+                    $sb = [System.Text.StringBuilder]::new()
+                    $lastStart = 0
+                    $lastSpace = 0
+                    $textLen = $str.Length
+                    $brkLen = $brk.Length
+                    $current = 0
+                    for ($current = 0; $current -lt $textLen; $current++) {
+                        if ($current + $brkLen -le $textLen -and [string]::CompareOrdinal($str, $current, $brk, 0, $brkLen) -eq 0) {
+                            [void]$sb.Append($str, $lastStart, ($current - $lastStart) + $brkLen)
+                            $current += $brkLen - 1
+                            $lastStart = $current + 1
+                            $lastSpace = $lastStart
+                        } elseif ($str[$current] -eq [char]' ') {
+                            if (($current - $lastStart) -ge $width) {
+                                [void]$sb.Append($str, $lastStart, $current - $lastStart)
+                                [void]$sb.Append($brk)
+                                $lastStart = $current + 1
+                            }
+                            $lastSpace = $current
+                        } elseif (($current - $lastStart) -ge $width -and $cut -and $lastStart -ge $lastSpace) {
+                            [void]$sb.Append($str, $lastStart, $current - $lastStart)
+                            [void]$sb.Append($brk)
+                            $lastStart = $current
+                            $lastSpace = $current
+                        } elseif (($current - $lastStart) -ge $width -and $lastStart -lt $lastSpace) {
+                            [void]$sb.Append($str, $lastStart, $lastSpace - $lastStart)
+                            [void]$sb.Append($brk)
+                            $lastSpace++
+                            $lastStart = $lastSpace
+                        }
+                    }
+                    if ($lastStart -ne $current) {
+                        [void]$sb.Append($str, $lastStart, $current - $lastStart)
+                    }
+                    return (To-PhpBytes $sb.ToString())
+                }
+                'quotemeta' {
+                    Assert-PhpStringBuiltinArity 'quotemeta' $callArgs 1 1
+                    $b = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'quotemeta' 1 'string').ToArray()
+                    if ($b.Length -eq 0) { return [AllPhp.ByteValues.PhpBytes]::Empty }
+                    $out = [System.Collections.Generic.List[byte]]::new()
+                    $meta = [byte[]]@(46, 92, 43, 42, 63, 91, 94, 93, 40, 36, 41)
+                    foreach ($byte in $b) {
+                        if ($meta -contains $byte) { [void]$out.Add([byte]92) }
+                        [void]$out.Add($byte)
+                    }
+                    return [AllPhp.ByteValues.PhpBytes]::FromBytes($out.ToArray())
+                }
+                'addslashes' {
+                    Assert-PhpStringBuiltinArity 'addslashes' $callArgs 1 1
+                    $b = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'addslashes' 1 'string').ToArray()
+                    $out = [System.Collections.Generic.List[byte]]::new()
+                    foreach ($byte in $b) {
+                        if ($byte -eq 0) { [void]$out.Add([byte]92); [void]$out.Add([byte]48) }
+                        elseif ($byte -in @(39, 34, 92)) { [void]$out.Add([byte]92); [void]$out.Add($byte) }
+                        else { [void]$out.Add($byte) }
+                    }
+                    return [AllPhp.ByteValues.PhpBytes]::FromBytes($out.ToArray())
+                }
+                'stripslashes' {
+                    Assert-PhpStringBuiltinArity 'stripslashes' $callArgs 1 1
+                    $b = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'stripslashes' 1 'string').ToArray()
+                    $out = [System.Collections.Generic.List[byte]]::new()
+                    for ($i = 0; $i -lt $b.Length; $i++) {
+                        if ($b[$i] -eq 92) {
+                            if ($i + 1 -lt $b.Length) {
+                                $i++
+                                if ($b[$i] -eq 48) { [void]$out.Add([byte]0) }
+                                else { [void]$out.Add($b[$i]) }
+                            }
+                        } else {
+                            [void]$out.Add($b[$i])
+                        }
+                    }
+                    return [AllPhp.ByteValues.PhpBytes]::FromBytes($out.ToArray())
+                }
+                'soundex' {
+                    Assert-PhpStringBuiltinArity 'soundex' $callArgs 1 1
+                    $bytes = (ConvertTo-PhpBuiltinBytes $callArgs[0] 'soundex' 1 'string').ToArray()
+                    $soundexMap = '01230120022455012623010202'
+                    $code = [System.Text.StringBuilder]::new(4)
+                    $prev = [char]0
+                    foreach ($rawB in $bytes) {
+                        $b = $rawB
+                        if ($b -ge 97 -and $b -le 122) { $b = [byte]($b - 32) }
+                        if ($b -ge 65 -and $b -le 90) {
+                            $mapped = $soundexMap[$b - 65]
+                            if ($code.Length -eq 0) {
+                                [void]$code.Append([char]$b)
+                                $prev = $mapped
+                            } else {
+                                if ($mapped -cne '0' -and $mapped -cne $prev) {
+                                    [void]$code.Append($mapped)
+                                    if ($code.Length -ge 4) { break }
+                                }
+                                $prev = $mapped
+                            }
+                        }
+                    }
+                    if ($code.Length -eq 0) { return (To-PhpBytes '0000') }
+                    while ($code.Length -lt 4) { [void]$code.Append('0') }
+                    return (To-PhpBytes $code.ToString())
+                }
+                'array_diff_assoc' {
+                    if ($callArgs.Count -lt 1 -or -not (Is-PhpArray $callArgs[0])) {
+                        throw 'ALL PHP: array_diff_assoc() requires arrays'
+                    }
+                    $base = $callArgs[0]
+                    $out = New-PhpArray
+                    foreach ($k in @($base.Items.Keys)) {
+                        $v = $base.Items[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                        $sv = To-PhpText $v
+                        $found = $false
+                        for ($i = 1; $i -lt $callArgs.Count; $i++) {
+                            $other = $callArgs[$i]
+                            if ($other.Items.Contains($k)) {
+                                $ov = $other.Items[$k]; if (Is-PhpRefCell $ov) { $ov = $ov.Value }
+                                if ((To-PhpText $ov) -ceq $sv) { $found = $true; break }
+                            }
+                        }
+                        if (-not $found) { Set-PhpArrayItem $out (Get-PhpKeyValue $k) $v $false }
+                    }
+                    return $out
+                }
+                { $_ -cin @('current','pos') } {
+                    if ($callArgs.Count -ne 1) { Throw-PhpError 'ArgumentCountError' ($name + '() expects exactly 1 argument, ' + $callArgs.Count + ' given') }
+                    return (Move-PhpArrayPointer $callArgs[0] 'current' $name)
+                }
+                { $_ -cin @('key','next','prev','reset','end') } {
+                    if ($callArgs.Count -ne 1) { Throw-PhpError 'ArgumentCountError' ($name + '() expects exactly 1 argument, ' + $callArgs.Count + ' given') }
+                    return (Move-PhpArrayPointer $callArgs[0] (ConvertTo-PhpAsciiLower $name) $name)
+                }
+                'array_walk' {
+                    if ($callArgs.Count -lt 2 -or $callArgs.Count -gt 3) { Throw-PhpError 'ArgumentCountError' ('array_walk() expects between 2 and 3 arguments, ' + $callArgs.Count + ' given') }
+                    $hasUd = ($callArgs.Count -ge 3)
+                    $ud = if ($hasUd) { $callArgs[2] } else { $null }
+                    return (Invoke-PhpArrayWalk $callArgs[0] $callArgs[1] $ud $hasUd $false 'array_walk')
+                }
+                'array_walk_recursive' {
+                    if ($callArgs.Count -lt 2 -or $callArgs.Count -gt 3) { Throw-PhpError 'ArgumentCountError' ('array_walk_recursive() expects between 2 and 3 arguments, ' + $callArgs.Count + ' given') }
+                    $hasUd = ($callArgs.Count -ge 3)
+                    $ud = if ($hasUd) { $callArgs[2] } else { $null }
+                    return (Invoke-PhpArrayWalk $callArgs[0] $callArgs[1] $ud $hasUd $true 'array_walk_recursive')
+                }
+                'ob_start' {
+                    if ($callArgs.Count -gt 3) { Throw-PhpError 'ArgumentCountError' ('ob_start() expects at most 3 arguments, ' + $callArgs.Count + ' given') }
+                    $cb = $null
+                    if ($callArgs.Count -ge 1 -and $null -ne $callArgs[0]) {
+                        if (-not ((Is-PhpStringValue $callArgs[0]) -and (To-PhpText $callArgs[0]).Length -eq 0)) {
+                            $cb = Assert-PhpValueCallable $callArgs[0]
+                        }
+                    }
+                    $chunkSize = if ($callArgs.Count -ge 2) { ConvertTo-PhpBuiltinInteger $callArgs[1] 'ob_start' 2 'chunk_size' } else { [long]0 }
+                    $flags = if ($callArgs.Count -ge 3) { ConvertTo-PhpBuiltinInteger $callArgs[2] 'ob_start' 3 'flags' } else { [long]112 }
+                    [void]$state.OutputBuffers.Add([pscustomobject]@{
+                        Builder=[AllPhp.ByteValues.PhpByteBuilder]::new(); Callback=$cb
+                        ChunkSize=$chunkSize; Flags=$flags; Started=$false
+                    })
+                    return $true
+                }
+                'ob_get_level' {
+                    if ($callArgs.Count -ne 0) { Throw-PhpError 'ArgumentCountError' ('ob_get_level() expects exactly 0 arguments, ' + $callArgs.Count + ' given') }
+                    return [long]$state.OutputBuffers.Count
+                }
+                'ob_get_length' {
+                    if ($callArgs.Count -ne 0) { Throw-PhpError 'ArgumentCountError' ('ob_get_length() expects exactly 0 arguments, ' + $callArgs.Count + ' given') }
+                    if ($state.OutputBuffers.Count -eq 0) { return $false }
+                    return [long]$state.OutputBuffers[$state.OutputBuffers.Count - 1].Builder.ToPhpBytes().Length
+                }
+                'ob_get_contents' {
+                    if ($callArgs.Count -ne 0) { Throw-PhpError 'ArgumentCountError' ('ob_get_contents() expects exactly 0 arguments, ' + $callArgs.Count + ' given') }
+                    if ($state.OutputBuffers.Count -eq 0) { return $false }
+                    return $state.OutputBuffers[$state.OutputBuffers.Count - 1].Builder.ToPhpBytes()
+                }
+                'ob_clean' {
+                    if ($callArgs.Count -ne 0) { Throw-PhpError 'ArgumentCountError' ('ob_clean() expects exactly 0 arguments, ' + $callArgs.Count + ' given') }
+                    if ($state.OutputBuffers.Count -eq 0) {
+                        Write-PhpDiagnostic 8 'ob_clean(): Failed to delete buffer. No buffer to delete'
+                        return $false
+                    }
+                    $ob = $state.OutputBuffers[$state.OutputBuffers.Count - 1]
+                    $raw = $ob.Builder.ToPhpBytes()
+                    $ob.Builder = [AllPhp.ByteValues.PhpByteBuilder]::new()
+                    if ($null -ne $ob.Callback) { [void](Invoke-PhpObHandler $ob $raw ([long]2)) }
+                    return $true
+                }
+                'ob_flush' {
+                    if ($callArgs.Count -ne 0) { Throw-PhpError 'ArgumentCountError' ('ob_flush() expects exactly 0 arguments, ' + $callArgs.Count + ' given') }
+                    if ($state.OutputBuffers.Count -eq 0) {
+                        Write-PhpDiagnostic 8 'ob_flush(): Failed to flush buffer. No buffer to flush'
+                        return $false
+                    }
+                    $idx = $state.OutputBuffers.Count - 1
+                    $ob = $state.OutputBuffers[$idx]
+                    $raw = $ob.Builder.ToPhpBytes()
+                    $ob.Builder = [AllPhp.ByteValues.PhpByteBuilder]::new()
+                    $out = Invoke-PhpObHandler $ob $raw ([long]4)
+                    if ($idx -gt 0) { $state.OutputBuffers[$idx - 1].Builder.Append($out) }
+                    else { Write-PhpBytesDirect $out $false }
+                    return $true
+                }
+                'ob_end_clean' {
+                    if ($callArgs.Count -ne 0) { Throw-PhpError 'ArgumentCountError' ('ob_end_clean() expects exactly 0 arguments, ' + $callArgs.Count + ' given') }
+                    return (Pop-PhpOutputBuffer $false $false 'ob_end_clean')
+                }
+                'ob_get_clean' {
+                    if ($callArgs.Count -ne 0) { Throw-PhpError 'ArgumentCountError' ('ob_get_clean() expects exactly 0 arguments, ' + $callArgs.Count + ' given') }
+                    return (Pop-PhpOutputBuffer $false $true 'ob_get_clean')
+                }
+                'ob_end_flush' {
+                    if ($callArgs.Count -ne 0) { Throw-PhpError 'ArgumentCountError' ('ob_end_flush() expects exactly 0 arguments, ' + $callArgs.Count + ' given') }
+                    return (Pop-PhpOutputBuffer $true $false 'ob_end_flush')
+                }
+                'ob_get_flush' {
+                    if ($callArgs.Count -ne 0) { Throw-PhpError 'ArgumentCountError' ('ob_get_flush() expects exactly 0 arguments, ' + $callArgs.Count + ' given') }
+                    return (Pop-PhpOutputBuffer $true $true 'ob_get_flush')
+                }
+                'get_declared_classes' {
+                    Ensure-PhpPrelude
+                    $out = New-PhpArray
+                    if (-not $state.Classes.ContainsKey('stdClass')) {
+                        Set-PhpArrayItem $out $null (To-PhpBytes 'stdClass') $true
+                    }
+                    foreach ($c in $state.Classes.Values) {
+                        Set-PhpArrayItem $out $null (To-PhpBytes ([string]$c.Name)) $true
+                    }
+                    return $out
+                }
+                'get_declared_interfaces' {
+                    Ensure-PhpPrelude
+                    $out = New-PhpArray
+                    foreach ($iface in $state.Interfaces.Values) {
+                        Set-PhpArrayItem $out $null (To-PhpBytes ([string]$iface.Name)) $true
+                    }
+                    return $out
+                }
+                'get_declared_traits' {
+                    $out = New-PhpArray
+                    foreach ($tr in $state.Traits.Values) {
+                        Set-PhpArrayItem $out $null (To-PhpBytes ([string]$tr.Name)) $true
+                    }
+                    return $out
+                }
+                'get_defined_functions' {
+                    $out = New-PhpArray
+                    $internal = New-PhpArray
+                    foreach ($b in $phpBuiltinNames) {
+                        Set-PhpArrayItem $internal $null (To-PhpBytes $b) $true
+                    }
+                    $user = New-PhpArray
+                    foreach ($fn in $state.Functions.Values) {
+                        Set-PhpArrayItem $user $null (To-PhpBytes ([string]$fn.Name)) $true
+                    }
+                    Set-PhpArrayItem $out 'internal' $internal $false
+                    Set-PhpArrayItem $out 'user' $user $false
+                    return $out
+                }
+                'get_defined_constants' {
+                    $categorize = ($callArgs.Count -ge 1 -and (Is-Truthy $callArgs[0]))
+                    $out = New-PhpArray
+                    if ($categorize) {
+                        $core = New-PhpArray
+                        foreach ($k in $phpConstants.Keys) { Set-PhpArrayItem $core $k (ConvertTo-PhpOwnedValue $phpConstants[$k]) $false }
+                        $user = New-PhpArray
+                        foreach ($k in $state.Constants.Keys) { Set-PhpArrayItem $user $k (ConvertTo-PhpOwnedValue $state.Constants[$k]) $false }
+                        Set-PhpArrayItem $out 'Core' $core $false
+                        Set-PhpArrayItem $out 'user' $user $false
+                    } else {
+                        foreach ($k in $phpConstants.Keys) { Set-PhpArrayItem $out $k (ConvertTo-PhpOwnedValue $phpConstants[$k]) $false }
+                        foreach ($k in $state.Constants.Keys) { Set-PhpArrayItem $out $k (ConvertTo-PhpOwnedValue $state.Constants[$k]) $false }
+                    }
+                    return $out
+                }
+                'get_defined_vars' {
+                    $out = New-PhpArray
+                    if ($state.CallDepth -le 0) {
+                        foreach ($k in @($state.Globals.Keys)) {
+                            $v = $state.Globals[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                            Set-PhpArrayItem $out $k (Copy-PhpValue $v) $false
+                        }
+                    }
+                    foreach ($k in @($state.Vars.Keys)) {
+                        $v = $state.Vars[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                        Set-PhpArrayItem $out $k (Copy-PhpValue $v) $false
+                    }
+                    foreach ($k in $state.GlobalBindings) {
+                        if ($state.Globals.ContainsKey($k)) {
+                            $v = $state.Globals[$k]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                            Set-PhpArrayItem $out $k (Copy-PhpValue $v) $false
+                        }
+                    }
+                    $callableScope = if ([string]::IsNullOrEmpty($state.CurrentCallable)) { '{main}' } else { $state.CurrentCallable }
+                    foreach ($k in $state.StaticBindings) {
+                        $sKey = $callableScope + '|' + $k
+                        if ($state.FunctionStatics.ContainsKey($sKey)) {
+                            $v = $state.FunctionStatics[$sKey]; if (Is-PhpRefCell $v) { $v = $v.Value }
+                            Set-PhpArrayItem $out $k (Copy-PhpValue $v) $false
+                        }
+                    }
+                    return $out
+                }
+                'zend_version' {
+                    if ($callArgs.Count -ne 0) { Throw-PhpError 'ArgumentCountError' ('zend_version() expects exactly 0 arguments, ' + $callArgs.Count + ' given') }
+                    return (To-PhpBytes '4.5.12')
+                }
+                'debug_backtrace' {
+                    $opts = if ($callArgs.Count -ge 1) { ConvertTo-PhpBuiltinInteger $callArgs[0] 'debug_backtrace' 1 'options' } else { [long]1 }
+                    $lim = if ($callArgs.Count -ge 2) { ConvertTo-PhpBuiltinInteger $callArgs[1] 'debug_backtrace' 2 'limit' } else { [long]0 }
+                    $out = New-PhpArray
+                    for ($i = $state.CallStack.Count - 1; $i -ge 0; $i--) {
+                        if ($lim -gt 0 -and $out.Items.Count -ge $lim) { break }
+                        $frame = $state.CallStack[$i]
+                        $entry = New-PhpArray
+                        $fPath = if ($frame.PSObject.Properties['SourcePath']) { [string]$frame.SourcePath } else { $state.ScriptName }
+                        Set-PhpArrayItem $entry 'file' (To-PhpBytes $fPath) $false
+                        Set-PhpArrayItem $entry 'line' ([long]$frame.Line) $false
+                        $rawName = [string]$frame.Name
+                        if ($rawName -cmatch '^(.+?)(->|::)([^:>]+)$') {
+                            Set-PhpArrayItem $entry 'class' (To-PhpBytes $matches[1]) $false
+                            Set-PhpArrayItem $entry 'type' (To-PhpBytes $matches[2]) $false
+                            Set-PhpArrayItem $entry 'function' (To-PhpBytes $matches[3]) $false
+                        } else {
+                            Set-PhpArrayItem $entry 'function' (To-PhpBytes $rawName) $false
+                        }
+                        if (($opts -band 2) -eq 0) {
+                            $argsArr = New-PhpArray
+                            foreach ($a in @($frame.Args)) {
+                                $av = if (Is-PhpRefCell $a) { $a.Value } else { $a }
+                                Set-PhpArrayItem $argsArr $null (Copy-PhpValue $av) $true
+                            }
+                            Set-PhpArrayItem $entry 'args' $argsArr $false
+                        }
+                        Set-PhpArrayItem $out $null $entry $true
+                    }
+                    return $out
+                }
+                'debug_print_backtrace' {
+                    $opts = if ($callArgs.Count -ge 1) { ConvertTo-PhpBuiltinInteger $callArgs[0] 'debug_print_backtrace' 1 'options' } else { [long]0 }
+                    $lim = if ($callArgs.Count -ge 2) { ConvertTo-PhpBuiltinInteger $callArgs[1] 'debug_print_backtrace' 2 'limit' } else { [long]0 }
+                    $sb = [System.Text.StringBuilder]::new()
+                    $index = 0
+                    for ($i = $state.CallStack.Count - 1; $i -ge 0; $i--) {
+                        if ($lim -gt 0 -and $index -ge $lim) { break }
+                        $frame = $state.CallStack[$i]
+                        $parts = [System.Collections.Generic.List[string]]::new()
+                        if (($opts -band 2) -eq 0) {
+                            foreach ($a in @($frame.Args)) { [void]$parts.Add((Format-PhpTraceArgument $a)) }
+                        }
+                        $fPath = if ($frame.PSObject.Properties['SourcePath']) { [string]$frame.SourcePath } else { $state.ScriptName }
+                        [void]$sb.Append('#' + $index + ' ' + $fPath + '(' + $frame.Line + '): ' +
+                            $frame.Name + '(' + [string]::Join(', ', $parts.ToArray()) + ")`n")
+                        $index++
+                    }
+                    if ($sb.Length -gt 0) { Write-PhpBytes (To-PhpBytes $sb.ToString()) }
+                    return $null
+                }
+                'set_time_limit' {
+                    if ($callArgs.Count -ne 1) { Throw-PhpError 'ArgumentCountError' ('set_time_limit() expects exactly 1 argument, ' + $callArgs.Count + ' given') }
+                    [void](ConvertTo-PhpBuiltinInteger $callArgs[0] 'set_time_limit' 1 'seconds')
+                    return $true
+                }
+                'register_shutdown_function' {
+                    if ($callArgs.Count -lt 1) {
+                        Throw-PhpError 'ArgumentCountError' ('register_shutdown_function() expects at least 1 argument, 0 given')
+                    }
+                    $cb = Assert-PhpValueCallable $callArgs[0] 'register_shutdown_function'
+                    $extraArgs = if ($callArgs.Count -gt 1) { @($callArgs[1..($callArgs.Count - 1)]) } else { @() }
+                    [void]$state.ShutdownFunctions.Add([pscustomobject]@{ Callback=$cb; Args=$extraArgs })
+                    return $null
+                }
+                'date_default_timezone_get' {
+                    if ($callArgs.Count -ne 0) {
+                        Throw-PhpError 'ArgumentCountError' ('date_default_timezone_get() expects exactly 0 arguments, ' + $callArgs.Count + ' given')
+                    }
+                    $tz = if ($state.ContainsKey('Timezone') -and -not [string]::IsNullOrEmpty([string]$state.Timezone)) { [string]$state.Timezone } else { 'UTC' }
+                    return (To-PhpBytes $tz)
+                }
+                'date_default_timezone_set' {
+                    if ($callArgs.Count -ne 1) {
+                        Throw-PhpError 'ArgumentCountError' ('date_default_timezone_set() expects exactly 1 argument, ' + $callArgs.Count + ' given')
+                    }
+                    $tz = Get-PhpHostText (ConvertTo-PhpBuiltinBytes $callArgs[0] 'date_default_timezone_set' 1 'timezoneId')
+                    $valid = $false
+                    if ($tz -in @('UTC','GMT','UCT','Universal','Zulu','CET','CST6CDT','EET','EST','EST5EDT','HST','MET','MST','MST7MDT','PST8PDT','WET','Factory','Japan','Hongkong','Singapore','PRC','ROC','ROK')) {
+                        $valid = $true
+                    } elseif ($tz -cmatch '^(Africa|America|Antarctica|Arctic|Asia|Atlantic|Australia|Europe|Indian|Pacific|Etc)/[A-Za-z0-9_+-]+(/[A-Za-z0-9_+-]+)?$') {
+                        $valid = $true
+                    } else {
+                        try { [void][System.TimeZoneInfo]::FindSystemTimeZoneById($tz); $valid = $true } catch {}
+                    }
+                    if (-not $valid) {
+                        Write-PhpDiagnostic 8 ("date_default_timezone_set(): Timezone ID '" + $tz + "' is invalid")
+                        return $false
+                    }
+                    $state.Timezone = $tz
+                    $state.Ini['date.timezone'] = $tz
+                    return $true
+                }
+                'setlocale' {
+                    if ($callArgs.Count -lt 2) {
+                        Throw-PhpError 'ArgumentCountError' ('setlocale() expects at least 2 arguments, ' + $callArgs.Count + ' given')
+                    }
+                    [void](ConvertTo-PhpBuiltinInteger $callArgs[0] 'setlocale' 1 'category')
+                    $curLoc = if ($state.ContainsKey('Locale') -and -not [string]::IsNullOrEmpty([string]$state.Locale)) { [string]$state.Locale } else { 'C' }
+                    $candidates = [System.Collections.Generic.List[string]]::new()
+                    if (Is-PhpArray $callArgs[1]) {
+                        foreach ($v in $callArgs[1].Items.Values) {
+                            $sv = if (Is-PhpRefCell $v) { $v.Value } else { $v }
+                            [void]$candidates.Add((To-PhpText $sv))
+                        }
+                    } else {
+                        for ($li = 1; $li -lt $callArgs.Count; $li++) {
+                            if ($null -eq $callArgs[$li]) { continue }
+                            [void]$candidates.Add((To-PhpText $callArgs[$li]))
+                        }
+                    }
+                    if ($candidates.Count -eq 1 -and ($candidates[0] -ceq '0' -or $candidates[0] -ceq '')) {
+                        return (To-PhpBytes $curLoc)
+                    }
+                    foreach ($cand in $candidates) {
+                        if ($cand -ceq '0') { return (To-PhpBytes $curLoc) }
+                        if ($cand -in @('C','POSIX','C.UTF-8','C.utf8') -or $cand -cmatch '^[A-Za-z]{2,3}(_[A-Za-z]{2})?(\.[A-Za-z0-9-]+)?(@[A-Za-z0-9]+)?$' -or $cand -cmatch '^[A-Za-z]+_[A-Za-z ]+\.[0-9]+$') {
+                            if ($cand -ceq '') { $cand = 'C' }
+                            $state.Locale = $cand
+                            return (To-PhpBytes $cand)
+                        }
+                    }
+                    return $false
+                }
+                'assert' {
+                    $zendAssertions = if ($state.Ini.ContainsKey('zend.assertions')) { [long]$state.Ini['zend.assertions'] } else { [long]1 }
+                    if ($zendAssertions -le 0) { return $true }
+                    if ($callArgs.Count -lt 1) {
+                        Throw-PhpError 'ArgumentCountError' 'assert() expects at least 1 argument, 0 given'
+                    }
+                    $cond = $callArgs[0]
+                    $desc = if ($callArgs.Count -ge 2) { $callArgs[1] } else { $null }
+                    return (Invoke-PhpAssert $cond ($callArgs.Count -ge 2) $desc)
                 }
             }
             if (-not $state.Functions.ContainsKey($name)) {
                 if (Test-PhpNativeFunction $name) { return (Invoke-PhpNativeFunction $name $callArgs) }
+                if (Test-PhpPolyglotAllFunction $name) { return (Invoke-PhpPolyglotAllFunction $name $callArgs) }
                 throw "ALL PHP: Undefined function '$name'"
             }
-            return (Invoke-PhpCallable $state.Functions[$name] $callArgs $null)
+            return (Invoke-PhpCallable $state.Functions[$name] $callArgs $null '' $null $false $callPolicy)
+            } finally {$state.BuiltinCallPolicy=$previousBuiltinPolicy}
         }
-        function Invoke-PhpMethod($object, [string]$name, $callArgs) {
-            if (-not (Is-PhpObject $object)) { throw 'ALL PHP: Method call requires object' }
+        function Invoke-PhpMethod($object, [string]$name, $callArgs, $callPolicy=$null) {
+            if($null-eq$callPolicy){$callPolicy=Get-PhpDirectCallPolicy}
+            if (-not (Is-PhpObject $object)) {
+                Throw-PhpError 'Error' ('Call to a member function ' + $name + '() on ' + (Get-PhpBuiltinTypeName $object)) 'ALL PHP: Method call requires object'
+            }
             if ($object.Class -eq 'stdClass') { throw 'ALL PHP: stdClass does not define methods' }
             $method=Find-PhpMethod $object.Class $name
-            Assert-PhpVisibility $method.Visibility $method.Owner
+            Assert-PhpVisibility $method.Visibility $method.Owner 'method' $method.Name
             if ($method.Static) {
-                return (Invoke-PhpCallable $method $callArgs $null $method.Owner)
+                return (Invoke-PhpCallable $method $callArgs $null $method.Owner $null $false $callPolicy)
             }
-            return (Invoke-PhpCallable $method $callArgs $object $method.Owner)
+            return (Invoke-PhpCallable $method $callArgs $object $method.Owner $null $false $callPolicy)
         }
-        function Invoke-PhpStaticMethod([string]$className, [string]$methodName, $callArgs) {
+        function Invoke-PhpStaticMethod([string]$className, [string]$methodName, $callArgs, $callPolicy=$null) {
+            if($null-eq$callPolicy){$callPolicy=Get-PhpDirectCallPolicy}
             $className=Resolve-PhpClass $className
             $method=Find-PhpMethod $className $methodName
-            Assert-PhpVisibility $method.Visibility $method.Owner
-            if ($method.Static) { return (Invoke-PhpCallable $method $callArgs $null $method.Owner) }
+            Assert-PhpVisibility $method.Visibility $method.Owner 'method' $method.Name
+            if ($method.Static) { return (Invoke-PhpCallable $method $callArgs $null $method.Owner $null $false $callPolicy) }
             if ($state.Vars.ContainsKey('this')) {
                 $object=Get-PhpVariableValue 'this'
                 if (Is-PhpObject $object) {
-                    return (Invoke-PhpCallable $method $callArgs $object $method.Owner)
+                    return (Invoke-PhpCallable $method $callArgs $object $method.Owner $null $false $callPolicy)
                 }
             }
             throw 'ALL PHP: Non-static method cannot be called statically'
         }
+        function ConvertTo-PhpWeakEnumArgument($value,$enum,[string]$method) {
+            if(Is-PhpRefCell $value) { $value=$value.Value }
+            $function=$enum.Name+'::'+$method
+            $stringBacked=Test-PhpNameEqual $enum.BackingType 'string'
+            if((Get-PhpDirectCallPolicy).ArgumentStrict){
+                if($stringBacked-and(Is-PhpStringValue $value)){return (To-PhpBytes $value)}
+                if(-not$stringBacked-and$value-is[long]){return $value}
+                $expected=if($stringBacked){'string'}else{'int'}
+                Throw-PhpError 'TypeError' ($function+'(): Argument #1 ($value) must be of type '+$expected+', '+(Get-PhpStrictUnionActualType $value)+' given')
+            }
+            if(Is-PhpStringValue $value) {
+                if($stringBacked) { return (To-PhpBytes $value) }
+                return (ConvertTo-PhpBuiltinInteger $value $function 1 'value')
+            }
+            if($value-is[long]) {
+                if($stringBacked) { return (To-PhpBytes $value) }
+                return $value
+            }
+            if($null-eq$value) {
+                Write-PhpDiagnostic 8192 ($function+'(): Passing null to parameter #1 ($value) of type string|int is deprecated')
+                if($stringBacked) { return (To-PhpBytes ([long]0)) }
+                return [long]0
+            }
+            if($value-is[bool]) {
+                $integer=if($value){[long]1}else{[long]0}
+                if($stringBacked) { return (To-PhpBytes $integer) }
+                return $integer
+            }
+            if($value-is[double]) {
+                if(-not$stringBacked) { return (ConvertTo-PhpBuiltinInteger $value $function 1 'value') }
+                if(-not[double]::IsNaN($value)-and-not[double]::IsInfinity($value)-and
+                    $value-ge-9223372036854775808.0-and$value-lt9223372036854775808.0) {
+                    return (To-PhpBytes (ConvertTo-PhpBuiltinInteger $value $function 1 'value'))
+                }
+                if([double]::IsNaN($value)) { Write-PhpDiagnostic 2 'unexpected NAN value was coerced to string' }
+                return (To-PhpBytes $value)
+            }
+            if($stringBacked-and(Is-PhpObject $value)-and
+                $null-ne(Find-OptionalPhpMethod $value.Class '__toString')) { return (To-PhpBytes $value) }
+            $expected=if($stringBacked){'string|int'}else{'int'}
+            Throw-PhpError 'TypeError' ($function+'(): Argument #1 ($value) must be of type '+$expected+', '+(Get-PhpBuiltinTypeName $value)+' given')
+        }
+        function Get-PhpEnumBadStringBytes($value) {
+            $bytes=To-PhpBytes $value
+            $offset=[long]0;$chunk=[byte[]]::new(65536)
+            while($offset-lt$bytes.LongLength) {
+                $count=[int][Math]::Min([long]$chunk.Length,$bytes.LongLength-$offset)
+                $bytes.CopyTo($offset,$chunk,0,$count)
+                for($i=0;$i-lt$count;$i++) { if($chunk[$i]-eq0) { return $bytes.Slice(0,$offset+$i) } }
+                $offset+=$count
+            }
+            return $bytes
+        }
         function Get-PhpClassConstant([string]$className, [string]$constName) {
             $className=Resolve-PhpClass $className
-            if ($constName -ceq 'class') { return $className }
+            if (Test-PhpNameEqual $constName 'class') { return (To-PhpBytes $className) }
             if ($state.Classes.ContainsKey($className)) {
                 foreach ($cls in (Get-PhpClassChain $className)) {
                     if ($cls.Constants.ContainsKey($constName)) {
                         $entry=$cls.Constants[$constName]
-                        Assert-PhpVisibility $entry.Visibility $entry.Owner
-                        return $entry.Value
+                        Assert-PhpVisibility $entry.Visibility $entry.Owner 'constant' $constName
+                        return (ConvertTo-PhpOwnedValue $entry.Value)
                     }
                 }
                 foreach ($cls in (Get-PhpClassChain $className)) {
                     foreach ($name in $cls.Interfaces) {
                         foreach ($iface in (Get-PhpInterfaceChain $name)) {
                             if ($iface.Constants.ContainsKey($constName)) {
-                                return $iface.Constants[$constName].Value
+                                return (ConvertTo-PhpOwnedValue $iface.Constants[$constName].Value)
                             }
                         }
                     }
@@ -5596,7 +13949,7 @@ class UnhandledMatchError extends Error {}
             } elseif ($state.Interfaces.ContainsKey($className)) {
                 foreach ($iface in (Get-PhpInterfaceChain $className)) {
                     if ($iface.Constants.ContainsKey($constName)) {
-                        return $iface.Constants[$constName].Value
+                        return (ConvertTo-PhpOwnedValue $iface.Constants[$constName].Value)
                     }
                 }
             }
@@ -5604,14 +13957,14 @@ class UnhandledMatchError extends Error {}
         }
         function Resolve-PhpFunctionNodeName($node) {
             if (-not $node.PSObject.Properties['Fallback'] -or $null -eq $node.Fallback) {
-                if ($state.Functions.ContainsKey($node.Name) -or $phpBuiltinNames.Contains($node.Name) -or (Test-PhpNativeFunction $node.Name)) { return $node.Name }
+                if ($state.Functions.ContainsKey($node.Name) -or $phpBuiltinNames.Contains($node.Name) -or (Test-PhpNativeFunction $node.Name) -or (Test-PhpPolyglotAllFunction $node.Name)) { return $node.Name }
                 Throw-PhpError 'Error' ("Call to undefined function " + $node.Name + '()')
             }
             if ($null -ne $node.ResolvedName) { return $node.ResolvedName }
             # A call site's first successful namespace/global binding is retained, like PHP's
             # runtime cache. Conditional/nested declarations are not installed during parsing.
             if ($state.Functions.ContainsKey($node.Name) -or (Test-PhpNativeFunction $node.Name)) { $node.ResolvedName = $node.Name }
-            elseif ($state.Functions.ContainsKey($node.Fallback) -or $phpBuiltinNames.Contains($node.Fallback) -or (Test-PhpNativeFunction $node.Fallback)) {
+            elseif ($state.Functions.ContainsKey($node.Fallback) -or $phpBuiltinNames.Contains($node.Fallback) -or (Test-PhpNativeFunction $node.Fallback) -or (Test-PhpPolyglotAllFunction $node.Fallback)) {
                 $node.ResolvedName = $node.Fallback
             } else {
                 # A failed lookup must remain unresolved: a later conditional declaration can
@@ -5630,32 +13983,40 @@ class UnhandledMatchError extends Error {}
             } else { return $node.Name }
             return $node.ResolvedName
         }
-        function Invoke-PhpReferenceCall($node) {
+        function Invoke-PhpReferenceCall($node, $callPolicy=$null, [string]$nonRefNotice = 'Only variables should be assigned by reference') {
+            if($null-eq$callPolicy){$callPolicy=Get-PhpDirectCallPolicy}
             # A function declared with & returns the same cell as its lvalue.
             # Ordinary function calls continue to return the dereferenced value.
             if ($node.Kind -eq 'call') {
                 $callName = Resolve-PhpFunctionNodeName $node
                 if (-not $state.Functions.ContainsKey($callName)) {
                     if (Test-PhpNativeFunction $callName) { Throw-PhpNativeUnsupported 'native reference-return calls are not implemented' }
+                    if (($isCli -or $PhpDiagnostics) -and ($phpBuiltinNames.Contains($callName) -or (Test-PhpPolyglotAllFunction $callName))) {
+                        $builtinRes = Invoke-PhpExpr $node
+                        Write-PhpDiagnostic 8 $nonRefNotice
+                        return [pscustomobject]@{ PhpType='refcell'; Value=(Copy-PhpValue $builtinRes) }
+                    }
                     throw 'ALL PHP: Reference return requires a declared function'
                 }
                 $def=$state.Functions[$callName]
                 $args=Evaluate-PhpUserArguments $node.Args $def
-                return (Invoke-PhpCallable $def $args $null '' $null $true)
+                return (Invoke-PhpCallable $def $args $null '' $null $true $callPolicy $nonRefNotice)
             }
             if ($node.Kind -eq 'method') {
                 $object=Invoke-PhpExpr $node.Base
                 if (-not (Is-PhpObject $object)) { throw 'ALL PHP: Reference method requires object' }
-                $def=Find-PhpMethod $object.Class $node.Name
-                Assert-PhpVisibility $def.Visibility $def.Owner
+                $methodName = Resolve-PhpMemberNodeName $node
+                $def=Find-PhpMethod $object.Class $methodName
+                Assert-PhpVisibility $def.Visibility $def.Owner 'method' $def.Name
                 $args=Evaluate-PhpUserArguments $node.Args $def
                 $receiver=if ($def.Static) { $null } else { $object }
-                return (Invoke-PhpCallable $def $args $receiver $def.Owner $null $true)
+                return (Invoke-PhpCallable $def $args $receiver $def.Owner $null $true $callPolicy $nonRefNotice)
             }
             if ($node.Kind -eq 'static_method') {
-                $klass=Resolve-PhpClass ([string](Invoke-PhpExpr $node.Base))
-                $def=Find-PhpMethod $klass $node.Name
-                Assert-PhpVisibility $def.Visibility $def.Owner
+                $klass=Resolve-PhpClassRef (Invoke-PhpExpr $node.Base)
+                $methodName = Resolve-PhpMemberNodeName $node
+                $def=Find-PhpMethod $klass $methodName
+                Assert-PhpVisibility $def.Visibility $def.Owner 'method' $def.Name
                 $args=Evaluate-PhpUserArguments $node.Args $def
                 $receiver=$null
                 if (-not $def.Static -and $state.Vars.ContainsKey('this')) {
@@ -5664,28 +14025,289 @@ class UnhandledMatchError extends Error {}
                 if (-not $def.Static -and -not (Is-PhpObject $receiver)) {
                     throw 'ALL PHP: Non-static method cannot be called statically'
                 }
-                return (Invoke-PhpCallable $def $args $receiver $def.Owner $null $true)
+                return (Invoke-PhpCallable $def $args $receiver $def.Owner $null $true $callPolicy $nonRefNotice)
             }
             if ($node.Kind -eq 'invoke') {
                 $callee=Assert-PhpValueCallable (Invoke-PhpExpr $node.Callee)
                 if ($null -ne $callee -and $callee.PSObject.Properties['PhpType'] -and
                     $callee.PhpType -ceq 'closure') {
                     $args=Evaluate-PhpUserArguments $node.Args $callee.Definition
-                    return (Invoke-PhpCallable $callee.Definition $args $callee.BoundThis '' $callee $true)
+                    return (Invoke-PhpCallable $callee.Definition $args $callee.BoundThis '' $callee $true $callPolicy $nonRefNotice)
                 }
                 if ($callee -is [string] -and $state.Functions.ContainsKey($callee)) {
                     $def=$state.Functions[$callee]
                     $args=Evaluate-PhpUserArguments $node.Args $def
-                    return (Invoke-PhpCallable $def $args $null '' $null $true)
+                    return (Invoke-PhpCallable $def $args $null '' $null $true $callPolicy $nonRefNotice)
                 }
             }
             throw 'ALL PHP: Reference return requires a reference-returning callable'
         }
+        function Set-PhpForeachValue($node, $val) {
+            if ($node.PSObject.Properties['ValueTarget'] -and $null -ne $node.ValueTarget) {
+                Set-LValue $node.ValueTarget $val '='
+            } else {
+                Set-PhpVariableValue $node.ValueName $val
+            }
+        }
+        function Resolve-PhpClassRef($raw) {
+            if (Is-PhpObject $raw) { return [string]$raw.Class }
+            return (Resolve-PhpClass (Get-PhpHostText $raw))
+        }
+        function Register-PhpClass($node) {
+            if ($state.Classes.ContainsKey($node.Name) -or
+                $state.Interfaces.ContainsKey($node.Name) -or
+                $state.Traits.ContainsKey($node.Name)) {
+                throw "ALL PHP: Type already declared '$($node.Name)'"
+            }
+            if ($null -ne $node.Parent -and
+                -not $state.Classes.ContainsKey($node.Parent)) {
+                throw "ALL PHP: Parent class not defined '$($node.Parent)'"
+            }
+            if ($null -ne $node.Parent -and $state.Classes[$node.Parent].Final) {
+                throw "ALL PHP: Cannot extend final class '$($node.Parent)'"
+            }
+            if ($null -ne $node.Parent -and $state.Classes[$node.Parent].Readonly -and -not $node.Readonly) {
+                throw 'ALL PHP: Non-readonly class cannot extend readonly class'
+            }
+            if ($node.Readonly -and $null -ne $node.Parent -and -not $state.Classes[$node.Parent].Readonly) {
+                throw 'ALL PHP: Readonly class cannot extend non-readonly class'
+            }
+            foreach ($iface in $node.Interfaces) {
+                if (-not $state.Interfaces.ContainsKey($iface)) {
+                    throw "ALL PHP: Undefined interface '$iface'"
+                }
+            }
+            $methods=[System.Collections.Generic.Dictionary[string,object]]::new(
+                [AllPhp.ValidTextSymbols.Comparers]::Ascii)
+            foreach ($method in $node.Methods) {
+                if ($methods.ContainsKey($method.Name)) {
+                    throw "ALL PHP: Duplicate method '$($method.Name)'"
+                }
+                if ($null -ne $node.Parent) {
+                    $parentMethod=$null
+                    try { $parentMethod=Find-PhpMethod $node.Parent $method.Name }
+                    catch {
+                        if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
+                        if ($_.Exception.Message -notlike 'ALL PHP: Undefined method*') { throw }
+                    }
+                    if ($null -ne $parentMethod) {
+                        if ($parentMethod.Final) {
+                            throw "ALL PHP: Cannot override final method '$($method.Name)'"
+                        }
+                        if ($parentMethod.Visibility -ne 'private' -and
+                            ($method.Name -ine '__construct' -or $parentMethod.Abstract)) {
+                            Assert-PhpMethodSignature $method $parentMethod $method.Name
+                        }
+                    }
+                }
+                $methods[$method.Name]=$method
+            }
+            $effectiveProperties=[System.Collections.Generic.List[object]]::new()
+            $declaredNames=[System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+            foreach ($prop in $node.Properties) {
+                if (-not $declaredNames.Add($prop.Name)) {
+                    throw "ALL PHP: Duplicate property '$($prop.Name)'"
+                }
+                [void]$effectiveProperties.Add($prop)
+            }
+            $traitMethods=[System.Collections.Generic.HashSet[string]]::new(
+                [AllPhp.ValidTextSymbols.Comparers]::Ascii)
+            $composition=Get-PhpTraitComposition $node
+            foreach ($method in $composition.Methods) {
+                if ($methods.ContainsKey($method.Name)) {
+                    if ($traitMethods.Contains($method.Name)) {
+                        throw "ALL PHP: Conflicting trait method '$($method.Name)'"
+                    }
+                    continue
+                }
+                if (-not $traitMethods.Add($method.Name)) {
+                    throw "ALL PHP: Conflicting trait method '$($method.Name)'"
+                }
+                $imported=[pscustomobject]@{
+                    Kind='functiondef'; Name=$method.Name
+                    Params=$method.Params; Body=$method.Body; Expr=$method.Expr
+                    Visibility=$method.Visibility; Static=$method.Static
+                    Owner=$node.Name
+                    TraitOwner=$(if($method.PSObject.Properties['TraitOwner']){[string]$method.TraitOwner}else{''})
+                    Abstract=$method.Abstract; Final=$method.Final
+                    ReturnByRef=$method.ReturnByRef; ReturnType=$method.ReturnType
+                    StrictSourceUnit=(Get-PhpDefinitionUnit $method); DefinitionLine=$method.DefinitionLine
+                    Attributes=$(if($method.PSObject.Properties['Attributes']){$method.Attributes}else{@()})
+                    IsGenerator=$(if($method.PSObject.Properties['IsGenerator']){$method.IsGenerator}else{$false})
+                }
+                if ($null -ne $node.Parent) {
+                    $inherited=$null
+                    try { $inherited=Find-PhpMethod $node.Parent $method.Name }
+                    catch {
+                        if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
+                        if ($_.Exception.Message -notlike 'ALL PHP: Undefined method*') { throw }
+                    }
+                    if ($null -ne $inherited) {
+                        if ($inherited.Final) { throw 'ALL PHP: Cannot override final method via trait' }
+                        if ($inherited.Visibility -ne 'private' -and
+                            ($method.Name -ine '__construct' -or $inherited.Abstract)) {
+                            Assert-PhpMethodSignature $imported $inherited $method.Name
+                        }
+                    }
+                }
+                $methods[$method.Name]=$imported
+            }
+            foreach ($prop in $composition.Properties) {
+                $duplicate=$false
+                foreach ($existing in $effectiveProperties) {
+                    if ((Test-PhpRawNameEqual $existing.Name $prop.Name)) { $duplicate=$true; break }
+                }
+                if ($duplicate) { throw "ALL PHP: Conflicting trait property '$($prop.Name)'" }
+                [void]$effectiveProperties.Add([pscustomobject]@{
+                    Name=$prop.Name; Default=$prop.Default
+                    Visibility=$prop.Visibility
+                    SetVisibility=$(if($prop.PSObject.Properties['SetVisibility']){[string]$prop.SetVisibility}else{''})
+                    Static=$prop.Static
+                    Owner=$node.Name; TypeName=$prop.TypeName
+                    Readonly=([bool]$prop.Readonly -or [bool]$node.Readonly)
+                    GetHook=$(if($prop.PSObject.Properties['GetHook']){$prop.GetHook}else{$null})
+                    SetHook=$(if($prop.PSObject.Properties['SetHook']){$prop.SetHook}else{$null})
+                    HookBacked=$(if($prop.PSObject.Properties['HookBacked']){[bool]$prop.HookBacked}else{($null -ne $prop.Default)})
+                    Attributes=$(if($prop.PSObject.Properties['Attributes']){$prop.Attributes}else{@()})
+                })
+            }
+            foreach ($prop in $effectiveProperties) {
+                if ($node.Readonly -and $prop.Static) {
+                    throw 'ALL PHP: readonly static property is not allowed'
+                }
+                if ($node.Readonly -and [string]::IsNullOrEmpty([string]$prop.TypeName)) {
+                    throw 'ALL PHP: readonly property requires a type'
+                }
+                if (($node.Readonly -or $prop.Readonly) -and $null -ne $prop.Default) {
+                    throw 'ALL PHP: readonly property cannot have a default value'
+                }
+                if ($null -ne $prop.Default) {
+                    $defaultValue=Invoke-PhpExpr $prop.Default
+                    Assert-PhpPropertyDefault $defaultValue ([string]$prop.TypeName) $prop.Name
+                }
+            }
+            $statics=[System.Collections.Generic.Dictionary[string,object]]::new(
+                [System.StringComparer]::Ordinal)
+            foreach ($prop in $effectiveProperties) {
+                if ($prop.Static) {
+                    if ($null -eq $prop.Default -and
+                        -not [string]::IsNullOrEmpty([string]$prop.TypeName)) {
+                        continue
+                    }
+                    $default=$null
+                    if ($null -ne $prop.Default) { $default=Invoke-PhpExpr $prop.Default }
+                    $statics[$prop.Name]=Copy-PhpValue (Convert-PhpTypedValue $default ([string]$prop.TypeName) ('property ' + $prop.Name) $true (New-PhpPropertyTypedContext $prop))
+                }
+            }
+            $constants=[System.Collections.Generic.Dictionary[string,object]]::new(
+                [System.StringComparer]::Ordinal)
+            foreach ($const in $node.Constants) {
+                if ($constants.ContainsKey($const.Name)) {
+                    throw "ALL PHP: Duplicate constant '$($const.Name)'"
+                }
+                $constants[$const.Name]=[pscustomobject]@{
+                    Value=(Invoke-PhpExpr $const.Value); Visibility=$const.Visibility
+                    Owner=$node.Name
+                }
+            }
+            $state.Classes[$node.Name]=[pscustomobject]@{
+                Name=$node.Name; Parent=$node.Parent; Methods=$methods
+                Properties=$effectiveProperties.ToArray(); StaticValues=$statics
+                Constants=$constants; Interfaces=$node.Interfaces
+                Abstract=$node.Abstract; Final=$node.Final; Readonly=$node.Readonly
+                Attributes=$(if($node.PSObject.Properties['Attributes']){$node.Attributes}else{@()})
+            }
+            if (-not $node.Abstract) {
+                foreach ($cls in (Get-PhpClassChain $node.Name)) {
+                    foreach ($required in $cls.Methods.Values) {
+                        if ($required.Abstract) {
+                            $implementation=Find-PhpMethod $node.Name $required.Name
+                            if ($implementation.Abstract) {
+                                throw "ALL PHP: Concrete class has abstract method '$($required.Name)'"
+                            }
+                            Assert-PhpMethodSignature $implementation $required $required.Name
+                        }
+                    }
+                    foreach ($ifaceName in $cls.Interfaces) {
+                        foreach ($iface in (Get-PhpInterfaceChain $ifaceName)) {
+                            foreach ($required in $iface.Methods.Values) {
+                                $implementation=$null
+                                try { $implementation=Find-PhpMethod $node.Name $required.Name }
+                                catch {
+                                    if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
+                                    if ($_.Exception.Message -notlike 'ALL PHP: Undefined method*') { throw }
+                                }
+                                if ($null -eq $implementation -or $implementation.Abstract) {
+                                    throw "ALL PHP: Interface method not implemented '$($required.Name)'"
+                                }
+                                Assert-PhpMethodSignature $implementation $required $required.Name
+                            }
+                        }
+                    }
+                }
+            }
+        }
         function Invoke-PhpExpr($node) {
             switch ($node.Kind) {
-                'literal' { return $node.Value }
+                'source_construct' {return (Invoke-PhpSourceConstruct $node)}
+                'literal' { return (ConvertTo-PhpOwnedValue $node.Value) }
+                'magic_constant' {
+                    $mcVal = switch ($node.Name) {
+                        '__FUNCTION__' { $state.CurrentFunctionName }
+                        '__CLASS__'    { $state.ClassContext }
+                        '__TRAIT__'    { $state.TraitContext }
+                        '__METHOD__'   { $state.CurrentMethodName }
+                        default        { '' }
+                    }
+                    if ([string]::IsNullOrEmpty($mcVal)) { return [AllPhp.ByteValues.PhpBytes]::Empty }
+                    return (To-PhpBytes $mcVal)
+                }
                 'internal_throwable_string' {
                     return (Get-PhpThrowableString (Invoke-PhpExpr $node.Object))
+                }
+                'internal_dispatch' {
+                    return (Invoke-PhpInternalDispatch $node.Args)
+                }
+                'yield' {
+                    $kVal = $null
+                    $hasKey = ($null -ne $node.Key)
+                    if ($hasKey) { $kVal = Invoke-PhpExpr $node.Key }
+                    $vVal = $null
+                    if ($null -ne $node.Value) { $vVal = Invoke-PhpExpr $node.Value }
+                    return (Invoke-PhpSingleYield $kVal $vVal $hasKey)
+                }
+                'yield_from' {
+                    $fromVal = Invoke-PhpExpr $node.Expr
+                    if (Is-PhpArray $fromVal) {
+                        foreach ($k in @($fromVal.Items.Keys)) {
+                            $elemVal = $fromVal.Items[$k]
+                            if (Is-PhpRefCell $elemVal) { $elemVal = $elemVal.Value }
+                            [void](Invoke-PhpSingleYield (Get-PhpKeyValue $k) $elemVal $true)
+                        }
+                        return $null
+                    }
+                    if (Is-PhpObject $fromVal) {
+                        Ensure-PhpPrelude
+                        $iterObj = $fromVal
+                        while ($state.PreludeLoaded -and (Test-PhpInstanceOf $iterObj.Class 'IteratorAggregate') -and -not (Test-PhpInstanceOf $iterObj.Class 'Iterator')) {
+                            $iterObj = Invoke-PhpMethod $iterObj 'getIterator' @()
+                            if (-not (Is-PhpObject $iterObj)) { Throw-PhpError 'Exception' 'Objects returned by IteratorAggregate::getIterator() must be traversable' }
+                        }
+                        if ($iterObj.Class -ieq 'Generator' -or (Test-PhpInstanceOf $iterObj.Class 'Iterator')) {
+                            [void](Invoke-PhpMethod $iterObj 'rewind' @())
+                            while (Is-Truthy (Invoke-PhpMethod $iterObj 'valid' @())) {
+                                $curVal = Invoke-PhpMethod $iterObj 'current' @()
+                                $curKey = Invoke-PhpMethod $iterObj 'key' @()
+                                [void](Invoke-PhpSingleYield $curKey $curVal $true)
+                                [void](Invoke-PhpMethod $iterObj 'next' @())
+                            }
+                            if ($iterObj.Class -ieq 'Generator') {
+                                return (Invoke-PhpMethod $iterObj 'getReturn' @())
+                            }
+                            return $null
+                        }
+                    }
+                    Throw-PhpError 'Error' 'Can use "yield from" only with arrays and Traversables'
                 }
                 'cli_exit' { Invoke-PhpCliExit @() }
                 'silence' {
@@ -5695,8 +14317,8 @@ class UnhandledMatchError extends Error {}
                 }
                 'class_name' {
                     $constantName = Resolve-PhpConstantNodeName $node
-                    if ($state.Constants.ContainsKey($constantName)) { return $state.Constants[$constantName] }
-                    if ($phpConstants.ContainsKey($constantName)) { return $phpConstants[$constantName] }
+                    if ($state.Constants.ContainsKey($constantName)) { return (ConvertTo-PhpOwnedValue $state.Constants[$constantName]) }
+                    if ($phpConstants.ContainsKey($constantName)) { return (ConvertTo-PhpOwnedValue $phpConstants[$constantName]) }
                     return $node.Name
                 }
                 'cast' { return (Convert-PhpCast (Invoke-PhpExpr $node.Arg) $node.Type) }
@@ -5714,12 +14336,12 @@ class UnhandledMatchError extends Error {}
                         [System.StringComparer]::Ordinal)
                     if ($node.Arrow) {
                         foreach ($name in @($state.Vars.Keys)) {
-                            if ($name -eq 'this') { continue }
+                            if ((Test-PhpRawNameEqual $name 'this')) { continue }
                             $cap[$name]=Copy-PhpValue (Get-PhpVariableValue $name)
                         }
                     } else {
                         foreach ($capture in $node.Captures) {
-                            if ($capture.Name -eq 'this') { continue }
+                            if ((Test-PhpRawNameEqual $capture.Name 'this')) { continue }
                             if ($capture.ByRef) {
                                 $cap[$capture.Name]=Get-PhpVariableCell $capture.Name
                             } else {
@@ -5731,7 +14353,7 @@ class UnhandledMatchError extends Error {}
                     if ($state.Vars.ContainsKey('this')) { $bound=Get-PhpVariableValue 'this' }
                     return [pscustomobject]@{
                         PhpType='closure'; Id=(New-PhpObjectId); Definition=$node; Captures=$cap
-                        BoundThis=$bound; ClassContext=$state.ClassContext
+                        BoundThis=$bound; ClassContext=$state.ClassContext; TraitContext=$state.TraitContext
                     }
                 }
                 'first_class_function' {
@@ -5746,22 +14368,24 @@ class UnhandledMatchError extends Error {}
                     if (-not (Is-PhpObject $object)) {
                         throw 'ALL PHP: First-class method callable requires object'
                     }
-                    if ($null -eq (Find-OptionalPhpMethod $object.Class $node.Name)) {
-                        throw "ALL PHP: Undefined method '$($node.Name)'"
+                    $methodName = Resolve-PhpMemberNodeName $node
+                    if ($null -eq (Find-OptionalPhpMethod $object.Class $methodName)) {
+                        throw "ALL PHP: Undefined method '$methodName'"
                     }
                     return [pscustomobject]@{
                         PhpType='first_class_callable'; Id=(New-PhpObjectId); Mode='method'
-                        Name=$node.Name; BoundThis=$object
+                        Name=$methodName; BoundThis=$object
                     }
                 }
                 'first_class_static' {
-                    $klass=Resolve-PhpClass ([string](Invoke-PhpExpr $node.Base))
-                    if ($null -eq (Find-OptionalPhpMethod $klass $node.Name)) {
-                        throw "ALL PHP: Undefined static method '$($node.Name)'"
+                    $klass=Resolve-PhpClassRef (Invoke-PhpExpr $node.Base)
+                    $methodName = Resolve-PhpMemberNodeName $node
+                    if ($null -eq (Find-OptionalPhpMethod $klass $methodName)) {
+                        throw "ALL PHP: Undefined static method '$methodName'"
                     }
                     return [pscustomobject]@{
                         PhpType='first_class_callable'; Id=(New-PhpObjectId); Mode='static'
-                        Name=$node.Name; Class=$klass
+                        Name=$methodName; Class=$klass
                     }
                 }
                 'first_class_invoke' {
@@ -5778,6 +14402,8 @@ class UnhandledMatchError extends Error {}
                     }
                     if (Is-PhpArray $callable) {
                         $target=Get-PhpArrayItem $callable ([long]0);$member=Get-PhpArrayItem $callable ([long]1)
+                        if (Is-PhpStringValue $target) { $target=Get-PhpHostText $target }
+                        if (Is-PhpStringValue $member) { $member=Get-PhpHostText $member }
                         if (Is-PhpObject $target) {
                             return [pscustomobject]@{ PhpType='first_class_callable'; Id=(New-PhpObjectId)
                                 Mode='method'; BoundThis=$target; Name=$member }
@@ -5813,16 +14439,8 @@ class UnhandledMatchError extends Error {}
                                 $args=Evaluate-PhpUserArguments $node.Args $def
                                 return (Invoke-PhpCallable $def $args $null)
                             }
-                            $args=[System.Collections.Generic.List[object]]::new()
-                            foreach ($arg in $node.Args) {
-                                if ($arg.Kind -eq 'named_argument') {
-                                    [void]$args.Add([pscustomobject]@{
-                                        PhpType='named_argument'; Name=$arg.Name
-                                        Value=(Invoke-PhpExpr $arg.Expr)
-                                    })
-                                } else { [void]$args.Add((Invoke-PhpExpr $arg)) }
-                            }
-                            return (Invoke-PhpFunction $callee.Name ($args.ToArray()))
+                            $args=Evaluate-PhpBuiltinArguments $node.Args $callee.Name
+                            return (Invoke-PhpFunction $callee.Name $args)
                         }
                         if ($callee.Mode -eq 'method') {
                             $def=Find-OptionalPhpMethod $callee.BoundThis.Class $callee.Name
@@ -5852,32 +14470,24 @@ class UnhandledMatchError extends Error {}
                         return (Invoke-PhpCallable $state.Functions[$callee] $args $null)
                     }
                     if ($callee -is [string]) {
-                        $args=[System.Collections.Generic.List[object]]::new()
-                        foreach ($arg in $node.Args) {
-                            if ($arg.Kind -ceq 'named_argument') {
-                                [void]$args.Add([pscustomobject]@{
-                                    PhpType='named_argument'; Name=$arg.Name
-                                    Value=(Invoke-PhpExpr $arg.Expr)
-                                })
-                            } else { [void]$args.Add((Invoke-PhpExpr $arg)) }
-                        }
-                        return (Invoke-PhpFunction $callee ($args.ToArray()))
+                        $args=Evaluate-PhpBuiltinArguments $node.Args $callee
+                        return (Invoke-PhpFunction $callee $args)
                     }
                     throw 'ALL PHP: Value is not callable'
                 }
                 'static_property' { return (Get-LValue $node) }
                 'class_const' {
-                    $klass=[string](Invoke-PhpExpr $node.Base)
+                    $klass=Resolve-PhpClassRef (Invoke-PhpExpr $node.Base)
                     return (Get-PhpClassConstant $klass $node.Name)
                 }
                 'static_method' {
-                    $klass=[string](Invoke-PhpExpr $node.Base)
-                    $klass=Resolve-PhpClass $klass
+                    $klass=Resolve-PhpClassRef (Invoke-PhpExpr $node.Base)
+                    $methodName = Resolve-PhpMemberNodeName $node
                     if ($state.Classes.ContainsKey($klass) -and
                         $state.Classes[$klass].PSObject.Properties['Enum'] -and
                         $state.Classes[$klass].Enum) {
                         $enum=$state.Classes[$klass]
-                        if ($node.Name -ceq 'cases') {
+                        if ((Test-PhpNameEqual $methodName 'cases')) {
                             if ($node.Args.Count -ne 0) { throw 'ALL PHP: cases() takes no arguments' }
                             $result=New-PhpArray
                             foreach ($item in $enum.EnumCases) {
@@ -5885,41 +14495,41 @@ class UnhandledMatchError extends Error {}
                             }
                             return $result
                         }
-                        if ($node.Name -in @('from','tryFrom')) {
+                        if ((Test-PhpNameIn $methodName @('from','tryFrom'))) {
                             if ($null -eq $enum.BackingType) {
                                 throw 'ALL PHP: Unit enums have no from() or tryFrom()'
                             }
                             if ($node.Args.Count -ne 1) {
                                 throw 'ALL PHP: Enum from() requires one argument'
                             }
-                            $needle=Invoke-PhpExpr $node.Args[0]
+                            $enumMethod=if(Test-PhpNameEqual $methodName 'tryFrom'){'tryFrom'}else{'from'}
+                            $needle=ConvertTo-PhpWeakEnumArgument (Invoke-PhpExpr $node.Args[0]) $enum $enumMethod
                             foreach ($item in $enum.EnumCases) {
-                                if ($enum.BackingType -eq 'string' -and $needle -is [string] -and
-                                    $item.Props['value'] -ceq $needle) { return $item }
+                                if ($enum.BackingType -eq 'string' -and (Is-PhpStringValue $needle) -and
+                                    (To-PhpBytes $item.Props['value']).Equals((To-PhpBytes $needle))) { return $item }
                                 if ($enum.BackingType -eq 'int' -and $needle -is [long] -and
                                     $item.Props['value'] -eq $needle) { return $item }
                             }
-                            if ($node.Name -ceq 'tryFrom') { return $null }
-                            $shown = if ($needle -is [string]) { '"' + $needle + '"' } else { To-PhpText $needle }
-                            Throw-PhpError 'ValueError' ($shown + ' is not a valid backing value for enum ' + $enum.Name) 'ALL PHP: ValueError: invalid backing value for enum'
+                            if ((Test-PhpRawNameEqual $enumMethod 'tryFrom')) { return $null }
+                            $message=[AllPhp.ByteValues.PhpByteBuilder]::new()
+                            if(Is-PhpStringValue $needle) { $message.AppendUtf8('"');$message.Append((Get-PhpEnumBadStringBytes $needle));$message.AppendUtf8('"') }
+                            else { $message.Append((To-PhpBytes $needle)) }
+                            $message.AppendUtf8(' is not a valid backing value for enum '+$enum.Name)
+                            Throw-PhpError 'ValueError' ($message.ToPhpBytes()) 'ALL PHP: ValueError: invalid backing value for enum'
                         }
                     }
-                    $def=Find-OptionalPhpMethod $klass $node.Name
+                    $def=Find-OptionalPhpMethod $klass $methodName
+                    if ($null -ne $def -and -not (Test-PhpVisibilityAllowed $def.Visibility $def.Owner 'method' $def.Name)) {
+                        if ($null -ne (Find-OptionalPhpMethod $klass '__callStatic')) { $def = $null }
+                    }
                     if ($null -ne $def) {
                         $args=Evaluate-PhpUserArguments $node.Args $def
-                        return (Invoke-PhpStaticMethod $klass $node.Name $args)
+                        return (Invoke-PhpStaticMethod $klass $methodName $args)
                     }
                     $magic=Find-OptionalPhpMethod $klass '__callStatic'
-                    if ($null -eq $magic) { throw "ALL PHP: Undefined method '$($node.Name)'" }
-                    $collected=New-PhpArray
-                    foreach ($arg in $node.Args) {
-                        if ($arg.Kind -ceq 'named_argument') {
-                            Set-PhpArrayItem $collected $arg.Name (Invoke-PhpExpr $arg.Expr) $false
-                        } else {
-                            Set-PhpArrayItem $collected $null (Invoke-PhpExpr $arg) $true
-                        }
-                    }
-                    return (Invoke-PhpStaticMethod $klass '__callStatic' @($node.Name,$collected))
+                    if ($null -eq $magic) { throw "ALL PHP: Undefined method '$methodName'" }
+                    $collected=ConvertTo-PhpCallCollectedArray $node.Args
+                    return (Invoke-PhpStaticMethod $klass '__callStatic' @($methodName,$collected))
                 }
                 'clone' {
                     $original=Invoke-PhpExpr $node.Arg
@@ -5937,14 +14547,24 @@ class UnhandledMatchError extends Error {}
                     foreach ($key in $original.Props.Keys) {
                         $props[$key]=Copy-PhpValue $original.Props[$key]
                     }
+                    $privProps=[System.Collections.Generic.Dictionary[string,object]]::new([System.StringComparer]::Ordinal)
+                    if ($original.PSObject.Properties['PrivateProps'] -and $null -ne $original.PrivateProps) {
+                        foreach ($key in $original.PrivateProps.Keys) {
+                            $privProps[$key]=Copy-PhpValue $original.PrivateProps[$key]
+                        }
+                    }
+                    $clonedUnset = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+                    if ($original.PSObject.Properties['UnsetProps'] -and $null -ne $original.UnsetProps) {
+                        foreach ($uk in $original.UnsetProps) { [void]$clonedUnset.Add($uk) }
+                    }
                     $copy=[pscustomobject]@{
-                        PhpType='object'; Id=(New-PhpObjectId); Class=$original.Class; Props=$props
+                        PhpType='object'; Id=(New-PhpObjectId); Class=$original.Class; Props=$props; PrivateProps=$privProps; UnsetProps=$clonedUnset
                     }
                     if ($original.Class -ne 'stdClass') {
                         $hook=$null
                         try { $hook=Find-PhpMethod $original.Class '__clone' }
                         catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
                             if ($_.Exception.Message -notlike 'ALL PHP: Undefined method*') { throw }
                         }
                         if ($null -ne $hook) { [void](Invoke-PhpMethod $copy '__clone' @()) }
@@ -5953,9 +14573,9 @@ class UnhandledMatchError extends Error {}
                 }
                 'update' {
                     $before = Get-LValue $node.Target
-                    $diff = if ($node.Op -ceq '++') { [long]1 } else { [long]-1 }
-                    Set-LValue $node.Target $diff '+='
-                    if ($node.Prefix) { return (Get-LValue $node.Target) }
+                    $after = Step-PhpIncrementDecrement $before $node.Op
+                    Set-LValue $node.Target $after '='
+                    if ($node.Prefix) { return $after }
                     return $before
                 }
                 'assign_ref' {
@@ -5973,7 +14593,7 @@ class UnhandledMatchError extends Error {}
                         $state.QuietDepth++
                         try { $current = Get-LValue $node.Target }
                         catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
                             if ($_.Exception.Message -notlike 'ALL PHP: Undefined *') { throw }
                         }
                         finally { $state.QuietDepth-- }
@@ -5981,7 +14601,9 @@ class UnhandledMatchError extends Error {}
                     }
                     $replacement = Invoke-PhpExpr $node.Value
                     $writeOp = if ($node.Op -ceq '??=') { '=' } else { $node.Op }
-                    Set-LValue $node.Target $replacement $writeOp
+                    $assignmentResult=[pscustomobject]@{IsStringOffset=$false;Value=$null}
+                    Set-LValue $node.Target $replacement $writeOp $assignmentResult
+                    if($assignmentResult.IsStringOffset){return $assignmentResult.Value}
                     if (($node.Target.Kind -eq 'index' -and $null -eq $node.Target.Key) -or
                         $node.Target.Kind -eq 'array' -or
                         ($node.Target.Kind -eq 'property' -and $node.Op -ceq '=')) {
@@ -6001,6 +14623,9 @@ class UnhandledMatchError extends Error {}
                 'array' {
                     $array = New-PhpArray
                     foreach ($entry in $node.Entries) {
+                        if ($entry.PSObject.Properties['Skipped'] -and $entry.Skipped) {
+                            throw 'ALL PHP: Cannot use empty array elements in arrays'
+                        }
                         if ($entry.PSObject.Properties['ByReference'] -and $entry.ByReference) {
                             $key=$null
                             if ($null -ne $entry.Key) { $key=Invoke-PhpExpr $entry.Key }
@@ -6010,14 +14635,12 @@ class UnhandledMatchError extends Error {}
                         }
                         $value = Invoke-PhpExpr $entry.Value
                         if ($entry.Spread) {
-                            if (-not (Is-PhpArray $value)) {
-                                throw 'ALL PHP: Only arrays can be unpacked in array literals'
-                            }
-                            foreach ($key in $value.Items.Keys) {
-                                if (([string]$key).StartsWith('i:')) {
-                                    Set-PhpArrayItem $array $null $value.Items[$key] $true
+                            foreach ($unpacked in (Expand-PhpSpreadValue $value 'array')) {
+                                if ($unpacked.IsInteger) {
+                                    Set-PhpArrayItem $array $null $unpacked.Value $true
                                 } else {
-                                    Set-PhpArrayItem $array (KeyString-ToValue ([string]$key)) $value.Items[$key] $false
+                                    $uKey = if ($null -ne $unpacked.RawKey) { Get-PhpKeyValue $unpacked.RawKey } else { $unpacked.StringKeyBytes }
+                                    Set-PhpArrayItem $array $uKey $unpacked.Value $false
                                 }
                             }
                             continue
@@ -6042,42 +14665,44 @@ class UnhandledMatchError extends Error {}
                         foreach ($arg in $node.Args) {
                             $found = $true
                             $value = $null
-                            if ($arg.Kind -eq 'property') {
-                                $object=Invoke-PhpExpr $arg.Base
-                                if ($null -ne $object -and (Is-PhpObject $object)) {
-                                    $present=if ($object.Props -is [System.Collections.Specialized.OrderedDictionary]) {
-                                        $object.Props.Contains($arg.Name)
-                                    } else { $object.Props.ContainsKey($arg.Name) }
-                                    if (-not $present) {
-                                        $typedProperty=$null
-                                        if ($object.Class -ne 'stdClass') {
-                                            $typedProperty=Find-PhpProperty $object.Class $arg.Name $false
-                                        }
-                                        if ($null -ne $typedProperty -and
-                                            -not [string]::IsNullOrEmpty([string]$typedProperty.TypeName)) {
-                                            if ($node.Name -ceq 'isset') { return $false }
-                                            if ($node.Name -ceq 'empty') { return $true }
-                                        }
-                                        $issetMethod=Find-OptionalPhpMethod $object.Class '__isset'
-                                        if ($null -ne $issetMethod) {
-                                            $found=Is-Truthy (Invoke-PhpMethod $object '__isset' @($arg.Name))
-                                            if ($node.Name -ceq 'isset' -and -not $found) { return $false }
-                                            if ($node.Name -ceq 'isset' -and $found) { continue }
-                                            if ($node.Name -ceq 'empty' -and -not $found) { return $true }
-                                        }
-                                    }
-                                }
-                            }
-                            if ($isCli -and $arg.Kind -ceq 'index') {
-                                $quiet = Get-PhpCliQuietPath $arg
+                            if ($arg.Kind -ceq 'index' -or ($arg.Kind -ceq 'property' -and $arg.Base.Kind -in @('index','property'))) {
+                                $quiet = Get-PhpCliQuietPath $arg ($node.Name -ceq 'empty')
                                 $found = $quiet.Found
                                 $value = $quiet.Value
                             } else {
+                                if ($arg.Kind -eq 'property') {
+                                    $object=Invoke-PhpExpr $arg.Base
+                                    if ($null -ne $object -and (Is-PhpObject $object)) {
+                                        $propName = Resolve-PhpMemberNodeName $arg
+                                        $typedProperty=$null
+                                        if ($object.Class -ne 'stdClass') {
+                                            $typedProperty=Find-PhpPropertyForScope $object.Class $propName $false
+                                        }
+                                        $storageInfo = Get-PhpObjectPropertyStorage $object $typedProperty $propName
+                                        $present=if ($storageInfo.Store -is [System.Collections.Specialized.OrderedDictionary]) {
+                                            $storageInfo.Store.Contains($storageInfo.Key)
+                                        } else { $storageInfo.Store.ContainsKey($storageInfo.Key) }
+                                        if (-not $present) {
+                                            if ($null -ne $typedProperty -and
+                                                -not [string]::IsNullOrEmpty([string]$typedProperty.TypeName)) {
+                                                if ($node.Name -ceq 'isset') { return $false }
+                                                if ($node.Name -ceq 'empty') { return $true }
+                                            }
+                                            $issetMethod=Find-OptionalPhpMethod $object.Class '__isset'
+                                            if ($null -ne $issetMethod) {
+                                                $found=Is-Truthy (Invoke-PhpMethod $object '__isset' @($propName))
+                                                if ($node.Name -ceq 'isset' -and -not $found) { return $false }
+                                                if ($node.Name -ceq 'isset' -and $found) { continue }
+                                                if ($node.Name -ceq 'empty' -and -not $found) { return $true }
+                                            }
+                                        }
+                                    }
+                                }
                                 $state.QuietDepth++
                                 try {
                                     $value = Invoke-PhpExpr $arg
                                 } catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
                                     if ($_.Exception.Message -like 'ALL PHP: Undefined *') {
                                         $found = $false
                                     } else { throw }
@@ -6099,39 +14724,114 @@ class UnhandledMatchError extends Error {}
                                 if ($state.GlobalBindings.Contains($varName)) {
                                     [void]$state.Globals.Remove($varName)
                                 } elseif ($state.StaticBindings.Contains($varName)) {
-                                    [void]$state.FunctionStatics.Remove($state.CurrentCallable + '|' + $varName)
+                                    $callableScope = if ([string]::IsNullOrEmpty($state.CurrentCallable)) { '{main}' } else { $state.CurrentCallable }
+                                    [void]$state.FunctionStatics.Remove($callableScope + '|' + $varName)
                                     [void]$state.StaticBindings.Remove($varName)
                                 } else { [void]$state.Vars.Remove($varName) }
                             } elseif ($arg.Kind -eq 'index') {
-                                $array = Invoke-PhpExpr $arg.Base
+                                $indexChain=[System.Collections.Generic.List[object]]::new()
+                                $walkNode=$arg.Base
+                                while ($null -ne $walkNode -and $walkNode.Kind -eq 'index') {
+                                    [void]$indexChain.Add($walkNode)
+                                    $walkNode=$walkNode.Base
+                                }
+                                $array = $null
+                                if ($null -ne $walkNode -and $walkNode.Kind -eq 'property' -and -not $walkNode.NullSafe) {
+                                    $propTargetObj = Invoke-PhpExpr $walkNode.Base
+                                    if ((Is-PhpObject $propTargetObj) -and $propTargetObj.Class -ne 'stdClass') {
+                                        $propRootName = Resolve-PhpMemberNodeName $walkNode
+                                        $propDeclared = Find-PhpPropertyForScope $propTargetObj.Class $propRootName $false
+                                        $curVal = Get-LValue ([pscustomobject]@{ Kind='property'; Base=[pscustomobject]@{ Kind='literal'; Value=$propTargetObj }; Name=$propRootName; NullSafe=$false })
+                                        if ($null -ne $propDeclared -and -not (Is-PhpObject $curVal)) {
+                                            Assert-PhpSetVisibility $propDeclared 'indirect'
+                                            if ([bool]$propDeclared.Readonly) {
+                                                Throw-PhpError 'Error' ('Cannot modify readonly property ' + $propDeclared.Owner + '::$' + $propRootName) ("ALL PHP: Cannot modify readonly property '$propRootName'")
+                                            }
+                                        }
+                                        for ($ci = $indexChain.Count - 1; $ci -ge 0; $ci--) {
+                                            $curStep = $indexChain[$ci]
+                                            if ($null -eq $curStep.Key) { Throw-PhpError 'Error' 'Cannot use [] for reading' 'ALL PHP: Cannot read an empty [] index' }
+                                            $stepKey = Invoke-PhpExpr $curStep.Key
+                                            if ((Is-PhpObject $curVal) -and $state.PreludeLoaded -and (Test-PhpInstanceOf $curVal.Class 'ArrayAccess')) {
+                                                $curVal = Invoke-PhpMethod $curVal 'offsetGet' @($stepKey)
+                                            } else {
+                                                $curVal = Get-PhpArrayItem $curVal $stepKey
+                                            }
+                                        }
+                                        $array = $curVal
+                                    } else {
+                                        $propRootName = Resolve-PhpMemberNodeName $walkNode
+                                        $curVal = Get-LValue ([pscustomobject]@{ Kind='property'; Base=[pscustomobject]@{ Kind='literal'; Value=$propTargetObj }; Name=$propRootName; NullSafe=$false })
+                                        for ($ci = $indexChain.Count - 1; $ci -ge 0; $ci--) {
+                                            $curStep = $indexChain[$ci]
+                                            $stepKey = Invoke-PhpExpr $curStep.Key
+                                            $curVal = if ((Is-PhpObject $curVal) -and $state.PreludeLoaded -and (Test-PhpInstanceOf $curVal.Class 'ArrayAccess')) {
+                                                Invoke-PhpMethod $curVal 'offsetGet' @($stepKey)
+                                            } else { Get-PhpArrayItem $curVal $stepKey }
+                                        }
+                                        $array = $curVal
+                                    }
+                                } else {
+                                    $array = Invoke-PhpExpr $arg.Base
+                                }
+                                if ((Is-PhpObject $array) -and $state.PreludeLoaded -and (Test-PhpInstanceOf $array.Class 'ArrayAccess')) {
+                                    $idxKey = Invoke-PhpExpr $arg.Key
+                                    [void](Invoke-PhpMethod $array 'offsetUnset' @($idxKey))
+                                    continue
+                                }
                                 if (-not (Is-PhpArray $array)) { throw 'ALL PHP: unset index requires array' }
                                 if ($null -eq $arg.Key) { throw 'ALL PHP: unset requires array key' }
                                 $key = To-PhpKey (Invoke-PhpExpr $arg.Key)
-                                if ($array.Items.Contains($key)) { $array.Items.Remove($key) }
+                                if ($array.Items.Contains($key)) { Separate-PhpReferenceBacking $array;Remove-PhpTraversalEntry $array $key;$array.Items.Remove($key) }
                             } elseif ($arg.Kind -eq 'property') {
                                 $object = Invoke-PhpExpr $arg.Base
                                 if (-not (Is-PhpObject $object)) { throw 'ALL PHP: unset property requires object' }
                                 if ($object.PSObject.Properties['EnumCase']) {
                                     throw 'ALL PHP: Cannot unset enum case property'
                                 }
-                                $present=if ($object.Props -is [System.Collections.Specialized.OrderedDictionary]) {
-                                    $object.Props.Contains($arg.Name)
-                                } else { $object.Props.ContainsKey($arg.Name) }
+                                $propName = Resolve-PhpMemberNodeName $arg
+                                $declared = $null
+                                if ($object.Class -ne 'stdClass') {
+                                    $declared=Find-PhpPropertyForScope $object.Class $propName $false
+                                }
+                                $storageInfo = Get-PhpObjectPropertyStorage $object $declared $propName
+                                $present=if ($storageInfo.Store -is [System.Collections.Specialized.OrderedDictionary]) {
+                                    $storageInfo.Store.Contains($storageInfo.Key)
+                                } else { $storageInfo.Store.ContainsKey($storageInfo.Key) }
+                                $unsetTrackKey = if ($null -ne $declared -and $declared.Visibility -eq 'private') { $declared.Owner + '::' + $propName } else { $propName }
                                 if ($present) {
-                                    if ($object.Class -ne 'stdClass') {
-                                        $declared=Find-PhpProperty $object.Class $arg.Name $false
-                                        if ($null -ne $declared) {
-                                            Assert-PhpVisibility $declared.Visibility $declared.Owner
-                                        }
+                                    if ($null -ne $declared) {
+                                        Assert-PhpVisibility $declared.Visibility $declared.Owner 'property' $propName
+                                        Assert-PhpSetVisibility $declared 'unset'
                                     }
                                     if ($null -ne $declared -and $declared.Readonly) {
-                                        throw "ALL PHP: Cannot unset readonly property '$($arg.Name)'"
+                                        throw "ALL PHP: Cannot unset readonly property '$propName'"
                                     }
-                                    [void]$object.Props.Remove($arg.Name)
+                                    [void]$storageInfo.Store.Remove($storageInfo.Key)
+                                    if ($null -ne $declared -and $object.PSObject.Properties['UnsetProps'] -and $null -ne $object.UnsetProps) {
+                                        [void]$object.UnsetProps.Add($unsetTrackKey)
+                                    }
                                 } else {
-                                    $magic=Find-OptionalPhpMethod $object.Class '__unset'
-                                    if ($null -ne $magic) {
-                                        [void](Invoke-PhpMethod $object '__unset' @($arg.Name))
+                                    $wasExplicitlyUnset = ($object.PSObject.Properties['UnsetProps'] -and $null -ne $object.UnsetProps -and $object.UnsetProps.Contains($unsetTrackKey))
+                                    if ($null -ne $declared -and -not $wasExplicitlyUnset) {
+                                        Assert-PhpVisibility $declared.Visibility $declared.Owner 'property' $propName
+                                        if (-not (Test-PhpSetVisibilityAllowed $declared)) {
+                                            Assert-PhpSetVisibility $declared 'unset'
+                                        }
+                                        if ($declared.Readonly) {
+                                            throw "ALL PHP: Cannot unset readonly property '$propName'"
+                                        }
+                                        if ($object.PSObject.Properties['UnsetProps'] -and $null -ne $object.UnsetProps) {
+                                            [void]$object.UnsetProps.Add($unsetTrackKey)
+                                        }
+                                    } else {
+                                        $magic=Find-OptionalPhpMethod $object.Class '__unset'
+                                        $unsetGuardKey=([string]$object.GetHashCode() + ':' + $propName)
+                                        if ($null -ne $magic -and $state.MagicUnsetActive.Add($unsetGuardKey)) {
+                                            try {
+                                                [void](Invoke-PhpMethod $object '__unset' @($propName))
+                                            } finally { [void]$state.MagicUnsetActive.Remove($unsetGuardKey) }
+                                        }
                                     }
                                 }
                             } else { throw 'ALL PHP: unset() requires variable or element' }
@@ -6139,13 +14839,33 @@ class UnhandledMatchError extends Error {}
                         return $null
                     }
                     $callName = Resolve-PhpFunctionNodeName $node
-                    $callbackName=$callName.ToLowerInvariant()
-                    if ($node.Name -ieq $callName -and
+                    $callbackName=(ConvertTo-PhpAsciiLower $callName)
+                    if ($callbackName -ceq 'assert' -and -not $state.Functions.ContainsKey($callName)) {
+                        $zendAssertions = if ($state.Ini.ContainsKey('zend.assertions')) { [long]$state.Ini['zend.assertions'] } else { [long]1 }
+                        if ($zendAssertions -le 0) { return $true }
+                        $assertArgs = Evaluate-PhpBuiltinArguments $node.Args 'assert'
+                        $condVal = $null; $hasCond = $false; $descVal = $null; $hasDesc = $false
+                        $aPos = 0
+                        foreach ($aa in $assertArgs) {
+                            if ($null -ne $aa -and $aa.PSObject.Properties['PhpType'] -and $aa.PhpType -ceq 'named_argument') {
+                                if ($aa.Name -ceq 'assertion') { $condVal = $aa.Value; $hasCond = $true }
+                                elseif ($aa.Name -ceq 'description') { $descVal = $aa.Value; $hasDesc = $true }
+                                else { Throw-PhpError 'Error' ('Unknown named parameter $' + $aa.Name) }
+                            } else {
+                                if ($aPos -eq 0) { $condVal = $aa; $hasCond = $true }
+                                elseif ($aPos -eq 1) { $descVal = $aa; $hasDesc = $true }
+                                $aPos++
+                            }
+                        }
+                        if (-not $hasCond) { Throw-PhpError 'ArgumentCountError' 'assert() expects at least 1 argument, 0 given' }
+                        return (Invoke-PhpAssert $condVal $hasDesc $descVal)
+                    }
+                    if ((Test-PhpNameEqual $node.Name $callName) -and
                         -not $state.Functions.ContainsKey($callName) -and
                         (($callbackName -ceq 'call_user_func' -and $node.Args.Count -ge 1) -or
                          ($callbackName -ceq 'call_user_func_array' -and $node.Args.Count -eq 2))) {
                         $plainArguments=$true
-                        foreach ($expression in $node.Args) { if ($expression.Kind -ceq 'named_argument') { $plainArguments=$false } }
+                        foreach ($expression in $node.Args) { if ($expression.Kind -in @('named_argument','spread_argument')) { $plainArguments=$false } }
                         if ($plainArguments) {
                             $boundCallback=Assert-PhpValueCallable (Invoke-PhpExpr $node.Args[0]) $callbackName
                             $earlyArgs=[System.Collections.Generic.List[object]]::new()
@@ -6160,44 +14880,44 @@ class UnhandledMatchError extends Error {}
                         $args=Evaluate-PhpUserArguments $node.Args $state.Functions[$callName]
                         return (Invoke-PhpCallable $state.Functions[$callName] $args $null)
                     }
-                    $callArgs = [System.Collections.Generic.List[object]]::new()
-                    foreach ($arg in $node.Args) {
-                        if ($arg.Kind -ceq 'named_argument') {
-                            [void]$callArgs.Add([pscustomobject]@{
-                                PhpType='named_argument'; Name=$arg.Name
-                                Value=(Invoke-PhpExpr $arg.Expr)
-                            })
-                        } else {
-                            [void]$callArgs.Add((Invoke-PhpExpr $arg))
-                        }
-                    }
-                    return (Invoke-PhpFunction $callName ($callArgs.ToArray()))
+                    $callArgs = Evaluate-PhpBuiltinArguments $node.Args $callName
+                    return (Invoke-PhpFunction $callName $callArgs)
                 }
                 'method' {
                     $base = Invoke-PhpExpr $node.Base
                     if ($node.NullSafe -and $null -eq $base) { return $null }
-                    if (-not (Is-PhpObject $base)) { throw 'ALL PHP: Method call requires object' }
-                    $def=Find-OptionalPhpMethod $base.Class $node.Name
+                    $methodName = Resolve-PhpMemberNodeName $node
+                    if (-not (Is-PhpObject $base)) {
+                        Throw-PhpError 'Error' ('Call to a member function ' + $methodName + '() on ' + (Get-PhpBuiltinTypeName $base)) 'ALL PHP: Method call requires object'
+                    }
+                    $def=Find-OptionalPhpMethod $base.Class $methodName
+                    if ($null -ne $def -and -not (Test-PhpVisibilityAllowed $def.Visibility $def.Owner 'method' $def.Name)) {
+                        if ($null -ne (Find-OptionalPhpMethod $base.Class '__call')) { $def = $null }
+                    }
                     if ($null -ne $def) {
                         $args=Evaluate-PhpUserArguments $node.Args $def
-                        return (Invoke-PhpMethod $base $node.Name $args)
+                        return (Invoke-PhpMethod $base $methodName $args)
                     }
                     $magic=Find-OptionalPhpMethod $base.Class '__call'
-                    if ($null -eq $magic) { throw "ALL PHP: Undefined method '$($node.Name)'" }
-                    $collected=New-PhpArray
-                    foreach ($arg in $node.Args) {
-                        if ($arg.Kind -ceq 'named_argument') {
-                            $item=Invoke-PhpExpr $arg.Expr
-                            Set-PhpArrayItem $collected $arg.Name $item $false
-                        } else {
-                            $item=Invoke-PhpExpr $arg
-                            Set-PhpArrayItem $collected $null $item $true
-                        }
-                    }
-                    return (Invoke-PhpMethod $base '__call' @($node.Name,$collected))
+                    if ($null -eq $magic) { throw "ALL PHP: Undefined method '$methodName'" }
+                    $collected=ConvertTo-PhpCallCollectedArray $node.Args
+                    return (Invoke-PhpMethod $base '__call' @($methodName,$collected))
                 }
                 'new' {
-                    $className=Resolve-PhpClass $node.Name
+                    if ($node.PSObject.Properties['AnonymousClass'] -and $null -ne $node.AnonymousClass) {
+                        if (-not $state.Classes.ContainsKey($node.AnonymousClass.Name)) {
+                            Register-PhpClass $node.AnonymousClass
+                        }
+                        $className = [string]$node.AnonymousClass.Name
+                    } elseif ($node.PSObject.Properties['ClassExpr'] -and $null -ne $node.ClassExpr) {
+                        $rawClass = Invoke-PhpExpr $node.ClassExpr
+                        if (Is-PhpObject $rawClass) { $className = [string]$rawClass.Class }
+                        elseif (Is-PhpStringValue $rawClass) { $className = (To-PhpText $rawClass).TrimStart('\') }
+                        else { Throw-PhpError 'Error' 'Class name must be a valid object or a string' }
+                    } else {
+                        $className=Resolve-PhpClass $node.Name
+                    }
+                    if ($state.Classes.ContainsKey($className)) { $className=[string]$state.Classes[$className].Name }
                     if ($state.Classes.ContainsKey($className) -and
                         $state.Classes[$className].PSObject.Properties['Enum'] -and
                         $state.Classes[$className].Enum) {
@@ -6217,34 +14937,29 @@ class UnhandledMatchError extends Error {}
                         PhpType='object'; Id=(New-PhpObjectId); Class=$className
                         Props=[System.Collections.Generic.Dictionary[string,object]]::new(
                             [System.StringComparer]::Ordinal)
+                        PrivateProps=[System.Collections.Generic.Dictionary[string,object]]::new(
+                            [System.StringComparer]::Ordinal)
+                        UnsetProps=[System.Collections.Generic.HashSet[string]]::new(
+                            [System.StringComparer]::Ordinal)
                     }
-                    # Ancestors first, derived declarations last.
-                    for ($i=$chain.Count - 1; $i -ge 0; $i--) {
-                        foreach ($prop in $chain[$i].Properties) {
-                            if ($prop.Static) { continue }
-                            if ($null -eq $prop.Default -and
-                                -not [string]::IsNullOrEmpty([string]$prop.TypeName)) {
-                                continue # declared but uninitialized typed property
-                            }
-                            $val=$null
-                            if ($null -ne $prop.Default) { $val=Invoke-PhpExpr $prop.Default }
-                            $object.Props[$prop.Name]=Copy-PhpValue (Convert-PhpTypedValue $val ([string]$prop.TypeName) ('property ' + $prop.Name))
-                        }
-                    }
+                    Initialize-PhpObjectProperties $object $chain $true
                     if ($state.PreludeLoaded -and (Test-PhpInstanceOf $className 'Throwable')) {
                         Initialize-PhpThrowable $object
                     }
                     $construct=$null
                     try { $construct=Find-PhpMethod $className '__construct' }
                     catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
                         if ($_.Exception.Message -notlike 'ALL PHP: Undefined method*') { throw }
                     }
                     if ($null -ne $construct) {
                         $callArgs=Evaluate-PhpUserArguments $node.Args $construct
                         [void](Invoke-PhpMethod $object '__construct' $callArgs)
                     } elseif ($node.Args.Count -gt 0) {
-                        throw 'ALL PHP: Constructor arguments without __construct are not supported'
+                        $expandedCtorArgs=ConvertTo-PhpCallCollectedArray $node.Args
+                        if ($expandedCtorArgs.Items.Count -gt 0) {
+                            throw 'ALL PHP: Constructor arguments without __construct are not supported'
+                        }
                     }
                     return $object
                 }
@@ -6252,9 +14967,9 @@ class UnhandledMatchError extends Error {}
                     $value = Invoke-PhpExpr $node.Arg
                     switch ($node.Op) {
                         '!' { return (-not (Is-Truthy $value)) }
-                        '+' { return (To-Number $value) }
-                        '-' { return (Php-Neg (To-Number $value)) }
-                        '~' { return [long](-bnot (To-PhpInt $value)) }
+                        '+' { return (Convert-PhpUnaryNumericOperand $value '+') }
+                        '-' { return (Php-Neg (Convert-PhpUnaryNumericOperand $value '-')) }
+                        '~' { if (Is-PhpStringValue $value) { return (To-PhpBytes $value).BitwiseNot() };return [long](-bnot (To-PhpInt (Convert-PhpUnaryNumericOperand $value '~'))) }
                     }
                 }
                 'ternary' {
@@ -6284,11 +14999,16 @@ class UnhandledMatchError extends Error {}
                 }
                 'binary' {
                     if ($node.Op -ceq '??') {
+                        if ($node.Left.Kind -in @('index','property')) {
+                            $quiet = Get-PhpCliQuietPath $node.Left $true
+                            if ($quiet.Found -and $null -ne $quiet.Value) { return $quiet.Value }
+                            return (Invoke-PhpExpr $node.Right)
+                        }
                         $leftValue = $null
                         $state.QuietDepth++
                         try { $leftValue = Invoke-PhpExpr $node.Left }
                         catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
                             if ($_.Exception.Message -notlike 'ALL PHP: Undefined *') { throw }
                         }
                         finally { $state.QuietDepth-- }
@@ -6306,24 +15026,25 @@ class UnhandledMatchError extends Error {}
                     $a = Invoke-PhpExpr $node.Left
                     $b = Invoke-PhpExpr $node.Right
                     switch ($node.Op) {
-                        '**' { return (Php-Pow (To-Number $a) (To-Number $b)) }
-                        '.' { return ((To-PhpText $a) + (To-PhpText $b)) }
+                        '**' { $nums = Convert-PhpBinaryNumericOperands $a $b '**'; return (Php-Pow $nums[0] $nums[1]) }
+                        '.' { return (To-PhpBytes $a).Concat((To-PhpBytes $b)) }
                         '+' {
                             if ((Is-PhpArray $a) -and (Is-PhpArray $b)) {
                                 $union = Copy-PhpValue $a
                                 foreach ($key in $b.Items.Keys) {
                                     if (-not $union.Items.Contains($key)) {
-                                        Set-PhpArrayItem $union (KeyString-ToValue ([string]$key)) $b.Items[$key] $false
+                                        Set-PhpArrayItem $union (Get-PhpKeyValue $key) $b.Items[$key] $false
                                     }
                                 }
                                 return $union
                             }
-                            return (Php-Add (To-Number $a) (To-Number $b))
+                            $nums = Convert-PhpBinaryNumericOperands $a $b '+'
+                            return (Php-Add $nums[0] $nums[1])
                         }
-                        '-' { return (Php-Sub (To-Number $a) (To-Number $b)) }
-                        '*' { return (Php-Mul (To-Number $a) (To-Number $b)) }
-                        '/' { return (Php-Div (To-Number $a) (To-Number $b)) }
-                        '%' { return (Php-Mod (To-Number $a) (To-Number $b)) }
+                        '-' { $nums = Convert-PhpBinaryNumericOperands $a $b '-'; return (Php-Sub $nums[0] $nums[1]) }
+                        '*' { $nums = Convert-PhpBinaryNumericOperands $a $b '*'; return (Php-Mul $nums[0] $nums[1]) }
+                        '/' { $nums = Convert-PhpBinaryNumericOperands $a $b '/'; return (Php-Div $nums[0] $nums[1]) }
+                        '%' { $nums = Convert-PhpBinaryNumericOperands $a $b '%'; return (Php-Mod $nums[0] $nums[1]) }
                         '==' { return (Php-Equal $a $b $false) }
                         '!=' { return (-not (Php-Equal $a $b $false)) }
                         '===' { return (Is-StrictEqual $a $b) }
@@ -6333,15 +15054,27 @@ class UnhandledMatchError extends Error {}
                         '>' { return (Test-PhpRelation $a $b '>') }
                         '>=' { return (Test-PhpRelation $a $b '>=') }
                         '<=>' { return [long](Compare-Values $a $b) }
-                        '<<' { return (Php-Shift $a $b $true) }
-                        '>>' { return (Php-Shift $a $b $false) }
-                        '&' { return [long]((To-PhpInt $a) -band (To-PhpInt $b)) }
-                        '|' { return [long]((To-PhpInt $a) -bor (To-PhpInt $b)) }
-                        '^' { return [long]((To-PhpInt $a) -bxor (To-PhpInt $b)) }
+                        '<<' { $nums = Convert-PhpBinaryNumericOperands $a $b '<<'; return (Php-Shift $nums[0] $nums[1] $true) }
+                        '>>' { $nums = Convert-PhpBinaryNumericOperands $a $b '>>'; return (Php-Shift $nums[0] $nums[1] $false) }
+                        '&' {
+                            if ((Is-PhpStringValue $a) -and (Is-PhpStringValue $b)) { return (To-PhpBytes $a).Bitwise((To-PhpBytes $b),[char]'&') }
+                            $nums = Convert-PhpBinaryNumericOperands $a $b '&'
+                            return [long]((To-PhpInt $nums[0]) -band (To-PhpInt $nums[1]))
+                        }
+                        '|' {
+                            if ((Is-PhpStringValue $a) -and (Is-PhpStringValue $b)) { return (To-PhpBytes $a).Bitwise((To-PhpBytes $b),[char]'|') }
+                            $nums = Convert-PhpBinaryNumericOperands $a $b '|'
+                            return [long]((To-PhpInt $nums[0]) -bor (To-PhpInt $nums[1]))
+                        }
+                        '^' {
+                            if ((Is-PhpStringValue $a) -and (Is-PhpStringValue $b)) { return (To-PhpBytes $a).Bitwise((To-PhpBytes $b),[char]'^') }
+                            $nums = Convert-PhpBinaryNumericOperands $a $b '^'
+                            return [long]((To-PhpInt $nums[0]) -bxor (To-PhpInt $nums[1]))
+                        }
                         'instanceof' {
                             if (-not (Is-PhpObject $a)) { return $false }
-                            if ($b -isnot [string]) { throw 'ALL PHP: instanceof class name required' }
-                            return (Test-PhpInstanceOf $a.Class $b)
+                            if (-not (Is-PhpStringValue $b)) { throw 'ALL PHP: instanceof class name required' }
+                            return (Test-PhpInstanceOf $a.Class (Get-PhpHostText $b))
                         }
                     }
                 }
@@ -6350,12 +15083,13 @@ class UnhandledMatchError extends Error {}
         }
         function Invoke-PhpStatement($node) {
             $state.Steps++
-            if ($state.Steps -gt 100000) {
+            if ($state.Steps -gt $state.MaxSteps) {
                 throw 'ALL PHP: Statement limit reached (100000)'
             }
             if ($null -ne $node.Line) { $state.Line = $node.Line }
             switch ($node.Kind) {
-                'inline_html' { [Console]::Write($node.Text); return }
+                'strict_declare' {return}
+                'inline_html' { Write-PhpBytes $node.Text; return }
                 'constdecl' {
                     foreach ($decl in $node.Decls) {
                         if ($state.Constants.ContainsKey($decl.Name) -or $phpConstants.ContainsKey($decl.Name)) {
@@ -6372,7 +15106,7 @@ class UnhandledMatchError extends Error {}
                     try {
                         try { Invoke-PhpStatement $node.Body }
                         catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
                             $thrown = Get-PhpThrown $_
                             if ($null -eq $thrown) { throw }
                             $handler = $null
@@ -6389,7 +15123,7 @@ class UnhandledMatchError extends Error {}
                             Invoke-PhpStatement $handler.Body
                         }
                     } catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw } $pending = $_ }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw } $pending = $_ }
                     if ($null -ne $node.Finally) {
                         # finally runs with a clean control-flow state; a return/break/continue that
                         # was already under way resumes afterwards unless finally issues its own.
@@ -6400,7 +15134,7 @@ class UnhandledMatchError extends Error {}
                         $flow.LoopControl = $null
                         try { Invoke-PhpStatement $node.Finally }
                         catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
                             # An exception raised by finally replaces the pending one and keeps it
                             # reachable at the end of its "previous" chain.
                             $replacement = Get-PhpThrown $_
@@ -6438,26 +15172,32 @@ class UnhandledMatchError extends Error {}
                     return
                 }
                 'staticdecl' {
-                    if ($state.CallDepth -le 0) {
-                        throw 'ALL PHP: Static local declaration outside function'
-                    }
+                    $callableScope = if ([string]::IsNullOrEmpty($state.CurrentCallable)) { '{main}' } else { $state.CurrentCallable }
                     foreach ($decl in $node.Decls) {
-                        $key = $state.CurrentCallable + '|' + $decl.Name
+                        $key = $callableScope + '|' + $decl.Name
                         if (-not $state.FunctionStatics.ContainsKey($key)) {
                             $init = $null
                             if ($null -ne $decl.Init) { $init = Invoke-PhpExpr $decl.Init }
-                            $state.FunctionStatics[$key] = Copy-PhpValue $init
+                            $initCopy = Copy-PhpValue $init
+                            if ($state.CallDepth -le 0) {
+                                $cell = [pscustomobject]@{ PhpType='refcell'; Value=$initCopy }
+                                $state.FunctionStatics[$key] = $cell
+                                $state.Globals[$decl.Name] = $cell
+                            } else {
+                                $state.FunctionStatics[$key] = $initCopy
+                            }
                         }
                         [void]$state.StaticBindings.Add($decl.Name)
                     }
                     return
                 }
                 'functiondef' {
+                    if ($node.PSObject.Properties['Hoisted'] -and [bool]$node.Hoisted) { return }
                     if (Test-PhpRegisteredPublicFunction $node.Name) {
                         Throw-PhpRegisteredFunctionRedeclaration $node
                     }
                     if ($state.Functions.ContainsKey($node.Name)) {
-                        throw "ALL PHP: Function already declared '$($node.Name)'"
+                        Throw-PhpUserFunctionRedeclaration $node
                     }
                     $state.Functions[$node.Name] = $node
                     return
@@ -6474,7 +15214,7 @@ class UnhandledMatchError extends Error {}
                         }
                     }
                     $methods=[System.Collections.Generic.Dictionary[string,object]]::new(
-                        [System.StringComparer]::OrdinalIgnoreCase)
+                        [AllPhp.ValidTextSymbols.Comparers]::Ascii)
                     foreach ($method in $node.Methods) {
                         if ($methods.ContainsKey($method.Name) -or
                             $method.Name -in @('cases','from','tryFrom')) {
@@ -6485,25 +15225,24 @@ class UnhandledMatchError extends Error {}
                     $constants=[System.Collections.Generic.Dictionary[string,object]]::new(
                         [System.StringComparer]::Ordinal)
                     $enumCases=[System.Collections.Generic.List[object]]::new()
-                    $usedValues=[System.Collections.Generic.HashSet[string]]::new(
-                        [System.StringComparer]::Ordinal)
+                    $usedValues=[System.Collections.Generic.HashSet[object]]::new()
                     foreach ($case in $node.Cases) {
                         if ($constants.ContainsKey($case.Name)) {
                             throw "ALL PHP: Duplicate enum case '$($case.Name)'"
                         }
                         $props=[System.Collections.Specialized.OrderedDictionary]::new(
                             [System.StringComparer]::Ordinal)
-                        $props['name']=$case.Name
+                        $props['name']=To-PhpBytes $case.Name
                         if ($null -ne $node.BackingType) {
-                            $backedValue=Invoke-PhpExpr $case.Value
-                            if ($node.BackingType -eq 'string' -and $backedValue -isnot [string]) {
+                            $backedValue=ConvertTo-PhpOwnedValue (Invoke-PhpExpr $case.Value)
+                            if ($node.BackingType -eq 'string' -and -not (Is-PhpStringValue $backedValue)) {
                                 throw 'ALL PHP: Backed enum string case expects a string'
                             }
                             if ($node.BackingType -eq 'int' -and
                                 ($backedValue -isnot [long])) {
                                 throw 'ALL PHP: Backed enum int case expects an integer'
                             }
-                            $uniqueValue=$node.BackingType + ':' + [string]$backedValue
+                            $uniqueValue=$backedValue
                             if (-not $usedValues.Add($uniqueValue)) {
                                 throw 'ALL PHP: Duplicate backed enum case value'
                             }
@@ -6525,6 +15264,7 @@ class UnhandledMatchError extends Error {}
                         Constants=$constants; Interfaces=$node.Interfaces
                         Abstract=$false; Final=$true; Enum=$true
                         BackingType=$node.BackingType; EnumCases=$enumCases.ToArray()
+                        Attributes=$(if($node.PSObject.Properties['Attributes']){$node.Attributes}else{@()})
                     }
                     return
                 }
@@ -6535,7 +15275,7 @@ class UnhandledMatchError extends Error {}
                         throw "ALL PHP: Type already declared '$($node.Name)'"
                     }
                     $methods=[System.Collections.Generic.Dictionary[string,object]]::new(
-                        [System.StringComparer]::OrdinalIgnoreCase)
+                        [AllPhp.ValidTextSymbols.Comparers]::Ascii)
                     foreach ($method in $node.Methods) {
                         if ($methods.ContainsKey($method.Name)) {
                             throw "ALL PHP: Duplicate interface method '$($method.Name)'"
@@ -6559,6 +15299,7 @@ class UnhandledMatchError extends Error {}
                     $state.Interfaces[$node.Name]=[pscustomobject]@{
                         Name=$node.Name; Parents=$node.Parents
                         Methods=$methods; Constants=$constants
+                        Attributes=$(if($node.PSObject.Properties['Attributes']){$node.Attributes}else{@()})
                     }
                     return
                 }
@@ -6574,7 +15315,7 @@ class UnhandledMatchError extends Error {}
                     if ($node.Traits.Count -gt 0) {
                         $composition=Get-PhpTraitComposition $node
                         $names=[System.Collections.Generic.HashSet[string]]::new(
-                            [System.StringComparer]::OrdinalIgnoreCase)
+                            [AllPhp.ValidTextSymbols.Comparers]::Ascii)
                         $merged=[System.Collections.Generic.List[object]]::new()
                         foreach ($method in $node.Methods) {
                             [void]$names.Add($method.Name)
@@ -6593,191 +15334,7 @@ class UnhandledMatchError extends Error {}
                     return
                 }
                 'classdef' {
-                    if ($state.Classes.ContainsKey($node.Name) -or
-                        $state.Interfaces.ContainsKey($node.Name) -or
-                        $state.Traits.ContainsKey($node.Name)) {
-                        throw "ALL PHP: Type already declared '$($node.Name)'"
-                    }
-                    if ($null -ne $node.Parent -and
-                        -not $state.Classes.ContainsKey($node.Parent)) {
-                        throw "ALL PHP: Parent class not defined '$($node.Parent)'"
-                    }
-                    if ($null -ne $node.Parent -and $state.Classes[$node.Parent].Final) {
-                        throw "ALL PHP: Cannot extend final class '$($node.Parent)'"
-                    }
-                    if ($null -ne $node.Parent -and $state.Classes[$node.Parent].Readonly -and -not $node.Readonly) {
-                        throw 'ALL PHP: Non-readonly class cannot extend readonly class'
-                    }
-                    if ($node.Readonly -and $null -ne $node.Parent -and -not $state.Classes[$node.Parent].Readonly) {
-                        throw 'ALL PHP: Readonly class cannot extend non-readonly class'
-                    }
-                    foreach ($iface in $node.Interfaces) {
-                        if (-not $state.Interfaces.ContainsKey($iface)) {
-                            throw "ALL PHP: Undefined interface '$iface'"
-                        }
-                    }
-                    $methods=[System.Collections.Generic.Dictionary[string,object]]::new(
-                        [System.StringComparer]::OrdinalIgnoreCase)
-                    foreach ($method in $node.Methods) {
-                        if ($methods.ContainsKey($method.Name)) {
-                            throw "ALL PHP: Duplicate method '$($method.Name)'"
-                        }
-                        if ($null -ne $node.Parent) {
-                            $parentMethod=$null
-                            try { $parentMethod=Find-PhpMethod $node.Parent $method.Name }
-                            catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
-                                if ($_.Exception.Message -notlike 'ALL PHP: Undefined method*') { throw }
-                            }
-                            if ($null -ne $parentMethod) {
-                                if ($parentMethod.Final) {
-                                    throw "ALL PHP: Cannot override final method '$($method.Name)'"
-                                }
-                                # PHP does not check constructor signatures against a concrete parent.
-                                if ($parentMethod.Visibility -ne 'private' -and
-                                    ($method.Name -ine '__construct' -or $parentMethod.Abstract)) {
-                                    Assert-PhpMethodSignature $method $parentMethod $method.Name
-                                }
-                            }
-                        }
-                        $methods[$method.Name]=$method
-                    }
-                    $effectiveProperties=[System.Collections.Generic.List[object]]::new()
-                    $declaredNames=[System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-                    foreach ($prop in $node.Properties) {
-                        if (-not $declaredNames.Add($prop.Name)) {
-                            throw "ALL PHP: Duplicate property '$($prop.Name)'"
-                        }
-                        [void]$effectiveProperties.Add($prop)
-                    }
-                    $traitMethods=[System.Collections.Generic.HashSet[string]]::new(
-                        [System.StringComparer]::OrdinalIgnoreCase)
-                    $composition=Get-PhpTraitComposition $node
-                    foreach ($method in $composition.Methods) {
-                            if ($methods.ContainsKey($method.Name)) {
-                                if ($traitMethods.Contains($method.Name)) {
-                                    throw "ALL PHP: Conflicting trait method '$($method.Name)'"
-                                }
-                                # The class method takes precedence over a trait method.
-                                continue
-                            }
-                            if (-not $traitMethods.Add($method.Name)) {
-                                throw "ALL PHP: Conflicting trait method '$($method.Name)'"
-                            }
-                            $imported=[pscustomobject]@{
-                                Kind='functiondef'; Name=$method.Name
-                                Params=$method.Params; Body=$method.Body; Expr=$method.Expr
-                                Visibility=$method.Visibility; Static=$method.Static
-                                Owner=$node.Name; Abstract=$method.Abstract; Final=$method.Final
-                                ReturnByRef=$method.ReturnByRef; ReturnType=$method.ReturnType
-                            }
-                            if ($null -ne $node.Parent) {
-                                $inherited=$null
-                                try { $inherited=Find-PhpMethod $node.Parent $method.Name }
-                                catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
-                                    if ($_.Exception.Message -notlike 'ALL PHP: Undefined method*') { throw }
-                                }
-                                if ($null -ne $inherited) {
-                                    if ($inherited.Final) { throw 'ALL PHP: Cannot override final method via trait' }
-                                    if ($inherited.Visibility -ne 'private' -and
-                                        ($method.Name -ine '__construct' -or $inherited.Abstract)) {
-                                        Assert-PhpMethodSignature $imported $inherited $method.Name
-                                    }
-                                }
-                            }
-                            $methods[$method.Name]=$imported
-                    }
-                    foreach ($prop in $composition.Properties) {
-                            $duplicate=$false
-                            foreach ($existing in $effectiveProperties) {
-                                if ($existing.Name -ceq $prop.Name) { $duplicate=$true; break }
-                            }
-                            if ($duplicate) { throw "ALL PHP: Conflicting trait property '$($prop.Name)'" }
-                            [void]$effectiveProperties.Add([pscustomobject]@{
-                                Name=$prop.Name; Default=$prop.Default
-                                Visibility=$prop.Visibility; Static=$prop.Static
-                                Owner=$node.Name; TypeName=$prop.TypeName
-                                Readonly=([bool]$prop.Readonly -or [bool]$node.Readonly)
-                            })
-                    }
-                    foreach ($prop in $effectiveProperties) {
-                        if ($node.Readonly -and $prop.Static) {
-                            throw 'ALL PHP: readonly static property is not allowed'
-                        }
-                        if ($node.Readonly -and [string]::IsNullOrEmpty([string]$prop.TypeName)) {
-                            throw 'ALL PHP: readonly property requires a type'
-                        }
-                        if (($node.Readonly -or $prop.Readonly) -and $null -ne $prop.Default) {
-                            throw 'ALL PHP: readonly property cannot have a default value'
-                        }
-                        if ($null -ne $prop.Default) {
-                            $defaultValue=Invoke-PhpExpr $prop.Default
-                            Assert-PhpPropertyDefault $defaultValue ([string]$prop.TypeName) $prop.Name
-                        }
-                    }
-                    $statics=[System.Collections.Generic.Dictionary[string,object]]::new(
-                        [System.StringComparer]::Ordinal)
-                    foreach ($prop in $effectiveProperties) {
-                        if ($prop.Static) {
-                            if ($null -eq $prop.Default -and
-                                -not [string]::IsNullOrEmpty([string]$prop.TypeName)) {
-                                continue # typed static property stays uninitialized
-                            }
-                            $default=$null
-                            if ($null -ne $prop.Default) { $default=Invoke-PhpExpr $prop.Default }
-                            $statics[$prop.Name]=Copy-PhpValue (Convert-PhpTypedValue $default ([string]$prop.TypeName) ('property ' + $prop.Name))
-                        }
-                    }
-                    $constants=[System.Collections.Generic.Dictionary[string,object]]::new(
-                        [System.StringComparer]::Ordinal)
-                    foreach ($const in $node.Constants) {
-                        if ($constants.ContainsKey($const.Name)) {
-                            throw "ALL PHP: Duplicate constant '$($const.Name)'"
-                        }
-                        $constants[$const.Name]=[pscustomobject]@{
-                            Value=(Invoke-PhpExpr $const.Value); Visibility=$const.Visibility
-                            Owner=$node.Name
-                        }
-                    }
-                    $state.Classes[$node.Name]=[pscustomobject]@{
-                        Name=$node.Name; Parent=$node.Parent; Methods=$methods
-                        Properties=$effectiveProperties.ToArray(); StaticValues=$statics
-                        Constants=$constants; Interfaces=$node.Interfaces
-                        Abstract=$node.Abstract; Final=$node.Final; Readonly=$node.Readonly
-                    }
-                    # A concrete class must supply every abstract ancestor and
-                    # declared-interface method. Validation stays inside registration
-                    # so incomplete classes cannot be instantiated.
-                    if (-not $node.Abstract) {
-                        foreach ($cls in (Get-PhpClassChain $node.Name)) {
-                            foreach ($required in $cls.Methods.Values) {
-                                if ($required.Abstract) {
-                                    $implementation=Find-PhpMethod $node.Name $required.Name
-                                    if ($implementation.Abstract) {
-                                        throw "ALL PHP: Concrete class has abstract method '$($required.Name)'"
-                                    }
-                                    Assert-PhpMethodSignature $implementation $required $required.Name
-                                }
-                            }
-                            foreach ($ifaceName in $cls.Interfaces) {
-                                foreach ($iface in (Get-PhpInterfaceChain $ifaceName)) {
-                                    foreach ($required in $iface.Methods.Values) {
-                                        $implementation=$null
-                                        try { $implementation=Find-PhpMethod $node.Name $required.Name }
-                                        catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
-                                            if ($_.Exception.Message -notlike 'ALL PHP: Undefined method*') { throw }
-                                        }
-                                        if ($null -eq $implementation -or $implementation.Abstract) {
-                                            throw "ALL PHP: Interface method not implemented '$($required.Name)'"
-                                        }
-                                        Assert-PhpMethodSignature $implementation $required $required.Name
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    Register-PhpClass $node
                     return
                 }
                 'loopcontrol' {
@@ -6788,7 +15345,7 @@ class UnhandledMatchError extends Error {}
                     return
                 }
                 'return' {
-                    if ($state.CallDepth -eq 0) { throw 'ALL PHP: Return outside function' }
+                    if ($state.CallDepth -eq 0 -and -not $state.LoadedUnitBody -and -not $isCli) { throw 'ALL PHP: Return outside function' }
                     $value = $null
                     $cell = $null
                     if ($null -ne $node.Expr) {
@@ -6796,7 +15353,10 @@ class UnhandledMatchError extends Error {}
                             if ($node.Expr.Kind -in @('variable','dynamic_variable','index','property','static_property')) {
                                 $cell=Get-PhpLValueCell $node.Expr
                             } elseif ($node.Expr.Kind -in @('call','method','static_method','invoke')) {
-                                $cell=Invoke-PhpReferenceCall $node.Expr
+                                $cell=Invoke-PhpReferenceCall $node.Expr $null 'Only variable references should be returned by reference'
+                            } elseif ($isCli -or $PhpDiagnostics) {
+                                Write-PhpDiagnostic 8 'Only variable references should be returned by reference'
+                                $cell=[pscustomobject]@{ PhpType='refcell'; Value=(Copy-PhpValue (Invoke-PhpExpr $node.Expr)) }
                             } else {
                                 throw 'ALL PHP: Reference return requires a writable value'
                             }
@@ -6817,7 +15377,7 @@ class UnhandledMatchError extends Error {}
                         $state.QuietDepth++
                         try { $current = Get-LValue $node.Target }
                         catch {
-                if ($isCli -and (Test-PhpCliExit $_)) { throw }
+                if (($isCli -and (Test-PhpCliExit $_)) -or (Test-PhpGeneratorYield $_)) { throw }
                             if ($_.Exception.Message -notlike 'ALL PHP: Undefined *') { throw }
                         }
                         finally { $state.QuietDepth-- }
@@ -6836,12 +15396,12 @@ class UnhandledMatchError extends Error {}
                 }
                 'echo' {
                     foreach ($e in $node.Args) {
-                        [Console]::Write((To-PhpText (Invoke-PhpExpr $e)))
+                        Write-PhpBytes (Invoke-PhpExpr $e)
                     }
                     return
                 }
                 'print' {
-                    [Console]::Write((To-PhpText (Invoke-PhpExpr $node.Expr)))
+                    Write-PhpBytes (Invoke-PhpExpr $node.Expr)
                     return
                 }
                 'if' {
@@ -6947,64 +15507,162 @@ class UnhandledMatchError extends Error {}
                     return
                 }
                 'foreach' {
-                    $arr = Invoke-PhpExpr $node.Iter
-                    if (-not (Is-PhpArray $arr)) { throw 'ALL PHP: foreach requires an array' }
-                    if ($node.ByReference -and
-                        $node.Iter.Kind -notin @('variable','dynamic_variable','index','property','static_property')) {
-                        throw 'ALL PHP: By-reference foreach requires a writable array'
+                    $walkCell=$null;$cursor=$null
+                    $iterVal = $null
+                    if (-not $node.ByReference) {
+                        $iterVal = Invoke-PhpExpr $node.Iter
+                    } else {
+                        if ($node.Iter.Kind -in @('variable','dynamic_variable','index','property','static_property')) {
+                            $walkCell = Get-PhpLValueCell $node.Iter
+                            $iterVal = $walkCell.Value
+                        } else {
+                            $iterVal = Invoke-PhpExpr $node.Iter
+                        }
                     }
-                    # A by-value traversal takes a value snapshot; a reference
-                    # traversal works on the original cells and leaves the last alias.
-                    $walk=$arr
-                    if (-not $node.ByReference) { $walk=Copy-PhpValue $arr }
+                    if (Is-PhpObject $iterVal) {
+                        Ensure-PhpPrelude
+                        $objIter = $iterVal
+                        while ($state.PreludeLoaded -and (Test-PhpInstanceOf $objIter.Class 'IteratorAggregate') -and -not (Test-PhpInstanceOf $objIter.Class 'Iterator')) {
+                            $objIter = Invoke-PhpMethod $objIter 'getIterator' @()
+                            if (-not (Is-PhpObject $objIter)) { Throw-PhpError 'Exception' 'Objects returned by IteratorAggregate::getIterator() must be traversable' }
+                        }
+                        if ($objIter.Class -ieq 'Generator' -or ($state.PreludeLoaded -and (Test-PhpInstanceOf $objIter.Class 'Iterator'))) {
+                            if ($node.ByReference) { throw 'ALL PHP: Cannot iterate iterator by reference' }
+                            [void](Invoke-PhpMethod $objIter 'rewind' @())
+                            $state.Flow.LoopDepth++
+                            try {
+                                while (-not $state.Flow.Returned -and (Is-Truthy (Invoke-PhpMethod $objIter 'valid' @()))) {
+                                    $curVal = Invoke-PhpMethod $objIter 'current' @()
+                                    if ($null -ne $node.KeyName) {
+                                        $curKey = Invoke-PhpMethod $objIter 'key' @()
+                                        Set-PhpVariableValue $node.KeyName $curKey
+                                    }
+                                    Set-PhpForeachValue $node $curVal
+                                    Invoke-PhpStatement $node.Body
+                                    if ($state.Flow.LoopControl -ceq 'break') { $state.Flow.LoopControl = $null; break }
+                                    if ($state.Flow.LoopControl -ceq 'continue') { $state.Flow.LoopControl = $null }
+                                    if ($state.Flow.Returned) { break }
+                                    [void](Invoke-PhpMethod $objIter 'next' @())
+                                }
+                            } finally { $state.Flow.LoopDepth-- }
+                            return
+                        }
+                        # Plain object: iterate visible initialized properties
+                        $propEntries = Get-PhpObjectDumpEntries $objIter
+                        $visibleProps = [System.Collections.Generic.List[object]]::new()
+                        foreach ($pe in $propEntries) {
+                            if (-not $pe.Present) { continue }
+                            $allowed = $true
+                            if ($null -ne $pe.Visibility -and -not [string]::IsNullOrEmpty($pe.Owner)) {
+                                try { Assert-PhpVisibility $pe.Visibility $pe.Owner 'property' $pe.Name }
+                                catch { $allowed = $false }
+                            } elseif ($objIter.Class -ne 'stdClass' -and $state.Classes.ContainsKey($objIter.Class)) {
+                                $declProp = Find-PhpProperty $objIter.Class $pe.Name $false
+                                if ($null -ne $declProp) {
+                                    try { Assert-PhpVisibility $declProp.Visibility $declProp.Owner 'property' $declProp.Name }
+                                    catch { $allowed = $false }
+                                }
+                            }
+                            if ($allowed) { [void]$visibleProps.Add($pe) }
+                        }
+                        $state.Flow.LoopDepth++
+                        try {
+                            foreach ($pe in $visibleProps) {
+                                if ($state.Flow.Returned) { break }
+                                $pStore = $pe.Storage
+                                $pKey = $pe.StorageKey
+                                $stillPresent = if ($pStore -is [System.Collections.Specialized.OrderedDictionary]) { $pStore.Contains($pKey) } else { $pStore.ContainsKey($pKey) }
+                                if (-not $stillPresent) { continue }
+                                if ($node.ByReference) {
+                                    $existingSlot = $pStore[$pKey]
+                                    if (-not (Is-PhpRefCell $existingSlot)) {
+                                        $existingSlot = [pscustomobject]@{ PhpType='refcell'; Value=(Copy-PhpValue $existingSlot) }
+                                        $pStore[$pKey] = $existingSlot
+                                    }
+                                    $vSlot = Get-PhpVariableSlot $node.ValueName
+                                    $vSlot.Store[$vSlot.Key] = $existingSlot
+                                } else {
+                                    $pVal = $pStore[$pKey]
+                                    if (Is-PhpRefCell $pVal) { $pVal = $pVal.Value }
+                                    Set-PhpForeachValue $node $pVal
+                                }
+                                if ($null -ne $node.KeyName) {
+                                    Set-PhpVariableValue $node.KeyName (To-PhpBytes $pe.Name)
+                                }
+                                Invoke-PhpStatement $node.Body
+                                if ($state.Flow.LoopControl -ceq 'break') { $state.Flow.LoopControl = $null; break }
+                                if ($state.Flow.LoopControl -ceq 'continue') { $state.Flow.LoopControl = $null; continue }
+                            }
+                        } finally { $state.Flow.LoopDepth-- }
+                        return
+                    }
+                    if($node.ByReference){
+                        if($node.Iter.Kind-notin@('variable','dynamic_variable','index','property','static_property')){
+                            throw 'ALL PHP: By-reference foreach requires a writable array'
+                        }
+                        $walk=$walkCell.Value
+                        if(-not(Is-PhpArray $walk)){
+                            if ($isCli -or $PhpDiagnostics) {
+                                Write-PhpDiagnostic 2 ('foreach() argument must be of type array|object, ' + (Get-PhpStrictUnionActualType $walk) + ' given')
+                                return
+                            }
+                            throw 'ALL PHP: foreach requires an array'
+                        }
+                        Separate-PhpReferenceBacking $walk
+                        $walk.ReferenceCellsKnownAbsent=$false
+                        $cursor=New-PhpLiveIterator $walk
+                    }else{
+                        $arr=$iterVal
+                        if(-not(Is-PhpArray $arr)){
+                            if ($isCli -or $PhpDiagnostics) {
+                                Write-PhpDiagnostic 2 ('foreach() argument must be of type array|object, ' + (Get-PhpStrictUnionActualType $arr) + ' given')
+                                return
+                            }
+                            throw 'ALL PHP: foreach requires an array'
+                        }
+                        $walk=Copy-PhpValue $arr
+                    }
+                    $referenceWalkRoot=$state.ReferenceTemporaryRoots.Count
+                    if($node.ByReference){[void]$state.ReferenceTemporaryRoots.Add($walkCell)}
+                    else{[void]$state.ReferenceTemporaryRoots.Add($walk)}
+                    $keys=$null;$position=0
+                    if(-not$node.ByReference){$keys=@($walk.Items.Keys)}
                     $state.Flow.LoopDepth++
                     try {
-                        foreach ($key in @($walk.Items.Keys)) {
-                            if ($state.Flow.Returned) { break }
-                            $value=$walk.Items[$key]
-                            if ($node.ByReference) {
-                                if (-not (Is-PhpRefCell $value)) {
-                                    $value=[pscustomobject]@{
-                                        PhpType='refcell'; Value=(Copy-PhpValue $value)
-                                    }
-                                    $walk.Items[$key]=$value
+                        while($true){
+                            if($state.Flow.Returned){break}
+                            if($node.ByReference){
+                                $walk=$walkCell.Value
+                                if(-not(Is-PhpArray $walk)){
+                                    if(Is-PhpObject $walk){throw 'ALL PHP: Live object foreach replacement is not implemented'}
+                                    Write-PhpDiagnostic 2 ('foreach() argument must be of type array|object, '+(Get-PhpStrictUnionActualType $walk)+' given')
+                                    break
                                 }
+                                $entry=Read-PhpLiveIterator $cursor $walk
+                                if($null-eq$entry){break}
+                                $key=$entry.Key
                                 $slot=Get-PhpVariableSlot $node.ValueName
-                                $slot.Store[$slot.Key]=$value
-                            } else {
-                                if (Is-PhpRefCell $value) { $value=$value.Value }
-                                Set-PhpVariableValue $node.ValueName $value
+                                $slot.Store[$slot.Key]=$entry.Cell
+                            }else{
+                                if($position-ge$keys.Count){break}
+                                $key=$keys[$position];$position++
+                                $value=$walk.Items[$key]
+                                if(Is-PhpRefCell $value){$value=$value.Value}
+                                Set-PhpForeachValue $node $value
                             }
-                            if ($null -ne $node.KeyName) {
-                                if ($key.StartsWith('i:')) {
-                                    Set-PhpVariableValue $node.KeyName ([long]$key.Substring(2))
-                                } else {
-                                    Set-PhpVariableValue $node.KeyName ($key.Substring(2))
-                                }
-                            }
+                            if($null-ne$node.KeyName){Set-PhpVariableValue $node.KeyName (Get-PhpKeyValue $key)}
                             Invoke-PhpStatement $node.Body
-                            if ($state.Flow.LoopControl -ceq 'break') {
-                                $state.Flow.LoopControl = $null
-                                break
-                            }
-                            if ($state.Flow.LoopControl -ceq 'continue') {
-                                $state.Flow.LoopControl = $null
-                                continue
-                            }
+                            if($state.Flow.LoopControl-ceq'break'){$state.Flow.LoopControl=$null;break}
+                            if($state.Flow.LoopControl-ceq'continue'){$state.Flow.LoopControl=$null;continue}
                         }
-                    } finally { $state.Flow.LoopDepth-- }
+                    }finally{
+                        if($null-ne$cursor){Remove-PhpLiveIterator $cursor}
+                        Remove-PhpReferenceTemporaryRoots $referenceWalkRoot;$state.Flow.LoopDepth--
+                    }
                     return
                 }
             }
             throw 'ALL PHP: Internal statement error'
-        }
-        if ($isCli -and ($CliContext.Keys -contains 'InitialIni')) {
-            foreach ($setting in $CliContext['InitialIni'].Keys) {
-                $state.Ini[[string]$setting] = [string]$CliContext['InitialIni'][$setting]
-            }
-            if ($state.Ini.ContainsKey('error_reporting')) {
-                $state.ErrorReporting = [long]$state.Ini['error_reporting']
-            }
         }
         if ($isCli -and ($CliContext.Keys -contains 'ScriptArguments')) {
             $scriptArguments = @($CliContext['ScriptArguments'])
@@ -7019,6 +15677,7 @@ class UnhandledMatchError extends Error {}
             Set-PhpArrayItem $server 'argv' $argumentArray $false
             $state.Globals['_SERVER'] = $server
         }
+        if(-not$state.Ini.ContainsKey('include_path')-and[IO.Path]::PathSeparator-ceq';'){$state.Ini['include_path']='.;C:\php\pear'}
         foreach($literalWarning in $state.LiteralWarnings) {
             $savedLine=$state.Line
             try{$state.Line=$literalWarning.Line;Write-PhpDiagnostic $literalWarning.Level $literalWarning.Message}
@@ -7034,39 +15693,96 @@ class UnhandledMatchError extends Error {}
         # installed-handler rejection. Do not call an absent optional interface.
         $nativeCallbackInstalled = $false
         if ($null -ne $NativeContext -and
-            $null -ne $NativeContext.PSObject.Methods['SetDiagnosticHandler'] -and
             $null -ne $NativeContext.PSObject.Methods['ClearDiagnosticHandler']) {
-            $nativeDiagnosticAction = [System.Action[long,string]] {
-                param([long]$nativeLevel, [string]$nativeMessage)
-                Write-PhpDiagnostic $nativeLevel $nativeMessage
+            if ($null -ne $NativeContext.PSObject.Methods['SetByteDiagnosticHandler']) {
+                $nativeByteDiagnosticAction=[System.Action[long,AllPhp.ByteValues.PhpBytes]] {
+                    param([long]$nativeLevel,[AllPhp.ByteValues.PhpBytes]$nativeMessage)
+                    Write-PhpDiagnostic $nativeLevel $nativeMessage
+                }
+                $nativeByteOutputAction=[System.Action[AllPhp.ByteValues.PhpBytes]] {
+                    param([AllPhp.ByteValues.PhpBytes]$nativeOutput)
+                    Write-PhpBytes $nativeOutput
+                }
+                $NativeContext.SetByteDiagnosticHandler($nativeByteDiagnosticAction,$nativeByteOutputAction)
+                $nativeCallbackInstalled=$true
+            } elseif ($null -ne $NativeContext.PSObject.Methods['SetDiagnosticHandler']) {
+                $nativeDiagnosticAction=[System.Action[long,string]] {
+                    param([long]$nativeLevel,[string]$nativeMessage)
+                    Write-PhpDiagnostic $nativeLevel $nativeMessage
+                }
+                $NativeContext.SetDiagnosticHandler($nativeDiagnosticAction)
+                $nativeCallbackInstalled=$true
             }
-            $NativeContext.SetDiagnosticHandler($nativeDiagnosticAction)
-            $nativeCallbackInstalled = $true
         }
         try {
 
-            # Direct global declarations are checked before any program output. Conditional
-            # and nested declarations remain runtime checks in the functiondef registration path.
+            # Direct top-level declarations are hoisted before execution starts.
+            # Conditional and nested declarations remain runtime checks in the functiondef registration path.
             foreach ($declaration in $statements) {
-                if ($declaration.Kind -ceq 'functiondef' -and
-                    (Test-PhpRegisteredPublicFunction $declaration.Name)) {
-                    Throw-PhpRegisteredFunctionRedeclaration $declaration
+                if ($declaration.Kind -ceq 'functiondef') {
+                    if (Test-PhpRegisteredPublicFunction $declaration.Name) {
+                        Throw-PhpRegisteredFunctionRedeclaration $declaration
+                    }
+                    if ($state.Functions.ContainsKey($declaration.Name)) {
+                        Throw-PhpUserFunctionRedeclaration $declaration
+                    }
+                    $state.Functions[$declaration.Name] = $declaration
+                    $declaration | Add-Member -NotePropertyName Hoisted -NotePropertyValue $true -Force
                 }
             }
 
+            if ($null -ne $global:AllPolyglotContext -and $global:AllPolyglotContext.ContainsKey('SharedVars')) {
+                Sync-PolyglotToPhpState
+            }
+            if ($isCli -and ($CliContext.Keys -contains 'PolyglotAction')) {
+                $pAction = [string]$CliContext['PolyglotAction']
+                $pTarget = [string]$CliContext['PolyglotTarget']
+                $pArgsList = $CliContext['PolyglotArgs']
+                $pInstance = $CliContext['PolyglotInstance']
+                $phpArgs = [System.Collections.Generic.List[object]]::new()
+                foreach ($a in @($pArgsList)) { [void]$phpArgs.Add((Convert-AllPolyglotValueToPhp $a)) }
+                if ($pAction -ceq 'call') {
+                    if ($state.Functions.ContainsKey($pTarget)) {
+                        $res = Invoke-PhpCallable $state.Functions[$pTarget] ($phpArgs.ToArray()) $null
+                        $CliContext['PolyglotResult'] = Convert-PhpValueToAllPolyglot $res
+                    } else {
+                        $res = Invoke-PhpFunction $pTarget ($phpArgs.ToArray())
+                        $CliContext['PolyglotResult'] = Convert-PhpValueToAllPolyglot $res
+                    }
+                } elseif ($pAction -ceq 'new') {
+                    $argNodes = [System.Collections.Generic.List[object]]::new()
+                    foreach ($pa in $phpArgs) { [void]$argNodes.Add([pscustomobject]@{Kind='literal'; Value=$pa}) }
+                    $obj = Invoke-PhpExpr ([pscustomobject]@{Kind='new'; Name=$pTarget; Args=$argNodes.ToArray()})
+                    $CliContext['PolyglotResult'] = Convert-PhpValueToAllPolyglot $obj
+                } elseif ($pAction -ceq 'method') {
+                    $phpObj = if ($pInstance -is [pscustomobject] -and $pInstance.PSObject.Properties['PhpObject']) { $pInstance.PhpObject } else { $pInstance }
+                    foreach ($k in @($pInstance.Items.Keys)) { $phpObj.Props[[string]$k] = Convert-AllPolyglotValueToPhp $pInstance.Items[$k] }
+                    $res = Invoke-PhpMethod $phpObj $pTarget ($phpArgs.ToArray())
+                    foreach ($k in @($phpObj.Props.Keys)) { $pInstance.Items[[string]$k] = Convert-PhpValueToAllPolyglot $phpObj.Props[$k] }
+                    $CliContext['PolyglotResult'] = Convert-PhpValueToAllPolyglot $res
+                }
+                Sync-PhpStateToPolyglot
+                return
+            }
             foreach ($statement in $statements) {
                 if ($state.Flow.Returned) { break }
                 Invoke-PhpStatement $statement
             }
+            Invoke-PhpShutdownFunctions
+            Flush-PhpOutputBuffers
         } catch {
-            if ($isCli -and (Test-PhpCliExit $_)) { return }
+            if ($isCli -and (Test-PhpCliExit $_)) {
+                Invoke-PhpShutdownFunctions
+                Flush-PhpOutputBuffers
+                return
+            }
             $uncaught = Get-PhpThrown $_
             if ($null -ne $uncaught -and $null -ne $state.ExceptionHandler) {
                 $handler = $state.ExceptionHandler
                 $state.ExceptionHandler = $null
                 if ($isCli) {
                     $handlerFailed = $false
-                    try { [void](Invoke-PhpValueCallable $handler @($uncaught)) }
+                    try { [void](Invoke-PhpValueCallable $handler @($uncaught) '' (New-PhpInternalCallPolicy)) }
                     catch
                     {
                         # This callback runs inside the outer handler catch, so
@@ -7079,22 +15795,31 @@ class UnhandledMatchError extends Error {}
                     }
                     if (-not $handlerFailed) { return }
                 } else {
-                    [void](Invoke-PhpValueCallable $handler @($uncaught))
+                    [void](Invoke-PhpValueCallable $handler @($uncaught) '' (New-PhpInternalCallPolicy))
                     return
                 }
             }
             if ($null -eq $uncaught -or (-not $PhpDiagnostics -and -not $isCli)) { throw }
             # Same text the PHP CLI writes with display_errors=1 and html_errors=0.
-            $fatal = 'Fatal error: Uncaught ' + (Get-PhpThrowableString $uncaught) +
-                "`n  thrown in " + (To-PhpText $uncaught.Props['file']) +
-                ' on line ' + (To-PhpText $uncaught.Props['line']) + "`n"
+            $fatalBuilder=[AllPhp.ByteValues.PhpByteBuilder]::new()
+            if (-not $isCli) { $fatalBuilder.AppendUtf8("`n") }
+            $fatalBuilder.AppendUtf8('Fatal error: Uncaught ')
+            $fatalBuilder.Append((Get-PhpThrowableString $uncaught))
+            $fatalBuilder.AppendUtf8("`n  thrown in ")
+            $fatalBuilder.Append((To-PhpBytes $uncaught.Props['file']))
+            $fatalBuilder.AppendUtf8(' on line ')
+            $fatalBuilder.Append((To-PhpBytes $uncaught.Props['line']))
+            $fatalBuilder.AppendUtf8("`n")
+            Write-PhpBytes ($fatalBuilder.ToPhpBytes()) $isCli
             if ($isCli) {
-                [Console]::Error.Write($fatal)
                 $CliContext['ExitCode'] = [long]255
                 $CliContext['Terminated'] = $true
                 $CliContext['TerminationReason'] = 'uncaught_php_throwable'
-            } else { [Console]::Write("`n" + $fatal) }
+            }
         } finally {
+            if ($null -ne $global:AllPolyglotContext) {
+                try { Sync-PhpStateToPolyglot } catch {}
+            }
             if ($nativeCallbackInstalled) { $NativeContext.ClearDiagnosticHandler() }
         }
     }

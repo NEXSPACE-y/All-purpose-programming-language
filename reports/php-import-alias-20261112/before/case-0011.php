@@ -1,1 +1,0 @@
-<?php use B\{const V as Q, const W as Q};

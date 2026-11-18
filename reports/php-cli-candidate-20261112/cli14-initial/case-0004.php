@@ -1,1 +1,0 @@
-<?php echo 'before'; exit(7); echo 'after';

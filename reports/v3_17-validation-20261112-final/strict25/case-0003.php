@@ -1,1 +1,0 @@
-<?php namespace { const value = 'global'; } namespace A { define('A\VALUE', 'local'); echo VALUE, '|', value; }

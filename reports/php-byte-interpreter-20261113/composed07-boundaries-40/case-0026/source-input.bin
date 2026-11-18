@@ -1,1 +1,0 @@
-enum E:string{case A="a";}try{E::from("\xFE");}catch(ValueError $e){echo bin2hex($e->getMessage());}

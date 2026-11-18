@@ -1,1 +1,0 @@
-<?php use B\C as Q; use function E\f as Q; use const G\V as Q; echo "ok";

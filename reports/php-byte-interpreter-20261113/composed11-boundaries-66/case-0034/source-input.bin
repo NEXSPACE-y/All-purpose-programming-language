@@ -1,1 +1,0 @@
-try{match("\xFF\0\x27\\\n"){};}catch(UnhandledMatchError $e){echo $e->getMessage();}

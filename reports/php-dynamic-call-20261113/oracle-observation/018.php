@@ -1,1 +1,0 @@
-<?php $f='missing_fn';try{$c=$f(...);echo 'CREATED';}catch(Error $e){echo $e->getMessage();}

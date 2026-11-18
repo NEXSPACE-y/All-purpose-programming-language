@@ -1,1 +1,0 @@
-<?php var_dump(function_exists('exit')); exit();

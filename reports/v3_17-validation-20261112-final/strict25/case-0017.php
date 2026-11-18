@@ -1,1 +1,0 @@
-<?php namespace X { function read(){return 'import';} } namespace A { use function X\read; if (true) { function own(){return 'local';} } echo read(), '|', own(); }

@@ -1,9 +1,0 @@
-{
-  "id": "gettext.module-info",
-  "group": "module_info",
-  "steps": [
-    {
-      "operation": "module_info"
-    }
-  ]
-}

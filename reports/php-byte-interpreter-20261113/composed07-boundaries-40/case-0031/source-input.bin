@@ -1,1 +1,0 @@
-var_dump(is_numeric("12"),is_numeric("12.5"),is_numeric("\xFF"),is_numeric("猫"));

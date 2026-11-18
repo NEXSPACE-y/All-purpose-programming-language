@@ -1,1 +1,0 @@
-<?php $e=new Exception('warm'); echo $e->__toString();

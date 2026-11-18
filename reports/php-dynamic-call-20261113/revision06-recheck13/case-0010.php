@@ -1,1 +1,0 @@
-<?php $a=[&$x];var_dump($x,isset($x),count($a));

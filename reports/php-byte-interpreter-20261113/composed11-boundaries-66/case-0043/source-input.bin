@@ -1,1 +1,0 @@
-enum E:int{case A=7;}echo E::from("07")->name,E::from("7.0")->name,E::from("7e0")->name,E::from(" 7 ")->name;

@@ -1,1 +1,0 @@
-<?php $a=null; function k($s){echo $s;return 0;} var_dump(isset($a[k('a')][k('b')]));

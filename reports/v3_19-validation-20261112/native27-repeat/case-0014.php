@@ -1,1 +1,0 @@
-<?php $n=0; function value(){global $n; $n++; return 'ALL';} echo dl_test_test2(value()); echo ':'.$n;

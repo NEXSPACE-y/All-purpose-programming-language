@@ -1,1 +1,0 @@
-<?php $h=function(...$args){echo count($args),":",gettype($args[0]),":",$args[0],":",bin2hex($args[1]),":",gettype($args[2]),":",gettype($args[3]);return true;};set_error_handler($h);trigger_error("payload\xFF",E_USER_WARNING);

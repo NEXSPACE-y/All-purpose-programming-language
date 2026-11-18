@@ -1,1 +1,0 @@
-<?php $h=function($level,$message,$file,$line){echo $level,":",bin2hex($message),":",gettype($file),":",gettype($line);return true;};set_error_handler($h);trigger_error("payload\xFF",E_USER_WARNING);

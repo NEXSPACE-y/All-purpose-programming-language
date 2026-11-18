@@ -1,4 +1,0 @@
-echo <<<TXT
-one
-TXT;
-?>OUT<?= "tail" ?>

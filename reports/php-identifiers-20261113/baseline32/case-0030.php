@@ -1,1 +1,0 @@
-<?php function raw_€(){return 1;}echo raw_€();

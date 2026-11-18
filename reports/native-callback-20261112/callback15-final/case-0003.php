@@ -1,1 +1,0 @@
-<?php set_error_handler(function($l,$m){throw new RuntimeException('stop');});try{echo dl_test_test2(null);}catch(RuntimeException $e){echo 'caught:'.$e->getMessage();}echo ':after';

@@ -1,1 +1,0 @@
-<?php function __all_throwable_string($v){return 'user';} echo __all_throwable_string('ALL');

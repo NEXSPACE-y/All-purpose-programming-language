@@ -1,1 +1,0 @@
-<?php function side(){echo 'SIDE';return 1;}$f=3;try{$f(side());}catch(Error $e){echo get_class($e).':'.$e->getMessage();}

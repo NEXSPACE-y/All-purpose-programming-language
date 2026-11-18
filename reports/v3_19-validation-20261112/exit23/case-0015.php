@@ -1,1 +1,0 @@
-<?php call_user_func('exit',12); echo 'bad';

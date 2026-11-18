@@ -1,1 +1,0 @@
-<?php var_dump(function_exists('dl_test_test2'),function_exists('DL_TEST_TEST2'),function_exists('N\dl_test_test2'),function_exists('absent_native_function')); 

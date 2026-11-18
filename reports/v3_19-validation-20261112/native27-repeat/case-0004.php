@@ -1,1 +1,0 @@
-<?php namespace N; echo dl_test_test2('ALL');

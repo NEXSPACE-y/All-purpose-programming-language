@@ -1,1 +1,0 @@
-<?php $f='missing_fn';try{$f();}catch(Error $e){echo get_class($e).':'.$e->getMessage();}

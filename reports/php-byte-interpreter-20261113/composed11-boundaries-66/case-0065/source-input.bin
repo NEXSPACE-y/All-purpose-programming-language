@@ -1,1 +1,0 @@
-set_error_handler(function($level,$message){echo $level,":",bin2hex($message),"\n";return true;});trigger_error("\xFF",512.5);

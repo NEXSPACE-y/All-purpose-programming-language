@@ -1,1 +1,0 @@
-enum E:string{case A="7";}echo E::from(7)->name;

@@ -1,1 +1,0 @@
-<?php try{call_user_func_array('missing_fn',[]);}catch(TypeError $e){echo $e->getMessage();}

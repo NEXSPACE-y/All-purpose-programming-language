@@ -1,3 +1,7 @@
 # Reproducible native build products; sources and verification reports are tracked.
 /native/php85abi/out/
 **/__pycache__/
+oracle/
+languages/
+*.bak.*
+native/all-engine/target/

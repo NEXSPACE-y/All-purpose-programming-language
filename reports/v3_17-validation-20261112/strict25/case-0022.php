@@ -1,1 +1,0 @@
-<?php namespace A; try {$f=missing(...); echo 'created';} catch(\Error $e){echo 'caught';}

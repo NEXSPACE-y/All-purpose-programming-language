@@ -1,1 +1,0 @@
-<?php $f='later';try{$f();}catch(Error $e){echo 'before:';}if(true){function later(){return 'ok';}}echo $f();

@@ -1,1 +1,0 @@
-<?php namespace N;function strlen($x){return 9;}$f='strlen';echo $f('abc');

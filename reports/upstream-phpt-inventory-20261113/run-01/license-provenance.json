@@ -1,7 +1,0 @@
-{
-  "archive": "php-8.5.12-1-src.zip",
-  "archive_sha256": "9dac05f72f328afd0a2b0e795a519ae4cb3d056bc3f3b55147bd048bd64e45e8",
-  "entry": "LICENSE",
-  "sha256": "b42e4df5e50e6ecda1047d503d6d91d71032d09ed1027ba1ef29eed26f890c5a",
-  "meaning": "License accompanying the copied official test-runner reference; not an ALL license choice"
-}

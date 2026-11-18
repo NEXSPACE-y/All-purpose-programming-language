@@ -1,1 +1,0 @@
-<?php if(false){echo "$x[0]";} echo "ok";

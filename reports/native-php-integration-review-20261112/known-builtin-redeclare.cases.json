@@ -1,4 +1,0 @@
-[
-  {"id":"known-builtin-redeclare.strlen","code":"<?php echo 'before:'; function strlen($v){return 9;} echo strlen('ALL');"},
-  {"id":"known-builtin-redeclare.conditional-strlen","code":"<?php echo 'before:'; if(true){function strlen($v){return 9;}} echo strlen('ALL');"}
-]

@@ -1,1 +1,0 @@
-<?php try { exit(-1.5); } catch(Throwable $e) { echo get_class($e), ":", $e->getMessage(); }

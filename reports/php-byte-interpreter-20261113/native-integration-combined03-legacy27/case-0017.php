@@ -1,1 +1,0 @@
-<?php var_dump(dl_test_frameless(-9223372036854775808),dl_test_frameless(9223372036854775807));

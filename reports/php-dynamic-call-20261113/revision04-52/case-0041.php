@@ -1,1 +1,0 @@
-<?php try{call_user_func(['NoSuchClass','f']);}catch(TypeError $e){echo $e->getMessage();}

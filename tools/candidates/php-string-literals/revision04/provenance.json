@@ -1,9 +1,0 @@
-{
-  "status": "ISOLATED_NOT_VERIFIED",
-  "base": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\package\\ALL_PHP_v3_12_adapter.ps1",
-  "base_sha256": "113d0c2b967a8726cd9a9dec3f032a725ed9c98ee093c4aedd0a4830737f155b",
-  "candidate": "C:\\Users\\rinpa\\ALL-php-compat-20261112\\tools\\candidates\\php-string-literals\\revision04\\ALL_PHP_string_literal_candidate.ps1",
-  "candidate_sha256": "e20751fe5cafe93c09acf61b53ecf622711fe1a29d6e98b42b8390145bfaa1ef",
-  "package_modified": false,
-  "scope": "Heredoc/nowdoc lexical tokens and indentation, verified UTF8 string escapes; arbitrary nonUTF8 bytes remain unsupported"
-}

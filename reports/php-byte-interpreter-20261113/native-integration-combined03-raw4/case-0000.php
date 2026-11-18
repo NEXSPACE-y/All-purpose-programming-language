@@ -1,1 +1,0 @@
-<?php $v=dl_test_test2("\xFF");echo $v;

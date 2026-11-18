@@ -1,1 +1,0 @@
-<?php exit(status:13);

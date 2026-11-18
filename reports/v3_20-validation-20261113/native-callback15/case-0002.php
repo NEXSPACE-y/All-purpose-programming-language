@@ -1,1 +1,0 @@
-<?php set_error_handler(function($l,$m){echo 'H';return false;});echo dl_test_test2(null);

@@ -1,1 +1,0 @@
-<?php use B\{C as Q, D as Q};

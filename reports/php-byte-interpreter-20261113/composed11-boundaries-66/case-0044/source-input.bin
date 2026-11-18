@@ -1,1 +1,0 @@
-set_error_handler(function($level,$message){echo $level,":",$message,"\n";return true;});enum E:int{case A=7;}echo E::from("7.5")->name;

@@ -1,1 +1,0 @@
-try{USER_ERROR();}catch(ArgumentCountError $e){echo $e->getMessage(),"\n";}try{TRIGGER_ERROR("x",E_USER_WARNING,99);}catch(ArgumentCountError $e){echo $e->getMessage();}

@@ -1,1 +1,0 @@
-H<?php $f="missing";try{$f((function(){echo "SIDE";return 1;})());}catch(Error $e){echo "caught";}?>T

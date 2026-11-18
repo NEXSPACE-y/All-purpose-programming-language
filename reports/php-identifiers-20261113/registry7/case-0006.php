@@ -1,1 +1,0 @@
-<?php define('É\VaL',1);var_dump(defined('é\VaL'));

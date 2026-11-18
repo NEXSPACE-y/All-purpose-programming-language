@@ -1,1 +1,0 @@
-class S{function __toString(){return "7";}}enum E:int{case A=7;}try{E::from(new S());}catch(TypeError $e){echo $e->getMessage();}

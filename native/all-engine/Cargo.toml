@@ -1,0 +1,16 @@
+[package]
+name = "all_engine"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "all_engine"
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "all_runner"
+path = "src/bin/all_runner.rs"
+
+[profile.release]
+opt-level = 3
+lto = "thin"

@@ -1,1 +1,0 @@
-class S{function __toString(){return "\xFF";}}var_dump(bin2hex(new S()));

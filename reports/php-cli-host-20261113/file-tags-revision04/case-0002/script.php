@@ -1,1 +1,0 @@
-before<?php $x=1;?>after<?php echo $x+2;?>

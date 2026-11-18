@@ -1,1 +1,0 @@
-<?php set_error_handler(function($n,$m){echo "W",$n,":",$m,"\n";return true;});$s="A\xFF\0B";try{$o=new stdClass();$o->s=$s;$o->s[1]="\x80";var_dump($o->s);}catch(Throwable $e){echo get_class($e),":",$e->getMessage();}

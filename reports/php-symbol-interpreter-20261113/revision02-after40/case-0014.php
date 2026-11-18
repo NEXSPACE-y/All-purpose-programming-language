@@ -1,1 +1,0 @@
-<?php function a b(){return 4;}echo a b();

@@ -1,8 +1,0 @@
-[
-  {"id":"cache.missing-call-retry-after-finally", "code":"<?php namespace A; function probe($n){try{return late($n);}finally{if($n==0){return 'first';}}} echo probe(0),'|'; if(true){function late($n){return 'local';}} echo probe(1);"},
-  {"id":"cache.missing-firstclass-retry-after-finally", "code":"<?php namespace A; function factory($n){try{return late(...);}finally{if($n==0){return null;}}} factory(0); if(true){function late(){return 'local';}} $f=factory(1); echo $f();"},
-  {"id":"firstclass.undefined-eager-validation", "code":"<?php namespace A; try {$f=missing(...); echo 'created|';} finally {echo 'finally';}"},
-  {"id":"call.undefined-before-argument-side-effects", "code":"<?php namespace A; function arg(){echo 'arg|';return 1;} try {missing(arg());} finally {echo 'finally';}"},
-  {"id":"cache.valid-builtin-before-argument-failure", "code":"<?php namespace A; function probe($n){return strlen(1/$n);} try{probe(0);}catch(\\DivisionByZeroError $e){echo 'caught|';} if(true){function strlen($s){return 9;}} echo probe(1);"},
-  {"id":"cache.firstclass-valid-builtin-before-local-declaration", "code":"<?php namespace A; function factory(){return strlen(...);} $a=factory(); if(true){function strlen($s){return 9;}} $b=factory(); echo $a('abc'),'|',$b('abc');"}
-]
