@@ -24,6 +24,8 @@ pub struct PhptCase {
     pub skipif: Option<String>,
     pub ini: Option<String>,
     pub args: Option<String>,
+    pub stdin: Option<String>,
+    pub clean: Option<String>,
     pub unsupported_section: Option<String>,
 }
 
@@ -40,7 +42,6 @@ const UNSUPPORTED_SECTIONS: &[&str] = &[
     "POST_RAW",
     "GZIP_POST",
     "DEFLATE_POST",
-    "STDIN",
 ];
 
 pub fn parse_phpt(path: &Path) -> Option<PhptCase> {
@@ -95,6 +96,8 @@ pub fn parse_phpt(path: &Path) -> Option<PhptCase> {
         skipif: sections.get("SKIPIF").cloned(),
         ini: sections.get("INI").cloned(),
         args: sections.get("ARGS").cloned(),
+        stdin: sections.get("STDIN").cloned(),
+        clean: sections.get("CLEAN").cloned(),
         unsupported_section,
     })
 }
@@ -411,6 +414,401 @@ pub fn match_expectf(pattern: &str, actual: &str) -> bool {
     false
 }
 
+#[derive(Debug, Clone)]
+enum RxAtomClass {
+    AnyNonNl,
+    AnyChar,
+    Literal(char),
+    Digit(bool),
+    Word(bool),
+    Space(bool),
+    Set { negated: bool, ranges: Vec<(char, char)>, specials: Vec<RxAtomClass> },
+}
+
+impl RxAtomClass {
+    fn matches(&self, ch: char) -> bool {
+        match self {
+            RxAtomClass::AnyNonNl => ch != '\n' && ch != '\r',
+            RxAtomClass::AnyChar => true,
+            RxAtomClass::Literal(c) => ch == *c,
+            RxAtomClass::Digit(neg) => (ch.is_ascii_digit()) ^ *neg,
+            RxAtomClass::Word(neg) => (ch.is_ascii_alphanumeric() || ch == '_') ^ *neg,
+            RxAtomClass::Space(neg) => ch.is_ascii_whitespace() ^ *neg,
+            RxAtomClass::Set { negated, ranges, specials } => {
+                let mut hit = false;
+                for &(lo, hi) in ranges {
+                    if ch >= lo && ch <= hi {
+                        hit = true;
+                        break;
+                    }
+                }
+                if !hit {
+                    for sp in specials {
+                        if sp.matches(ch) {
+                            hit = true;
+                            break;
+                        }
+                    }
+                }
+                hit ^ *negated
+            }
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+enum RxInst {
+    Class(RxAtomClass),
+    StartAnchor,
+    EndAnchor,
+    Jmp(usize),
+    Split(usize, usize),
+    Match,
+}
+
+fn compile_regex_seq(p: &[char], pos: &mut usize, prog: &mut Vec<RxInst>, stop_on_rparen: bool) -> bool {
+    let mut branches: Vec<Vec<RxInst>> = vec![Vec::new()];
+
+    let parse_escape = |p: &[char], idx: &mut usize| -> RxAtomClass {
+        if *idx >= p.len() {
+            return RxAtomClass::Literal('\\');
+        }
+        let esc = p[*idx];
+        *idx += 1;
+        match esc {
+            'd' => RxAtomClass::Digit(false),
+            'D' => RxAtomClass::Digit(true),
+            'w' => RxAtomClass::Word(false),
+            'W' => RxAtomClass::Word(true),
+            's' => RxAtomClass::Space(false),
+            'S' => RxAtomClass::Space(true),
+            'n' => RxAtomClass::Literal('\n'),
+            'r' => RxAtomClass::Literal('\r'),
+            't' => RxAtomClass::Literal('\t'),
+            other => RxAtomClass::Literal(other),
+        }
+    };
+
+    while *pos < p.len() {
+        let ch = p[*pos];
+        if stop_on_rparen && ch == ')' {
+            *pos += 1;
+            break;
+        }
+        if ch == '|' {
+            *pos += 1;
+            branches.push(Vec::new());
+            continue;
+        }
+
+        let mut item_insts: Vec<RxInst> = Vec::new();
+        if ch == '^' {
+            *pos += 1;
+            item_insts.push(RxInst::StartAnchor);
+        } else if ch == '$' {
+            *pos += 1;
+            item_insts.push(RxInst::EndAnchor);
+        } else if ch == '(' {
+            *pos += 1;
+            if *pos + 1 < p.len() && p[*pos] == '?' && (p[*pos + 1] == ':' || p[*pos + 1] == '=' || p[*pos + 1] == '!') {
+                if p[*pos + 1] == ':' {
+                    *pos += 2;
+                }
+            }
+            if !compile_regex_seq(p, pos, &mut item_insts, true) {
+                return false;
+            }
+        } else if ch == '[' {
+            *pos += 1;
+            let mut negated = false;
+            if *pos < p.len() && p[*pos] == '^' {
+                negated = true;
+                *pos += 1;
+            }
+            let mut ranges: Vec<(char, char)> = Vec::new();
+            let mut specials: Vec<RxAtomClass> = Vec::new();
+            let mut first = true;
+            while *pos < p.len() && (first || p[*pos] != ']') {
+                first = false;
+                let item_start = if p[*pos] == '\\' {
+                    *pos += 1;
+                    match parse_escape(p, pos) {
+                        RxAtomClass::Literal(c) => Some(c),
+                        sp => {
+                            specials.push(sp);
+                            None
+                        }
+                    }
+                } else {
+                    let c = p[*pos];
+                    *pos += 1;
+                    Some(c)
+                };
+                if let Some(lo) = item_start {
+                    if *pos + 1 < p.len() && p[*pos] == '-' && p[*pos + 1] != ']' {
+                        *pos += 1;
+                        let hi = if p[*pos] == '\\' {
+                            *pos += 1;
+                            match parse_escape(p, pos) {
+                                RxAtomClass::Literal(c) => c,
+                                _ => p[*pos - 1],
+                            }
+                        } else {
+                            let c = p[*pos];
+                            *pos += 1;
+                            c
+                        };
+                        ranges.push((lo, hi));
+                    } else {
+                        ranges.push((lo, lo));
+                    }
+                }
+            }
+            if *pos < p.len() && p[*pos] == ']' {
+                *pos += 1;
+            }
+            item_insts.push(RxInst::Class(RxAtomClass::Set { negated, ranges, specials }));
+        } else if ch == '.' {
+            *pos += 1;
+            item_insts.push(RxInst::Class(RxAtomClass::AnyNonNl));
+        } else if ch == '\\' {
+            *pos += 1;
+            item_insts.push(RxInst::Class(parse_escape(p, pos)));
+        } else {
+            *pos += 1;
+            item_insts.push(RxInst::Class(RxAtomClass::Literal(ch)));
+        }
+
+        // Quantifier parsing: ?, *, +, {m,n}
+        let mut q_min = 1usize;
+        let mut q_max: Option<usize> = Some(1usize);
+        if *pos < p.len() {
+            match p[*pos] {
+                '?' => {
+                    q_min = 0;
+                    q_max = Some(1);
+                    *pos += 1;
+                }
+                '*' => {
+                    q_min = 0;
+                    q_max = None;
+                    *pos += 1;
+                }
+                '+' => {
+                    q_min = 1;
+                    q_max = None;
+                    *pos += 1;
+                }
+                '{' => {
+                    let save = *pos;
+                    *pos += 1;
+                    let mut m_str = String::new();
+                    while *pos < p.len() && p[*pos].is_ascii_digit() {
+                        m_str.push(p[*pos]);
+                        *pos += 1;
+                    }
+                    if let Ok(m_val) = m_str.parse::<usize>() {
+                        if *pos < p.len() && p[*pos] == '}' {
+                            *pos += 1;
+                            q_min = m_val;
+                            q_max = Some(m_val);
+                        } else if *pos < p.len() && p[*pos] == ',' {
+                            *pos += 1;
+                            let mut n_str = String::new();
+                            while *pos < p.len() && p[*pos].is_ascii_digit() {
+                                n_str.push(p[*pos]);
+                                *pos += 1;
+                            }
+                            if *pos < p.len() && p[*pos] == '}' {
+                                *pos += 1;
+                                q_min = m_val;
+                                if n_str.is_empty() {
+                                    q_max = None;
+                                } else if let Ok(n_val) = n_str.parse::<usize>() {
+                                    q_max = Some(n_val);
+                                } else {
+                                    *pos = save;
+                                }
+                            } else {
+                                *pos = save;
+                            }
+                        } else {
+                            *pos = save;
+                        }
+                    } else {
+                        *pos = save;
+                    }
+                }
+                _ => {}
+            }
+            if *pos < p.len() && (p[*pos] == '?' || p[*pos] == '+') && (q_max != Some(1) || q_min != 1) {
+                *pos += 1;
+            }
+        }
+
+        let cur = branches.last_mut().unwrap();
+        let append_shifted = |dst: &mut Vec<RxInst>, src: &[RxInst]| {
+            let offset = dst.len();
+            for inst in src {
+                let shifted = match inst {
+                    RxInst::Jmp(t) => RxInst::Jmp(t + offset),
+                    RxInst::Split(a, b) => RxInst::Split(a + offset, b + offset),
+                    other => other.clone(),
+                };
+                dst.push(shifted);
+            }
+        };
+
+        for _ in 0..q_min.min(64) {
+            append_shifted(cur, &item_insts);
+        }
+        match q_max {
+            Some(max_val) if max_val > q_min => {
+                let rem = (max_val - q_min).min(64);
+                for _ in 0..rem {
+                    let split_pos = cur.len();
+                    let body_start = split_pos + 1;
+                    let next_pos = body_start + item_insts.len();
+                    cur.push(RxInst::Split(body_start, next_pos));
+                    append_shifted(cur, &item_insts);
+                }
+            }
+            None => {
+                let split_pos = cur.len();
+                let body_start = split_pos + 1;
+                let after_loop = body_start + item_insts.len() + 1;
+                cur.push(RxInst::Split(body_start, after_loop));
+                append_shifted(cur, &item_insts);
+                cur.push(RxInst::Jmp(split_pos));
+            }
+            _ => {}
+        }
+    }
+
+    if branches.len() == 1 {
+        let base = prog.len();
+        for inst in branches.into_iter().next().unwrap() {
+            let shifted = match inst {
+                RxInst::Jmp(t) => RxInst::Jmp(t + base),
+                RxInst::Split(a, b) => RxInst::Split(a + base, b + base),
+                other => other,
+            };
+            prog.push(shifted);
+        }
+        return true;
+    }
+
+    // Emit N-way alternation cleanly
+    let base = prog.len();
+    let n = branches.len();
+    // Reserve N-1 splits at front if we chain splits: Split(branch_i, next_split_or_last)
+    let mut branch_starts = Vec::with_capacity(n);
+    let mut split_positions = Vec::with_capacity(n - 1);
+    for i in 0..(n - 1) {
+        split_positions.push(prog.len());
+        prog.push(RxInst::Split(0, 0)); // placeholder
+        let _ = i;
+    }
+    let mut jmp_to_end_positions = Vec::with_capacity(n - 1);
+    for (i, b) in branches.into_iter().enumerate() {
+        let b_start = prog.len();
+        branch_starts.push(b_start);
+        for inst in b {
+            let shifted = match inst {
+                RxInst::Jmp(t) => RxInst::Jmp(t + b_start),
+                RxInst::Split(a, tgt) => RxInst::Split(a + b_start, tgt + b_start),
+                other => other,
+            };
+            prog.push(shifted);
+        }
+        if i + 1 < n {
+            jmp_to_end_positions.push(prog.len());
+            prog.push(RxInst::Jmp(0)); // placeholder to end
+        }
+    }
+    let end_pos = prog.len();
+    for j in jmp_to_end_positions {
+        prog[j] = RxInst::Jmp(end_pos);
+    }
+    for i in 0..(n - 1) {
+        let alt = if i + 1 < n - 1 { split_positions[i + 1] } else { branch_starts[i + 1] };
+        prog[split_positions[i]] = RxInst::Split(branch_starts[i], alt);
+    }
+    let _ = base;
+    true
+}
+
+pub fn match_expect_regex(pattern: &str, actual: &str) -> bool {
+    let norm_pat_owned = normalize_diag_newlines(pattern);
+    let norm_pat = norm_pat_owned.trim();
+    let norm_act_owned = normalize_diag_newlines(actual);
+    let mut norm_act = norm_act_owned.trim();
+    if !norm_pat.contains("Stack trace:") {
+        if let Some(stripped) = norm_act.strip_suffix("\nStack trace:\n#0 {main}") {
+            norm_act = stripped.trim_end();
+        }
+    }
+
+    let pchars: Vec<char> = norm_pat.chars().collect();
+    let mut pos = 0usize;
+    let mut prog: Vec<RxInst> = Vec::new();
+    if !compile_regex_seq(&pchars, &mut pos, &mut prog, false) {
+        return false;
+    }
+    prog.push(RxInst::Match);
+
+    let chars: Vec<char> = norm_act.chars().collect();
+    let plen = prog.len();
+    let clen = chars.len();
+    let stride = clen + 1;
+    if plen.saturating_mul(stride) > 20_000_000 {
+        return norm_pat == norm_act;
+    }
+
+    let mut visited = vec![false; plen * stride];
+    let mut stack: Vec<(usize, usize)> = Vec::with_capacity(64);
+    stack.push((0, 0));
+
+    while let Some((pc, ci)) = stack.pop() {
+        let idx = pc * stride + ci;
+        if visited[idx] {
+            continue;
+        }
+        visited[idx] = true;
+
+        match &prog[pc] {
+            RxInst::Match => {
+                if ci == clen {
+                    return true;
+                }
+            }
+            RxInst::Jmp(target) => {
+                stack.push((*target, ci));
+            }
+            RxInst::Split(a, b) => {
+                stack.push((*b, ci));
+                stack.push((*a, ci));
+            }
+            RxInst::StartAnchor => {
+                if ci == 0 || chars[ci - 1] == '\n' {
+                    stack.push((pc + 1, ci));
+                }
+            }
+            RxInst::EndAnchor => {
+                if ci == clen || chars[ci] == '\n' {
+                    stack.push((pc + 1, ci));
+                }
+            }
+            RxInst::Class(cls) => {
+                if ci < clen && cls.matches(chars[ci]) {
+                    stack.push((pc + 1, ci + 1));
+                }
+            }
+        }
+    }
+    false
+}
+
 pub fn match_phpt_output(actual: &str, case: &PhptCase) -> bool {
     let actual_norm = actual.replace("\r\n", "\n");
     let actual_trim = actual_norm.trim();
@@ -420,6 +818,9 @@ pub fn match_phpt_output(actual: &str, case: &PhptCase) -> bool {
     }
     if let Some(ref pat) = case.expectf {
         return match_expectf(pat, actual);
+    }
+    if let Some(ref rx) = case.expect_regex {
+        return match_expect_regex(rx, actual);
     }
     false
 }
@@ -641,12 +1042,13 @@ function Parse-PhptArgs([string]$argsText) {
     return @($list.ToArray())
 }
 
-function Invoke-PhptSnippet([string]$code, [string]$sourcePath, $iniMap, [string[]]$scriptArgs) {
+function Invoke-PhptSnippet([string]$code, [string]$sourcePath, $iniMap, [string[]]$scriptArgs, [string]$stdinText = '') {
     $mem = [System.IO.MemoryStream]::new()
     $swOut = [System.IO.StringWriter]::new([System.Globalization.CultureInfo]::InvariantCulture)
     $swErr = [System.IO.StringWriter]::new([System.Globalization.CultureInfo]::InvariantCulture)
     $oldOut = [Console]::Out
     $oldErr = [Console]::Error
+    $oldIn = [Console]::In
     $oldLoc = Get-Location
     $ctx = @{
         SourceMode = 'file'
@@ -657,6 +1059,9 @@ function Invoke-PhptSnippet([string]$code, [string]$sourcePath, $iniMap, [string
         ScriptArguments = $scriptArgs
         MaxSteps = 25000
     }
+    if ($stdinText.Length -gt 0) {
+        $ctx['StdinText'] = $stdinText
+    }
     $errMsg = $null
     try {
         $dir = [System.IO.Path]::GetDirectoryName($sourcePath)
@@ -665,11 +1070,15 @@ function Invoke-PhptSnippet([string]$code, [string]$sourcePath, $iniMap, [string
         }
         [Console]::SetOut($swOut)
         [Console]::SetError($swErr)
+        if ($stdinText.Length -gt 0) {
+            [Console]::SetIn([System.IO.StringReader]::new($stdinText))
+        }
         $global:AllPolyglotContext = $null
         [void](& $adapter.Run -Code $code -PhpDiagnostics -CliContext $ctx)
     } catch {
         $errMsg = $_.Exception.Message
     } finally {
+        [Console]::SetIn($oldIn)
         [Console]::SetOut($oldOut)
         [Console]::SetError($oldErr)
         Set-Location -LiteralPath $oldLoc
@@ -729,8 +1138,13 @@ foreach ($c in @($cases)) {
         }
     }
 
+    $stdinText = if ($c.stdin_b64) { [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String([string]$c.stdin_b64)) } else { '' }
     $fileCode = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String([string]$c.code_b64))
-    $runRes = Invoke-PhptSnippet $fileCode $sourcePath $iniMap $scriptArgs
+    $runRes = Invoke-PhptSnippet $fileCode $sourcePath $iniMap $scriptArgs $stdinText
+    $cleanCode = if ($c.clean_b64) { [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String([string]$c.clean_b64)) } else { '' }
+    if ($cleanCode.Length -gt 0) {
+        [void](Invoke-PhptSnippet $cleanCode $sourcePath $iniMap $scriptArgs '')
+    }
     $outB64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($runRes.Output))
     if ($null -ne $runRes.Error) {
         $errB64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($runRes.Error))
@@ -860,17 +1274,29 @@ fn run_worker_batch(
             .as_deref()
             .map(|s| base64_encode(s.as_bytes()))
             .unwrap_or_default();
+        let stdin_b64 = case
+            .stdin
+            .as_deref()
+            .map(|s| base64_encode(s.as_bytes()))
+            .unwrap_or_default();
+        let clean_b64 = case
+            .clean
+            .as_deref()
+            .map(|s| base64_encode(s.as_bytes()))
+            .unwrap_or_default();
         let code_b64 = base64_encode(case.code.as_bytes());
         let unsup_sec = case.unsupported_section.as_deref().unwrap_or("");
 
         manifest.push_str(&format!(
-            "  {{\"index\":{},\"source_path\":{},\"unsupported_section\":{},\"skipif_b64\":{},\"ini_b64\":{},\"args_b64\":{},\"code_b64\":{}}}",
+            "  {{\"index\":{},\"source_path\":{},\"unsupported_section\":{},\"skipif_b64\":{},\"ini_b64\":{},\"args_b64\":{},\"stdin_b64\":{},\"clean_b64\":{},\"code_b64\":{}}}",
             orig_idx,
             json_escape(&source_path.to_string_lossy()),
             json_escape(unsup_sec),
             json_escape(&skipif_b64),
             json_escape(&ini_b64),
             json_escape(&args_b64),
+            json_escape(&stdin_b64),
+            json_escape(&clean_b64),
             json_escape(&code_b64),
         ));
     }
@@ -1152,14 +1578,12 @@ fn cmd_run_phpt(args: &[String]) {
             continue;
         }
 
-        if case.expect.is_none() && case.expectf.is_none() {
-            if case.expect_regex.is_some() {
-                unsupported_count += 1;
-                *unsupported_reasons
-                    .entry("EXPECTREGEX matcher not implemented in runner".to_string())
-                    .or_insert(0) += 1;
-                continue;
-            }
+        if case.expect.is_none() && case.expectf.is_none() && case.expect_regex.is_none() {
+            unsupported_count += 1;
+            *unsupported_reasons
+                .entry("Missing EXPECT/EXPECTF/EXPECTREGEX section".to_string())
+                .or_insert(0) += 1;
+            continue;
         }
 
         if match_phpt_output(&res.output, case) {
@@ -1175,6 +1599,7 @@ fn cmd_run_phpt(args: &[String]) {
                     .expect
                     .as_deref()
                     .or(case.expectf.as_deref())
+                    .or(case.expect_regex.as_deref())
                     .unwrap_or("");
                 fail_samples.push(FailureSample {
                     path: rel_path,
@@ -1276,7 +1701,7 @@ fn main() {
     let cmd = &args[1];
     if cmd == "scan-phpt" && args.len() >= 3 {
         cmd_scan_phpt(&args[2]);
-    } else if cmd == "run-phpt" {
+    } else if cmd == "run-phpt" || cmd == "phpt" {
         cmd_run_phpt(&args[2..]);
     } else {
         eprintln!("Unknown command: {}", cmd);

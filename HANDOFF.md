@@ -1,7 +1,7 @@
 # ALL (ALMIGHTY) × PHP 8.5.12 完全互換 ＆ ポリグロットランタイム 引き継ぎ書 (`HANDOFF.md`)
 
-**更新日時**: 2026-11-17  
-**引き継ぎ元セッション**: `6b550dd2-d16e-4f0d-bcda-f139f1f844f7`  
+**更新日時**: 2026-11-18  
+**引き継ぎ元セッション**: `163ff82d-e386-4a9d-b285-51e156de24d6`  
 **引き継ぎ先プロジェクト**: `Projects > ALL`  
 **対象ブランチ**: `codex/php-8.5.12-full-compat-20261112`（統合ディレクトリ: `D:\ALL` / ジャンクション: `C:\Users\rinpa\ALL -> D:\ALL`）
 
@@ -176,15 +176,16 @@
 22. `phase2_task5_3_asymmetric_vis_unpack_assert_and_builtins`（非対称可視性 `public(set)`/`protected(set)`/`private(set)`・コンストラクタ昇格・間接変更/参照制限・プロパティフック `#[...]`/`final`, `...$expr` 引数展開と `Traversable`/`Generator` 展開, 多次元 `ArrayAccess` の `isset`/`empty`/`??` 短絡, `__debugInfo()`/`__toString()` Error, `assert()`/`zend.assertions`, `strstr`/`strchr`/`stristr`/`rand`/`mt_rand`/`random_int`/`array_merge_recursive`/`class_alias`/`class_implements`/`class_parents`/`register_shutdown_function`）
 23. `phase2_task5_4_ref_numeric_spl_and_reflection_constant`（非参照関数の参照代入・参照渡し・非変数参照返却時の Notice 互換、先頭数値文字列演算警告・スカラー添字アクセス互換、`ReflectionConstant`、`ArrayIterator`、`ArrayObject`、無名クラス `class@anonymous` 命名）
 
-### 3.4 PHP 既存回帰テストスイート ＆ PHPT ベンチマーク（Task 5.4 検証済み）
+### 3.4 PHP 既存回帰テストスイート ＆ PHPT ベンチマーク（Task 5.11 最終検証済み）
 - **`package\ALL_PHP_v3_12_test.ps1 -Installed`**: **716 / 716 passed; 0 failed**
-- **`package\ALL_PHP_v3_20_test.ps1`（`v3_19` → `v3_18` → `v3_17` → `v3_16` ＋ `v3_17_namespace` 連鎖）**: **965 / 965 passed; 0 failed**
+- **`package\ALL_PHP_v3_20_test.ps1`（`ALL_integrated_install.ps1` 内 PHP baseline 連鎖）**: **965 / 965 passed; 0 failed**
+- **`package\ALL_PHP_phase2_3_test.ps1`（Phase 2 & Phase 3 検証）**: **28 / 28 passed; 0 failed**（+ 多言語 Phase 2/3 ポリグロット 19件）
 - **公式 PHPT `tests\lang`（`D:\ALL\docs\phpt_lang_report.json`）**:
-  - 総数 294件（実行対象 283件 / `SKIPIF` 11件）
-  - **PASS**: **186件（実行対象比 65.72%、Task 5.3 の 182件 / 64.31% から +4件 / +1.41pt 向上、`UNSUPPORTED` は 63件→36件へ削減）** / **FAIL**: 61件 / **UNSUPPORTED**: 36件
+  - 総数 294件（実行対象 282件 / `SKIPIF` 12件）
+  - **PASS**: **238件（実行対象比 84.40%、Task 5.6 の 208件 / 73.50% から +30件 / +10.90pt 向上）** / **FAIL**: 24件 / **UNSUPPORTED**: 20件（693.6540秒）
 - **公式 PHPT `Zend` サンプル（`--limit 300`, `D:\ALL\docs\phpt_zend_report.json`）**:
   - 総数 300件（実行対象 298件 / `SKIPIF` 2件）
-  - **PASS**: **118件（実行対象比 39.60%、Task 5.3 の 97件 / 32.55% から +21件 / +7.05pt 向上、`UNSUPPORTED` は 97件→75件へ削減）** / **FAIL**: 105件 / **UNSUPPORTED**: 75件
+  - **PASS**: **172件（実行対象比 57.72%、Task 5.6 の 139件 / 46.64% から +33件 / +11.08pt 向上）** / **FAIL**: 103件 / **UNSUPPORTED**: 23件（847.9071秒）
 
 ---
 
@@ -247,8 +248,25 @@
   - **可視性・マジックメソッド・クラス/呼び出し検査**: `Test-PhpVisibilityAllowed` / `Assert-PhpVisibility` に `$memberKind`（`property` / `method` / `constant`）・`$memberName` を導入して PHP 8 準拠のエラー文言と共通祖先由来の兄弟 `protected` メソッドアクセスを実装し、不可視メンバへの `__get` / `__set` / `__call` / `__callStatic` フォールバックを追加。さらにクラス/メンバ修飾子重複・`abstract final` の `CompileError` 検査、クラス外 `self`/`parent`/`static` の `Error`、`func_num_args` / `foreach` 警告メッセージ改善、`json_decode` 第3/4引数（`$depth` / `$flags` の `JSON_OBJECT_AS_ARRAY`）を実装。
   - **展開処理の高速化**: `array_fill` の配列生成をインライン化し、フレーム引数コピーを `Resolve-PhpFramePassedArgs` で遅延評価化するとともに、非参照可変長引数展開 `$varargs` の直接挿入を実装。
   - **検証結果**: プリフライト（構文103・SHA-256 221・C#コンパイル）合格、`ALL_integrated_install.ps1` で ALL **527/527**（ベースライン523 + debug-source 4）・多言語 Phase 2/3 **19件**・PHP ベースライン v3.20 **965/965**・PHP Phase 2/3 **25/25**（テスト #24 更新・#25 追加）合格、v3.12 **716/716** 合格（`.bak.*` 0件）。公式 PHPT `tests\lang` は **208/283 (73.50%)**（total 294 / fail 44 / skipif 11 / unsupported 31 / 745.8377秒、Task 5.5 比 +8件 PASS、1040.91s→745.84s）、`Zend --limit 300` は **139/298 (46.64%)**（total 300 / fail 109 / skipif 2 / unsupported 50 / 768.8799秒、Task 5.5 比 +8件 PASS、2015.70s→768.88s）。
-- **Task 5.7 以降（完全互換への残ギャップ候補）**:
-  - `tests\lang` / `Zend` 上位残件の段階的解消（`Constant already declared`・`Conflicting set visibility modifiers`・`Abstract methods require an abstract class`・`abstract method` 文言細部、`json_last_error()` 引数検査、`is_callable` / `call_user_func` の `__call` 連携（`access_modifiers_012.phpt`）、`protected(set)` プロトタイプ範囲（`gh19044.phpt`）、未実装標準関数 `fopen()` 等、分割代入ターゲット検証、代入評価順序と参照処理）。
+- **Task 5.7（完了：`readonly` 非CLI/非診断エラー整合）**:
+  - `ALL_PHP_v3_12_adapter.ps1` の `Set-LValue` `'property'` にて、`-not $isCli -and -not $PhpDiagnostics` のクラス外 `readonly` 初期化で従来エラー文言を維持（716/716 PASS、Phase 2/3 25/25 PASS）。
+- **Task 5.8（完了：双方向ポリグロット完全接続・Hooks/可視性/バイナリ往復）**:
+  - `Ensure-AllPolyglotContext` での `$phpBuiltinNames` 共有（`Test-AllCanCallPhp` 側で ALL 予約数学関数を除外）、`PhpBytes` Base64 ラウンドトリップ (`__ALL_PHP_B64__:`)、`Test-PhpPolyglotEqual`、`[Console]::Error` キャプチャ。
+  - ALL 側のプロパティ読み書き (`Get-AllListItem` / `set-index`)・メソッド呼び出しを PHP 側 `Get-LValue` / `Set-LValue` に接続し、プロパティフック・`readonly`・`private(set)` を ALL 経由でも厳密強制。ポリグロット経由の PHP 例外も `try/catch` で捕捉可能化（Test #26 追加、26/26 PASS、716/716 PASS）。
+- **Task 5.9（完了：評価順序・参照 Notice 行番号・型ホイスティング・コロン構文）**:
+  - パーサでの AST `Line` 付与、`->${expr}` / `::${expr}` 動的メンバ構文、`Read-PhpColonBlock` / `Read-PhpColonElseIfTail` による `if/elseif/else/endif`, `while/endwhile`, `for/endfor`, `foreach/endforeach`, `switch/endswitch`（+ `case ;` 非推奨警告）対応。
+  - `Resolve-PhpPreEvaluatedTarget` による `=` / `??=` 代入の LHS 事前評価（評価順序および不要な再 `Get-LValue` 回避）、`Set-LValue` 複合添字の重複読み取り排除とスカラー配列化 `Error`、`Invoke-PhpCallable`/`Invoke-PhpReferenceCall`/`assign_ref` での呼出元行番号復元・左辺スロットエラー優先（`PendingNonRefNotice` 遅延通知）、およびトップレベル型宣言の安全なマルチパス・ホイスティング実装（Test #27 追加、27/27 PASS、716/716 PASS）。
+- **Task 5.10（完了：匿名クラス・`ErrorException`・`IteratorAggregate`・属性スコープ・標準関数拡張）**:
+  - 無名クラス命名規則（親/第1インターフェース継承、`$isCli` または接頭辞付き時の `\0file:line$hex` 付与、Test #23 互換維持）。
+  - `trigger_error(..., E_USER_ERROR)` の PHP 8.4 非推奨警告＋CLI Fatal 終了、`Throwable::getTrace()` + `Build-PhpStackTraceArray`、`ErrorException::__construct`/`getSeverity()`、`Write-PhpDiagnostic` 内エラーハンドラ実行時の `ActiveBuiltinFrame` 一時スタック積載。
+  - `Resolve-PhpAggregateIterator` による `IteratorAggregate::getIterator()` 戻り値検証の統一、`fopen` / `fclose` / `highlight_string` / `show_source` / `highlight_file` / `localeconv`（`setlocale` `LC_NUMERIC` 連携）追加。
+  - `ReflectionObject` / `ReflectionClassConstant` / `ReflectionClass::getReflectionConstant`、トレイトのリフレクションと `self::` 未定義エラー、クラス定数属性引き継ぎ、`ReflectionAttribute` のクラス/クロージャ/バリデーション評価スコープ追従、`Closure::bindTo` 実装（Test #28 追加、28/28 PASS、716/716 PASS）。
+- **Task 5.11（完了：PHPT ランナー `--STDIN--`/`--EXPECTREGEX--` 対応・補助ビルトイン・最終ベンチマーク）**:
+  - `ALL_PHP_v3_12_adapter.ps1` (`V7`) へ `file_get_contents`, `file_put_contents`, `php_strip_whitespace`, `unlink`, `getenv` を追加。
+  - `all_runner.rs` へ `--STDIN--` パイプ、`--CLEAN--` 後処理、純 Rust 標準ライブラリ製 Thompson NFA `--EXPECTREGEX--` マッチャ、`phpt`/`run-phpt` サブコマンド受付を追加し Release ビルド・配備・全検証（構文103 / SHA-256 221 / C# / ALL 527件 / PHP v3.20 965件 / 多言語 19件 / Phase 2/3 28件 / v3.12 716件）を完遂。
+  - 公式 PHPT ベンチマーク：`tests\lang` **238/282 (84.40%)**（Task 5.6 比 +30件）、`Zend --limit 300` **172/298 (57.72%)**（Task 5.6 比 +33件）。
+- **今後の拡張候補**:
+  - `tests\lang`（24件 fail / 20件 unsupported）および `Zend`（上位残因：参照引数の型追跡、プリティプリント付き `assert()`、静的配列キーの定数評価、`Closure` ビルトインメソッド群、`DateTime` 等未実装標準クラス・関数の順次拡充）。
   - **運用ノート**: PHPT 大規模スイート (`Zend` 全体 5,395件等) は全実行すると4コアで約40〜60分要するため、定期確認は `--limit 300` 等を使用し、必ず他ベンチマークとは直列で実行すること。
 
 ### 5.3 ビルド・検証コマンド集（`D:\ALL` 統一版）

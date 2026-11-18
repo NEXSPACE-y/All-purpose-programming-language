@@ -892,6 +892,9 @@
         function Get-AllListItem($value, $index) {
             if (Is-AllMap $value) {
                 $key = Get-AllKey $index
+                if ($value.PSObject.Properties['PhpObject'] -and $null -ne $value.PhpObject) {
+                    return (Invoke-AllSidePhpAction 'get_prop' $key @() $value)
+                }
                 if (-not $value.Items.Contains($key)) { throw "ALL Key Error: Missing key '$key'" }
                 return $value.Items[$key]
             }
@@ -1186,6 +1189,16 @@
             $ctx = $global:AllPolyglotContext
             $phpName = $name.Replace('::', '\')
             if ($ctx.PhpFunctions.ContainsKey($phpName) -or $ctx.PhpFunctions.ContainsKey($name)) { return $true }
+            $allMathReserved = @(
+                'abs','sqrt','cbrt','pow','floor','ceil','trunc','sign','round','min','max','clamp',
+                'exp','log','log10','log2','sin','cos','tan','asin','acos','atan','atan2',
+                'sinh','cosh','tanh','rad','deg','hypot','factorial','gcd','lcm','choose','perm',
+                'fib','isprime','vec','dot','norm','distance','cross','mat','transpose','matmul',
+                'det','sum','mean','median','variance','stdev','derivative','integrate'
+            )
+            if ($ctx.ContainsKey('PhpBuiltinNames') -and $null -ne $ctx['PhpBuiltinNames'] -and
+                -not ($allMathReserved -contains $name.ToLowerInvariant()) -and
+                $ctx['PhpBuiltinNames'].Contains($name)) { return $true }
             return $false
         }
         function Invoke-AllToPhpCall([string]$name, $evalValues) {
@@ -2399,10 +2412,11 @@
                     if (Is-AllMap $list) {
                         $key = Get-AllKey (Eval-AllExpression $statement.Index)
                         $newVal = Eval-AllExpression $statement.Expr
-                        $list.Items[$key] = $newVal
                         if ($list.PSObject.Properties['PhpObject'] -and $null -ne $list.PhpObject) {
-                            $list.PhpObject.Props[$key] = $newVal
+                            [void](Invoke-AllSidePhpAction 'set_prop' $key @($newVal) $list)
+                            return $null
                         }
+                        $list.Items[$key] = $newVal
                         return $null
                     }
                     $idx = To-AllInteger (Eval-AllExpression $statement.Index) 'list index' 0 2147483647

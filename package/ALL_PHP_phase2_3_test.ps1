@@ -1086,6 +1086,302 @@ echo implode('|', [
 '@
     } 'ba,AA,abc,1,N,T:6|Cannot perform increment on array|SA;Call to protected method SibA::pm() from scope SibB|G:pv;G:S:new;MF;SF|Cannot use "self" when no class scope is active|func_num_args() must be called from a function context|A:9|1000:7:7'
 
+# 26. Task 5.7 & 5.8: Bidirectional polyglot hooks, private(set) enforcement across ALL/PHP, non-UTF8 binary roundtrip, and PhpBuiltinNames sharing
+Assert-Case 'phase3_task5_7_5_8_polyglot_hooks_binary_and_zend_diagnostics' {
+    & $phpAdapter.Run -PhpDiagnostics @'
+<?php
+class HookedBox {
+    public string $label = 'init' {
+        set => strtoupper($value);
+    }
+    public string $badge {
+        get => '[' . $this->label . ']';
+    }
+    public private(set) string $secret = 'LOCKED';
+}
+<?all
+fn all_touch_box(b) {
+    b.label = "hello"
+    let badge = b.badge
+    let sx = soundex("Euler")
+    let errTag = "NO_ERR"
+    try {
+        b.secret = "hack"
+    } catch (err) {
+        if (str_contains(err, "private(set)")) {
+            errTag = "PRIVATE_SET_BLOCKED"
+        } else {
+            errTag = err
+        }
+    }
+    return concat(badge, concat(":", concat(sx, concat(":", errTag))))
+}
+fn all_id_bin(raw) {
+    return raw
+}
+?>
+$box = new HookedBox();
+$r1 = all_touch_box($box);
+$rawOut = all_id_bin("\x80\xFF\x00\xFE");
+echo $r1 . '|' . $box->label . '|' . $box->secret . '|' . bin2hex($rawOut);
+'@
+} '[HELLO]:E460:PRIVATE_SET_BLOCKED|HELLO|LOCKED|80ff00fe'
+
+# 27. Task 5.9: LHS/RHS evaluation order, reference notice caller line numbers, class hoisting, dynamic braced members, colon syntax, scalar compound index error, assign_ref LHS precedence
+Assert-Case 'phase2_task5_9_eval_order_ref_lines_hoisting_and_colon_syntax' {
+    & $phpAdapter.Run -PhpDiagnostics @'
+<?php
+$warns = [];
+set_error_handler(function ($errno, $msg, $file = '', $line = 0) use (&$warns) {
+    $warns[] = $errno . '@' . $line . ':' . $msg;
+    return true;
+});
+
+$orderLog = [];
+function logStep(&$log, $label, $ret) {
+    $log[] = $label;
+    return $ret;
+}
+$target = ['x' => ['y' => 0], 'z' => ['y' => 0]];
+function swapAndRhs(&$log, &$target) {
+    $log[] = 'R';
+    $target = ['x' => ['y' => 111], 'z' => ['y' => 222]];
+    return 777;
+}
+$target[logStep($orderLog, 'L1', 'x')][logStep($orderLog, 'L2', 'y')] = swapAndRhs($orderLog, $target);
+
+$hoistObj = new HoistChild();
+class HoistChild extends HoistBase {
+    public function tag() { return $this->baseTag() . '-C'; }
+}
+class HoistBase {
+    public static string $dynStatic = 'SVAL';
+    public string $dynInst = 'IVAL';
+    protected function baseTag() { return 'B'; }
+}
+$dynFn = fn($n) => $n;
+$dynRead = $hoistObj->{$dynFn('dynInst')} . '/' . HoistBase::${$dynFn('dynStatic')};
+
+function retNonRef() { return 42; }
+$refLine = __LINE__ + 1;
+$rv =& retNonRef();
+$builtinArr = [10, 20];
+$builtinLine = __LINE__ + 1;
+$shifted = array_shift(array_values($builtinArr));
+
+$scalarErr = '';
+$sc = 5;
+try { $sc[0] += 1; } catch (Error $e) { $scalarErr = $e->getMessage(); }
+
+$refLhsErr = '';
+$strVal = 'abc';
+$warnCountBeforeRefErr = count($warns);
+try { $strVal[0] =& retNonRef(); } catch (Error $e) { $refLhsErr = $e->getMessage(); }
+$warnCountAfterRefErr = count($warns);
+
+$cOut = '';
+$cond = 2;
+if ($cond === 1):
+    $cOut .= 'if1';
+elseif ($cond === 2):
+    $cOut .= 'elif2';
+else:
+    $cOut .= 'else';
+endif;
+
+$w = 0;
+while ($w < 2):
+    $cOut .= ',w' . $w;
+    $w++;
+endwhile;
+
+for ($fi = 0; $fi < 2; $fi++):
+    $cOut .= ',f' . $fi;
+endfor;
+
+foreach (['p', 'q'] as $item):
+    $cOut .= ',' . $item;
+endforeach;
+
+switch ($cond):
+    case 1:
+        $cOut .= ',s1';
+        break;
+    case 2:
+        $cOut .= ',s2';
+        break;
+endswitch;
+
+restore_error_handler();
+echo implode('|', [
+    implode(',', $orderLog) . ':' . $target['x']['y'],
+    $hoistObj->tag() . ':' . $dynRead,
+    $rv . '@' . $shifted,
+    $warns[0],
+    $warns[1],
+    'REF=' . $refLine . ':BLT=' . $builtinLine,
+    $scalarErr,
+    $refLhsErr . ':' . $warnCountBeforeRefErr . ':' . $warnCountAfterRefErr,
+    $cOut
+]);
+'@
+} 'L1,L2,R:777|B-C:IVAL/SVAL|42@10|8@35:Only variables should be assigned by reference|8@38:Only variables should be passed by reference|REF=35:BLT=38|Cannot use a scalar value as an array|Cannot create references to/from string offsets:2:2|elif2,w0,w1,f0,f1,p,q,s2'
+
+# 28. Task 5.10: Anonymous class naming, ErrorException, IteratorAggregate errors, fopen trace, localeconv, highlight_string, E_USER_ERROR deprecation, and Reflection/Attributes scopes
+Assert-Case 'phase2_task5_10_anon_class_errorexception_iterator_and_attributes' {
+    & $phpAdapter.Run -PhpDiagnostics @'
+<?php
+interface IA1 {}
+interface IA2 {}
+class BaseA {}
+$an1 = new class extends BaseA implements IA1 {};
+$an2 = new class implements IA1, IA2 {};
+$anonRes = strstr(get_class($an1), "\0", true) . ',' . strstr(get_class($an2), "\0", true);
+
+$eeLineBase = __LINE__;
+$ee1 = new ErrorException();
+$ee2 = new ErrorException('E2', 7, E_WARNING, null, null);
+$ee3 = new ErrorException('E3', 8, E_ERROR, null, 123);
+$ee4 = new ErrorException('E4', 9, E_NOTICE, 'abc.php');
+$ee5 = new ErrorException('E5', 10, E_NOTICE, 'abc.php', 456);
+$eeOk = ($ee1->getMessage() === '' && $ee1->getLine() === ($eeLineBase + 1)
+    && $ee2->getSeverity() === E_WARNING && $ee2->getLine() === ($eeLineBase + 2)
+    && $ee3->getFile() === $ee1->getFile() && $ee3->getLine() === 123
+    && $ee4->getFile() === 'abc.php' && $ee4->getLine() === 0
+    && $ee5->getFile() === 'abc.php' && $ee5->getLine() === 456) ? 'EE_OK' : 'EE_BAD';
+
+class BadIterStd implements IteratorAggregate {
+    public function getIterator() { return new stdClass(); }
+}
+class BadIterArr implements IteratorAggregate {
+    public function getIterator() { return [1, 2]; }
+}
+$iterErrLine = 0;
+$iterErr1 = '';
+$iterErr2 = '';
+$expectedIterLine = __LINE__ + 2;
+try {
+    foreach (new BadIterStd() as $k => $v) {}
+} catch (Exception $e) {
+    $iterErrLine = $e->getLine();
+    $iterErr1 = $e->getMessage();
+}
+try {
+    foreach (new BadIterArr() as $k => $v) {}
+} catch (Exception $e) {
+    $iterErr2 = $e->getMessage();
+}
+$iterOk = ($iterErrLine === $expectedIterLine
+    && $iterErr1 === 'Objects returned by BadIterStd::getIterator() must be traversable or implement interface Iterator'
+    && $iterErr2 === 'Objects returned by BadIterArr::getIterator() must be traversable or implement interface Iterator') ? 'ITER_OK' : ($iterErrLine . ':' . $iterErr1);
+
+interface TraceCatchable {}
+class TraceErrEx extends Exception implements TraceCatchable {}
+$trigLogs = [];
+set_error_handler(function ($errno, $msg, $file = '', $line = 0) use (&$trigLogs) {
+    if ($errno === E_USER_ERROR || $errno === E_DEPRECATED) {
+        $trigLogs[] = $errno . ':' . (str_contains($msg, 'deprecated') ? 'DEP' : $msg);
+        return true;
+    }
+    throw new TraceErrEx($msg, $errno);
+});
+$traceOut = '';
+try {
+    $fh = fopen('/tmp/definitely_missing_file_for_test_510', 'r');
+} catch (TraceCatchable $e) {
+    $tr = $e->getTrace();
+    $traceOut = ($tr[1]['function'] ?? '') . ':' . $e->getMessage();
+}
+trigger_error('boom', E_USER_ERROR);
+restore_error_handler();
+
+$hl = highlight_string('<?php __CLASS__;', true);
+$hlOk = (is_string($hl) && strlen($hl) > 0) ? 'HL_OK' : 'HL_BAD';
+
+$badLoc = setlocale(LC_ALL, 'invalid');
+$deLoc = setlocale(LC_NUMERIC, 'de_DE.UTF-8');
+$lc = localeconv();
+$locOk = ($badLoc === false && $deLoc === 'de_DE.UTF-8' && $lc['decimal_point'] === ',' && $lc['thousands_sep'] === '.') ? 'LOC_OK' : 'LOC_BAD';
+
+#[Attribute(parent::VALID_FLAGS)]
+class ScopedAttr extends ScopedAttrBase {
+    public string $tag = 'OK';
+}
+class ScopedAttrBase {
+    protected const VALID_FLAGS = Attribute::TARGET_CLASS;
+}
+#[ScopedAttr]
+class AttrHolder {
+    private const SECRET = 's1';
+    #[A1(self::class, self::SECRET)]
+    public const CA = 10, CB = 20;
+    #[A1(self::class, self::SECRET)]
+    public function m(#[A1(self::class, self::SECRET)] $p) {}
+}
+trait AttrTrait {
+    #[A1(self::class, self::TF)]
+    public function tf() {}
+}
+class AttrTraitUser {
+    use AttrTrait;
+    private const TF = 'trait_used';
+}
+class ClosureScopeAlt {
+    private const CV = 'alt_cv';
+}
+class ClosureScopeOrig {
+    private const CV = 'orig_cv';
+    public static function make() {
+        return #[A1(self::class, self::CV)] function (#[A1(self::class, self::CV)] $x) {};
+    }
+}
+$rcHolder = new ReflectionClass(AttrHolder::class);
+$rcConstB = $rcHolder->getReflectionConstant('CB');
+$rcDirectA = new ReflectionClassConstant(AttrHolder::class, 'CA');
+$rcTraitUser = new ReflectionClass(AttrTraitUser::class);
+$rcTraitOnly = new ReflectionClass(AttrTrait::class);
+$traitMissingErr = '';
+try {
+    $rcTraitOnly->getMethod('tf')->getAttributes()[0]->getArguments();
+} catch (Error $e) {
+    $traitMissingErr = $e->getMessage();
+}
+$roAnon = new ReflectionObject(new #[A1(self::class)] class {
+    #[A1(self::class)]
+    public function ping() {}
+});
+$roAnonClassArgs = $roAnon->getAttributes()[0]->getArguments();
+$roAnonMethodArgs = $roAnon->getMethod('ping')->getAttributes()[0]->getArguments();
+$clOrigArgs = (new ReflectionFunction(ClosureScopeOrig::make()))->getAttributes()[0]->getArguments();
+$clBoundArgs = (new ReflectionFunction(ClosureScopeOrig::make()->bindTo(null, ClosureScopeAlt::class)))->getParameters()[0]->getAttributes()[0]->getArguments();
+$scopedInst = $rcHolder->getAttributes(ScopedAttr::class)[0]->newInstance();
+$missingAttrErr = '';
+try {
+    (new ReflectionFunction(#[ScopedAttr(MissingAttrConstClass::NOPE)] function () {}))->getAttributes()[0]->getArguments();
+} catch (Error $e) {
+    $missingAttrErr = $e->getMessage();
+}
+
+echo implode('|', [
+    $anonRes,
+    $eeOk,
+    $iterOk,
+    str_contains($traceOut, 'fopen:fopen(') ? 'TRACE_OK' : $traceOut,
+    implode(',', $trigLogs),
+    $hlOk,
+    $locOk,
+    implode(',', $rcConstB->getAttributes()[0]->getArguments()) . ';' . $rcDirectA->getValue(),
+    implode(',', $rcHolder->getMethod('m')->getParameters()[0]->getAttributes()[0]->getArguments()),
+    implode(',', $rcTraitUser->getMethod('tf')->getAttributes()[0]->getArguments()),
+    $traitMissingErr,
+    ($roAnonClassArgs[0] === $roAnon->getName() && $roAnonMethodArgs[0] === $roAnon->getName()) ? 'RO_OK' : 'RO_BAD',
+    implode(',', $clOrigArgs) . '->' . implode(',', $clBoundArgs),
+    $scopedInst->tag,
+    $missingAttrErr
+]);
+'@
+} 'BaseA@anonymous,IA1@anonymous|EE_OK|ITER_OK|TRACE_OK|8192:DEP,256:boom|HL_OK|LOC_OK|AttrHolder,s1;10|AttrHolder,s1|AttrTraitUser,trait_used|Undefined constant self::TF|RO_OK|ClosureScopeOrig,orig_cv->ClosureScopeAlt,alt_cv|OK|Class "MissingAttrConstClass" not found'
+
 } finally {
     if (Test-Path $tempDir) { Remove-Item -Recurse -Force $tempDir }
 }
